@@ -1,0 +1,160 @@
+#import "MZEMaterialView.h"
+#import "CornerRadiusAnimationAction.h"
+#import <QuartzCore/CALayer+Private.h>
+
+struct CAColorMatrix
+{
+    float m11, m12, m13, m14, m15;
+    float m21, m22, m23, m24, m25;
+    float m31, m32, m33, m34, m35;
+    float m41, m42, m43, m44, m45;
+};
+
+typedef struct CAColorMatrix CAColorMatrix;
+
+@interface NSValue (ColorMatrix)
++ (NSValue *)valueWithCAColorMatrix:(CAColorMatrix)t;
+- (CAColorMatrix)CAColorMatrixValue;
+@end
+
+@implementation MZEMaterialView
+
++ (instancetype)materialViewWithStyle:(MZEMaterialStyle)style {
+	MZEMaterialView *materialView = [[MZEMaterialView alloc] init];
+
+	if (style == MZEMaterialStyleDark) {
+
+		NSMutableDictionary *styleDict = [NSMutableDictionary new];
+		styleDict[@"brightness"] = [NSNumber numberWithFloat:-0.12];
+		styleDict[@"saturation"] = [NSNumber numberWithFloat:1.8];
+
+    	CAColorMatrix darkColorMatrix = {
+	        0.5f, 0, 0, 0, 0.125f,
+	        0, 0.5f, 0, 0, 0.125f,
+	        0, 0, 0.5f, 0, 0.125f,
+	        0, 0, 0, 1.0f, 0
+      	};
+
+      	styleDict[@"forcedColorMatrix"] = [NSValue valueWithCAColorMatrix:darkColorMatrix];
+
+      	[materialView.backdropView setStyleDictionary:[styleDict copy]];
+	} else if (style == MZEMaterialStyleLight) {
+		NSMutableDictionary *styleDict = [NSMutableDictionary new];
+
+		styleDict[@"brightness"] = [NSNumber numberWithFloat:0.52];
+		styleDict[@"saturation"] = [NSNumber numberWithFloat:1.6];
+		styleDict[@"colorAddColor"] = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+
+		[materialView.backdropView setStyleDictionary:[styleDict copy]];
+	}
+
+	return materialView;
+}
+
+
+- (id)init {
+	self = [super init];
+	if (self) {
+		self.backdropView = [[_MZEBackdropView alloc] init];
+		self.backdropView.translatesAutoresizingMaskIntoConstraints = NO;
+
+		[self addSubview:self.backdropView];
+
+		[self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+        self.layer.allowsGroupBlending = NO;
+	}
+	return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    [self updateCornerRadius];
+}
+
+- (void)setBrightness:(CGFloat)brightness {
+	self.backdropView.brightness = brightness;
+}
+
+- (CGFloat)brightness {
+	return self.backdropView.brightness;
+}
+
+- (void)setSaturation:(CGFloat)saturation {
+	self.backdropView.saturation = saturation;
+}
+
+- (CGFloat)saturation {
+	return self.backdropView.saturation;
+}
+
+- (void)setLuminanceAlpha:(CGFloat)luminanceAlpha {
+	self.backdropView.luminanceAlpha = luminanceAlpha;
+}
+
+- (CGFloat)luminanceAlpha {
+	return self.backdropView.luminanceAlpha;
+}
+
+- (void)setColorMatrixColor:(UIColor *)colorMatrixColor {
+	self.backdropView.colorMatrixColor = colorMatrixColor;
+}
+
+- (UIColor *)colorMatrixColor {
+	return self.backdropView.colorMatrixColor;
+}
+
+- (void)setColorAddColor:(UIColor *)colorAddColor {
+	self.backdropView.colorAddColor = colorAddColor;
+}
+
+- (UIColor *)colorAddColor {
+	return self.backdropView.colorAddColor;
+}
+
+- (void)setForcedColorMatrix:(NSValue *)forcedColorMatrix {
+	self.backdropView.forcedColorMatrix = forcedColorMatrix;
+}
+
+- (NSValue *)forcedColorMatrix {
+	return self.backdropView.forcedColorMatrix;
+}
+
+- (id <CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event {
+    if ([event isEqualToString:@"cornerRadius"]) {
+        CABasicAnimation *boundsAnimation;
+        boundsAnimation = (id)[layer animationForKey:@"bounds.size"];
+        
+        if (boundsAnimation) {
+            CABasicAnimation *animation = (id)boundsAnimation.copy;
+            animation.keyPath = @"cornerRadius";
+            
+            CornerRadiusAnimationAction *action;
+            action = [CornerRadiusAnimationAction new];
+            action.pendingAnimation = animation;
+            action.priorCornerRadius = layer.cornerRadius;
+            return action;
+        }
+        
+    }
+    
+    return [super actionForLayer:layer forKey:event];
+}
+
+- (void)updateCornerRadius {
+    CGSize size = self.bounds.size;
+    if (_cornerRadiusInterpolator) {
+    	self.layer.cornerRadius = [_cornerRadiusInterpolator valueForReferenceMetric:size.height secondaryReferenceMetric:size.width];
+    }
+}
+
+- (void)setCompactCornerRadius:(CGFloat)compactCornerRadius expandedCornerRadius:(CGFloat)expandedCornerRadius compactSize:(CGSize)compactSize expandedSize:(CGSize)expandedSize {
+	_cornerRadiusInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+	[_cornerRadiusInterpolator addValue:compactCornerRadius forReferenceMetric:compactSize.height secondaryReferenceMetric:compactSize.width];
+	[_cornerRadiusInterpolator addValue:expandedCornerRadius forReferenceMetric:expandedSize.height secondaryReferenceMetric:expandedSize.width];
+
+}
+
+@end

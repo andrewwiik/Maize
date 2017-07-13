@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<caml xmlns="http://www.apple.com/CoreAnimation/1.0">
+  <CATransformLayer allowsEdgeAntialiasing="1" allowsGroupOpacity="1" bounds="0 0 40 40" contentsFormat="RGBA8" hidden="0" name="Root Layer" position="20 20">
+    <backgroundColor opacity="0" value="0 0 0"/>
+    <sublayers>
+      <CATransformLayer allowsEdgeAntialiasing="1" allowsGroupOpacity="1" bounds="37.700007629395 42.604029846193 52 39" contentsFormat="RGBA8" name="bt" position="19.799999237061 19.403999328613" transform="scale(0.495, 0.495, 1)">
+	<sublayers>
+	  <CALayer id="#1" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" bounds="0 0 52 39" contentsFormat="RGBA8" name="bluetooth" opacity="1" position="63.700007629395 62.104029846193">
+	    <sublayers>
+	      <CAShapeLayer fillColor="1 1 1" path="15.4 14.7 m 7.3 7.5 l 7.3 18 l 2.2 13.4 l 1 14.7 l 6.9 20 l 1 25.1 l 2.1 26.4 l 7.2 21.9 l 7.2 32.6 l 15.3 25.4 l 9.7 20 l 15.4 14.7 l h 9 28.7 m 9 21.9 l 12.8 25.4 l 9 28.7 l h 12.8 14.7 m 9 18.1 l 9 11.3 l 12.8 14.7 l h" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" contentsFormat="RGBA8" hidden="0" position="8.899992370605 -21.204029846193" transform="scale(2.097, 2.097, 1)"/>
+	    </sublayers>
+	  </CALayer>
+	</sublayers>
+      </CATransformLayer>
+    </sublayers>
+    <states>
+      <LKState name="off"/>
+      <LKState name="seeking" basedOn="beginseeking">
+	<elements>
+	  <LKStateSetValue targetId="#1" keyPath="opacity">
+	    <value type="real" value="0.1000000014901"/>
+	  </LKStateSetValue>
+	</elements>
+      </LKState>
+      <LKState name="on" basedOn="seeking">
+	<elements>
+	  <LKStateSetValue targetId="#1" keyPath="opacity">
+	    <value type="integer" value="1"/>
+	  </LKStateSetValue>
+	</elements>
+      </LKState>
+    </states>
+    <stateTransitions>
+      <LKStateTransition fromState="*" toState="seeking">
+	<elements>
+	  <LKStateTransitionElement key="opacity" targetId="#1">
+	    <animation type="CAKeyframeAnimation" calculationMode="linear" keyPath="opacity" autoreverses="1" beginTime="1e-100" duration="0.6000000238419" fillMode="both" removedOnCompletion="1" repeatCount="Inf" timingFunction="easeInEaseOut">
+	      <keyTimes>
+		<integer value="0"/>
+		<integer value="1"/>
+	      </keyTimes>
+	      <values>
+		<real value="0.25"/>
+		<integer value="1"/>
+	      </values>
+	    </animation>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="seeking" toState="*">
+	<elements>
+	  <LKStateTransitionElement key="opacity" targetId="#1">
+	    <animation type="CABasicAnimation" keyPath="opacity" duration="0.25" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="*" toState="on">
+	<elements>
+	  <LKStateTransitionElement key="opacity" targetId="#1">
+	    <animation type="CABasicAnimation" keyPath="opacity" duration="0.4895193556768" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="on" toState="*">
+	<elements>
+	  <LKStateTransitionElement key="opacity" targetId="#1">
+	    <animation type="CABasicAnimation" keyPath="opacity" duration="0.5533697064173" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+    </stateTransitions>
+  </CATransformLayer>
+</caml>
