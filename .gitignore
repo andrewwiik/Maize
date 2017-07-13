@@ -11,3 +11,5 @@ Packages
 PPackages
 *.txt
 *.log
+.DS-Store
+
