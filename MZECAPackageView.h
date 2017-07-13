@@ -19,9 +19,10 @@
 }
 
 @property(retain, nonatomic) CAPackage *package; // @synthesize package=_package;
+- (id)init;
+- (id)initWithFrame:(CGRect)frame;
 - (void)_setPackage:(CAPackage *)package;
 - (void)setStateName:(NSString *)name;
 - (void)layoutSubviews;
-- (id)initWithFrame:(CGRect)frame;
 
 @end

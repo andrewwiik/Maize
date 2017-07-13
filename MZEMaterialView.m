@@ -46,6 +46,13 @@ typedef struct CAColorMatrix CAColorMatrix;
 		styleDict[@"colorAddColor"] = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
 
 		[materialView.backdropView setStyleDictionary:[styleDict copy]];
+	} else if (style = MZEMaterialStyleNormal) {
+		NSMutableDictionary *styleDict = [NSMutableDictionary new];
+
+		styleDict[@"brightness"] = [NSNumber numberWithFloat:0.12];
+		styleDict[@"saturation"] = [NSNumber numberWithFloat:1.5];
+
+		[materialView.backdropView setStyleDictionary:[styleDict copy]];
 	}
 
 	return materialView;

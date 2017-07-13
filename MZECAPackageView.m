@@ -10,6 +10,14 @@
 	return self;
 }
 
+- (id)init {
+	self = [super initWithFrame:CGRectZero];
+	if (self) {
+		self.userInteractionEnabled = NO;
+	}
+	return self;
+}
+
 
 - (void)setPackage:(CAPackage *)package {
 	[self _setPackage:package];

@@ -5,7 +5,8 @@ typedef NS_ENUM(NSInteger, MZEMaterialStyle)
 {
 	MZEMaterialStyleNone,
     MZEMaterialStyleLight,
-    MZEMaterialStyleDark
+    MZEMaterialStyleDark,
+    MZEMaterialStyleNormal
 };
 
 @interface MZEMaterialView : UIView {
