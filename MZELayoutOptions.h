@@ -3,7 +3,7 @@
 + (CGFloat)edgeSize;
 + (CGFloat)edgeInsetSize;
 + (void)setupInterpolators;
-+ (CGFloat)circularButtonSize;
++ (CGFloat)roundButtonSize;
 + (CGFloat)roundButtonTitlePaddingSize;
 + (CGFloat)roundButtonExpandedSideInsetSize;
 + (CGSize)roundButtonContainerExpandedSize;

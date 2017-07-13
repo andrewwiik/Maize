@@ -1,7 +1,9 @@
 #import "MZELabeledRoundButtonViewController.h"
 
 @implementation MZELabeledRoundButtonViewController
-- (id)initWithGlyphPackage:(id)glyphPackage highlightColor:(id)highlightColor {
+@dynamic title;
+
+- (id)initWithGlyphPackage:(CAPackage *)glyphPackage highlightColor:(UIColor *)highlightColor {
 	self = [super init];
 
 	if (self) {
@@ -11,7 +13,7 @@
 
 	return self;
 }
-- (id)initWithGlyphImage:(UIImage *)glyphImage highlightColor:(id)highlightColor {
+- (id)initWithGlyphImage:(UIImage *)glyphImage highlightColor:(UIColor *)highlightColor {
 	self = [super init];
 
 	if (self) {
@@ -30,6 +32,19 @@
 	} else {
 		_buttonContainer = [[MZELabeledRoundButton alloc] initWithGlyphImage:_glyphImage highlightColor:_highlightColor];
 	}
+
+	[_buttonContainer setLabelsVisible:_labelsVisible];
+	_buttonContainer.title = self.title;
+	_buttonContainer.subtitle = self.title;
+
+	_button = _buttonContainer.buttonView;
+	[_button addTarget:self action:@selector(buttonTapped:) forControlEvents:0x40];
+
+	self.view = _buttonContainer;
 	
+}
+
+- (void)buttonTapped:(id)arg1 {
+
 }
 @end

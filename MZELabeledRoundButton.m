@@ -3,26 +3,33 @@
 
 
 @implementation MZELabeledRoundButton
-- (id)initWithGlyphPackage:(id)glyphPackage highlightColor:(id)highlightColor {
+- (id)initWithGlyphPackage:(CAPackage *)glyphPackage highlightColor:(UIColor *)highlightColor {
 	self = [self initWithHighlightColor:_highlightColor];
 
 	if (self) {
 		_glyphPackage = glyphPackage;
-		_buttonView = [[MZERoundButton alloc] initWith]
+		_buttonView = [[MZERoundButton alloc] initWithGlyphPackage:glyphPackage highlightColor:highlightColor];
+		[_buttonView addTarget:self action:@selector(buttonTapped:) forControlEvents:0x40];
+		[self addSubview:_buttonView];
 	}
 
 	return self;
 }
-- (id)initWithGlyphImage:(id)glyphImage highlightColor:(id)highlightColor {
+
+- (id)initWithGlyphImage:(UIImage *)glyphImage highlightColor:(UIColor *)highlightColor {
 	self = [self initWithHighlightColor:_highlightColor];
 	
 	if (self) {
-
+		_glyphImage = glyphImage;
+		_buttonView = [[MZERoundButton alloc] initWithGlyphImage:_glyphImage highlightColor:_highlightColor];
+		[_buttonView addTarget:self action:@selector(buttonTapped:) forControlEvents:0x40];
+		[self addSubview:_buttonView];
 	}
 
 	return self;
 }
-- (id)initWithHighlightColor:(id)highlightColor {
+
+- (id)initWithHighlightColor:(UIColor *)highlightColor {
 	self = [super initWithFrame:CGRectZero];
 	if (self) {
 
@@ -47,5 +54,23 @@
 	}
 
 	return self;
+}
+
+- (void)_layoutLabels {
+
+}
+
+- (void)buttonTapped:(id)arg1 {
+
+}
+
+- (CGSize)intrinsicContentSize {
+	return CGSizeMake(-1,-1);
+}
+- (CGSize)sizeThatFits:(CGSize)arg1 {
+	return CGSizeMake(-1,-1);
+}
+- (void)layoutSubviews {
+	[super layoutSubviews];
 }
 @end

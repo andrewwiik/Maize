@@ -16,21 +16,21 @@
     UIControl *_button;
 }
 
-@property(retain, nonatomic) UIControl *button; // @synthesize button=_button;
-@property(retain, nonatomic) MZELabeledRoundButton *buttonContainer; // @synthesize buttonContainer=_buttonContainer;
-@property(retain, nonatomic) UIColor *highlightColor; // @synthesize highlightColor=_highlightColor;
-@property(nonatomic, getter=isInoperative) BOOL inoperative; // @synthesize inoperative=_inoperative;
-@property(nonatomic, getter=isEnabled) BOOL enabled; // @synthesize enabled=_enabled;
-@property(nonatomic) BOOL toggleStateOnTap; // @synthesize toggleStateOnTap=_toggleStateOnTap;
-@property(nonatomic) BOOL labelsVisible; // @synthesize labelsVisible=_labelsVisible;
-@property(retain, nonatomic) UIImage *glyphImage; // @synthesize glyphImage=_glyphImage;
-@property(copy, nonatomic) NSString *glyphState; // @synthesize glyphState=_glyphState;
-@property(retain, nonatomic) CAPackage *glyphPackage; // @synthesize glyphPackage=_glyphPackage;
-@property(copy, nonatomic) NSString *subtitle; // @synthesize subtitle=_subtitle;
+@property(retain, nonatomic,readwrite) UIControl *button; // @synthesize button=_button;
+@property(retain, nonatomic,readwrite) MZELabeledRoundButton *buttonContainer; // @synthesize buttonContainer=_buttonContainer;
+@property(retain, nonatomic,readwrite) UIColor *highlightColor; // @synthesize highlightColor=_highlightColor;
+@property(nonatomic, getter=isInoperative,readwrite) BOOL inoperative; // @synthesize inoperative=_inoperative;
+@property(nonatomic, getter=isEnabled,readwrite) BOOL enabled; // @synthesize enabled=_enabled;
+@property(nonatomic,readwrite) BOOL toggleStateOnTap; // @synthesize toggleStateOnTap=_toggleStateOnTap;
+@property(nonatomic,readwrite) BOOL labelsVisible; // @synthesize labelsVisible=_labelsVisible;
+@property(retain, nonatomic,readwrite) UIImage *glyphImage; // @synthesize glyphImage=_glyphImage;
+@property(copy, nonatomic,readwrite) NSString *glyphState; // @synthesize glyphState=_glyphState;
+@property(retain, nonatomic,readwrite) CAPackage *glyphPackage; // @synthesize glyphPackage=_glyphPackage;
+@property(copy, nonatomic,readwrite) NSString *subtitle; // @synthesize subtitle=_subtitle;
 - (void)loadView;
-@property(copy, nonatomic) NSString *title; // @dynamic title;
+@property(copy, nonatomic,readwrite) NSString *title; // @synthesize title=_title;
 - (void)buttonTapped:(id)arg1;
-- (id)initWithGlyphPackage:(id)arg1 highlightColor:(id)arg2;
-- (id)initWithGlyphImage:(id)arg1 highlightColor:(id)arg2;
+- (id)initWithGlyphPackage:(CAPackage *)arg1 highlightColor:(UIColor *)arg2;
+- (id)initWithGlyphImage:(UIImage *)arg1 highlightColor:(UIColor *)arg2;
 
 @end

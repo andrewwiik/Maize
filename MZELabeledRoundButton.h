@@ -31,8 +31,8 @@
 - (CGSize)intrinsicContentSize;
 - (CGSize)sizeThatFits:(CGSize)arg1;
 - (void)layoutSubviews;
-- (id)initWithGlyphPackage:(id)arg1 highlightColor:(id)arg2;
-- (id)initWithGlyphImage:(id)arg1 highlightColor:(id)arg2;
-- (id)initWithHighlightColor:(id)arg1;
+- (id)initWithGlyphPackage:(CAPackage *)arg1 highlightColor:(UIColor *)arg2;
+- (id)initWithGlyphImage:(UIImage *)arg1 highlightColor:(UIColor *)arg2;
+- (id)initWithHighlightColor:(UIColor *)arg1;
 
 @end
