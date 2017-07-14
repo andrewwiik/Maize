@@ -155,8 +155,10 @@
 }
 
 - (void)setButtonSize:(CGSize)buttonSize {
-	_buttonSize = buttonSize;
-	[self setNeedsUpdateConstraints];
+	if (buttonSize.width != _buttonSize.width || buttonSize.height != _buttonSize.height) {
+		_buttonSize = buttonSize;
+		[self setNeedsUpdateConstraints];
+	}
 }
 
 

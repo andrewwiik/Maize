@@ -7,6 +7,7 @@
     BOOL _toggleStateOnTap;
     BOOL _enabled;
     BOOL _inoperative;
+    NSString *_title;
     NSString *_subtitle;
     CAPackage *_glyphPackage;
     NSString *_glyphState;
@@ -28,7 +29,7 @@
 @property(retain, nonatomic,readwrite) CAPackage *glyphPackage; // @synthesize glyphPackage=_glyphPackage;
 @property(copy, nonatomic,readwrite) NSString *subtitle; // @synthesize subtitle=_subtitle;
 - (void)loadView;
-@property(copy, nonatomic,readwrite) NSString *title; // @synthesize title=_title;
+@property(copy, nonatomic,readwrite) NSString *title; // @dynamic title;
 - (void)buttonTapped:(id)arg1;
 - (id)initWithGlyphPackage:(CAPackage *)arg1 highlightColor:(UIColor *)arg2;
 - (id)initWithGlyphImage:(UIImage *)arg1 highlightColor:(UIColor *)arg2;
