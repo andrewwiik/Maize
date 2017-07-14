@@ -1,5 +1,6 @@
 #import "MZERoundButton.h"
 #import <UIKit/UIControl+Private.h>
+#import "UIView+MZE.h"
 
 @implementation MZERoundButton
 
@@ -65,40 +66,74 @@
 	return self;
 }
 
+- (void)layoutSubviews {
+	[super layoutSubviews];
+	[self _setCornerRadius:[self _cornerRadius]];
+}
+
 - (void)observeValueForKeyPath:(id)arg1 ofObject:(id)arg2 change:(id)arg3 context:(void *)arg4 {
 
 }
 
 - (void)_updateForStateChange {
+	[UIView animateWithDuration:0.25 animations:^{
+        
+        CGFloat alpha = 0;
+     	if (![self isEnabled]) {
+     		alpha = 0.2;
+     	} else {
+     		alpha = 1;
+     	}
 
+     	if (![self isHighlighted] && ![self isSelected]) {
+     		_highlightStateBackgroundView.alpha = 0;
+     		_highlightedGlyphView.alpha = 0;
+     		_glyphImageView.alpha = alpha;
+     	} else {
+     		_highlightStateBackgroundView.alpha = 1;
+     		_highlightedGlyphView.alpha = alpha;
+     		_glyphImageView.alpha = 0;
+     	}
+
+     	if (_glyphPackageView) {
+     		[_glyphPackageView setStateName:_glyphState];
+     	}
+    }];
 }
 
 - (void)_primaryActionPerformed:(id)arg1 {
-
+	[self setHighlighted:NO];
 }
 
 - (void)_dragExit:(id)arg1 {
-
+	[self setHighlighted:NO];
 }
 
 - (void)_dragEnter:(id)arg1 {
-
+	[self setHighlighted:YES];
 }
 
 - (void)_touchUpOutside:(id)arg1 {
-
+	[self setHighlighted:NO];
 }
 
 - (void)_touchDown:(id)arg1 {
-
+	[self setHighlighted:YES];
 }
 
 - (void)_setCornerRadius:(CGFloat)cornerRadius {
-	self.layer.cornerRadius = cornerRadius;
+	_highlightStateBackgroundView._cornerRadius = cornerRadius;
+	_normalStateBackgroundView._cornerRadius = cornerRadius;
 }
 
 - (CGFloat)_cornerRadius {
-	return self.layer.cornerRadius;
+	return self.bounds.size.width/2;
+}
+
+- (void)setGlyphImage:(UIImage *)glyphImage {
+	_glyphImage = [glyphImage imageWithRenderingMode:0x2];
+	_glyphImageView.image = _glyphImage;
+	_highlightedGlyphView.image = _glyphImage;
 }
 
 @end
