@@ -123,6 +123,10 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 	return 12.0f;
 }
 
++ (CGFloat)roundButtonSubtitlePaddingSize {
+	return 28.0f;
+}
+
 + (CGFloat)roundButtonExpandedSideInsetSize {
 	if (cachedRoundButtonExpandedSizeInsetSize == 0) {
 		[MZELayoutOptions setupInterpolators];

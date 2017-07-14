@@ -1,6 +1,7 @@
 #import "MZERoundButton.h"
 #import <UIKit/UIControl+Private.h>
 #import "UIView+MZE.h"
+#import "MZELayoutOptions.h"
 
 @implementation MZERoundButton
 
@@ -153,6 +154,14 @@
 		returnValue = YES;
 	}
 	return returnValue;
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+	return CGSizeMake([MZELayoutOptions roundButtonSize],[MZELayoutOptions roundButtonSize]);
+}
+
+- (CGSize)intrinsicContentSize {
+	return [self sizeThatFits:CGSizeZero];
 }
 
 @end

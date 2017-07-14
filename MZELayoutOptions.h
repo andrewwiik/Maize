@@ -5,6 +5,7 @@
 + (void)setupInterpolators;
 + (CGFloat)roundButtonSize;
 + (CGFloat)roundButtonTitlePaddingSize;
++ (CGFloat)roundButtonSubtitlePaddingSize;
 + (CGFloat)roundButtonExpandedSideInsetSize;
 + (CGSize)roundButtonContainerExpandedSize;
 @end
