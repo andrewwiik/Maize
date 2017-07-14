@@ -50,18 +50,18 @@
 	self = [self initWithHighlightColor:highlightColor];
 	if (self) {
 		_glyphImage = [glyphImage imageWithRenderingMode:0x2];
-        _glyphImageView = [[UIImageView alloc] initWithImage:_glyphImage];
-        [_glyphImageView setFrame:CGRectZero];
-        [_glyphImageView setAutoresizingMask:0x12];
-        [_glyphImageView setContentMode:0x4];
-        [self addSubview:_glyphImageView];
+		_glyphImageView = [[UIImageView alloc] initWithImage:_glyphImage];
+		[_glyphImageView setFrame:CGRectZero];
+		[_glyphImageView setAutoresizingMask:0x12];
+		[_glyphImageView setContentMode:0x4];
+		[self addSubview:_glyphImageView];
 
-        _highlightedGlyphView = [[UIImageView alloc] initWithImage:_glyphImage];
-        [_highlightedGlyphView setFrame:CGRectZero];
-        [_highlightedGlyphView setAutoresizingMask:0x12];
-        [_highlightedGlyphView setContentMode:0x4];
-        [_highlightedGlyphView setAlpha:0];
-        [self addSubview:_highlightedGlyphView];
+		_highlightedGlyphView = [[UIImageView alloc] initWithImage:_glyphImage];
+		[_highlightedGlyphView setFrame:CGRectZero];
+		[_highlightedGlyphView setAutoresizingMask:0x12];
+		[_highlightedGlyphView setContentMode:0x4];
+		[_highlightedGlyphView setAlpha:0];
+		[self addSubview:_highlightedGlyphView];
 	}
 	return self;
 }
@@ -86,28 +86,28 @@
 
 - (void)_updateForStateChange {
 	[UIView animateWithDuration:0.25 animations:^{
-        
-        CGFloat alpha = 0;
-     	if (![self isEnabled]) {
-     		alpha = 0.2;
-     	} else {
-     		alpha = 1;
-     	}
+		
+		CGFloat alpha = 0;
+	 	if (![self isEnabled]) {
+	 		alpha = 0.2;
+	 	} else {
+	 		alpha = 1;
+	 	}
 
-     	if (![self isHighlighted] && ![self isSelected]) {
-     		_highlightStateBackgroundView.alpha = 0;
-     		_highlightedGlyphView.alpha = 0;
-     		_glyphImageView.alpha = alpha;
-     	} else {
-     		_highlightStateBackgroundView.alpha = 1;
-     		_highlightedGlyphView.alpha = alpha;
-     		_glyphImageView.alpha = 0;
-     	}
+	 	if (![self isHighlighted] && ![self isSelected]) {
+	 		_highlightStateBackgroundView.alpha = 0;
+	 		_highlightedGlyphView.alpha = 0;
+	 		_glyphImageView.alpha = alpha;
+	 	} else {
+	 		_highlightStateBackgroundView.alpha = 1;
+	 		_highlightedGlyphView.alpha = alpha;
+	 		_glyphImageView.alpha = 0;
+	 	}
 
-     	if (_glyphPackageView) {
-     		[_glyphPackageView setStateName:_glyphState];
-     	}
-    }];
+	 	if (_glyphPackageView) {
+	 		[_glyphPackageView setStateName:_glyphState];
+	 	}
+	}];
 }
 
 - (void)_primaryActionPerformed:(id)arg1 {
