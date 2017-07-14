@@ -71,7 +71,16 @@
 	[self _setCornerRadius:[self _cornerRadius]];
 }
 
-- (void)observeValueForKeyPath:(id)arg1 ofObject:(id)arg2 change:(id)arg3 context:(void *)arg4 {
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(id)change context:(void *)context {
+	if (object == self) {
+		if (![keyPath isEqualToString:@"selected"] && ![keyPath isEqualToString:@"enabled"] && ![keyPath isEqualToString:@"highlighted"]) {
+			if ([keyPath isEqualToString:@"glyphState"]) {
+				[self _updateForStateChange];
+			}
+		} else {
+			[self _updateForStateChange];
+		}
+	}
 
 }
 
@@ -134,6 +143,16 @@
 	_glyphImage = [glyphImage imageWithRenderingMode:0x2];
 	_glyphImageView.image = _glyphImage;
 	_highlightedGlyphView.image = _glyphImage;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)recognizer {
+	BOOL returnValue = NO;
+	if (recognizer.view != self) {
+		returnValue = [recognizer.view isDescendantOfView:self];
+	} else {
+		returnValue = YES;
+	}
+	return returnValue;
 }
 
 @end

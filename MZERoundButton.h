@@ -28,4 +28,13 @@
 - (id)initWithGlyphPackage:(CAPackage *)arg1 highlightColor:(UIColor *)arg2;
 - (id)initWithGlyphImage:(UIImage *)arg1 highlightColor:(UIColor *)arg2;
 - (id)initWithHighlightColor:(UIColor *)arg1;
+- (void)_updateForStateChange;
+- (void)_primaryActionPerformed:(id)arg1;
+- (void)_dragExit:(id)arg1;
+- (void)_dragEnter:(id)arg1;
+- (void)_touchUpOutside:(id)arg1;
+- (void)_touchDown:(id)arg1;
+- (void)_setCornerRadius:(CGFloat)arg1;
+- (CGFloat)_cornerRadius;
+- (void)observeValueForKeyPath:(NSString *)arg1 ofObject:(id)arg2 change:(id)arg3 context:(void *)arg4;
 @end
