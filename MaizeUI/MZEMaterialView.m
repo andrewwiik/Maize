@@ -153,7 +153,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 - (void)updateCornerRadius {
     CGSize size = self.bounds.size;
     if (_cornerRadiusInterpolator) {
-    	self.layer.cornerRadius = [_cornerRadiusInterpolator valueForReferenceMetric:size.height secondaryReferenceMetric:size.width];
+    	self.backdropView.layer.cornerRadius = [_cornerRadiusInterpolator valueForReferenceMetric:size.height secondaryReferenceMetric:size.width];
     }
 }
 
@@ -163,5 +163,11 @@ typedef struct CAColorMatrix CAColorMatrix;
 	[_cornerRadiusInterpolator addValue:expandedCornerRadius forReferenceMetric:expandedSize.height secondaryReferenceMetric:expandedSize.width];
 
 }
+
+// - (void)_setCornerRadius:(CGFloat)cornerRadius {
+// 	if (self.backdropView) {
+// 		self.backdropView.layer.cornerRadius
+// 	}
+// }
 
 @end

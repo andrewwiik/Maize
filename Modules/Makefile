@@ -10,5 +10,5 @@ include $(THEOS)/makefiles/common.mk
 
 export ADDITIONAL_CFLAGS = -I./../../headers -I./../../
 
-SUBPROJECTS += ConnectivityModule
+SUBPROJECTS += ConnectivityModule DoNotDisturbModule
 include $(THEOS_MAKE_PATH)/aggregate.mk

@@ -10,13 +10,13 @@
 	if (self) {
 
 		_normalStateBackgroundView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
-		[_normalStateBackgroundView setFrame:CGRectMake(0,0,self.bounds.size.width,self.bounds.size.height)];
-		[_normalStateBackgroundView setAutoresizingMask:0x12];
+		[_normalStateBackgroundView setFrame:self.bounds];
+		[_normalStateBackgroundView setAutoresizingMask:18];
 		[_normalStateBackgroundView setUserInteractionEnabled:NO];
 		[self addSubview:_normalStateBackgroundView];
 
 		_highlightStateBackgroundView = [[UIView alloc] initWithFrame:_normalStateBackgroundView.frame];
-		[_highlightStateBackgroundView setAutoresizingMask:0x12];
+		[_highlightStateBackgroundView setAutoresizingMask:18];
 		[_highlightStateBackgroundView setBackgroundColor:_highlightColor];
 		[_highlightStateBackgroundView setUserInteractionEnabled:NO];
 		[_highlightStateBackgroundView setAlpha:0.0];
@@ -40,7 +40,7 @@
 	if (self) {
 		_glyphPackage = glyphPackage;
 		_glyphPackageView = [[MZECAPackageView alloc] init];
-		[_glyphPackageView setAutoresizingMask:0x12];
+		[_glyphPackageView setAutoresizingMask:18];
 		[_glyphPackageView setPackage:_glyphPackage];
 		[self addSubview:_glyphPackageView];
 		[self addObserver:self forKeyPath:@"glyphState" options:0x0 context:0x0];
@@ -50,17 +50,17 @@
 - (id)initWithGlyphImage:(UIImage *)glyphImage highlightColor:(UIColor *)highlightColor {
 	self = [self initWithHighlightColor:highlightColor];
 	if (self) {
-		_glyphImage = [glyphImage imageWithRenderingMode:0x2];
+		_glyphImage = [glyphImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		_glyphImageView = [[UIImageView alloc] initWithImage:_glyphImage];
 		[_glyphImageView setFrame:CGRectZero];
-		[_glyphImageView setAutoresizingMask:0x12];
-		[_glyphImageView setContentMode:0x4];
+		[_glyphImageView setAutoresizingMask:18];
+		[_glyphImageView setContentMode:UIViewContentModeCenter];
 		[self addSubview:_glyphImageView];
 
 		_highlightedGlyphView = [[UIImageView alloc] initWithImage:_glyphImage];
 		[_highlightedGlyphView setFrame:CGRectZero];
-		[_highlightedGlyphView setAutoresizingMask:0x12];
-		[_highlightedGlyphView setContentMode:0x4];
+		[_highlightedGlyphView setAutoresizingMask:18];
+		[_highlightedGlyphView setContentMode:UIViewContentModeCenter];
 		[_highlightedGlyphView setAlpha:0];
 		[self addSubview:_highlightedGlyphView];
 	}
@@ -141,7 +141,7 @@
 }
 
 - (void)setGlyphImage:(UIImage *)glyphImage {
-	_glyphImage = [glyphImage imageWithRenderingMode:0x2];
+	_glyphImage = [glyphImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 	_glyphImageView.image = _glyphImage;
 	_highlightedGlyphView.image = _glyphImage;
 }

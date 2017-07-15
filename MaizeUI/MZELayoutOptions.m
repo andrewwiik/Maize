@@ -140,4 +140,8 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 	}
 	return CGSizeMake(cachedRoundButtonExpandedContainerWidth, cachedRoundButtonExpandedContainerHeight);
 }
+
++ (CGFloat)regularCornerRadius {
+	return 19.0f;
+}
 @end

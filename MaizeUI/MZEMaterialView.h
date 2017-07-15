@@ -26,4 +26,5 @@ typedef NS_ENUM(NSInteger, MZEMaterialStyle)
 + (instancetype)materialViewWithStyle:(MZEMaterialStyle)style;
 - (void)updateCornerRadius;
 - (void)setCompactCornerRadius:(CGFloat)compactCornerRadius expandedCornerRadius:(CGFloat)expandedCornerRadius compactSize:(CGSize)compactSize expandedSize:(CGSize)expandedSize;
+// - (void)_setCornerRadius:(CGFloat)cornerRadius;
 @end
