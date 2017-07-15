@@ -6,7 +6,7 @@
 - (void)_updateStringForEnabledStatus:(BOOL)enabledStatus;
 - (void)buttonTapped:(UIControl *)button;
 - (NSString *)displayName;
-- (void)setEnabled:(BOOL)arg1;
+- (void)setEnabled:(BOOL)enabled;
 - (NSString *)statusText;
 - (NSString *)subtitleText;
 - (void)viewDidLoad;

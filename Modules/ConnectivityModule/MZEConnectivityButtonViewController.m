@@ -6,7 +6,7 @@
 }
 
 - (void)_updateStringForEnabledStatus:(BOOL)enabledStatus {
-
+	[self setSubtitle:[self subtitle]];
 }
 
 - (void)buttonTapped:(UIControl *)button {
@@ -17,8 +17,9 @@
 	return @"";
 }
 
-- (void)setEnabled:(BOOL)arg1 {
-
+- (void)setEnabled:(BOOL)enabled {
+	[super setEnabled:enabled];
+	[self _updateStringForEnabledStatus:enabled];
 }
 
 - (NSString *)statusText {
@@ -26,11 +27,20 @@
 }
 
 - (NSString *)subtitleText {
-	return @"";
+	NSString *key = @"";
+	NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+	if ([self isEnabled]) {
+			key = @"CONTROL_CENTER_STATUS_GENERIC_ON";
+	}
+	else {
+			key = @"CONTROL_CENTER_STATUS_GENERIC_OFF";
+	}
+	return [bundle localizedStringForKey:key value:@"" table:nil];
 }
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	[self setTitle:[self displayName]];
 }
 
 @end
