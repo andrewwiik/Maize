@@ -6,11 +6,9 @@ else
 	export ARCHS = armv7 arm64
 endif
 
-INSTALL_TARGET_PROCESSES = SpringBoard
-
 include $(THEOS)/makefiles/common.mk
 
-# the main bits
-SUBPROJECTS = MaizeUI SpringBoard Modules
+export ADDITIONAL_CFLAGS = -I./../../headers -I./../../
 
+SUBPROJECTS += ConnectivityModule
 include $(THEOS_MAKE_PATH)/aggregate.mk
