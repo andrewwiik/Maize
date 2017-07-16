@@ -9,4 +9,5 @@
 + (CGFloat)roundButtonExpandedSideInsetSize;
 + (CGSize)roundButtonContainerExpandedSize;
 + (CGFloat)regularCornerRadius;
++ (CGFloat)expandedModuleCornerRadius;
 @end

@@ -144,4 +144,8 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 + (CGFloat)regularCornerRadius {
 	return 19.0f;
 }
+
++ (CGFloat)expandedModuleCornerRadius {
+	return 38.0f;
+}
 @end
