@@ -5,14 +5,14 @@
 #import "MZEContentModuleContainerViewControllerDelegate-Protocol.h"
 #import "MZEContentModuleContentViewController-Protocol.h"
 
-@interface MZEContentModuleContainerViewController : UIViewController <UIGestureRecognizerDelegate, UIPreviewInteractionDelegatePrivate>
+@interface MZEContentModuleContainerViewController : UIViewController <UIGestureRecognizerDelegate, UIPreviewInteractionDelegate>
 {
     BOOL _expanded;
     BOOL _contentModuleProvidesOwnPlatter;
     BOOL _didSendContentAppearanceCalls;
     BOOL _didSendContentDisappearanceCalls;
     NSString *_moduleIdentifier;
-    id <MZEContentModuleContainerViewControllerDelegate> _delegate;
+    __weak id <MZEContentModuleContainerViewControllerDelegate> _delegate;
     id <MZEContentModule> _contentModule;
     UIViewController<MZEContentModuleContentViewController> *_contentViewController;
     UIViewController *_backgroundViewController;
@@ -27,7 +27,7 @@
     UIEdgeInsets _expandedContentEdgeInsets;
 }
 
-@property(nonatomic) __weak UIViewController *originalParentViewController;
+@property(retain, nonatomic, readwrite) UIViewController *originalParentViewController;
 @property(nonatomic, readwrite) BOOL didSendContentDisappearanceCalls; 
 @property(nonatomic, readwrite) BOOL didSendContentAppearanceCalls; 
 @property(retain, nonatomic, readwrite) UIPreviewInteraction *previewInteraction;
@@ -45,33 +45,30 @@
 @property(nonatomic) __weak id <MZEContentModuleContainerViewControllerDelegate> delegate;
 @property(nonatomic, readwrite) UIEdgeInsets expandedContentEdgeInsets;
 @property(copy, nonatomic, readwrite) NSString *moduleIdentifier;
-- (void)_configureForContentModuleGroupRenderingIfNecessary;
-- (void)_configureMaskViewIfNecessary;
-- (struct CGRect)_contentBoundsForTransitionProgress:(double)arg1;
-- (struct CGRect)_backgroundFrameForExpandedState;
-- (struct CGRect)_backgroundFrameForRestState;
-- (struct CGRect)_contentFrameForExpandedState;
-- (struct CGRect)_contentFrameForRestState;
-- (void)_handleTapGestureRecognizer:(id)arg1;
-- (BOOL)_previewInteractionShouldAutomaticallyTransitionToPreviewAfterDelay:(id)arg1;
-- (id)_previewInteraction:(id)arg1 viewControllerPresentationForPresentingViewController:(id)arg2;
-- (id)_previewInteractionHighlighterForPreviewTransition:(id)arg1;
-- (void)previewInteractionDidCancel:(id)arg1;
-- (void)previewInteraction:(id)arg1 didUpdatePreviewTransition:(double)arg2 ended:(BOOL)arg3;
-- (BOOL)_previewInteractionShouldFinishTransitionToPreview:(id)arg1;
-- (BOOL)previewInteractionShouldBegin:(id)arg1;
-- (void)viewWillLayoutSubviews;
-- (void)loadView;
-- (void)viewWillMoveToWindow:(id)arg1;
-- (void)viewDidAppear:(BOOL)arg1;
-- (BOOL)shouldAutomaticallyForwardAppearanceMethods;
-- (void)willResignActive;
-- (void)willBecomeActive;
 @property(readonly, nonatomic) MZEContentModuleContainerView *moduleContainerView;
-- (void)closeModule;
-- (id)initWithNibName:(id)arg1 bundle:(id)arg2;
-- (id)initWithCoder:(id)arg1;
+- (id)initWithModuleIdentifier:(NSString *)identifier contentModule:(id<MZEContentModule>)contentModule;
 - (id)init;
-- (id)initWithModuleIdentifier:(id)arg1 contentModule:(id)arg2;
+- (id)initWithCoder:(id)arg1;
+- (id)initWithNibName:(id)arg1 bundle:(id)arg2;
+- (void)closeModule;
+- (void)willBecomeActive;
+- (void)willResignActive;
+- (BOOL)shouldAutomaticallyForwardAppearanceMethods;
+- (void)viewDidAppear:(BOOL)arg1;
+- (void)viewWillMoveToWindow:(id)arg1;
+- (void)loadView;
+- (void)viewWillLayoutSubviews;
+- (BOOL)previewInteractionShouldBegin:(UIPreviewInteraction *)previewInteraction;
+- (BOOL)_previewInteractionShouldFinishTransitionToPreview:(id)arg1;
+- (void)previewInteraction:(UIPreviewInteraction *)previewInteraction didUpdatePreviewTransition:(CGFloat)progress ended:(BOOL)ended;
+- (void)previewInteractionDidCancel:(UIPreviewInteraction *)previewInteraction;
+- (void)_handleTapGestureRecognizer:(UITapGestureRecognizer *)recognizer;
+- (CGRect)_contentFrameForRestState;
+- (CGRect)_contentFrameForExpandedState;
+- (CGRect)_backgroundFrameForRestState;
+- (CGRect)_backgroundFrameForExpandedState;
+- (CGRect)_contentBoundsForTransitionProgress:(CGFloat)arg1;
+- (void)_configureMaskViewIfNecessary;
+- (void)_configureForContentModuleGroupRenderingIfNecessary;
 
 @end

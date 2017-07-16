@@ -1,5 +1,6 @@
 #import "MZELayoutOptions.h"
 #import <MPUFoundation/MPULayoutInterpolator.h>
+#import <UIKit/UIScreen+Private.h>
 
 static CGFloat cachedEdgeSize = 0;
 static CGFloat cachedSpacingSize = 0;
@@ -44,7 +45,10 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 		[insetInterpolator addValue:16 forReferenceMetric:320];
 		[insetInterpolator addValue:27 forReferenceMetric:375];
 		[insetInterpolator addValue:34 forReferenceMetric:414];
-		cachedInsetSize = [insetInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
+		[insetInterpolator addValue:140 forReferenceMetric:568];
+		[insetInterpolator addValue:173 forReferenceMetric:667];
+		[insetInterpolator addValue:60 forReferenceMetric:736];
+		//cachedInsetSize = [insetInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
 	if (!roundButtonInterpolator) {
@@ -147,5 +151,9 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 
 + (CGFloat)expandedModuleCornerRadius {
 	return 38.0f;
+}
+
++ (CGFloat)defaultExpandedContentModuleWidth {
+	return [insetInterpolator valueForReferenceMetric:[[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size.width];
 }
 @end

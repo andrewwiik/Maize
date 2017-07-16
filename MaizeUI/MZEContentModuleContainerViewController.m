@@ -1,8 +1,17 @@
 #import "MZEContentModuleContainerViewController.h"
+#import "MZELayoutOptions.h"
+#import <UIKit/UIScreen+Private.h>
+
+#if __cplusplus
+	extern "C" {
+#endif
+	CGPoint UIRectGetCenter(CGRect);
+#if __cplusplus
+}
+#endif
 
 @implementation MZEContentModuleContainerViewController
 	@synthesize delegate=_delegate;
-	@synthesize originalParentViewController=_originalParentViewController;
 
 - (id)initWithModuleIdentifier:(NSString *)identifier contentModule:(id<MZEContentModule>)contentModule {
 	self = [super initWithNibName:nil bundle:nil];
@@ -11,12 +20,12 @@
 		_contentModule = contentModule;
 		_contentViewController = [_contentModule contentViewController];
 
-		if ([_contentViewController respodsToSelector:@selector(providesOwnPlatter)]) {
+		if ([_contentViewController respondsToSelector:@selector(providesOwnPlatter)]) {
 			_contentModuleProvidesOwnPlatter = [_contentViewController providesOwnPlatter];	
 		}
 
-		if ([_contentViewController respodsToSelector:@selector(backgroundViewController)]) {
-			_backgroundViewController = [_contentViewController backgroundViewController];
+		if ([_contentModule respondsToSelector:@selector(backgroundViewController)]) {
+			_backgroundViewController = [_contentModule backgroundViewController];
 		}
 
 		_didSendContentAppearanceCalls = NO;
@@ -41,8 +50,8 @@
 }
 
 - (void)closeModule {
-	if ([_contentViewController respodsToSelector:@selector(canDismissPresentedContent)] && [_contentViewController canDismissPresentedContent]) {
-		if (![_contentViewController respodsToSelector:@selector(dismissPresentedContent)]) {
+	if ([_contentViewController respondsToSelector:@selector(canDismissPresentedContent)] && [_contentViewController canDismissPresentedContent]) {
+		if (![_contentViewController respondsToSelector:@selector(dismissPresentedContent)]) {
 			return;
 		}
 		[_contentViewController dismissPresentedContent];
@@ -52,23 +61,24 @@
 }
 
 - (MZEContentModuleContainerView *)moduleContainerView {
-	return self.view;
+	return (MZEContentModuleContainerView *)self.view;
 }
+
 - (void)willBecomeActive {
-	if ([_contentViewController respodsToSelector:@selector(willBecomeActive)]) {
+	if ([_contentViewController respondsToSelector:@selector(willBecomeActive)]) {
 		[_contentViewController willBecomeActive];
 	} else {
-		if ([_contentViewController respodsToSelector:@selector(controlCenterWillPresent)]) {
+		if ([_contentViewController respondsToSelector:@selector(controlCenterWillPresent)]) {
 			[_contentViewController controlCenterWillPresent];
 		}
 	}
 }
 
 - (void)willResignActive {
-	if ([_contentViewController respodsToSelector:@selector(willResignActive)]) {
+	if ([_contentViewController respondsToSelector:@selector(willResignActive)]) {
 		[_contentViewController willResignActive];
 	} else {
-		if ([_contentViewController respodsToSelector:@selector(controlCenterDidDismiss)]) {
+		if ([_contentViewController respondsToSelector:@selector(controlCenterDidDismiss)]) {
 			[_contentViewController controlCenterDidDismiss];
 		}
 	}
@@ -77,6 +87,7 @@
 - (BOOL)shouldAutomaticallyForwardAppearanceMethods {
 	return NO;
 }
+
 - (void)viewDidAppear:(BOOL)didAppear {
 	[super viewDidAppear:didAppear];
 	if (_didSendContentAppearanceCalls == NO) {
@@ -86,6 +97,7 @@
 		[_contentViewController endAppearanceTransition];
 	}
 }
+
 - (void)viewWillMoveToWindow:(UIWindow *)window {
 	if (window || [self parentViewController] != _originalParentViewController) {
 
@@ -110,7 +122,7 @@
 	_highlightWrapperView = [[UIView alloc] initWithFrame:frame];
 	[_highlightWrapperView setBackgroundColor:[UIColor clearColor]];
 	[_highlightWrapperView setAutoresizingMask:18];
-	[_containerView addSubview:_highlightWrapperView];
+	[containerView addSubview:_highlightWrapperView];
 
 	_backgroundView = [[MZEContentModuleBackgroundView alloc] init];
 	frame = CGRectZero;
@@ -142,22 +154,105 @@
 	[_contentView setFrame:frame];
 	[_contentContainerView addSubview:_contentView];
 
-
+	_previewInteraction = [[UIPreviewInteraction alloc] initWithView:self.view];
+	_previewInteraction.delegate = self;
+	_tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleTapGestureRecognizer:)];
+	_tapRecognizer.delegate = self;
+	[_backgroundView addGestureRecognizer:_tapRecognizer];
 }
-- (void)viewWillLayoutSubviews;
-- (BOOL)previewInteractionShouldBegin:(UIPreviewInteraction *)previewInteraction;
-- (BOOL)_previewInteractionShouldFinishTransitionToPreview:(id)arg1;
-- (void)previewInteraction:(UIPreviewInteraction *)arg1 didUpdatePreviewTransition:(CGFloat)arg2 ended:(BOOL)arg3;
-- (void)previewInteractionDidCancel:(UIPreviewInteraction *)previewInteraction;
-- (id)_previewInteractionHighlighterForPreviewTransition:(id)arg1;
-- (id)_previewInteraction:(UIPreviewInteraction *)previewInteraction viewControllerPresentationForPresentingViewController:(UIViewController *)viewController;
-- (BOOL)_previewInteractionShouldAutomaticallyTransitionToPreviewAfterDelay:(id)arg1;
-- (void)_handleTapGestureRecognizer:(UITapGestureRecognizer *)recognizer;
-- (CGRect)_contentFrameForRestState;
-- (CGRect)_contentFrameForExpandedState;
-- (CGRect)_backgroundFrameForRestState;
-- (CGRect)_backgroundFrameForExpandedState;
-- (CGRect)_contentBoundsForTransitionProgress:(CGFloat)arg1;
-- (void)_configureMaskViewIfNecessary;
-- (void)_configureForContentModuleGroupRenderingIfNecessary;
+
+- (void)viewWillLayoutSubviews {
+	[super viewWillLayoutSubviews];
+
+	if ([self isExpanded]) {
+		_highlightWrapperView.frame = [self _backgroundFrameForExpandedState];
+		_backgroundView.frame = [self _backgroundFrameForExpandedState];
+		_contentContainerView.frame = [self _contentFrameForExpandedState];
+	} else {
+		CGRect frame = CGRectZero;
+		if (self.view)
+			frame = self.view.bounds;
+
+		_highlightWrapperView.frame = frame;
+		_backgroundView.frame = frame;
+		_contentContainerView.frame = frame;
+	}
+}
+
+- (BOOL)previewInteractionShouldBegin:(UIPreviewInteraction *)previewInteraction {
+	if ([self isExpanded]) {
+		return NO;
+	} else {
+		[_delegate contentModuleContainerViewController:self didBeginInteractionWithModule:_contentModule];
+		return YES;
+	}
+}
+
+- (BOOL)_previewInteractionShouldFinishTransitionToPreview:(id)arg1 {
+	if ([_contentViewController respondsToSelector:@selector(shouldBeginTransitionToExpandedContentModule)] && ![_contentViewController shouldBeginTransitionToExpandedContentModule]) {
+		return NO;
+	} else return YES;
+}
+
+- (void)previewInteraction:(UIPreviewInteraction *)previewInteraction didUpdatePreviewTransition:(CGFloat)progress ended:(BOOL)ended {
+	return;
+}
+
+- (void)previewInteractionDidCancel:(UIPreviewInteraction *)previewInteraction {
+	[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+}
+
+
+- (void)_handleTapGestureRecognizer:(UITapGestureRecognizer *)recognizer {
+	if ([self isExpanded]) {
+		if (recognizer.state == 3) {
+			[self closeModule];
+		}
+	}
+}
+
+- (CGRect)_contentFrameForRestState {
+	if (_delegate) {
+		return [_delegate compactModeFrameForContentModuleContainerViewController:self];
+	} else return CGRectZero;
+}
+
+- (CGRect)_contentFrameForExpandedState {
+	CGRect expandedFrame = CGRectZero;
+	expandedFrame.size.width = [MZELayoutOptions defaultExpandedContentModuleWidth];
+	if ([_contentViewController respondsToSelector:@selector(preferredExpandedContentWidth)]) {
+		expandedFrame.size.width = [_contentViewController preferredExpandedContentWidth];
+	}
+
+	expandedFrame.size.height = [_contentViewController preferredExpandedContentHeight];
+	CGPoint center = UIRectGetCenter([self _backgroundFrameForExpandedState]);
+	expandedFrame.origin.x = center.x - (expandedFrame.size.width*0.5);
+	expandedFrame.origin.y = center.y - (expandedFrame.size.height*0.5);
+	return expandedFrame;
+}
+
+- (CGRect)_backgroundFrameForRestState {
+	return [self _contentFrameForRestState];
+}
+
+- (CGRect)_backgroundFrameForExpandedState {
+	return [[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation];
+}
+
+- (CGRect)_contentBoundsForTransitionProgress:(CGFloat)progress {
+	CGRect frame = CGRectZero;
+	CGFloat multiplier = progress * 0.25 + 1.0;
+	CGRect restFrame = [self _contentFrameForRestState];
+	frame.size.width = restFrame.size.width * multiplier;
+	frame.size.height = restFrame.size.height * multiplier;
+	return frame;
+}
+
+- (void)_configureMaskViewIfNecessary {
+	return;
+}
+
+- (void)_configureForContentModuleGroupRenderingIfNecessary {
+	return;
+}
 @end

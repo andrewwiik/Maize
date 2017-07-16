@@ -1,4 +1,4 @@
-@protocol MZEContentModuleContentViewController
+@protocol MZEContentModuleContentViewController <NSObject>
 @property(readonly, nonatomic) CGFloat preferredExpandedContentHeight;
 
 @optional

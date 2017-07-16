@@ -1,7 +1,7 @@
 @class MZEContentModuleContext, UIViewController;
 @protocol MZEContentModuleContentViewController;
 
-@protocol MZEContentModule
+@protocol MZEContentModule <NSObject>
 @property(readonly, nonatomic) UIViewController<MZEContentModuleContentViewController> *contentViewController;
 
 @optional

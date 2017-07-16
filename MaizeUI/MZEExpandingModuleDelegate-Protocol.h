@@ -1,4 +1,4 @@
-@protocol MZEExpandingModuleDelegate 
+@protocol MZEExpandingModuleDelegate <NSObject>
 @required
 - (CGFloat)prefferedContentExpandedWidth;
 - (CGFloat)prefferedContentExpandedHeight;
