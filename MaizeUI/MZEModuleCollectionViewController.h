@@ -1,20 +1,19 @@
-@class MZEModuleContainerViewController;
+#import "MZEContentModuleContainerViewControllerDelegate-Protocol.h"
 
-@interface MZEModuleCollectionViewController : UIViewController <UIPreviewInteractionDelegate> {
+
+@interface MZEModuleCollectionViewController : UIViewController <MZEContentModuleContainerViewControllerDelegate> {
 	CGFloat _itemSpacingSize;
 	CGFloat _edgeInsetSize;
 	CGFloat _itemEdgeSize;
-	MZEModuleContainerViewController *_expandingModule;
-	CGFloat _expandingProgress;
-	CGRect _firstFrame;
 }
-@property (nonatomic, retain) UIViewPropertyAnimator *animator;
-@property (nonatomic, retain) NSMutableArray<MZEModuleContainerViewController *> *moduleViewControllers;
-@property (nonatomic, assign) CGRect openFrame;
-@property (nonatomic, assign) CGRect closedFrame;
-- (id)initWithFrame:(CGRect)frame;
-- (BOOL)previewInteractionShouldBegin:(UIPreviewInteraction *)arg1;
-- (void)previewInteraction:(UIPreviewInteraction *)arg1 didUpdatePreviewTransition:(CGFloat)arg2 ended:(BOOL)arg3;
-- (void)previewInteraction:(UIPreviewInteraction *)previewInteraction didUpdateCommitTransition:(CGFloat)transitionProgress ended:(BOOL)ended;
-- (void)previewInteractionDidCancel:(UIPreviewInteraction *)arg1;
+
+
+// MZEContentModuleContainerViewControllerDelegate
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didCloseExpandedModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 willCloseExpandedModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didOpenExpandedModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 willOpenExpandedModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didFinishInteractionWithModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didBeginInteractionWithModule:(id <MZEContentModule>)arg2;
+- (CGRect)compactModeFrameForContentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1;
 @end

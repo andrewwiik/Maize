@@ -25,6 +25,9 @@
     UIPreviewInteraction *_previewInteraction;
     UIViewController *_originalParentViewController;
     UIEdgeInsets _expandedContentEdgeInsets;
+    CGFloat _firstX;
+    CGFloat _firstY;
+    BOOL _canBubble;
 }
 
 @property(retain, nonatomic, readwrite) UIViewController *originalParentViewController;
@@ -70,5 +73,8 @@
 - (CGRect)_contentBoundsForTransitionProgress:(CGFloat)arg1;
 - (void)_configureMaskViewIfNecessary;
 - (void)_configureForContentModuleGroupRenderingIfNecessary;
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
+-(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
 
 @end

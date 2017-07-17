@@ -148,6 +148,8 @@
 
 -(BOOL)previewInteractionShouldBegin:(UIPreviewInteraction *)previewInteraction {
 
+	self.view.backgroundColor = [UIColor redColor];
+
 	BOOL shouldBegin = [self.collectionViewController previewInteractionShouldBegin:previewInteraction];
 
 	if (shouldBegin) {
@@ -162,6 +164,7 @@
 
 -(void)previewInteractionDidCancel:(UIPreviewInteraction *)previewInteraction {
 
+	self.view.backgroundColor = [UIColor clearColor];
 	if (self.animator) {
 		[self.animator stopAnimation:NO];
 		[self.animator finishAnimationAtPosition:UIViewAnimatingPositionStart];

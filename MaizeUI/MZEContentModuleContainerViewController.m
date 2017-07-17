@@ -30,6 +30,7 @@
 
 		_didSendContentAppearanceCalls = NO;
     	_didSendContentDisappearanceCalls = NO;
+    	_canBubble = YES;
 	}
 	return self;
 }
@@ -195,6 +196,7 @@
 }
 
 - (void)previewInteraction:(UIPreviewInteraction *)previewInteraction didUpdatePreviewTransition:(CGFloat)progress ended:(BOOL)ended {
+	
 	return;
 }
 
@@ -254,5 +256,44 @@
 
 - (void)_configureForContentModuleGroupRenderingIfNecessary {
 	return;
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	if (![self isExpanded]) {
+		UITouch *touch = [[event allTouches] anyObject];
+    	CGPoint touchLocation = [touch locationInView:self.view];
+    	_firstX = touchLocation.x;
+    	_firstY = touchLocation.y;
+		self.view.transform = CGAffineTransformIdentity;
+		[UIView animateWithDuration:0.25 animations:^{
+			self.view.transform = CGAffineTransformMakeScale(1.04,1.04);
+		}];
+	}
+}
+
+-(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+	if (![self isExpanded] && _canBubble) {
+		UITouch *touch = [[event allTouches] anyObject];
+    	CGPoint touchLocation = [touch locationInView:self.view];
+    	if ((_firstX - touchLocation.x >= 10 || _firstX - touchLocation.x <= -10) || (_firstY - touchLocation.y >= 10 || _firstY - touchLocation.y <= -10)) {
+    		_canBubble = NO;
+    		_firstX = 0;
+    		_firstY = 0;
+    		[UIView animateWithDuration:0.25 animations:^{
+				self.view.transform = CGAffineTransformIdentity;
+			}];
+    	}
+	}
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	_firstY = 0;
+	_firstX = 0;
+	if (![self isExpanded] && _canBubble) {
+		[UIView animateWithDuration:0.25 animations:^{
+			self.view.transform = CGAffineTransformIdentity;
+		}];
+	}
+	_canBubble = YES;
 }
 @end
