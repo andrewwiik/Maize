@@ -12,6 +12,7 @@ MaizeServices_CFLAGS = -fobjc-arc -I../headers
 
 FRAMEWORK_NAME = MaizeServices
 MaizeServices_FILES = $(wildcard *.m)
+MaizeServices_FRAMEWORKS = CoreFoundation
 MaizeServices_INSTALL_PATH = /Library/Frameworks
 
 include $(THEOS_MAKE_PATH)/framework.mk

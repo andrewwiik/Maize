@@ -27,6 +27,14 @@
 	</array>
 	<key>NSPrincipalClass</key>
 	<string>MZEUIConnectivityModule</string>
+	<key>MZEModuleSize</key>
+	<dict>
+		<key>width</key>
+		<integer>2</integer>
+		<key>height</key>
+		<integer>2</integer>
+	</dict>
+	<integer>NSPrincipalClass</key>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>iPhoneOS</string>
