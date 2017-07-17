@@ -35,7 +35,7 @@
 			}
 
 			if (!_moduleHeight) {
-				_moduleHeight = = [NSNumber numberWithInt:1];
+				_moduleHeight = [NSNumber numberWithInt:1];
 			}
 
 			if ([installedBundleInfo objectForKey:@"UIDeviceFamily"]) {
