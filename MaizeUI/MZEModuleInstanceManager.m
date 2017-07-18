@@ -19,7 +19,7 @@
 		if (!repository) return nil;
 
 		_repository = repository;
-		_moduleInstancesByIdentifier = [NSMutableDictionary new];
+		_moduleInstanceByIdentifier = [NSMutableDictionary new];
 		[self _loadModuleInstances];
 	}
 	return self;
@@ -32,7 +32,7 @@
 		if (metadata) {
 			MZEModuleInstance *moduleInstance = [self _instantiateModuleWithMetadata:metadata];
 			if (moduleInstance) {
-				_moduleInstancesByIdentifier[identifier] = moduleInstance;
+				_moduleInstanceByIdentifier[identifier] = moduleInstance;
 			}
 		}
 	}
@@ -84,6 +84,6 @@
 
 
 - (NSArray<MZEModuleInstance *> *)moduleInstances {
-	return [_moduleInstancesByIdentifier allValues];
+	return [_moduleInstanceByIdentifier allValues];
 }
 @end

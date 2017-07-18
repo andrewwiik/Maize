@@ -7,7 +7,7 @@
 }
 @property(copy, nonatomic) NSSet *enabledModuleIdentifiers;
 @property (nonatomic, retain, readwrite) MZEModuleRepository *repository;
-@property (nonatomic, retain, readwrite) NSMutableDictionary<NSString *, MZEModuleInstance *> *moduleInstancesByIdentifier;
+@property (nonatomic, retain, readwrite) NSMutableDictionary<NSString *, MZEModuleInstance *> *moduleInstanceByIdentifier;
 @property (readonly, nonatomic) NSArray *moduleInstances;
 + (instancetype)sharedInstance;
 - (id)initWithRepository:(MZEModuleRepository *)repository;
