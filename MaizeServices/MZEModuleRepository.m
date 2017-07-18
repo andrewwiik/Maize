@@ -76,7 +76,8 @@
 	if (!_enabledIdentifiers | !_disabledIdentifiers) {
 		[self loadSettings];
 	} else {
-		[self reloadSettings];
+		[self _saveSettings];
+		[self loadSettings];
 	}
 }
 
@@ -140,10 +141,6 @@
 	}
 
 	[self _saveSettings];
-}
-
-- (void)reloadSettings {
-
 }
 
 - (void)_saveSettings {

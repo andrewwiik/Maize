@@ -26,6 +26,5 @@
 - (id)_initWithDirectoryURLs:(NSArray *)directoryURLs;
 - (void)updateAllModuleMetadata;
 - (void)loadSettings;
-- (void)reloadSettings;
 - (void)_saveSettings;
 @end

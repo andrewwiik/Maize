@@ -8,11 +8,13 @@ else
 	export ARCHS = armv7 arm64
 endif
 
-MaizeUI_CFLAGS = -fobjc-arc -I../headers
+MaizeUI_CFLAGS = -fobjc-arc -I../headers -I../
 
 FRAMEWORK_NAME = MaizeUI
 # MaizeUI_PUBLIC_HEADERS = $(wildcard *.h)
 MaizeUI_FILES = $(wildcard *.m)
 MaizeUI_INSTALL_PATH = /Library/Frameworks
+MaizeUI_EXTRA_FRAMEWORKS = MaizeServices
+MaizeUI_LDFLAGS = -F../.theos/$(THEOS_OBJ_DIR_NAME)
 
 include $(THEOS_MAKE_PATH)/framework.mk
