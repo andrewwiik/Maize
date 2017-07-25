@@ -13,4 +13,5 @@
 - (id)initWithRepository:(MZEModuleRepository *)repository;
 - (MZEModuleInstance *)_instantiateModuleWithMetadata:(MZEModuleMetadata *)metadata;
 - (void)_loadModuleInstances;
+- (NSArray<MZEModuleInstance *> *)moduleInstances;
 @end

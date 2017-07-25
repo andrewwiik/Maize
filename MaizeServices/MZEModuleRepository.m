@@ -2,8 +2,12 @@
 
 @implementation MZEModuleRepository
 + (instancetype)repositoryWithDefaults {
-	MZEModuleRepository *repository = [[MZEModuleRepository alloc] _initWithDirectoryURLs:[MZEModuleRepository _defaultModuleDirectories]];
-	return repository;
+	static MZEModuleRepository *_sharedInstance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedInstance = [[MZEModuleRepository alloc] _initWithDirectoryURLs:[MZEModuleRepository _defaultModuleDirectories]];
+    });
+    return _sharedInstance;
 }
 
 + (NSArray *)_defaultModuleDirectories {
