@@ -50,11 +50,12 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 
 		if (isLandscape) {
 			_numberOfRows = _layoutStyle.rows;
-			_numberOfColumns = (NSInteger)floor((CGFloat)numberOfSpacesTaken/(CGFloat)_numberOfRows);
+			_numberOfColumns = (NSInteger)ceil((CGFloat)numberOfSpacesTaken/(CGFloat)_numberOfRows);
 
 		} else {
 			_numberOfColumns = _layoutStyle.columns;
-			_numberOfRows = (NSInteger)floor((CGFloat)numberOfSpacesTaken/(CGFloat)_numberOfColumns);
+			_numberOfRows = (NSInteger)ceil((CGFloat)numberOfSpacesTaken/(CGFloat)_numberOfColumns);
+			//if (_numberOfRows == 0) _numberOfRows = 1;
 		}
 		//_numberOfRows += 1;
 
@@ -63,6 +64,7 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 	}
 	return self;
 }
+
 - (CGRect)positionForIdentifier:(NSString *)identifier {
 	if (_framesByIdentifiers) {
 		if ([_framesByIdentifiers objectForKey:identifier]) {
@@ -86,15 +88,16 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 
 	if (isLandscape) {
 		numberOfRows = _layoutStyle.rows;
-		numberOfColumns = (NSInteger)floor((CGFloat)numberOfSpacesTaken/(CGFloat)numberOfRows);
+		numberOfColumns = (NSInteger)ceil((CGFloat)numberOfSpacesTaken/(CGFloat)numberOfRows);
 
 	} else {
 		numberOfColumns = _layoutStyle.columns;
-		numberOfRows = (NSInteger)floor((CGFloat)numberOfSpacesTaken/(CGFloat)numberOfColumns);
+		numberOfRows = (NSInteger)ceil((CGFloat)numberOfSpacesTaken/(CGFloat)numberOfColumns);
+		//if (numberOfRows == 0) numberOfRows = 1;
 	}
 
 	CGFloat width = numberOfColumns*_layoutStyle.moduleSize + (numberOfColumns-1)*_layoutStyle.spacing + (_layoutStyle.inset * 2);
-	CGFloat height = numberOfRows*_layoutStyle.moduleSize + (numberOfRows - 1)*_layoutStyle.spacing;
+	CGFloat height = numberOfRows*_layoutStyle.moduleSize + (numberOfRows - 1)*_layoutStyle.spacing + (_layoutStyle.inset * 1);
 
 	return CGSizeMake(width, height);
 }
@@ -138,7 +141,7 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 	for (NSString *identifier in _orderedIdentifiers) {
 		if ([orderedSizes containsObject:identifier]) {
 			NSInteger index = [orderedSizes indexOfObject:identifier];
-			MZEModuleCoordinate coord = MZEModuleCoordinateMake((index / _numberOfColumns) + 1, (index % _numberOfColumns) + 1);
+			MZEModuleCoordinate coord = MZEModuleCoordinateMake((index / (int)_numberOfColumns) + 1, (index % (int)_numberOfColumns) + 1);
 			int moduleWidth = [[_orderedSizes objectAtIndex:[_orderedIdentifiers indexOfObject:identifier]] CGSizeValue].width;
 	    	int moduleHeight = [[_orderedSizes objectAtIndex:[_orderedIdentifiers indexOfObject:identifier]] CGSizeValue].height;
 			CGRect position = CGRectMake(coord.col,coord.row,moduleWidth,moduleHeight);
@@ -194,18 +197,18 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 	                    
 	    while (!isPlaced) {
 	        
-	            if (coord.col + moduleWidth - 1 > maxNumberOfColumns) {
-	                
-	                coord.row = coord.row + 1;
-	                coord.col = 1;
-	            }
-	        
-	            if (coord.row + moduleHeight - 1 > maxNumberOfRows) {
-	                
-	                [unfinishedIdentifiers removeObject: identifier];
-	                isPlaced = YES;
-	                continue;
-	            }
+            if (coord.col + moduleWidth - 1 > maxNumberOfColumns) {
+                
+                coord.row = coord.row + 1;
+                coord.col = 1;
+            }
+        
+            if (coord.row + moduleHeight - 1 > maxNumberOfRows) {
+                
+                [unfinishedIdentifiers removeObject: identifier];
+                isPlaced = YES;
+                continue;
+            }
 	        
 	        BOOL isValid = YES;
 	        

@@ -224,9 +224,9 @@ typedef struct CAColorMatrix CAColorMatrix;
   //       };
 
 		CAColorMatrix colorMatrix = {
-            0.8f, 0, 0, -0.05f,0.17f,
-			0, 0.8f, 0, -0.05f, 0.17f,
-			0, 0, 0.8f, -0.05f, 0.17f,
+            0.8f, 0, 0, -0.05f,0.2f,
+			0, 0.8f, 0, -0.05f, 0.2f,
+			0, 0, 0.8f, -0.05f, 0.2f,
 			0, 0, 0, 1.0f, 0.1f
         };
 

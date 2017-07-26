@@ -7,6 +7,7 @@
 - (void)_setContinuousCornerRadius:(CGFloat)cornerRadius {
 	if (_moduleMaterialView) {
 		_moduleMaterialView.layer.cornerRadius = cornerRadius;
+		_moduleMaterialView.clipsToBounds = cornerRadius > 0 ? YES : NO;
 	}
 }
 

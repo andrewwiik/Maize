@@ -2,7 +2,7 @@
 #import <MaizeUI/_MZEBackdropView.h>
 #import <MaizeUI/MZELayoutOptions.h>
 // #import "BinPackingFactory2D.h"
-#import <MaizeUI/MZEModuleCollectionViewController.h>
+#import <MaizeUI/MZEModularControlCenterViewController.h>
 #import <QuartzCore/CAFilter+Private.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
 #import <UIKit/_UIBackdropViewSettings+Private.h>
@@ -26,11 +26,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 
 @interface CCUIControlCenterViewController (MZE)
-@property (nonatomic, retain) MZEAnimatedBlurView *mze_animatedBlurView;
-@property (nonatomic, retain) _MZEBackdropView *mze_lumnianceView;
-@property (nonatomic, retain) MZEModuleCollectionViewController *moduleViewHolder;
-@property (nonatomic, retain) UIView *luminanceViewHolder;
-@property (nonatomic, retain) UIViewPropertyAnimator *animator;
+@property (nonatomic, retain) MZEModularControlCenterViewController *mze_viewController;
 @end
 
 
@@ -39,55 +35,59 @@ typedef struct CAColorMatrix CAColorMatrix;
 @end
 
 %hook CCUIControlCenterViewController
-%property (nonatomic, retain) MZEAnimatedBlurView *mze_animatedBlurView;
-%property (nonatomic, retain) _MZEBackdropView *mze_lumnianceView;
-%property (nonatomic, retain) MZEModuleCollectionViewController *moduleViewHolder;
-%property (nonatomic, retain) UIView *luminanceViewHolder;
-%property (nonatomic, retain) UIViewPropertyAnimator *animator;
+%property (nonatomic, retain) MZEModularControlCenterViewController *mze_viewController;
 
 -(void)setRevealPercentage:(CGFloat)revealPercentage {
   %orig;
-  if (!self.mze_animatedBlurView) {
 
-    self.luminanceViewHolder = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
-    self.luminanceViewHolder.layer.allowsGroupBlending = NO;
-    [self.view addSubview:self.luminanceViewHolder];
-  	self.mze_lumnianceView = [[_MZEBackdropView alloc] init];
-  	self.mze_lumnianceView.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height);
-  	self.mze_lumnianceView.luminanceAlpha = 1.0f;
-    //self.mze_lumnianceView.alpha = 0.45;
-  	[self.luminanceViewHolder addSubview:self.mze_lumnianceView];
-  	self.mze_animatedBlurView = [[MZEAnimatedBlurView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height)];
-  	self.mze_animatedBlurView.backdropSettings = [NSClassFromString(@"_UIBackdropViewSettings") settingsForStyle:-2];
-  	self.mze_animatedBlurView.backdropSettings.blurRadius = 30.0f;
-  	self.mze_animatedBlurView.backdropSettings.saturationDeltaFactor = 1.9f;
-    self.mze_animatedBlurView.backdropSettings.grayscaleTintAlpha = 0;
-    self.mze_animatedBlurView.backdropSettings.colorTintAlpha = 0;
-    self.mze_animatedBlurView.backdropSettings.grayscaleTintLevel = 0;
-    self.mze_animatedBlurView.backdropSettings.usesGrayscaleTintView = NO;
-    self.mze_animatedBlurView.backdropSettings.usesColorTintView = NO;
-
-  	[self.view addSubview:self.mze_animatedBlurView];
-  	[self.view bringSubviewToFront:self.mze_animatedBlurView];
+  if (!self.mze_viewController) {
+    self.mze_viewController = [[MZEModularControlCenterViewController alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
+    [self.mze_viewController loadView];
+    [self.view addSubview:self.mze_viewController.view];
   }
 
-  if (!self.moduleViewHolder) {
-    self.moduleViewHolder = [[MZEModuleCollectionViewController alloc] initWithFrame:self.view.frame];
-    [self.view addSubview:self.moduleViewHolder.view];
-    //[self.view bringSubviewToFront:self.mod]
-  }
+  // [self.mze_viewController ]
+  // if (!self.mze_animatedBlurView) {
 
-  if (!self.animator && self.moduleViewHolder && self.moduleViewHolder.view) {
+  //   self.luminanceViewHolder = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
+  //   self.luminanceViewHolder.layer.allowsGroupBlending = NO;
+  //   [self.view addSubview:self.luminanceViewHolder];
+  // 	self.mze_lumnianceView = [[_MZEBackdropView alloc] init];
+  // 	self.mze_lumnianceView.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height);
+  // 	self.mze_lumnianceView.luminanceAlpha = 1.0f;
+  //   //self.mze_lumnianceView.alpha = 0.45;
+  // 	[self.luminanceViewHolder addSubview:self.mze_lumnianceView];
+  // 	self.mze_animatedBlurView = [[MZEAnimatedBlurView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height)];
+  // 	self.mze_animatedBlurView.backdropSettings = [NSClassFromString(@"_UIBackdropViewSettings") settingsForStyle:-2];
+  // 	self.mze_animatedBlurView.backdropSettings.blurRadius = 30.0f;
+  // 	self.mze_animatedBlurView.backdropSettings.saturationDeltaFactor = 1.9f;
+  //   self.mze_animatedBlurView.backdropSettings.grayscaleTintAlpha = 0;
+  //   self.mze_animatedBlurView.backdropSettings.colorTintAlpha = 0;
+  //   self.mze_animatedBlurView.backdropSettings.grayscaleTintLevel = 0;
+  //   self.mze_animatedBlurView.backdropSettings.usesGrayscaleTintView = NO;
+  //   self.mze_animatedBlurView.backdropSettings.usesColorTintView = NO;
+
+  // 	[self.view addSubview:self.mze_animatedBlurView];
+  // 	[self.view bringSubviewToFront:self.mze_animatedBlurView];
+  // }
+
+  // if (!self.moduleViewHolder) {
+  //   self.moduleViewHolder = [[MZEModuleCollectionViewController alloc] initWithFrame:self.view.frame];
+  //   [self.view addSubview:self.moduleViewHolder.view];
+  //   //[self.view bringSubviewToFront:self.mod]
+  // }
+
+  // if (!self.animator && self.moduleViewHolder && self.moduleViewHolder.view) {
 
 
-    self.animator = [[UIViewPropertyAnimator alloc] initWithDuration:0 curve:UIViewAnimationCurveLinear animations:^{
-      self.moduleViewHolder.view.frame = self.moduleViewHolder.openFrame;
-    }];
-  }
+  //   self.animator = [[UIViewPropertyAnimator alloc] initWithDuration:0 curve:UIViewAnimationCurveLinear animations:^{
+  //     self.moduleViewHolder.view.frame = self.moduleViewHolder.openFrame;
+  //   }];
+  // }
 
-  if (self.animator) {
-    self.animator.fractionComplete = revealPercentage;
-  }
+  // if (self.animator) {
+  //   self.animator.fractionComplete = revealPercentage;
+  // }
 
 
 
@@ -227,7 +227,7 @@ typedef struct CAColorMatrix CAColorMatrix;
   // }
 
   for (UIView *subview in self.view.subviews) {
-  	if (subview.tag != 4510 && subview != self.mze_animatedBlurView && subview != self.mze_lumnianceView && self.moduleViewHolder.view != subview && subview != self.luminanceViewHolder) {
+  	if (subview != self.mze_viewController.view) {
   		subview.alpha = 0;
   		subview.hidden = YES;
   	}
@@ -235,12 +235,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 
 
-  self.mze_animatedBlurView.progress = revealPercentage;
-  if (revealPercentage <= 1) {
-    self.mze_lumnianceView.alpha = 0.45*revealPercentage;
-  } else if (revealPercentage > 1) {
-    self.mze_lumnianceView.alpha = 0.45;
-  }
+  [self.mze_viewController revealWithProgress:revealPercentage];
 }
 %end
 

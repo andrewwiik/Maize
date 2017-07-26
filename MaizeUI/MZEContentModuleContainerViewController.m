@@ -115,6 +115,7 @@
 
 	MZEContentModuleContainerView *containerView = [[MZEContentModuleContainerView alloc] initWithModuleIdentifier:self.moduleIdentifier];
 	self.view = containerView;
+	containerView.viewDelegate = self;
 
 	CGRect frame = CGRectZero;
 	if (containerView)
@@ -160,6 +161,12 @@
 	_tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleTapGestureRecognizer:)];
 	_tapRecognizer.delegate = self;
 	[_backgroundView addGestureRecognizer:_tapRecognizer];
+
+	_breatheRecognizer = [[MZEBreatheGestureRecognizer alloc] init];
+	[_breatheRecognizer setCancelsTouchesInView:NO];
+	_breatheRecognizer.delaysTouchesEnded = NO;
+	[self.view addGestureRecognizer:_breatheRecognizer];
+
 }
 
 - (void)viewWillLayoutSubviews {
@@ -259,6 +266,7 @@
 }
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	HBLogInfo(@"STARTED TOYCHING THINGY");
 	if (![self isExpanded]) {
 		UITouch *touch = [[event allTouches] anyObject];
     	CGPoint touchLocation = [touch locationInView:self.view];

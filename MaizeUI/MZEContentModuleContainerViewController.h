@@ -4,6 +4,7 @@
 #import "MZEContentModule-Protocol.h"
 #import "MZEContentModuleContainerViewControllerDelegate-Protocol.h"
 #import "MZEContentModuleContentViewController-Protocol.h"
+#import "MZEBreatheGestureRecognizer.h"
 
 @interface MZEContentModuleContainerViewController : UIViewController <UIGestureRecognizerDelegate, UIPreviewInteractionDelegate>
 {
@@ -28,6 +29,7 @@
     CGFloat _firstX;
     CGFloat _firstY;
     BOOL _canBubble;
+    MZEBreatheGestureRecognizer *_breatheRecognizer;
 }
 
 @property(retain, nonatomic, readwrite) UIViewController *originalParentViewController;
@@ -49,6 +51,7 @@
 @property(nonatomic, readwrite) UIEdgeInsets expandedContentEdgeInsets;
 @property(copy, nonatomic, readwrite) NSString *moduleIdentifier;
 @property(readonly, nonatomic) MZEContentModuleContainerView *moduleContainerView;
+@property(retain,nonatomic,readwrite) MZEBreatheGestureRecognizer *breatheRecognizer;
 - (id)initWithModuleIdentifier:(NSString *)identifier contentModule:(id<MZEContentModule>)contentModule;
 - (id)init;
 - (id)initWithCoder:(id)arg1;
@@ -73,8 +76,8 @@
 - (CGRect)_contentBoundsForTransitionProgress:(CGFloat)arg1;
 - (void)_configureMaskViewIfNecessary;
 - (void)_configureForContentModuleGroupRenderingIfNecessary;
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
--(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
--(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
 
 @end

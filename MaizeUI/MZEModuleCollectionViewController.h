@@ -1,16 +1,37 @@
-@class MZEModuleContainerViewController;
+#import "MZEContentModuleContainerViewControllerDelegate-Protocol.h"
+#import "MZEControlCenterPositionProvider.h"
+#import "MZEModuleInstanceManager.h"
+#import "MZELayoutStyle.h"
+#import "MZEContentModuleContainerViewController.h"
 
-@interface MZEModuleCollectionViewController : UIViewController <UIPreviewInteractionDelegate> {
+#import <MaizeServices/MZEModuleRepository.h>
+
+@interface MZEModuleCollectionViewController : UIViewController <MZEContentModuleContainerViewControllerDelegate> {
 	CGFloat _itemSpacingSize;
 	CGFloat _edgeInsetSize;
 	CGFloat _itemEdgeSize;
-	MZEModuleContainerViewController *_expandingModule;
-	CGFloat _expandingProgress;
-	CGRect _firstFrame;
+	MZEModuleInstanceManager *_moduleInstanceManager;
+	MZELayoutStyle *_layoutStyle;
+    NSMutableDictionary<NSString *, MZEContentModuleContainerViewController *> *_moduleViewControllerByIdentifier;
+    MZEControlCenterPositionProvider *_positionProvider;
 }
-@property (nonatomic, retain) UIViewPropertyAnimator *animator;
-@property (nonatomic, retain) NSMutableArray<MZEModuleContainerViewController *> *moduleViewControllers;
-@property (nonatomic, assign) CGRect openFrame;
-@property (nonatomic, assign) CGRect closedFrame;
-- (id)initWithFrame:(CGRect)frame;
+
+- (instancetype)initWithModuleInstanceManager:(MZEModuleInstanceManager *)moduleInstanceManager;
+
+- (void)willResignActive;
+- (void)willBecomeActive;
+
+- (void)_populateModuleViewControllers;
+- (NSArray<MZEModuleInstance *> *)_moduleInstances;
+- (void)_removeAndTearDownModuleViewControllerFromHierarchy:(MZEContentModuleContainerViewController *)viewController;
+- (void)_setupAndAddModuleViewControllerToHierarchy:(MZEContentModuleContainerViewController *)viewController;
+
+#pragma mark MZEContentModuleContainerViewControllerDelegate
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didCloseExpandedModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 willCloseExpandedModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didOpenExpandedModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 willOpenExpandedModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didFinishInteractionWithModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didBeginInteractionWithModule:(id <MZEContentModule>)arg2;
+- (CGRect)compactModeFrameForContentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1;
 @end

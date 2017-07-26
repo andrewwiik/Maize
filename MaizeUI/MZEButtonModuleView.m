@@ -135,6 +135,7 @@
 }
 
 - (void)_touchDown:(id)arg1 {
+	NSLog(@"TOUCHED DOWN YAYYYYY");
 	[self setHighlighted:YES];
 }
 

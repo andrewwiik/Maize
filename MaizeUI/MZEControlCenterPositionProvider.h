@@ -4,8 +4,8 @@
 	MZELayoutStyle *_layoutStyle;
 	NSArray *_orderedIdentifiers;
 	NSArray *_orderedSizes;
-	NSInteger _numberOfColumns;
-	NSInteger _numberOfRows;
+	CGFloat _numberOfColumns;
+	CGFloat _numberOfRows;
 }
 @property (nonatomic, retain, readwrite) MZELayoutStyle *layoutStyle;
 @property (nonatomic, retain, readwrite) NSArray *orderedIdentifiers;

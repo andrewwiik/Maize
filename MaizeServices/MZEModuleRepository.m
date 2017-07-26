@@ -15,7 +15,7 @@
 }
 
 + (NSString *)settingsFilePath {
-	return @"/var/mobile/Library/Preferences/com.rpetrich.flipcontrolcenter.plist";
+	return @"/var/mobile/Library/Preferences/com.ioscreatix.Maize.plist";
 }
 
 + (NSString *)settingsIdentifier {
@@ -23,16 +23,17 @@
 }
 
 + (NSString *)enabledKey {
-	return @"EnabledIdentifiers";
+	return @"EnabledIdentifiers13";
 }
 
 + (NSString *)disabledKey {
-	return @"DisabledIdentifiers";
+	return @"DisabledIdentifiers13";
 }
 
 + (NSArray *)defaultEnabledIdentifiers {
 	NSMutableArray *defaultEnabledIdentifiers = [NSMutableArray new];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DoNotDisturbModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ConnectivityModule"];
 	return [defaultEnabledIdentifiers copy];
 }
 

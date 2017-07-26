@@ -9,6 +9,7 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+
 	[self setGlyphImage:[_module iconGlyph]];
 	[self setSelectedGlyphImage:[_module selectedIconGlyph]];
 	[self setSelectedGlyphColor:[_module selectedColor]];
@@ -18,15 +19,19 @@
 }
 
 - (void)refreshState {
-	[UIView performWithoutAnimation:^{
-		[self setSelected:[_module isSelected]];
-		[self setGlyphState:[_module glyphState]];
-	}];
+	//if ([self isSelected] != [_module isSelected]) {
+		[UIView performWithoutAnimation:^{
+			[self setSelected:[_module isSelected]];
+			[self setGlyphState:[_module glyphState]];
+		}];
+	//}
 }
 
 - (void)buttonTapped:(UIControl *)button forEvent:(id)event {
-	[_module setSelected:([_module isSelected] ^ 0x1) & 0xff];
-	[self setSelected:[_module isSelected]];
+	HBLogInfo(@"THE BUTTON WAS TAPPED");
+	BOOL isSelected = [_module isSelected] ? NO : YES;
+	[self setSelected:isSelected];
+	[_module setSelected:isSelected];
 }
 
 - (CGFloat)preferredExpandedContentHeight {

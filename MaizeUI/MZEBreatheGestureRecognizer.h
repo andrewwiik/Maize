@@ -1,0 +1,2 @@
+@interface MZEBreatheGestureRecognizer : UIGestureRecognizer
+@end

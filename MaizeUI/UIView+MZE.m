@@ -6,5 +6,8 @@
 }
 - (void)_setCornerRadius:(CGFloat)cornerRadius {
 	self.layer.cornerRadius = cornerRadius;
+	if (cornerRadius > 0) {
+		self.clipsToBounds=YES;
+	}
 }
 @end

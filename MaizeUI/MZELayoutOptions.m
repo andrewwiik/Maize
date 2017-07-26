@@ -48,7 +48,7 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 		[insetInterpolator addValue:140 forReferenceMetric:568];
 		[insetInterpolator addValue:173 forReferenceMetric:667];
 		[insetInterpolator addValue:60 forReferenceMetric:736];
-		//cachedInsetSize = [insetInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
+		cachedInsetSize = [insetInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
 	if (!roundButtonInterpolator) {
@@ -113,7 +113,7 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 		[MZELayoutOptions setupInterpolators];
 	}
 
-	return cachedInsetSize;
+	return [insetInterpolator valueForReferenceMetric:[[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size.width];
 }
 
 + (CGFloat)roundButtonSize {

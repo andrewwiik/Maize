@@ -49,7 +49,7 @@
 }
  
 - (void)setSelected:(BOOL)isSelected {
-
+	[super setSelected:isSelected];
 	if (isSelected != _dndIsEnabled) {
 		_dndIsEnabled = isSelected;
 		if (isSelected) {
@@ -58,6 +58,7 @@
 			[_settingsGateway setBehaviorOverrideStatus:2 source:1];
 		}
 	}
+	//[self refreshState];
 }
 
 @end

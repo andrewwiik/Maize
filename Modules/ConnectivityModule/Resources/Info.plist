@@ -26,15 +26,16 @@
 		<integer>2</integer>
 	</array>
 	<key>NSPrincipalClass</key>
-	<string>MZEUIConnectivityModule</string>
+	<string>MZEConnectivityModule</string>
 	<key>MZEModuleSize</key>
 	<dict>
 		<key>width</key>
-		<integer>2</integer>
+		<string>2</string>
 		<key>height</key>
-		<integer>2</integer>
+		<string>2</string>
 	</dict>
-	<integer>NSPrincipalClass</key>
+	<key>NSPrincipalClass</key>
+	<string>MZEConnectivityModule</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>iPhoneOS</string>

@@ -164,6 +164,14 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 }
 
+- (BOOL)isUserInteractionEnabled {
+	return NO;
+}
+
+- (void)setUserInteractionEnabled:(BOOL)enabled {
+	[super setUserInteractionEnabled:NO];
+}
+
 // - (void)_setCornerRadius:(CGFloat)cornerRadius {
 // 	if (self.backdropView) {
 // 		self.backdropView.layer.cornerRadius
