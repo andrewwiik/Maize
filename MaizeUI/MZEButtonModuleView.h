@@ -13,6 +13,7 @@
     UIColor *_selectedGlyphColor;
     CAPackage *_glyphPackage;
     NSString *_glyphState;
+    BOOL _allowsHighlighting;
 }
 
 @property(copy, nonatomic, readwrite) NSString *glyphState; // @synthesize glyphState=_glyphState;
@@ -33,6 +34,7 @@
 - (void)setEnabled:(BOOL)enabled;
 - (void)setSelected:(BOOL)selected;
 - (void)setHighlighted:(BOOL)highlighted;
+- (void)setAllowsHighlighting:(BOOL)allowsHighlighting;
 - (id)initWithFrame:(CGRect)frame;
 
 @end

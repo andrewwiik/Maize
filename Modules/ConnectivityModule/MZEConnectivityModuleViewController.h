@@ -5,7 +5,7 @@
 	CGFloat _prefferedContentExpandedHeight;
 }
 @property (nonatomic, retain) NSMutableArray *buttonViewControllers;
-- (CGFloat)prefferedContentExpandedWidth;
-- (CGFloat)prefferedContentExpandedHeight;
+- (CGFloat)preferredExpandedContentWidth;
+- (CGFloat)preferredExpandedContentHeight;
 - (BOOL)providesOwnPlatter;
 @end

@@ -21,4 +21,5 @@
 - (void)refreshState;
 - (void)buttonTapped:(UIControl *)button forEvent:(id)event;
 - (void)setModule:(MZEToggleModule *)module;
+- (void)setAllowsHighlighting:(BOOL)allowsHighlighting;
 @end

@@ -16,6 +16,7 @@
 @property (nonatomic, retain, readwrite) NSMutableArray *disabledIdentifiers;
 @property (nonatomic, retain, readwrite) NSMutableDictionary<NSString *, MZEModuleMetadata *> *moduleMetadataByIdentifier;
 + (instancetype)repositoryWithDefaults;
++ (BOOL)isDebug;
 + (NSArray *)_defaultModuleDirectories;
 + (NSString *)settingsFilePath;
 + (NSString *)settingsIdentifier;

@@ -1,6 +1,6 @@
 Package: com.ioscreatix.maize
 Name: Maize
-Depends: mobilesubstrate
+Depends: mobilesubstrate, com.a3tweaks.flipswitch
 Version: 0.0.1
 Architecture: iphoneos-arm
 Description: An awesome MobileSubstrate tweak!

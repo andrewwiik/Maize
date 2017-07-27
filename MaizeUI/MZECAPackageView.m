@@ -40,8 +40,17 @@
 }
 - (void)setStateName:(NSString *)name {
 	if (_stateController && _packageLayer) {
+		CGFloat transitionSpeed = 1.0;
+		if ([name containsString:@"|"]) {
+			NSArray* split = [name componentsSeparatedByString:@"|"];
+			if ([split count] == 2) {
+				transitionSpeed = (CGFloat)[(NSString *)split[1] floatValue];
+				name = (NSString *)split[0];
+			}
+		}
+
 		CAState *state = [_packageLayer stateWithName:name];
-		[_stateController setState:state ofLayer:_packageLayer transitionSpeed:2];
+		[_stateController setState:state ofLayer:_packageLayer transitionSpeed:transitionSpeed];
 	}
 
 }

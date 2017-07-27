@@ -16,5 +16,6 @@ MaizeUI_FILES = $(wildcard BinPack/*.mm) $(wildcard *.mm) $(wildcard *.m)
 MaizeUI_INSTALL_PATH = /Library/Frameworks
 MaizeUI_EXTRA_FRAMEWORKS = MaizeServices
 MaizeUI_LDFLAGS = -F../.theos/$(THEOS_OBJ_DIR_NAME)
+MaizeUI_LIBRARIES = flipswitch
 
 include $(THEOS_MAKE_PATH)/framework.mk

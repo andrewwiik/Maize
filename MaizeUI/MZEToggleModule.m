@@ -5,6 +5,7 @@
 	@dynamic selectedIconGlyph;
 	@dynamic iconGlyph;
 	@dynamic selected;
+	@dynamic enabled;
 
 - (void)refreshState {
 	[_viewController refreshState];
@@ -32,6 +33,22 @@
 
 - (BOOL)isSelected {
 	return NO;
+}
+
+- (BOOL)isEnabled {
+	return YES;
+}
+
+- (void)setEnabled:(BOOL)enabled {
+	[_viewController setEnabled:enabled];
+}
+
+- (BOOL)allowsHighlighting {
+	return YES;
+}
+
+- (BOOL)shouldSelfSelect {
+	return YES;
 }
 
 - (void)setSelected:(BOOL)selected {

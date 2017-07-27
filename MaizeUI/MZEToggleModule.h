@@ -14,5 +14,7 @@
 @property(readonly, copy, nonatomic) UIImage *selectedIconGlyph; // @dynamic selectedIconGlyph;
 @property(readonly, copy, nonatomic) UIImage *iconGlyph; // @dynamic iconGlyph;
 @property(nonatomic, getter=isSelected) BOOL selected; // @dynamic selected;
-
+@property(nonatomic, getter=isEnabled) BOOL enabled;
+- (BOOL)allowsHighlighting;
+- (BOOL)shouldSelfSelect;
 @end

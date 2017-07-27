@@ -10,6 +10,10 @@
     return _sharedInstance;
 }
 
++ (BOOL)isDebug {
+	return YES;
+}
+
 + (NSArray *)_defaultModuleDirectories {
 	return [NSArray arrayWithObjects:[NSURL fileURLWithPath:@"/Library/Maize/Bundles/"], nil];
 }
@@ -143,6 +147,11 @@
 
 	for (NSString *identifier in allIdentifiers) {
 		[_disabledIdentifiers addObject:identifier];
+	}
+
+	if ([[self class] isDebug]) {
+		_enabledIdentifiers = [[_moduleMetadataByIdentifier allKeys] mutableCopy];
+		_disabledIdentifiers = [NSMutableArray new];
 	}
 
 	[self _saveSettings];

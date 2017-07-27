@@ -91,7 +91,19 @@
 	[_buttonModuleView setSelected:isSelected];
 }
 
+- (void)setAllowsHighlighting:(BOOL)allowsHighlighting {
+	[_buttonModuleView setAllowsHighlighting:allowsHighlighting];
+}
+
 - (BOOL)isSelected {
 	return [_buttonModuleView isSelected];
+}
+
+- (BOOL)isEnabled {
+	return [_buttonModuleView isEnabled];
+}
+
+- (void)setEnabled:(BOOL)enabled {
+	[_buttonModuleView setEnabled:enabled];
 }
 @end

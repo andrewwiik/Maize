@@ -9,10 +9,10 @@
 
 }
 
-- (CGFloat)prefferedContentExpandedWidth {
+- (CGFloat)preferredExpandedContentWidth {
 	return -1;
 }
-- (CGFloat)prefferedContentExpandedHeight {
+- (CGFloat)preferredExpandedContentHeight {
 	if (!_prefferedContentExpandedHeight) {
 		MPULayoutInterpolator *interpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
 		[interpolator addValue:403.5 forReferenceMetric:320];

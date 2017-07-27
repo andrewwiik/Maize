@@ -123,7 +123,8 @@
 }
 
 - (void)_dragEnter:(id)arg1 {
-	[self setHighlighted:YES];
+	if (_allowsHighlighting)
+		[self setHighlighted:YES];
 }
 
 - (void)_touchUpOutside:(id)arg1 {
@@ -131,12 +132,20 @@
 }
 
 - (void)_touchUpInside:(id)arg1 {
-	[self setHighlighted:NO];
+	[self setHighlighted:[self isSelected] ? NO : YES];
+	// if ([self isSelected] == NO && [self isHighlighted] && _highlightedBackgroundView.alpha == 1.0) {
+	// 	[UIView performWithoutAnimation:^{
+	// 		_highlightedBackgroundView.alpha = 0.0f;
+	// 	}];
+	// } else {
+	// 	[self setHighlighted:NO];
+	// }
 }
 
 - (void)_touchDown:(id)arg1 {
 	NSLog(@"TOUCHED DOWN YAYYYYY");
-	[self setHighlighted:YES];
+	if (_allowsHighlighting) 
+		[self setHighlighted:YES];
 }
 
 - (void)setEnabled:(BOOL)enabled {
@@ -145,13 +154,24 @@
 }
 
 - (void)setSelected:(BOOL)selected {
+	BOOL updateState = selected != [self isSelected];
 	[super setSelected:selected];
-	[self _updateForStateChange];
+	if (updateState)
+		[self _updateForStateChange];
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
+	if (!_allowsHighlighting)
+		highlighted = NO;
 	[super setHighlighted:highlighted];
-	[self _updateForStateChange];
+
+	if (!(!highlighted && [self isSelected]))
+		[self _updateForStateChange];
+}
+
+- (void)setAllowsHighlighting:(BOOL)allowsHighlighting {
+	_allowsHighlighting = allowsHighlighting;
+	//_highlightedBackgroundView.hidden = YES;
 }
 
 @end

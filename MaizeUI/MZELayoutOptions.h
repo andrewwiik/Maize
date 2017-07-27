@@ -11,4 +11,9 @@
 + (CGFloat)regularCornerRadius;
 + (CGFloat)expandedModuleCornerRadius;
 + (CGFloat)defaultExpandedContentModuleWidth;
+
+#pragma mark FlipSwitch Support
+
++ (CGPoint)flipSwitchGlyphOrigin;
++ (CGFloat)flipSwitchGlyphSize;
 @end

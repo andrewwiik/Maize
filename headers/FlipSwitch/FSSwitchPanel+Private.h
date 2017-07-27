@@ -7,4 +7,5 @@
 - (UIViewController <FSSwitchSettingsViewController> *)settingsViewControllerForSwitchIdentifier:(NSString *)switchIdentifier;
 - (NSArray *)sortedSwitchIdentifiers;
 - (UIColor *)primaryColorForSwitchIdentifier:(NSString *)switchIdentifier;
+- (BOOL)switchWithIdentifierIsEnabled:(NSString *)switchIdentifier;
 @end

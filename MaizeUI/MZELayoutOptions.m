@@ -18,6 +18,8 @@ MPULayoutInterpolator *roundButtonInterpolator;
 MPULayoutInterpolator *roundButtonExpandedSideInsetInterpolator;
 MPULayoutInterpolator *roundButtonContainerExpandedSizeHeight;
 MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
+// MPULayoutInterpolator *flipSwitchGlyphSizeInterpolator;
+// MPULayoutInterpolator *flipSwitchOriginValueInterpolator;
 // MPULayoutInterpolator *roundButtonTitlePaddingInterpolator;
 
 
@@ -82,6 +84,14 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 		[roundButtonContainerExpandedSizeWidth addValue:149 forReferenceMetric:414];
 		cachedRoundButtonExpandedContainerWidth = [roundButtonContainerExpandedSizeWidth valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
+
+	// if (!flipSwitchGlyphSizeInterpolator) {
+	// 	flipSwitchGlyphSizeInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+	// 	[flipSwitchGlyphSizeInterpolator addValue:36 forReferenceMetric:320];
+	// 	[flipSwitchGlyphSizeInterpolator addValue:37 forReferenceMetric:375];
+	// 	[flipSwitchGlyphSizeInterpolator addValue:36 forReferenceMetric:414];
+	// 	cachedRoundButtonSize = [flipSwitchGlyphSizeInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
+	// }
 
 
 
@@ -155,5 +165,16 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 
 + (CGFloat)defaultExpandedContentModuleWidth {
 	return [insetInterpolator valueForReferenceMetric:[[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size.width];
+}
+
+#pragma mark FlipSwitchCalculations
+
++ (CGFloat)flipSwitchGlyphSize {
+	return 36.0f;
+}
+
++ (CGPoint)flipSwitchGlyphOrigin {
+	CGFloat origin = ([self edgeSize] - [self flipSwitchGlyphSize])/2;
+	return CGPointMake(origin,origin);
 }
 @end
