@@ -170,7 +170,7 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 #pragma mark FlipSwitchCalculations
 
 + (CGFloat)flipSwitchGlyphSize {
-	return 36.0f;
+	return 35.0f;
 }
 
 + (CGPoint)flipSwitchGlyphOrigin {

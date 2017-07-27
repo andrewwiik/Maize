@@ -2,12 +2,21 @@
 #import <FlipSwitch/FSSwitchPanel.h>
 #import <FlipSwitch/FSSwitchPanel+Private.h>
 
+@interface NSBundle (MZE)
+@property (nonatomic, assign) BOOL isMZEFlipSwitchThemeBundle;
++ (instancetype)mze_bundleWithPath:(id)path;
+@end
+
 @implementation MZEFlipSwitchToggleModule
-+ (MZEFlipSwitchThemeBundle *)sharedTemplateBundle {
-	static MZEFlipSwitchThemeBundle *_sharedTemplateBundle;
++ (NSBundle *)sharedTemplateBundle {
+	static NSBundle *_sharedTemplateBundle;
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _sharedTemplateBundle = [MZEFlipSwitchThemeBundle bundleWithPath:[[NSBundle bundleForClass:NSClassFromString(@"MZEFlipSwitchToggleModule")] bundlePath]];
+    dispatch_once(&onceToken,  ^{
+    	if ([NSBundle respondsToSelector:@selector(mze_bundleWithPath:)]) {
+        	_sharedTemplateBundle = [NSBundle mze_bundleWithPath:[[NSBundle bundleForClass:NSClassFromString(@"MZEFlipSwitchToggleModule")] bundlePath]];
+    	} else {
+    		_sharedTemplateBundle = [NSBundle bundleForClass:NSClassFromString(@"MZEFlipSwitchToggleModule")];
+    	}
     });
     return _sharedTemplateBundle;
 }

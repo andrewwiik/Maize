@@ -272,35 +272,37 @@
     	CGPoint touchLocation = [touch locationInView:self.view];
     	_firstX = touchLocation.x;
     	_firstY = touchLocation.y;
-		self.view.transform = CGAffineTransformIdentity;
-		[UIView animateWithDuration:0.25 animations:^{
-			self.view.transform = CGAffineTransformMakeScale(1.04,1.04);
-		}];
+    	if (CGAffineTransformEqualToTransform(self.view.transform,CGAffineTransformMakeScale(1.05,1.05))) {
+			//self.view.transform = CGAffineTransformIdentity;
+    	}
+		[UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+			self.view.transform = CGAffineTransformMakeScale(1.05,1.05);
+		} completion:nil];
 	}
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	if (![self isExpanded] && _canBubble) {
+	if (![self isExpanded] && _canBubble && _firstX != -1 && _firstY != 1) {
 		UITouch *touch = [[event allTouches] anyObject];
     	CGPoint touchLocation = [touch locationInView:self.view];
     	if ((_firstX - touchLocation.x >= 10 || _firstX - touchLocation.x <= -10) || (_firstY - touchLocation.y >= 10 || _firstY - touchLocation.y <= -10)) {
     		_canBubble = NO;
     		_firstX = 0;
     		_firstY = 0;
-    		[UIView animateWithDuration:0.25 animations:^{
+    		[UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
 				self.view.transform = CGAffineTransformIdentity;
-			}];
+			} completion:nil];
     	}
 	}
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	_firstY = 0;
-	_firstX = 0;
+	_firstY = -1;
+	_firstX = -1;
 	if (![self isExpanded] && _canBubble) {
-		[UIView animateWithDuration:0.25 animations:^{
+		[UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
 			self.view.transform = CGAffineTransformIdentity;
-		}];
+		} completion:nil];
 	}
 	_canBubble = YES;
 }
