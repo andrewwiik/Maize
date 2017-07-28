@@ -275,7 +275,7 @@
     	if (CGAffineTransformEqualToTransform(self.view.transform,CGAffineTransformMakeScale(1.05,1.05))) {
 			//self.view.transform = CGAffineTransformIdentity;
     	}
-		[UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+		[UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseIn animations:^{
 			self.view.transform = CGAffineTransformMakeScale(1.05,1.05);
 		} completion:nil];
 	}
@@ -289,7 +289,7 @@
     		_canBubble = NO;
     		_firstX = 0;
     		_firstY = 0;
-    		[UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+    		[UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
 				self.view.transform = CGAffineTransformIdentity;
 			} completion:nil];
     	}
@@ -300,7 +300,7 @@
 	_firstY = -1;
 	_firstX = -1;
 	if (![self isExpanded] && _canBubble) {
-		[UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+		[UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
 			self.view.transform = CGAffineTransformIdentity;
 		} completion:nil];
 	}

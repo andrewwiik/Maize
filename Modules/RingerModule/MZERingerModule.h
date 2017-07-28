@@ -1,5 +1,5 @@
-#import <MaizeUI/MZEFlipSwitchToggleModule.h>
+#import <MaizeUI/MZEAnimatedFlipSwitchToggleModule.h>
 
-@interface MZERingerModule : MZEFlipSwitchToggleModule
+@interface MZERingerModule : MZEAnimatedFlipSwitchToggleModule
 - (id)init;
 @end

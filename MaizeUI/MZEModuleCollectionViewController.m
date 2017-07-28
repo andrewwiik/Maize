@@ -1,9 +1,12 @@
 #import "MZEModuleCollectionViewController.h"
 
 @implementation MZEModuleCollectionViewController
+	@synthesize delegate=_delegate;
+
 - (id)initWithModuleInstanceManager:(MZEModuleInstanceManager *)moduleInstanceManager {
 	self = [super initWithNibName:nil bundle:nil];
 	if (self) {
+		_currentModules = [NSMutableArray new];
 		_moduleInstanceManager = moduleInstanceManager;
 		_moduleViewControllerByIdentifier = [NSMutableDictionary new];
 		NSArray *enabledIdentifiers = [[MZEModuleRepository repositoryWithDefaults] enabledIdentifiers];
@@ -93,20 +96,45 @@
 
 #pragma mark MZEContentModuleContainerViewControllerDelegate
 
-- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didCloseExpandedModule:(id <MZEContentModule>)arg2 {
-
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController didCloseExpandedModule:(id <MZEContentModule>)module {
+	[_currentModules removeObject:containerViewController];
+	[_delegate  moduleCollectionViewController:self didCloseExpandedModule:module];
 }
 
-- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 willCloseExpandedModule:(id <MZEContentModule>)arg2 {
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController willCloseExpandedModule:(id <MZEContentModule>)module {
+	[_delegate moduleCollectionViewController:self willCloseExpandedModule:module];
 
+	if ([[UIDevice currentDevice] userInterfaceIdiom] != 1) {
+		for (UIViewController *viewController in [self childViewControllers]) {
+			if (viewController != containerViewController) {
+				if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+					viewController.view.alpha = 1;
+				}
+			}
+		}
+	}
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didOpenExpandedModule:(id <MZEContentModule>)arg2 {
 
 }
 
-- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 willOpenExpandedModule:(id <MZEContentModule>)arg2 {
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController willOpenExpandedModule:(id <MZEContentModule>)module {
+	[_delegate moduleCollectionViewController:self willOpenExpandedModule:module];
 
+	[self.view bringSubviewToFront:[containerViewController moduleContainerView]];
+
+	[_currentModules addObject:containerViewController];
+
+	if ([[UIDevice currentDevice] userInterfaceIdiom] != 1) {
+		for (UIViewController *viewController in [self childViewControllers]) {
+			if (viewController != containerViewController) {
+				if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+					viewController.view.alpha = 0;
+				}
+			}
+		}
+	}
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didFinishInteractionWithModule:(id <MZEContentModule>)arg2 {

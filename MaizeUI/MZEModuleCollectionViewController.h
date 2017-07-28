@@ -3,6 +3,8 @@
 #import "MZEModuleInstanceManager.h"
 #import "MZELayoutStyle.h"
 #import "MZEContentModuleContainerViewController.h"
+#import "MZEModuleCollectionViewControllerDelegate-Protocol.h"
+
 
 #import <MaizeServices/MZEModuleRepository.h>
 
@@ -14,7 +16,10 @@
 	MZELayoutStyle *_layoutStyle;
     NSMutableDictionary<NSString *, MZEContentModuleContainerViewController *> *_moduleViewControllerByIdentifier;
     MZEControlCenterPositionProvider *_positionProvider;
+    NSMutableArray *_currentModules;
+    __weak id <MZEModuleCollectionViewControllerDelegate> _delegate;
 }
+@property(nonatomic) __weak id <MZEModuleCollectionViewControllerDelegate> delegate; // @synthesize delegate=_delegate;
 
 - (instancetype)initWithModuleInstanceManager:(MZEModuleInstanceManager *)moduleInstanceManager;
 

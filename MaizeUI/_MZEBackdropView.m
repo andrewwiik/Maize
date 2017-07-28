@@ -250,4 +250,16 @@ typedef struct CAColorMatrix CAColorMatrix;
 	[self.layer setFilters:[filters copy]];
 }
 
+- (BOOL)shouldForwardSelector:(SEL)aSelector {
+    return [self.layer respondsToSelector:aSelector];
+}
+
+- (id)forwardingTargetForSelector:(SEL)aSelector {
+    return (![self respondsToSelector:aSelector] && [self shouldForwardSelector:aSelector]) ? self.layer : self;
+}
+
+- (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key {
+   return ([self shouldForwardSelector:NSSelectorFromString(key)] || [super _shouldAnimatePropertyWithKey:key]);
+}
+
 @end
