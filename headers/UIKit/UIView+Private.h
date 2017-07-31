@@ -9,4 +9,5 @@
 - (UIImage *)_imageFromRect:(CGRect)rect;
 - (void)nc_removeAllVibrantStyling;
 - (CCUIControlCenterPagePlatterView *)ccuiPunchOutMaskedContainer;
+- (BOOL)_shouldAnimatePropertyWithKey:(id)key;
 @end

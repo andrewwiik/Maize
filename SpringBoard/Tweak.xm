@@ -3,11 +3,12 @@
 #import <MaizeUI/MZELayoutOptions.h>
 // #import "BinPackingFactory2D.h"
 #import <MaizeUI/MZEModularControlCenterViewController.h>
+#import <MaizeUI/MZECurrentActions.h>
 #import <QuartzCore/CAFilter+Private.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
 #import <UIKit/_UIBackdropViewSettings+Private.h>
 
-%config(generator=internal)
+//%config(generator=internal)
 
 struct CAColorMatrix
 {
@@ -236,6 +237,18 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 
   [self.mze_viewController revealWithProgress:revealPercentage];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)recognizer shouldReceiveTouch:(UITouch *)touch {
+  if ([recognizer isKindOfClass:NSClassFromString(@"UITapGestureRecognizer")] || [recognizer isKindOfClass:NSClassFromString(@"UIPanGestureRecognizer")]) {
+    if ([NSClassFromString(@"MZECurrentActions") isSliding]) {
+      return NO;
+    } else {
+      return %orig;
+    }
+  } else {
+    return YES;
+  }
 }
 %end
 

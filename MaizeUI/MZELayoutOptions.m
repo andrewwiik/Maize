@@ -18,6 +18,8 @@ MPULayoutInterpolator *roundButtonInterpolator;
 MPULayoutInterpolator *roundButtonExpandedSideInsetInterpolator;
 MPULayoutInterpolator *roundButtonContainerExpandedSizeHeight;
 MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
+MPULayoutInterpolator *sliderExpandedHeightInterpolator;
+MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 // MPULayoutInterpolator *flipSwitchGlyphSizeInterpolator;
 // MPULayoutInterpolator *flipSwitchOriginValueInterpolator;
 // MPULayoutInterpolator *roundButtonTitlePaddingInterpolator;
@@ -83,6 +85,20 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 		[roundButtonContainerExpandedSizeWidth addValue:136.5 forReferenceMetric:375];
 		[roundButtonContainerExpandedSizeWidth addValue:149 forReferenceMetric:414];
 		cachedRoundButtonExpandedContainerWidth = [roundButtonContainerExpandedSizeWidth valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
+	}
+
+	if (!sliderExpandedHeightInterpolator) {
+		sliderExpandedHeightInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+		[sliderExpandedHeightInterpolator addValue:254 forReferenceMetric:568];
+		[sliderExpandedHeightInterpolator addValue:315 forReferenceMetric:667];
+		[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:736];
+	}
+
+	if (!sliderExpandedWidthInterpolator) {
+		sliderExpandedWidthInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+		[sliderExpandedWidthInterpolator addValue:106 forReferenceMetric:320];
+		[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:375];
+		[sliderExpandedWidthInterpolator addValue:132 forReferenceMetric:414];
 	}
 
 	// if (!flipSwitchGlyphSizeInterpolator) {
@@ -164,8 +180,26 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 }
 
 + (CGFloat)defaultExpandedContentModuleWidth {
+	if (!insetInterpolator) {
+		[MZELayoutOptions setupInterpolators];
+	}
 	return [insetInterpolator valueForReferenceMetric:[[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size.width];
 }
+
++ (CGFloat)defaultExpandedSliderHeight {
+	if (!sliderExpandedHeightInterpolator) {
+		[MZELayoutOptions setupInterpolators];
+	}
+	return [sliderExpandedHeightInterpolator valueForReferenceMetric:[[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size.height];
+}
+
++ (CGFloat)defaultExpandedSliderWidth {
+	if (!sliderExpandedWidthInterpolator) {
+		[MZELayoutOptions setupInterpolators];
+	}
+	return [sliderExpandedWidthInterpolator valueForReferenceMetric:[[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size.width];
+}
+
 
 #pragma mark FlipSwitchCalculations
 

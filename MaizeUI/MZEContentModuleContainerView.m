@@ -31,6 +31,13 @@
 		[self.viewDelegate touchesEnded:touches withEvent:event];
 	}
 }
+
+- (void)layoutSubviews {
+	[super layoutSubviews];
+	if (self.maskView) {
+		self.maskView = self.maskView;
+	}
+}
 @end
 
 

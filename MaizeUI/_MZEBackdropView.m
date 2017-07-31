@@ -1,5 +1,6 @@
 #import "_MZEBackdropView.h"
 #import <QuartzCore/CAFilter+Private.h>
+#import <UIKit/UIView+Private.h>
 
 struct CAColorMatrix
 {

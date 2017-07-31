@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<caml xmlns="http://www.apple.com/CoreAnimation/1.0">
+  <CALayer allowsEdgeAntialiasing="1" allowsGroupOpacity="1" bounds="0 0 48 48" contentsFormat="RGBA8" hidden="0" name="volglyph" position="24 24">
+    <backgroundColor opacity="0" value="0.9797 0.06809 0.3118"/>
+    <sublayers>
+      <CATransformLayer allowsEdgeAntialiasing="1" allowsGroupOpacity="1" bounds="0 0 50 50" contentsFormat="RGBA8" geometryFlipped="1" name="volume" position="25.700000762939 23.799999237061" transform="scale(1.653, 1.653, 1)">
+	<sublayers>
+	  <CATransformLayer id="#2" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" bounds="0 0 50 50" contentsFormat="RGBA8" name="vol1" position="25 25" transform="">
+	    <sublayers>
+	      <CATransformLayer id="#10" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" bounds="0 0 50 50" contentsFormat="RGBA8" name="vol2" position="25 25" transform="">
+		<sublayers>
+		  <CAShapeLayer id="#4" fillColor="1 1 1" path="11.1225466 7.5 m 11.1225466 8.56586257 10.7235466 9.47930993 9.99754659 10.2904512 c 9.83654659 10.4710528 9.85854659 10.7424771 10.0485466 10.8969802 c 10.2375466 11.0514833 10.5215466 11.0295606 10.6835466 10.848959 c 11.5485466 9.8822707 12.0235466 8.77047478 12.0235466 7.5 c 12.0235466 6.22952522 11.5485466 5.1177293 10.6835466 4.15104101 c 10.5215466 3.97043942 10.2375466 3.94851668 10.0485466 4.10301978 c 9.85854659 4.25752287 9.83654659 4.52894723 9.99754659 4.70954882 c 10.7235466 5.52069007 11.1225466 6.43413743 11.1225466 7.5 c" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" anchorPoint="9.5 0.5" bounds="0 0 1 15" contentsFormat="RGBA8" name="low-wave" opacity="1" position="23.5 25" transform=""/>
+		  <CAShapeLayer id="#3" fillColor="1 1 1" path="15.1047112 7.5 m 15.1047112 9.26156361 14.4567112 10.939587 13.2807112 12.307171 c 13.1237112 12.4897218 13.1537112 12.7568441 13.3467112 12.90536 c 13.5397112 13.0528445 13.8237112 13.0249978 13.9807112 12.842447 c 15.2867112 11.3242845 16.0057112 9.45649073 16.0057112 7.5 c 16.0057112 5.54350927 15.2867112 3.67571553 13.9807112 2.15755298 c 13.8237112 1.97500219 13.5397112 1.94715546 13.3467112 2.09464 c 13.1537112 2.2431559 13.1237112 2.51027825 13.2807112 2.69282905 c 14.4567112 4.06041297 15.1047112 5.73843639 15.1047112 7.5 c" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" anchorPoint="13.5 0.5" bounds="0 0 1 15" contentsFormat="RGBA8" name="mid-wave" opacity="1" position="27.5 25" transform=""/>
+		  <CAShapeLayer id="#1" fillColor="1 1 1" path="19.0950595 7.5 m 19.0950595 10.0310229 18.2330595 12.3322339 16.5680595 14.3108837 c 16.4130595 14.4953516 16.4450595 14.7622632 16.6410595 14.9075703 c 16.8350595 15.0539079 17.1190595 15.0229915 17.2740595 14.8395542 c 19.0670595 12.7083835 19.9960595 10.2247657 19.9960595 7.5 c 19.9960595 4.7752343 19.0670595 2.29161654 17.2740595 0.160445787 c 17.1190595 -0.0229915406 16.8350595 -0.0539079442 16.6410595 0.0924296995 c 16.4450595 0.237736796 16.4130595 0.504648414 16.5680595 0.689116289 c 18.2330595 2.66776612 19.0950595 4.96897709 19.0950595 7.5 c" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" anchorPoint="16.5 0.5" bounds="0 0 1 15" contentsFormat="RGBA8" hidden="0" name="high-wave" opacity="1" position="30.5 25" transform=""/>
+		  <CATransformLayer id="#7" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" bounds="0 0 50 50" contentsFormat="RGBA8" hidden="0" name="parent of dynamic speaker" position="25 25">
+		    <sublayers>
+		      <CAShapeLayer fillColor="1 1 1" path="7.4 29 m 3 29 l 1.9 29 1 28.1 1 27 c 1 21 l 1 19.9 1.9 19 3 19 c 7.4 19 l 7.6 19 7.9 18.9 8.1 18.7 c 14 13.3 l 14.8 12.6 15.9 13.2 15.9 14.2 c 15.9 33.7 l 15.9 34.8 14.7 35.3 14 34.6 c 8.1 29.2 l 7.9 29.1 7.7 29 7.4 29 c h" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" contentsFormat="RGBA8" hidden="0" name="dynamic speaker v2" position="13.733799934387 12.903800010681" transform="scale(0.503, 0.503, 1)">
+			<sublayers>
+			  <CALayer id="#6" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" anchorPoint="0.5 1" backgroundColor="1 1 1" bounds="0 0 2.599999904633 2.599999904633" contentsFormat="RGBA8" cornerRadius="1.299999952316" hidden="0" name="strike hole" position="-2.23140001297 11.291299819946" transform="rotate(130deg) scale(1.988, 1.988, 1)">
+			    <compositingFilter type="CAFilter" filter="destOut" name="destOut"/>
+			  </CALayer>
+			</sublayers>
+		      </CAShapeLayer>
+		    </sublayers>
+		  </CATransformLayer>
+		  <CAShapeLayer id="#8" fillColor="1 1 1" path="7.4 29 m 3 29 l 1.9 29 1 28.1 1 27 c 1 21 l 1 19.9 1.9 19 3 19 c 7.4 19 l 7.6 19 7.9 18.9 8.1 18.7 c 14 13.3 l 14.8 12.6 15.9 13.2 15.9 14.2 c 15.9 33.7 l 15.9 34.8 14.7 35.3 14 34.6 c 8.1 29.2 l 7.9 29.1 7.7 29 7.4 29 c h" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" contentsFormat="RGBA8" hidden="0" name="normal speaker v2" position="13.733799934387 12.903800010681" transform="scale(0.503, 0.503, 1)"/>
+		  <CAShapeLayer id="#9" fillColor="1 1 1" path="21 23.3 m 14.2 17.4 l 18.9 13.3 l 19.7 12.6 21 13.2 21 14.2 c 21 23.3 l h 8.4 19 m 21 29.9 l 21 33.7 l 21 34.8 19.7 35.3 18.9 34.6 c 12.3 29 l 8 29 l 6.9 29 6 28.1 6 27 c 6 21 l 6 19.9 6.9 19 8 19 c 8.4 19 l h" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" contentsFormat="RGBA8" hidden="1" name="muted speaker v2" position="11.169899940491 12.954199790955" transform="scale(0.503, 0.503, 1)"/>
+		  <CALayer id="#5" allowsEdgeAntialiasing="1" allowsGroupOpacity="1" anchorPoint="0.5 1" backgroundColor="1 1 1" bounds="0 -3302 1 1" contentsFormat="RGBA8" cornerRadius="0.5" name="strike" opacity="0" position="13.14999961853 19.091299057007" transform="rotate(130deg)"/>
+		</sublayers>
+	      </CATransformLayer>
+	    </sublayers>
+	  </CATransformLayer>
+	</sublayers>
+      </CATransformLayer>
+    </sublayers>
+    <states>
+      <LKState name="full">
+	<elements/>
+      </LKState>
+      <LKState name="half" basedOn="full">
+	<elements>
+	  <LKStateSetValue targetId="#1" keyPath="transform.scale.xy">
+	    <value type="real" value="0.6000000238419"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#1" keyPath="opacity">
+	    <value type="integer" value="0"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#2" keyPath="position.x">
+	    <value type="integer" value="27"/>
+	  </LKStateSetValue>
+	</elements>
+      </LKState>
+      <LKState name="min" basedOn="half">
+	<elements>
+	  <LKStateSetValue targetId="#3" keyPath="transform.scale.xy">
+	    <value type="real" value="0.6000000238419"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#3" keyPath="opacity">
+	    <value type="integer" value="0"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#2" keyPath="position.x">
+	    <value type="integer" value="29"/>
+	  </LKStateSetValue>
+	</elements>
+      </LKState>
+      <LKState name="off" basedOn="min">
+	<elements>
+	  <LKStateSetValue targetId="#4" keyPath="transform.scale.xy">
+	    <value type="real" value="0.6000000238419"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#4" keyPath="opacity">
+	    <value type="integer" value="0"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#2" keyPath="position.x">
+	    <value type="integer" value="30"/>
+	  </LKStateSetValue>
+	</elements>
+      </LKState>
+      <LKState name="mute" basedOn="off">
+	<elements>
+	  <LKStateSetValue targetId="#5" keyPath="opacity">
+	    <value type="integer" value="1"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#5" keyPath="bounds.size.height">
+	    <value type="integer" value="17"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="bounds.size.height">
+	    <value type="integer" value="17"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="bounds.size.height">
+	    <value type="real" value="17.5"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#5" keyPath="bounds.size.height">
+	    <value type="real" value="17.5"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#5" keyPath="position.y">
+	    <value type="real" value="18.691299438477"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#7" keyPath="hidden">
+	    <value type="integer" value="1"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#7" keyPath="hidden">
+	    <value type="integer" value="0"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#7" keyPath="hidden">
+	    <value type="integer" value="1"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.y">
+	    <value type="real" value="1.391299962997"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="bounds.size.height">
+	    <value type="real" value="18.39999961853"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#2" keyPath="position.x">
+	    <value type="integer" value="30"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.x">
+	    <value type="real" value="-1.531399965286"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.y">
+	    <value type="real" value="0.8913000226021"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="bounds.size.height">
+	    <value type="integer" value="19"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.y">
+	    <value type="real" value="0.7912999987602"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.x">
+	    <value type="real" value="12.868599891663"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.x">
+	    <value type="real" value="12.568599700928"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#8" keyPath="hidden">
+	    <value type="integer" value="1"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.x">
+	    <value type="real" value="25.968599319458"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.y">
+	    <value type="real" value="10.591300010681"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.x">
+	    <value type="real" value="-2.23140001297"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#9" keyPath="hidden">
+	    <value type="integer" value="0"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.y">
+	    <value type="real" value="11.191300392151"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#5" keyPath="position.y">
+	    <value type="real" value="19.091299057007"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#6" keyPath="position.y">
+	    <value type="real" value="11.291299819946"/>
+	  </LKStateSetValue>
+	</elements>
+      </LKState>
+      <LKState name="max" basedOn="full">
+	<elements>
+	  <LKStateSetValue targetId="#10" keyPath="transform.scale.xy">
+	    <value type="real" value="1.080000042915"/>
+	  </LKStateSetValue>
+	  <LKStateSetValue targetId="#2" keyPath="transform.scale.xy">
+	    <value type="real" value="0.9250000119209"/>
+	  </LKStateSetValue>
+	</elements>
+      </LKState>
+    </states>
+    <stateTransitions>
+      <LKStateTransition fromState="*" toState="half">
+	<elements>
+	  <LKStateTransitionElement key="transform.scale.xy" targetId="#1">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="transform.scale.xy" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="opacity" targetId="#1">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="opacity" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.x" targetId="#2">
+	    <animation type="CASpringAnimation" damping="40" mass="2" stiffness="300" keyPath="position.x" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="half" toState="*">
+	<elements>
+	  <LKStateTransitionElement key="transform.scale.xy" targetId="#1">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="transform.scale.xy" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="opacity" targetId="#1">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="opacity" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.x" targetId="#2">
+	    <animation type="CASpringAnimation" damping="40" mass="2" stiffness="300" keyPath="position.x" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="*" toState="min">
+	<elements>
+	  <LKStateTransitionElement key="transform.scale.xy" targetId="#3">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="transform.scale.xy" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="opacity" targetId="#3">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="opacity" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.x" targetId="#2">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.x" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="min" toState="*">
+	<elements>
+	  <LKStateTransitionElement key="transform.scale.xy" targetId="#3">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="transform.scale.xy" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="opacity" targetId="#3">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="opacity" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.x" targetId="#2">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.x" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="*" toState="off">
+	<elements>
+	  <LKStateTransitionElement key="transform.scale.xy" targetId="#4">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="transform.scale.xy" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="opacity" targetId="#4">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="opacity" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.x" targetId="#2">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.x" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="off" toState="*">
+	<elements>
+	  <LKStateTransitionElement key="transform.scale.xy" targetId="#4">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="transform.scale.xy" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="opacity" targetId="#4">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="opacity" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.x" targetId="#2">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.x" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="*" toState="mute">
+	<elements>
+	  <LKStateTransitionElement key="bounds.size.height" targetId="#5">
+	    <animation type="CASpringAnimation" damping="39" mass="2" stiffness="400" keyPath="bounds.size.height" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="bounds.size.height" targetId="#6">
+	    <animation type="CASpringAnimation" damping="39" mass="2" stiffness="400" keyPath="bounds.size.height" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="opacity" targetId="#5">
+	    <animation type="CABasicAnimation" keyPath="opacity" beginTime="0" duration="0.04600926849299" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.y" targetId="#5">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.y" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="hidden" targetId="#7">
+	    <animation type="CABasicAnimation" keyPath="hidden" beginTime="1" duration="0.1025" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.y" targetId="#6">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.y" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.x" targetId="#2">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.x" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.x" targetId="#6">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.x" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="hidden" targetId="#8">
+	    <animation type="CABasicAnimation" keyPath="hidden" beginTime="0" duration="0.04116618759899" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="hidden" targetId="#9">
+	    <animation type="CABasicAnimation" keyPath="hidden" beginTime="1" duration="0.1025" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="mute" toState="*">
+	<elements>
+	  <LKStateTransitionElement key="bounds.size.height" targetId="#5">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="bounds.size.height" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="bounds.size.height" targetId="#6">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="bounds.size.height" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="opacity" targetId="#5">
+	    <animation type="CABasicAnimation" keyPath="opacity" beginTime="0.19" duration="0.12" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.y" targetId="#5">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.y" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="hidden" targetId="#7">
+	    <animation type="CABasicAnimation" keyPath="hidden" duration="0.0425" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.y" targetId="#6">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.y" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.x" targetId="#2">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.x" beginTime="0" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="position.x" targetId="#6">
+	    <animation type="CASpringAnimation" damping="36" mass="2" stiffness="300" keyPath="position.x" beginTime="0" duration="1" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="hidden" targetId="#8">
+	    <animation type="CABasicAnimation" keyPath="hidden" beginTime="0.2000000029802" duration="0.0096684167302" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="hidden" targetId="#9">
+	    <animation type="CABasicAnimation" keyPath="hidden" beginTime="0.2000000029802" duration="0.0096684167302" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="*" toState="max">
+	<elements>
+	  <LKStateTransitionElement key="transform.scale.xy" targetId="#10">
+	    <animation type="CABasicAnimation" keyPath="transform.scale.xy" duration="0.275" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="transform.scale.xy" targetId="#2">
+	    <animation type="CASpringAnimation" damping="20" mass="2" stiffness="200" keyPath="transform.scale.xy" beginTime="0.1" duration="1.545" fillMode="backwards"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+      <LKStateTransition fromState="max" toState="*">
+	<elements>
+	  <LKStateTransitionElement key="transform.scale.xy" targetId="#10">
+	    <animation type="CABasicAnimation" keyPath="transform.scale.xy" duration="0" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	  <LKStateTransitionElement key="transform.scale.xy" targetId="#2">
+	    <animation type="CABasicAnimation" keyPath="transform.scale.xy" duration="0" fillMode="backwards" timingFunction="default"/>
+	  </LKStateTransitionElement>
+	</elements>
+      </LKStateTransition>
+    </stateTransitions>
+  </CALayer>
+</caml>

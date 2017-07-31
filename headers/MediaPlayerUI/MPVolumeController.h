@@ -18,7 +18,7 @@
 	BOOL _debugVolumeWarning;
 	BOOL _volumeWarningEnabled;
 	float _volumeValue;
-	CGFloat _EUVolumeLimit;
+	float _EUVolumeLimit;
 	id<MPVolumeControllerDelegate> _delegate;
 	NSInteger _volumeWarningState;
 
@@ -31,14 +31,14 @@
 @property (nonatomic,copy) NSString * volumeAudioCategory; 
 @property (nonatomic,readonly) BOOL volumeWarningEnabled;                                 //@synthesize volumeWarningEnabled=_volumeWarningEnabled - In the implementation block
 @property (nonatomic,readonly) NSInteger volumeWarningState;                              //@synthesize volumeWarningState=_volumeWarningState - In the implementation block
-@property (nonatomic,readonly) CGFloat EUVolumeLimit;                                       //@synthesize EUVolumeLimit=_EUVolumeLimit - In the implementation block
+@property (nonatomic,readonly) float EUVolumeLimit;                                       //@synthesize EUVolumeLimit=_EUVolumeLimit - In the implementation block
 -(id)init;
 -(void)setDelegate:(id<MPVolumeControllerDelegate>)arg1 ;
-// -(void)dealloc;
+-(void)dealloc;
 -(id<MPVolumeControllerDelegate>)delegate;
 -(void)_isExternalPlaybackActiveDidChangeNotification:(id)arg1 ;
 -(BOOL)muted;
--(CGFloat)setVolumeValue:(float)arg1 ;
+-(float)setVolumeValue:(float)arg1 ;
 -(BOOL)volumeWarningEnabled;
 -(NSInteger)volumeWarningState;
 -(void)updateVolumeWarningState;
@@ -46,21 +46,21 @@
 -(void)_availableRoutesDidChangeNotification:(id)arg1 ;
 -(NSString *)volumeAudioCategory;
 -(void)setVolumeAudioCategory:(NSString *)arg1 ;
--(CGFloat)EUVolumeLimit;
+-(float)EUVolumeLimit;
 -(void)_mediaServerDiedNotification:(id)arg1 ;
 -(void)_systemVolumeDidChange:(id)arg1 ;
 -(void)_setupNotifications;
 -(void)_tearDownNotifications;
--(CGFloat)_volumeFromAVController;
+-(float)_volumeFromAVController;
 -(void)_setVolumeWarningState:(NSInteger)arg1 ;
 -(float)volumeValue;
--(void)_internalSetVolumeValue:(CGFloat)arg1 ;
+-(void)_internalSetVolumeValue:(float)arg1 ;
 -(BOOL)_isPlayerInValidState;
 -(void)_systemMuteDidChange:(id)arg1 ;
 -(void)_EUVolumeLimitDidChange:(id)arg1 ;
 -(void)_EUVolumeLimitEnforcedDidChange:(id)arg1 ;
 -(void)_volumeDidChange:(id)arg1 ;
--(void)_forcefullySetVolumeValue:(CGFloat)arg1 ;
+-(void)_forcefullySetVolumeValue:(float)arg1 ;
 -(void)_applicationDidEnterBackgroundNotification:(id)arg1 ;
 -(void)_applicationWillEnterForegroundNotification:(id)arg1 ;
 -(MPAVController *)player;

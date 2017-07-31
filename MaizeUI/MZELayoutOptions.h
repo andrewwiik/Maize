@@ -11,6 +11,8 @@
 + (CGFloat)regularCornerRadius;
 + (CGFloat)expandedModuleCornerRadius;
 + (CGFloat)defaultExpandedContentModuleWidth;
++ (CGFloat)defaultExpandedSliderHeight;
++ (CGFloat)defaultExpandedSliderWidth;
 
 #pragma mark FlipSwitch Support
 

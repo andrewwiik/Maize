@@ -5,9 +5,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>ConnectivityModule</string>
+	<string>AudioModule</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.ioscreatix.maize.ConnectivityModule</string>
+	<string>com.ioscreatix.maize.AudioModule</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -25,15 +25,15 @@
 		<integer>1</integer>
 		<integer>2</integer>
 	</array>
-	<key>NSPrincipalClass</key>
-	<string>MZEConnectivityModule</string>
 	<key>MZEModuleSize</key>
 	<dict>
 		<key>width</key>
-		<string>2</string>
+		<string>1</string>
 		<key>height</key>
 		<string>2</string>
 	</dict>
+	<key>NSPrincipalClass</key>
+	<string>MZEAudioModule</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>iPhoneOS</string>

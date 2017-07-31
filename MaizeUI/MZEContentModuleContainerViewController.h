@@ -30,6 +30,7 @@
     CGFloat _firstY;
     BOOL _canBubble;
     MZEBreatheGestureRecognizer *_breatheRecognizer;
+    CALayer *_maskLayer;
 }
 
 @property(retain, nonatomic, readwrite) UIViewController *originalParentViewController;
@@ -52,6 +53,7 @@
 @property(copy, nonatomic, readwrite) NSString *moduleIdentifier;
 @property(readonly, nonatomic) MZEContentModuleContainerView *moduleContainerView;
 @property(retain,nonatomic,readwrite) MZEBreatheGestureRecognizer *breatheRecognizer;
+@property (nonatomic, retain, readwrite) CALayer *maskLayer;
 - (id)initWithModuleIdentifier:(NSString *)identifier contentModule:(id<MZEContentModule>)contentModule;
 - (id)init;
 - (id)initWithCoder:(id)arg1;

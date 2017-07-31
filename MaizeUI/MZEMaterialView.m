@@ -1,6 +1,7 @@
 #import "MZEMaterialView.h"
 #import "CornerRadiusAnimationAction.h"
 #import <QuartzCore/CALayer+Private.h>
+#import <UIKit/UIView+Private.h>
 
 struct CAColorMatrix
 {

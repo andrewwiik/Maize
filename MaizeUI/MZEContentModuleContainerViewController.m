@@ -1,6 +1,8 @@
 #import "MZEContentModuleContainerViewController.h"
 #import "MZELayoutOptions.h"
 #import <UIKit/UIScreen+Private.h>
+#import <QuartzCore/CALayer+Private.h>
+#import "_MZEBackdropView.h"
 
 #if __cplusplus
 	extern "C" {
@@ -184,6 +186,97 @@
 		_highlightWrapperView.frame = frame;
 		_backgroundView.frame = frame;
 		_contentContainerView.frame = frame;
+	}
+
+	if ([_contentViewController respondsToSelector:@selector(punchOutRootLayer)]) {
+
+		if (!_maskView && _contentContainerView && _contentContainerView.moduleMaterialView) {
+			self.maskView = [[UIView alloc] initWithFrame:self.view.bounds];
+            [_maskView setAutoresizingMask:18];
+            _maskView.backgroundColor = [UIColor clearColor];
+
+            UIView *cutoutView = [[UIView alloc] initWithFrame:self.view.bounds];
+            [cutoutView setAutoresizingMask:18];
+            cutoutView.backgroundColor = [UIColor blackColor];
+            [_maskView addSubview:cutoutView];
+
+            _contentContainerView.moduleMaterialView.backdropView.maskView = _maskView;
+		}
+
+		if (_maskView && (!_maskLayer || [_contentViewController punchOutRootLayer] != _maskLayer)) {
+			if (_maskLayer) {
+				[_maskLayer removeFromSuperlayer];
+			}
+
+			self.maskLayer = [_contentViewController punchOutRootLayer];
+			_maskLayer.compositingFilter = @"destOut";
+
+			[((UIView *)[_maskView subviews][0]).layer addSublayer:_maskLayer];
+		}
+
+		if (_maskView) {
+			_maskView.frame = self.view.bounds;
+		}
+		// if (!_maskView || [_contentViewController punchOutRootLayer] != _maskLayer || !_maskView) {
+		// 	if (_maskLayer) {
+		// 		[_maskLayer removeFromSuperlayer];
+		// 	}
+		// 	_maskLayer = nil;
+		// 	if (_contentContainerView && _contentContainerView.moduleMaterialView) {
+		// 		if ([[_contentContainerView.layer sublayers] count] > 0) {
+		// 			_maskLayer = [_contentViewController punchOutRootLayer];
+		// 			[_contentContainerView.layer insertSublayer:_maskLayer atIndex:1];
+		// 		} else {
+
+		// 		}
+		// 	}
+
+
+			// UIView *maskThing = [[UIView alloc] init];
+			// maskThing.frame = self.view.bounds;
+			// maskThing.backgroundColor = [UIColor clearColor];
+			// _maskView = maskThing;
+			// _maskView = [[_MZEBack alloc] initWithFrame:self.view.bounds];
+			// _maskView.backgroundColor = [UIColor clearColor];
+
+
+			// UIView *otherMaskView = [[UIView alloc] initWithFrame:self.view.bounds];
+			// otherMaskView.backgroundColor = [UIColor clearColor];
+
+
+			// UIView *_maskView2 = [[UIView alloc] initWithFrame:self.view.bounds];
+			// _maskView2.backgroundColor = [UIColor blackColor];
+			// [_maskView2 setAutoresizingMask:18];
+			// [otherMaskView addSubview:_maskView2];
+
+			// [_contentViewController punchOutRootLayer].compositingFilter = @"destOut";
+			// [_maskView2.layer addSublayer:[_contentViewController punchOutRootLayer]];
+			// [_maskView2.layer setAllowsGroupBlending:NO];
+			//[self.view addSubview:_maskView];
+
+			// _otherMaskView = otherMaskView;
+			// [self.view addSubview:maskThing];
+			// maskThing.maskView = _otherMaskView;
+			// _maskView = maskThing;
+			//[self.view sendSubviewToBack:_maskView];
+			//_maskView2.backgroundColor = [UIColor blackColor];
+			//_maskView2.layer.fillRule = kCAFillRuleEvenOdd;
+			//_maskView.layer.fillRule = kCAFillRuleEvenOdd;
+			//self.view.maskView = _maskView;
+			//_contentContainerView.moduleMaterialView.maskView = _maskView;
+			//[self.view addSubview:_maskView];
+
+			//_contentContainerView.maskView = _maskView;
+			// [_contentViewController punchOutRootLayer].compositingFilter = @"destOut";
+			// [_maskView.layer addSublayer:[_contentViewController punchOutRootLayer]];
+			// _maskView.backgroundColor = [UIColor blackColor];
+			// //_maskView.hidden = YES;
+			// //_maskView.layer.mask = [_contentViewController punchOutRootLayer];
+			// //_maskView.layer.compositingFilter = @"destOut";
+			// [_maskView.layer setAllowsGroupBlending:NO];
+			//_maskView.userInteractionEnabled = NO;
+			// _contentContainerView.maskView = _maskView;
+		// }
 	}
 }
 

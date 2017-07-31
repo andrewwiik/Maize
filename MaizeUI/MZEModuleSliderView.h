@@ -1,10 +1,13 @@
 
 #import "MZECAPackageView.h"
+#import "MZEMaterialView.h"
+#import <QuartzCore/CAPackage+Private.h>
 
 @interface MZEModuleSliderView : UIControl
 {
     UIImageView *_glyphImageView;
     MZECAPackageView *_glyphPackageView;
+    MZECAPackageView *_otherGlyphPackageView;
     NSArray *_stepBackgroundViews;
     NSArray *_separatorViews;
     CGFloat _startingHeight;
@@ -18,9 +21,11 @@
     float _value;
     UIImage *_glyphImage;
     CAPackage *_glyphPackage;
+    CAPackage *_otherGlyphPackage;
     NSString *_glyphState;
     NSUInteger _numberOfSteps;
     NSUInteger _step;
+    UIView *_glyphMaskView;
 }
 
 @property(nonatomic) NSUInteger step;
@@ -31,7 +36,10 @@
 @property(nonatomic, getter=isGlyphVisible) BOOL glyphVisible;
 @property(retain, nonatomic, readwrite) NSString *glyphState;
 @property(retain, nonatomic, readwrite) CAPackage *glyphPackage;
+@property (retain, nonatomic, readwrite) CAPackage *otherGlyphPackage;
 @property(retain, nonatomic, readwrite) UIImage *glyphImage;
+@property(retain, nonatomic, readwrite) UIView *glyphMaskView;
+@property(nonatomic, readonly) CALayer *punchOutRootLayer; 
 - (void)_updateStepFromValue:(float)arg1;
 - (void)_updateValueForTouchLocation:(CGPoint)arg1 withAbsoluteReference:(BOOL)arg2;
 - (float)_valueFromStep:(NSUInteger)arg1;
@@ -39,8 +47,8 @@
 - (CGFloat)_sliderHeight;
 - (CGFloat)_fullStepHeight;
 - (CGFloat)_heightForStep:(NSUInteger)arg1;
-- (id)_createSeparatorView;
-- (id)_createBackgroundViewForStep:(NSUInteger)arg1;
+- (MZEMaterialView *)_createSeparatorView;
+- (MZEMaterialView *)_createBackgroundViewForStep:(NSUInteger)arg1;
 - (void)_createSeparatorViewsForNumberOfSteps:(NSUInteger)arg1;
 - (void)_createStepViewsForNumberOfSteps:(NSUInteger)arg1;
 - (void)_layoutValueViews;
@@ -48,6 +56,7 @@
 - (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event;
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event;
 - (void)layoutSubviews;
+- (BOOL)isGroupRenderingRequired;
 @property(readonly, nonatomic, getter=isStepped) BOOL stepped;
 - (id)initWithFrame:(struct CGRect)arg1;
 @end

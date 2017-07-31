@@ -12,11 +12,7 @@
 	static NSBundle *_sharedTemplateBundle;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken,  ^{
-    	if ([NSBundle respondsToSelector:@selector(mze_bundleWithPath:)]) {
-        	_sharedTemplateBundle = [NSBundle mze_bundleWithPath:[[NSBundle bundleForClass:NSClassFromString(@"MZEFlipSwitchToggleModule")] bundlePath]];
-    	} else {
-    		_sharedTemplateBundle = [NSBundle bundleForClass:NSClassFromString(@"MZEFlipSwitchToggleModule")];
-    	}
+    	_sharedTemplateBundle = [NSBundle bundleForClass:[self class]];
     });
     return _sharedTemplateBundle;
 }
