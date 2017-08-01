@@ -6,7 +6,7 @@
 }
 
 - (void)_updateStringForEnabledStatus:(BOOL)enabledStatus {
-	[self setSubtitle:[self subtitle]];
+	[self setSubtitle:[self subtitleText]];
 }
 
 - (void)buttonTapped:(UIControl *)button {
@@ -41,6 +41,14 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self setTitle:[self displayName]];
+}
+
+- (void)willResignActive {
+
+}
+
+- (void)willBecomeActive {
+	
 }
 
 @end

@@ -28,6 +28,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 @interface CCUIControlCenterViewController (MZE)
 @property (nonatomic, retain) MZEModularControlCenterViewController *mze_viewController;
+- (BOOL)isPresented;
 @end
 
 
@@ -248,6 +249,37 @@ typedef struct CAColorMatrix CAColorMatrix;
     }
   } else {
     return YES;
+  }
+}
+
+// -(BOOL)gestureRecognizerShouldBegin:(id)arg1 {
+
+// }
+
+-(void)controlCenterWillPresent {
+  %orig;
+  if (self.mze_viewController) {
+    [self.mze_viewController willBecomeActive];
+  }
+}
+
+-(void)controlCenterDidDismiss {
+  %orig;
+  if (self.mze_viewController) {
+    [self.mze_viewController willResignActive];
+  }
+}
+
+-(void)controlCenterDidFinishTransition {
+  %orig;
+  if ([self isPresented]) {
+    if (self.mze_viewController) {
+      [self.mze_viewController willBecomeActive];
+    }
+  } else {
+    if (self.mze_viewController) {
+      [self.mze_viewController willResignActive];
+    }
   }
 }
 %end

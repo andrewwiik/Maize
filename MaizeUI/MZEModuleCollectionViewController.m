@@ -29,9 +29,12 @@
 
 - (void)willBecomeActive {
 	if (_moduleViewControllerByIdentifier) {
+		//self.view.backgroundColor = [UIColor redColor];
 		NSArray<MZEContentModuleContainerViewController *> *viewControllers = [_moduleViewControllerByIdentifier allValues];
+		//HBLogInfo(@"ALL CURRENT CONTROLLERS: %@", viewControllers);
 		for (MZEContentModuleContainerViewController *viewController in viewControllers) {
 			[viewController willBecomeActive];
+			//viewController.view.backgroundColor = [UIColor greenColor];
 		}
 	}
 }
@@ -88,6 +91,8 @@
 		viewController.view.frame = [self compactModeFrameForContentModuleContainerViewController:viewController];
 		[self _setupAndAddModuleViewControllerToHierarchy:viewController];
 	}
+
+	_moduleViewControllerByIdentifier = moduleViewControllerByIdentifier;
 }
 
 - (NSArray<MZEModuleInstance *> *)_moduleInstances {
@@ -138,7 +143,7 @@
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didFinishInteractionWithModule:(id <MZEContentModule>)arg2 {
-
+	[_delegate moduleCollectionViewController:self didFinishInteractionWithModule:arg2];
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didBeginInteractionWithModule:(id <MZEContentModule>)arg2 {

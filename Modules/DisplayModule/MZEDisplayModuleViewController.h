@@ -23,8 +23,6 @@
 @property(readonly, nonatomic) float currentBrightness;
 
 - (void)_sliderValueDidChange:(MZEModuleSliderView *)slider;
-- (void)viewWillAppear:(BOOL)willAppear;
-- (void)viewDidDisappear:(BOOL)didDisappear;
 - (void)willTransitionToExpandedContentMode:(BOOL)willTransition;
 - (void)setGlyphState:(NSString *)glyphState;
 - (void)setGlyphPackage:(CAPackage *)glyphPackage;

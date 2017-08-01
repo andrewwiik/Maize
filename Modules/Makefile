@@ -20,4 +20,5 @@ SUBPROJECTS += RingerModule
 SUBPROJECTS += VPNModule
 SUBPROJECTS += AudioModule
 SUBPROJECTS += DisplayModule
+# SUBPROJECTS += CellularDataModule
 include $(THEOS_MAKE_PATH)/aggregate.mk

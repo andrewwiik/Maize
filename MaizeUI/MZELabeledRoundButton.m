@@ -32,11 +32,13 @@
 
 
 - (id)initWithGlyphPackage:(CAPackage *)glyphPackage highlightColor:(UIColor *)highlightColor {
-	self = [self initWithHighlightColor:_highlightColor];
+	self = [self initWithHighlightColor:highlightColor];
 
 	if (self) {
 		_glyphPackage = glyphPackage;
-		_buttonView = [[MZERoundButton alloc] initWithGlyphPackage:glyphPackage highlightColor:highlightColor];
+		_highlightColor = highlightColor;
+
+		_buttonView = [[MZERoundButton alloc] initWithGlyphPackage:glyphPackage highlightColor:_highlightColor];
 		[_buttonView addTarget:self action:@selector(buttonTapped:) forControlEvents:0x40];
 		_buttonView.translatesAutoresizingMaskIntoConstraints = NO;
 		[self addSubview:_buttonView];
@@ -50,13 +52,20 @@
 		[self addConstraint:self.buttonWidthConstraint];
 		[self addConstraint:self.buttonHeightConstraint];
 
+		[self addConstraint:Constraint(self.titleLabel,NSCCenterX,NSCEqual,self,NSCCenterX,0)];
+		CGFloat titlePadding = _buttonView.bounds.size.height + ([[MZEFontOptions roundButtonTitleFont] _scaledValueForValue:13.5] - [MZEFontOptions roundButtonTitleFont].descender);
+		[self addConstraint:Constraint(self.titleLabel,NSCTop,NSCEqual,self.buttonView,NSCBottom,titlePadding)];
+
+		[self addConstraint:Constraint(self.subtitleLabel,NSCCenterX,NSCEqual,self,NSCCenterX,0)];
+		[self addConstraint:Constraint(self.subtitleLabel,NSCTop,NSCEqual,self.titleLabel,NSCBottom,[MZEFontOptions roundButtonTitleFont].leading)];
+
 	}
 
 	return self;
 }
 
 - (id)initWithGlyphImage:(UIImage *)glyphImage highlightColor:(UIColor *)highlightColor {
-	self = [self initWithHighlightColor:_highlightColor];
+	self = [self initWithHighlightColor:highlightColor];
 	
 	if (self) {
 		_glyphImage = glyphImage;
@@ -74,6 +83,14 @@
 		[self addConstraint:self.buttonWidthConstraint];
 		[self addConstraint:self.buttonHeightConstraint];
 
+		[self addConstraint:Constraint(self.titleLabel,NSCCenterX,NSCEqual,self,NSCCenterX,0)];
+		CGFloat titlePadding = _buttonView.bounds.size.height + ([[MZEFontOptions roundButtonTitleFont] _scaledValueForValue:13.5] - [MZEFontOptions roundButtonTitleFont].descender);
+		[self addConstraint:Constraint(self.titleLabel,NSCTop,NSCEqual,self.buttonView,NSCBottom,titlePadding)];
+
+		[self addConstraint:Constraint(self.subtitleLabel,NSCCenterX,NSCEqual,self,NSCCenterX,0)];
+		[self addConstraint:Constraint(self.subtitleLabel,NSCTop,NSCEqual,self.titleLabel,NSCBottom,[MZEFontOptions roundButtonTitleFont].leading)];
+
+
 
 	}
 
@@ -87,7 +104,7 @@
 		_highlightColor = highlightColor;
 		_buttonSize = CGSizeMake([MZELayoutOptions roundButtonSize],[MZELayoutOptions roundButtonSize]);
 
-		_titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+		self.titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 		_titleLabel.textAlignment = NSTextAlignmentCenter;
 		_titleLabel.clipsToBounds = NO;
 		_titleLabel.font = [MZEFontOptions roundButtonTitleFont];
@@ -96,9 +113,6 @@
 		_titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
 
 		[self addSubview:_titleLabel];
-		[self addConstraint:Constraint(self.titleLabel,NSCCenterX,NSCEqual,self,NSCCenterX,0)];
-		CGFloat titlePadding = _buttonView.bounds.size.height + ([[MZEFontOptions roundButtonTitleFont] _scaledValueForValue:13.5] - [MZEFontOptions roundButtonTitleFont].descender);
-		[self addConstraint:Constraint(self.titleLabel,NSCTop,NSCEqual,self.buttonView,NSCBottom,titlePadding)];
 		
 		_subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 		_subtitleLabel.textAlignment = NSTextAlignmentCenter;
@@ -109,9 +123,6 @@
 		_titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
 
 		[self addSubview:_subtitleLabel];
-		[self addConstraint:Constraint(self.subtitleLabel,NSCCenterX,NSCEqual,self,NSCCenterX,0)];
-		[self addConstraint:Constraint(self.subtitleLabel,NSCTop,NSCEqual,self.titleLabel,NSCBottom,[MZEFontOptions roundButtonTitleFont].leading)];
-
 	}
 
 	return self;

@@ -89,6 +89,18 @@
 	}
 }
 
+- (void)willResignActive {
+	if (_collectionViewController) {
+		[_collectionViewController willResignActive];
+	}
+}
+- (void)willBecomeActive {
+	if (_collectionViewController) {
+		//self.view.backgroundColor = [UIColor redColor];
+		[_collectionViewController willBecomeActive];
+	}
+}
+
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willRemoveModuleContainerViewController:(MZEContentModuleContainerViewController *)moduleContainerViewController {
 
 }
@@ -110,6 +122,7 @@
 }
 
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willOpenExpandedModule:(id <MZEContentModule>)module {
+	
 
 }
 

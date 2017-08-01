@@ -57,15 +57,14 @@
 	[_sliderView setGlyphVisible:willTransition ? NO : YES];
 }
 
-- (void)viewWillAppear:(BOOL)willAppear {
-	[super viewWillAppear:willAppear];
+- (void)willBecomeActive {
+	// [super viewWillAppear:willAppear];
 	[self _updateWithCurrentBrightnessAnimated:NO];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_noteScreenBrightnessDidChange:) name:@"UIScreenBrightnessDidChangeNotification" object:nil];
 		
 }
 
-- (void)viewDidDisappear:(BOOL)didDisappear {
-	[super viewDidDisappear:didDisappear];
+- (void)willResignActive {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"UIScreenBrightnessDidChangeNotification" object:nil];
 }
 
@@ -99,6 +98,7 @@
 
 - (void)_sliderValueDidChange:(MZEModuleSliderView *)slider {
 	[self _setBacklightLevel:[slider value]];
+	//[_delegate displayModuleViewController:self brightnessDidChange:[slider value]];
 }
 
 - (CALayer *)punchOutRootLayer {

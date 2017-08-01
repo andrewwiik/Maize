@@ -8,7 +8,7 @@
 
 	if (self) {
 		_glyphPackage = glyphPackage;
-		_highlightColor = highlightColor;
+		self.highlightColor = highlightColor;
 	}
 
 	return self;
@@ -18,7 +18,7 @@
 
 	if (self) {
 		_glyphImage = glyphImage;
-		_highlightColor = highlightColor;
+		self.highlightColor = highlightColor;
 	}
 
 	return self;

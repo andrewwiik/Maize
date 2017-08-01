@@ -20,6 +20,7 @@
 		[_highlightStateBackgroundView setBackgroundColor:_highlightColor];
 		[_highlightStateBackgroundView setUserInteractionEnabled:NO];
 		[_highlightStateBackgroundView setAlpha:0.0];
+		_highlightStateBackgroundView.backgroundColor = highlightColor;
 		[self addSubview:_highlightStateBackgroundView];
 
 		[self addTarget:self action:@selector(_touchDown:) forControlEvents:0x1];
@@ -55,6 +56,7 @@
 		[_glyphImageView setFrame:CGRectZero];
 		[_glyphImageView setAutoresizingMask:18];
 		[_glyphImageView setContentMode:UIViewContentModeCenter];
+		_glyphImageView.tintColor = [UIColor whiteColor];
 		[self addSubview:_glyphImageView];
 
 		_highlightedGlyphView = [[UIImageView alloc] initWithImage:_glyphImage];
@@ -62,6 +64,7 @@
 		[_highlightedGlyphView setAutoresizingMask:18];
 		[_highlightedGlyphView setContentMode:UIViewContentModeCenter];
 		[_highlightedGlyphView setAlpha:0];
+		_highlightedGlyphView.tintColor = [UIColor whiteColor];
 		[self addSubview:_highlightedGlyphView];
 	}
 	return self;

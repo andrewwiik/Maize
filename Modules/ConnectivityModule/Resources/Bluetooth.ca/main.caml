@@ -16,14 +16,14 @@
     </sublayers>
     <states>
       <LKState name="off"/>
-      <LKState name="seeking" basedOn="beginseeking">
+      <LKState name="seeking" basedOn="off">
 	<elements>
 	  <LKStateSetValue targetId="#1" keyPath="opacity">
-	    <value type="real" value="0.1000000014901"/>
+	    <value type="integer" value="1"/>
 	  </LKStateSetValue>
 	</elements>
       </LKState>
-      <LKState name="on" basedOn="seeking">
+      <LKState name="on">
 	<elements>
 	  <LKStateSetValue targetId="#1" keyPath="opacity">
 	    <value type="integer" value="1"/>
@@ -35,14 +35,20 @@
       <LKStateTransition fromState="*" toState="seeking">
 	<elements>
 	  <LKStateTransitionElement key="opacity" targetId="#1">
-	    <animation type="CAKeyframeAnimation" calculationMode="linear" keyPath="opacity" autoreverses="1" beginTime="1e-100" duration="0.6000000238419" fillMode="both" removedOnCompletion="1" repeatCount="Inf" timingFunction="easeInEaseOut">
+	    <animation type="CAKeyframeAnimation" keyPath="opacity" beginTime="1e-100" duration="1" fillMode="both" removedOnCompletion="1" repeatCount="Inf">
 	      <keyTimes>
 		<integer value="0"/>
+		<real value="0.2293158405593"/>
 		<integer value="1"/>
 	      </keyTimes>
+	      <timingFunctions>
+		<CAMediaTimingFunction value="0.29712 -0.0052251 0.24359 0.99619"/>
+		<CAMediaTimingFunction value="0.88669 -0.015013 0.61462 1.01"/>
+	      </timingFunctions>
 	      <values>
 		<real value="0.25"/>
 		<integer value="1"/>
+		<real value="0.25"/>
 	      </values>
 	    </animation>
 	  </LKStateTransitionElement>

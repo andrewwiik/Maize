@@ -28,7 +28,7 @@
 }
 
 - (CAPackage *)glyphPackage {
-	NSURL *packageURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"MPAVScreenMirroring" withExtension:@"ca"];
+	NSURL *packageURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"DoNotDisturb" withExtension:@"ca"];
     return [CAPackage packageWithContentsOfURL:packageURL type:kCAPackageTypeCAMLBundle options:nil error:nil];
 }
 

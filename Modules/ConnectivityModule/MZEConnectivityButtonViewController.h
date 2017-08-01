@@ -10,5 +10,7 @@
 - (NSString *)statusText;
 - (NSString *)subtitleText;
 - (void)viewDidLoad;
+- (void)willResignActive;
+- (void)willBecomeActive;
 
 @end

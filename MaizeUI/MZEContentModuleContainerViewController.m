@@ -70,6 +70,7 @@
 - (void)willBecomeActive {
 	if ([_contentViewController respondsToSelector:@selector(willBecomeActive)]) {
 		[_contentViewController willBecomeActive];
+		//self.view.backgroundColor = [UIColor redColor];
 	} else {
 		if ([_contentViewController respondsToSelector:@selector(controlCenterWillPresent)]) {
 			[_contentViewController controlCenterWillPresent];
