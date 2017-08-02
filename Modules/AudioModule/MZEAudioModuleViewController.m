@@ -55,6 +55,7 @@
 
 - (void)willTransitionToExpandedContentMode:(BOOL)willTransition {
 	[_sliderView setGlyphVisible:willTransition ? NO : YES];
+	_sliderView.layer.cornerRadius = willTransition ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
 }
 
 - (void)willResignActive {

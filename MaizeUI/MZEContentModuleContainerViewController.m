@@ -3,6 +3,9 @@
 #import <UIKit/UIScreen+Private.h>
 #import <QuartzCore/CALayer+Private.h>
 #import "_MZEBackdropView.h"
+#import "MZEExpandedModulePresentationTransition.h"
+#import "MZEExpandedModulePresentationController.h"
+#import <UIKit/UIViewController+Window.h>
 
 #if __cplusplus
 	extern "C" {
@@ -33,6 +36,11 @@
 		_didSendContentAppearanceCalls = NO;
     	_didSendContentDisappearanceCalls = NO;
     	_canBubble = YES;
+
+		if ([self respondsToSelector:@selector(setTransitioningDelegate:)]) {
+        	self.modalPresentationStyle = UIModalPresentationCustom;
+			self.transitioningDelegate = self;
+		}
 	}
 	return self;
 }
@@ -103,6 +111,7 @@
 }
 
 - (void)viewWillMoveToWindow:(UIWindow *)window {
+	[super viewWillMoveToWindow:window];
 	if (window || [self parentViewController] != _originalParentViewController) {
 
 	} else {
@@ -165,11 +174,25 @@
 	_tapRecognizer.delegate = self;
 	[_backgroundView addGestureRecognizer:_tapRecognizer];
 
-	_breatheRecognizer = [[MZEBreatheGestureRecognizer alloc] init];
+	_breatheRecognizer = [[MZEBreatheGestureRecognizer alloc] initWithTarget:self action:@selector(handelBubbleGestureRecognizer:)];
+	_breatheRecognizer.minimumPressDuration = 0;
+	_breatheRecognizer.numberOfTouchesRequired = 1;
+	_breatheRecognizer.allowableMovement = 10.0;
+	_breatheRecognizer.delegate = self;
+
+
 	[_breatheRecognizer setCancelsTouchesInView:NO];
 	_breatheRecognizer.delaysTouchesEnded = NO;
 	[self.view addGestureRecognizer:_breatheRecognizer];
 
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {        
+    return YES;
 }
 
 - (void)viewWillLayoutSubviews {
@@ -216,7 +239,7 @@
 		}
 
 		if (_maskView) {
-			_maskView.frame = self.view.bounds;
+			_maskView.frame = _contentContainerView.bounds;
 		}
 		// if (!_maskView || [_contentViewController punchOutRootLayer] != _maskLayer || !_maskView) {
 		// 	if (_maskLayer) {
@@ -281,6 +304,16 @@
 	}
 }
 
+- (void)setAlpha:(CGFloat)alpha {
+	if (_contentViewController) {
+		_contentViewController.view.alpha = alpha;
+	}
+
+	if (_maskView) {
+		_maskView.alpha = alpha;
+	}
+}
+
 - (BOOL)previewInteractionShouldBegin:(UIPreviewInteraction *)previewInteraction {
 	if ([self isExpanded]) {
 		return NO;
@@ -297,7 +330,9 @@
 }
 
 - (void)previewInteraction:(UIPreviewInteraction *)previewInteraction didUpdatePreviewTransition:(CGFloat)progress ended:(BOOL)ended {
-	
+	if (ended) {
+		[_delegate contentModuleContainerViewController:self openExpandedModule:_contentModule];
+	}
 	return;
 }
 
@@ -359,45 +394,100 @@
 	return;
 }
 
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	HBLogInfo(@"STARTED TOYCHING THINGY");
+- (void)handelBubbleGestureRecognizer:(MZEBreatheGestureRecognizer *)recognizer {
 	if (![self isExpanded]) {
-		UITouch *touch = [[event allTouches] anyObject];
-    	CGPoint touchLocation = [touch locationInView:self.view];
-    	_firstX = touchLocation.x;
-    	_firstY = touchLocation.y;
-    	if (CGAffineTransformEqualToTransform(self.view.transform,CGAffineTransformMakeScale(1.05,1.05))) {
-			//self.view.transform = CGAffineTransformIdentity;
-    	}
-		[UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseIn animations:^{
-			self.view.transform = CGAffineTransformMakeScale(1.05,1.05);
-		} completion:nil];
+		switch (recognizer.state) {
+	        case UIGestureRecognizerStateBegan: {
+	        	_bubbled = YES;
+	            [UIView animateWithDuration:0.25 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
+					self.view.transform = CGAffineTransformMakeScale(1.05,1.05);
+				} completion:nil];
+	            break;
+	        }
+
+	        case UIGestureRecognizerStateCancelled:
+	        case UIGestureRecognizerStateFailed:
+	        case UIGestureRecognizerStateEnded: {
+	        	_bubbled = NO;
+	        	[UIView animateWithDuration:0.25 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+					self.view.transform = CGAffineTransformIdentity;
+				} completion:nil];
+	            // do something
+	            break;
+	        }
+	        default: {
+	    //     	if (_bubbled) {
+	    //     		_bubbled = NO;
+	    //     		[UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
+					// 	self.view.transform = CGAffineTransformIdentity;
+					// } completion:nil];
+	    //     	}
+            	break;
+	        }
+	    }
 	}
 }
 
--(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	if (![self isExpanded] && _canBubble && _firstX != -1 && _firstY != 1) {
-		UITouch *touch = [[event allTouches] anyObject];
-    	CGPoint touchLocation = [touch locationInView:self.view];
-    	if ((_firstX - touchLocation.x >= 10 || _firstX - touchLocation.x <= -10) || (_firstY - touchLocation.y >= 10 || _firstY - touchLocation.y <= -10)) {
-    		_canBubble = NO;
-    		_firstX = 0;
-    		_firstY = 0;
-    		[UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
-				self.view.transform = CGAffineTransformIdentity;
-			} completion:nil];
-    	}
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+	if ([_contentViewController respondsToSelector:@selector(viewWillTransitionToSize:withTransitionCoordinator:)]) {
+		[_contentViewController viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 	}
+	[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
--(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	_firstY = -1;
-	_firstX = -1;
-	if (![self isExpanded] && _canBubble) {
-		[UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
-			self.view.transform = CGAffineTransformIdentity;
-		} completion:nil];
-	}
-	_canBubble = YES;
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
+	return [[MZEExpandedModulePresentationTransition alloc] init];
 }
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+   return [[MZEExpandedModulePresentationTransition alloc] init];
+}
+
+// show the proxy method of the view
+- (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source {
+   return [[MZEExpandedModulePresentationController alloc]initWithPresentedViewController:presented presentingViewController:presenting];
+    
+}
+
+// -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+// 	HBLogInfo(@"STARTED TOYCHING THINGY");
+// 	if (![self isExpanded]) {
+// 		UITouch *touch = [[event allTouches] anyObject];
+//     	CGPoint touchLocation = [touch locationInView:self.view];
+//     	_firstX = touchLocation.x;
+//     	_firstY = touchLocation.y;
+//     	if (CGAffineTransformEqualToTransform(self.view.transform,CGAffineTransformMakeScale(1.05,1.05))) {
+// 			//self.view.transform = CGAffineTransformIdentity;
+//     	}
+// 		[UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseIn animations:^{
+// 			self.view.transform = CGAffineTransformMakeScale(1.05,1.05);
+// 		} completion:nil];
+// 	}
+// }
+
+// -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+// 	if (![self isExpanded] && _canBubble && _firstX != -1 && _firstY != 1) {
+// 		UITouch *touch = [[event allTouches] anyObject];
+//     	CGPoint touchLocation = [touch locationInView:self.view];
+//     	if ((_firstX - touchLocation.x >= 10 || _firstX - touchLocation.x <= -10) || (_firstY - touchLocation.y >= 10 || _firstY - touchLocation.y <= -10)) {
+//     		_canBubble = NO;
+//     		_firstX = 0;
+//     		_firstY = 0;
+//     		[UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
+// 				self.view.transform = CGAffineTransformIdentity;
+// 			} completion:nil];
+//     	}
+// 	}
+// }
+
+// -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+// 	_firstY = -1;
+// 	_firstX = -1;
+// 	if (![self isExpanded] && _canBubble) {
+// 		[UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
+// 			self.view.transform = CGAffineTransformIdentity;
+// 		} completion:nil];
+// 	}
+// 	_canBubble = YES;
+// }
 @end

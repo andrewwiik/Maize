@@ -16,4 +16,11 @@
 	[super setUserInteractionEnabled:enabled];
 	[[self layer] setHitTestsAsOpaque:enabled == NO];
 }
+
+- (void)layoutSubviews {
+	[super layoutSubviews];
+	for (UIView *view in [self subviews]) {
+		view.frame = self.bounds;
+	}
+}
 @end

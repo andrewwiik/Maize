@@ -59,4 +59,14 @@
 - (BOOL)isGroupRenderingRequired;
 @property(readonly, nonatomic, getter=isStepped) BOOL stepped;
 - (id)initWithFrame:(struct CGRect)arg1;
+
+
+#pragma mark Make Corner Radius Animatable
+- (BOOL)shouldForwardSelector:(SEL)aSelector;
+- (id)forwardingTargetForSelector:(SEL)aSelector;
+- (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key;
+
+#pragma mark for expanding animation
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator;
 @end

@@ -54,8 +54,26 @@
 }
 
 - (void)willTransitionToExpandedContentMode:(BOOL)willTransition {
-	[_sliderView setGlyphVisible:willTransition ? NO : YES];
+	_expanded = willTransition;
+	// [_sliderView setGlyphVisible:willTransition ? NO : YES];
+	// _sliderView.layer.cornerRadius = willTransition ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
 }
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [_sliderView viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+  //       [_sliderView setNeedsLayout];
+		// [_sliderView layoutIfNeeded];
+		// [_sliderView _layoutValueViews];
+		[_sliderView setGlyphVisible:_expanded ? NO : YES];
+		_sliderView.layer.cornerRadius = _expanded ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
+        // do whatever
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
+
+    }];
+}
+
 
 - (void)willBecomeActive {
 	// [super viewWillAppear:willAppear];

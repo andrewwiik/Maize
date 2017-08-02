@@ -1,6 +1,7 @@
 #import "MZEConnectivityModuleViewController.h"
 #import <MPUFoundation/MPULayoutInterpolator.h>
 #import "MZEConnectivityLayoutHelper.h"
+#import <UIKit/UIScreen+Private.h>
 
 
 @implementation MZEConnectivityModuleViewController
@@ -67,7 +68,8 @@
 }
 
 - (CGFloat)preferredExpandedContentWidth {
-	return -1;
+	CGSize containerSize = [[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size;
+	return [MZEConnectivityLayoutHelper widthForExpandedContainerWithContainerSize:containerSize defaultButtonSize:[self _buttonSize]];
 }
 
 - (CGFloat)preferredExpandedContentHeight {
@@ -92,6 +94,18 @@
 	for (NSUInteger x = ([self visibleRows] * [self visibleColumns]) - 1; x < [_buttonViewControllers count]; x++) {
 		_buttonViewControllers[x].view.alpha = _isExpanded ? 1.0 : 0.0;
 	}
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+	[coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self.view setNeedsLayout];
+		[self.view layoutIfNeeded];
+        // do whatever
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
+
+    }];
+
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
 - (BOOL)providesOwnPlatter {

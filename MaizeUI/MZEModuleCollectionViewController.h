@@ -16,7 +16,7 @@
 	MZELayoutStyle *_layoutStyle;
     NSMutableDictionary<NSString *, MZEContentModuleContainerViewController *> *_moduleViewControllerByIdentifier;
     MZEControlCenterPositionProvider *_positionProvider;
-    NSMutableArray *_currentModules;
+    NSMutableArray<MZEContentModuleContainerViewController *> *_currentModules;
     __weak id <MZEModuleCollectionViewControllerDelegate> _delegate;
 }
 @property(nonatomic) __weak id <MZEModuleCollectionViewControllerDelegate> delegate; // @synthesize delegate=_delegate;
@@ -38,5 +38,6 @@
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 willOpenExpandedModule:(id <MZEContentModule>)arg2;
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didFinishInteractionWithModule:(id <MZEContentModule>)arg2;
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didBeginInteractionWithModule:(id <MZEContentModule>)arg2;
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController openExpandedModule:(id <MZEContentModule>)expandedModule;
 - (CGRect)compactModeFrameForContentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1;
 @end

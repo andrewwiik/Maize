@@ -111,6 +111,7 @@
 		_titleLabel.numberOfLines = 1;
 		_titleLabel.text = _title;
 		_titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		_titleLabel.textColor = [UIColor whiteColor];
 
 		[self addSubview:_titleLabel];
 		
@@ -120,7 +121,8 @@
 		_subtitleLabel.font = [MZEFontOptions roundButtonSubtitleFont];
 		_subtitleLabel.numberOfLines = 1;
 		_subtitleLabel.text = _subtitle;
-		_titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		_subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		_subtitleLabel.textColor = [UIColor whiteColor];
 
 		[self addSubview:_subtitleLabel];
 	}
@@ -152,6 +154,7 @@
 	[_titleLabel setText:title];
 	[_titleLabel sizeToFit];
 	[self setNeedsLayout];
+	[self layoutIfNeeded];
 }
 
 - (void)setSubtitle:(NSString *)subtitle {
@@ -159,6 +162,7 @@
 	[_subtitleLabel setText:_subtitle];
 	[_subtitleLabel sizeToFit];
 	[self setNeedsLayout];
+	[self layoutIfNeeded];
 }
 
 - (void)_layoutLabels {
@@ -213,6 +217,7 @@
 	if (_labelsVisible != labelsVisible) {
 		_labelsVisible = labelsVisible;
 		[self setNeedsLayout];
+		[self layoutIfNeeded];
 	}
 }
 @end

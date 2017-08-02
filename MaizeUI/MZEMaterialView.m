@@ -79,7 +79,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    [self updateCornerRadius];
+    //[self updateCornerRadius];
 }
 
 - (void)setBrightness:(CGFloat)brightness {
@@ -130,33 +130,33 @@ typedef struct CAColorMatrix CAColorMatrix;
 	return self.backdropView.forcedColorMatrix;
 }
 
-- (id <CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event {
-    if ([event isEqualToString:@"cornerRadius"]) {
-        CABasicAnimation *boundsAnimation;
-        boundsAnimation = (id)[layer animationForKey:@"bounds.size"];
+// - (id <CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event {
+//     if ([event isEqualToString:@"cornerRadius"]) {
+//         CABasicAnimation *boundsAnimation;
+//         boundsAnimation = (id)[layer animationForKey:@"bounds.size"];
         
-        if (boundsAnimation) {
-            CABasicAnimation *animation = (id)boundsAnimation.copy;
-            animation.keyPath = @"cornerRadius";
+//         if (boundsAnimation) {
+//             CABasicAnimation *animation = (id)boundsAnimation.copy;
+//             animation.keyPath = @"cornerRadius";
             
-            CornerRadiusAnimationAction *action;
-            action = [CornerRadiusAnimationAction new];
-            action.pendingAnimation = animation;
-            action.priorCornerRadius = layer.cornerRadius;
-            return action;
-        }
+//             CornerRadiusAnimationAction *action;
+//             action = [CornerRadiusAnimationAction new];
+//             action.pendingAnimation = animation;
+//             action.priorCornerRadius = layer.cornerRadius;
+//             return action;
+//         }
         
-    }
+//     }
     
-    return [super actionForLayer:layer forKey:event];
-}
+//     return [super actionForLayer:layer forKey:event];
+// }
 
-- (void)updateCornerRadius {
-    CGSize size = self.bounds.size;
-    if (_cornerRadiusInterpolator) {
-    	self.backdropView.layer.cornerRadius = [_cornerRadiusInterpolator valueForReferenceMetric:size.height secondaryReferenceMetric:size.width];
-    }
-}
+// - (void)updateCornerRadius {
+//     CGSize size = self.bounds.size;
+//     if (_cornerRadiusInterpolator) {
+//     	self.backdropView.layer.cornerRadius = [_cornerRadiusInterpolator valueForReferenceMetric:size.height secondaryReferenceMetric:size.width];
+//     }
+// }
 
 - (void)setCompactCornerRadius:(CGFloat)compactCornerRadius expandedCornerRadius:(CGFloat)expandedCornerRadius compactSize:(CGSize)compactSize expandedSize:(CGSize)expandedSize {
 	_cornerRadiusInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];

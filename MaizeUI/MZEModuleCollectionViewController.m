@@ -150,6 +150,14 @@
 
 }
 
+- (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController openExpandedModule:(id <MZEContentModule>)expandedModule {
+	[containerViewController.view removeFromSuperview];
+	[containerViewController willMoveToParentViewController:nil];
+	[containerViewController removeFromParentViewController];
+
+	[self presentViewController:containerViewController animated:true completion:nil];
+}
+
 - (CGRect)compactModeFrameForContentModuleContainerViewController:(MZEContentModuleContainerViewController *)viewController {
 	return [_positionProvider  positionForIdentifier:viewController.moduleIdentifier];
 }

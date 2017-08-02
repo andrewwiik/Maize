@@ -9,6 +9,7 @@
 {
     __weak id <MZEDisplayModuleViewControllerDelegate> _delegate;
     MZEModuleSliderView *_sliderView;
+    BOOL _expanded;
 }
 
 @property(retain, nonatomic, readwrite) MPVolumeController *volumeController;

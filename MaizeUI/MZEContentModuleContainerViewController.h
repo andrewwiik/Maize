@@ -6,7 +6,7 @@
 #import "MZEContentModuleContentViewController-Protocol.h"
 #import "MZEBreatheGestureRecognizer.h"
 
-@interface MZEContentModuleContainerViewController : UIViewController <UIGestureRecognizerDelegate, UIPreviewInteractionDelegate>
+@interface MZEContentModuleContainerViewController : UIViewController <UIGestureRecognizerDelegate, UIPreviewInteractionDelegate, UIViewControllerTransitioningDelegate>
 {
     BOOL _expanded;
     BOOL _contentModuleProvidesOwnPlatter;
@@ -29,6 +29,7 @@
     CGFloat _firstX;
     CGFloat _firstY;
     BOOL _canBubble;
+    BOOL _bubbled;
     MZEBreatheGestureRecognizer *_breatheRecognizer;
     CALayer *_maskLayer;
 }
@@ -78,8 +79,12 @@
 - (CGRect)_contentBoundsForTransitionProgress:(CGFloat)arg1;
 - (void)_configureMaskViewIfNecessary;
 - (void)_configureForContentModuleGroupRenderingIfNecessary;
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source;
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed;
+- (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source;
+- (void)setAlpha:(CGFloat)alpha;
+// - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
+// - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
+// - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
 
 @end

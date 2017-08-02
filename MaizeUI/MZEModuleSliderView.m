@@ -1,5 +1,6 @@
 #import "MZEModuleSliderView.h"
 #import "MZECurrentActions.h"
+#import <UIKit/UIView+Private.h>
 
 #if __cplusplus
     extern "C" {
@@ -134,10 +135,12 @@
 
             _glyphMaskView = [[UIView alloc] initWithFrame:self.bounds];
             [_glyphMaskView setAutoresizingMask:0];
+            _glyphMaskView.autoresizesSubviews = YES;
             _glyphMaskView.backgroundColor = [UIColor clearColor];
 
             UIView *cutoutView = [[UIView alloc] initWithFrame:self.bounds];
-            [cutoutView setAutoresizingMask:18];
+            cutoutView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                           UIViewAutoresizingFlexibleHeight);
             cutoutView.backgroundColor = [UIColor blackColor];
             [_glyphMaskView addSubview:cutoutView];
             [cutoutView.layer addSublayer:_glyphPackageView.layer];
@@ -157,6 +160,13 @@
 
         _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
         _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+}
+
+- (void)setAlpha:(CGFloat)alpha {
+    [super setAlpha:alpha];
+    if (_glyphMaskView) {
+        _glyphMaskView.alpha = alpha;
+    }
 }
 
 - (void)layoutSubviews {
@@ -252,27 +262,28 @@
             if (x < _step) {
                 [stepBackgroundView setAlpha:1];
                 CGRect bounds = [self bounds];
-                [UIView performWithoutAnimation:^{
+                //[UIView performWithoutAnimation:^{
                     CGFloat fullStepHeight = [self _fullStepHeight];
                     CGFloat stepOriginY = CGRectGetHeight(bounds) - ((fullStepHeight * x) - [self _heightForStep:(x+1)] - x);
                     CGRect stepFrame = CGRectMake(0,stepOriginY,CGRectGetWidth(bounds),[self _heightForStep:x + 1]);
                     stepBackgroundView.frame = stepFrame;
-                }];
+               // }];
             } else {
                 [stepBackgroundView setAlpha:0];
             }
         }
 
     } else {
+        CGRect bounds = self.frame;
         CGFloat sliderHeight = UICeilToViewScale([self _sliderHeight], self);
-        CGRect sliderFrame = CGRectMake(0,CGRectGetHeight([self bounds]) - sliderHeight, self.bounds.size.width, sliderHeight);
+        CGRect sliderFrame = CGRectMake(0,CGRectGetHeight(bounds) - sliderHeight, CGRectGetWidth(bounds), sliderHeight);
         [(UIView *)[_stepBackgroundViews objectAtIndex:0] setFrame:sliderFrame];
         if (_glyphMaskView) {
             if ([(MZEMaterialView *)[_stepBackgroundViews objectAtIndex:0] backdropView].maskView == nil) {
                 [(MZEMaterialView *)[_stepBackgroundViews objectAtIndex:0] backdropView].maskView = _glyphMaskView;
             }
 
-            _glyphMaskView.frame = CGRectMake(0,0 - (CGRectGetHeight([self bounds]) - sliderHeight), self.bounds.size.width, CGRectGetHeight([self bounds]));
+            _glyphMaskView.frame = CGRectMake(0,0 - (CGRectGetHeight(bounds) - sliderHeight), CGRectGetWidth(bounds), CGRectGetHeight(bounds));
         }
     }
 }
@@ -327,6 +338,7 @@
         materialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
     } else {
         materialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleLight];
+        materialView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     }
 
     [materialView setUserInteractionEnabled:NO];
@@ -340,7 +352,7 @@
 }
 
 - (CGFloat)_sliderHeight {
-    return CGRectGetHeight([self bounds]) * _value;
+    return CGRectGetHeight([self frame]) * _value;
 }
 
 - (CGFloat)_fullStepHeight {
@@ -415,7 +427,30 @@
     }];
 }
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+         [self setNeedsLayout];
+         [self layoutIfNeeded];
+        // [_sliderView _layoutValueViews];
+        // do whatever
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
+
+    }];
+}
+
 - (CALayer *)punchOutRootLayer {
     return [_otherGlyphPackageView layer];
+}
+
+- (BOOL)shouldForwardSelector:(SEL)aSelector {
+    return [self.layer respondsToSelector:aSelector];
+}
+
+- (id)forwardingTargetForSelector:(SEL)aSelector {
+    return (![self respondsToSelector:aSelector] && [self shouldForwardSelector:aSelector]) ? self.layer : self;
+}
+
+- (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key {
+   return ([self shouldForwardSelector:NSSelectorFromString(key)] || [super _shouldAnimatePropertyWithKey:key]);
 }
 @end
