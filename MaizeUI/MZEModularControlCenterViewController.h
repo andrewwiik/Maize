@@ -4,6 +4,15 @@
 #import "MZEAnimatedBlurView.h"
 #import "_MZEBackdropView.h"
 
+// Andy move this if you want, i'm busy with my roo.
+@interface SBUIChevronView : UIView
+-(void)setState:(long long)arg1 animated:(BOOL)arg2 ;
+-(void)setColor:(UIColor *)arg1 ;
+@end
+@interface UIApplication (Maize)
+-(long long)activeInterfaceOrientation;
+@end
+
 @interface MZEModularControlCenterViewController : UIViewController <MZEModuleCollectionViewControllerDelegate> {
 	CGRect _initFrame;
 	CGFloat _openCollectionViewYOrigin;
@@ -16,6 +25,7 @@
 }
 @property (nonatomic, retain, readwrite) MZEAnimatedBlurView *animatedBackgroundView;
 @property (nonatomic, retain, readwrite) UIView *luminanceBackgroundView;
+@property (nonatomic, retain, readwrite) SBUIChevronView *chevron;
 @property (nonatomic, retain, readwrite) _MZEBackdropView *luminanceBackdropView;
 @property (nonatomic, retain, readwrite) MZEModuleCollectionViewController *collectionViewController;
 @property (nonatomic, retain, readwrite) UIViewPropertyAnimator *animator;
