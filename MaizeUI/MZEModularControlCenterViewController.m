@@ -2,6 +2,7 @@
 #import "MZEModuleInstanceManager.h"
 #import <UIKit/_UIBackdropViewSettings+Private.h>
 #import <QuartzCore/CALayer+Private.h>
+#import "macros.h"
 
 @implementation MZEModularControlCenterViewController
 
@@ -37,7 +38,7 @@
 	    _collectionViewController.delegate = self;
 	    [_collectionViewController loadView];
 	    //collectionViewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	    if ([self isLandscape]) {
+	    if ([self isLandscape] && !(isPad)) {
 	    	_openCollectionViewYOrigin = frame.size.height/2 - _collectionViewController.view.frame.size.height/2;
 	    } else {
 	    	_openCollectionViewYOrigin = frame.size.height - _collectionViewController.view.frame.size.height;
@@ -121,14 +122,14 @@
 }
 - (void)willBecomeActive {
 
-	if ([self isLandscape]) {
+	if ([self isLandscape] && !(isPad)) {
     	_openCollectionViewYOrigin = self.view.center.y;
     } else {
     	_openCollectionViewYOrigin = CGRectGetHeight(self.view.bounds) - [_collectionViewController layoutSize].height*0.5;
     }
 
     if (_collectionViewController && _collectionViewController.view) {
-    	if ([self isLandscape]) {
+    	if ([self isLandscape] && !(isPad)) {
     		CGSize layoutSize = [_collectionViewController layoutSize];
     		self.collectionViewController.view.frame = CGRectMake(self.collectionViewController.view.frame.origin.x,self.collectionViewController.view.frame.origin.y, layoutSize.width,layoutSize.height);
     		_animator = [[UIViewPropertyAnimator alloc] initWithDuration:0 curve:UIViewAnimationCurveLinear animations:^{

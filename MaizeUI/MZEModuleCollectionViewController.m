@@ -163,7 +163,7 @@
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController willCloseExpandedModule:(id <MZEContentModule>)module {
 	[_delegate moduleCollectionViewController:self willCloseExpandedModule:module];
 
-	if ([[UIDevice currentDevice] userInterfaceIdiom] != 1) {
+	if (YES != NO) {
 		for (UIViewController *viewController in [self childViewControllers]) {
 			if (viewController != containerViewController) {
 				if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
@@ -185,7 +185,7 @@
 
 	[_currentModules addObject:containerViewController];
 
-	if ([[UIDevice currentDevice] userInterfaceIdiom] != 1) {
+	if (YES != NO) {
 		for (UIViewController *viewController in [self childViewControllers]) {
 			if (viewController != containerViewController) {
 				if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {

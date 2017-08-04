@@ -33,6 +33,7 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 		[spacingInterpolator addValue:8 forReferenceMetric:320];
 		[spacingInterpolator addValue:15 forReferenceMetric:375];
 		[spacingInterpolator addValue:14 forReferenceMetric:414];
+		[spacingInterpolator addValue:10 forReferenceMetric:768];
 		cachedSpacingSize = [spacingInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
@@ -41,6 +42,7 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 		[edgeInterpolator addValue:66 forReferenceMetric:320];
 		[edgeInterpolator addValue:69 forReferenceMetric:375];
 		[edgeInterpolator addValue:76 forReferenceMetric:414];
+		[edgeInterpolator addValue:66 forReferenceMetric:768];
 		cachedEdgeSize = [edgeInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
@@ -52,6 +54,7 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 		[insetInterpolator addValue:140 forReferenceMetric:568];
 		[insetInterpolator addValue:173 forReferenceMetric:667];
 		[insetInterpolator addValue:60 forReferenceMetric:736];
+		[insetInterpolator addValue:30 forReferenceMetric:768];
 		cachedInsetSize = [insetInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
@@ -60,6 +63,7 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 		[roundButtonInterpolator addValue:52 forReferenceMetric:320];
 		[roundButtonInterpolator addValue:54 forReferenceMetric:375];
 		[roundButtonInterpolator addValue:60 forReferenceMetric:414];
+		[roundButtonInterpolator addValue:52 forReferenceMetric:768];
 		cachedRoundButtonSize = [roundButtonInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
@@ -68,6 +72,7 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 		[roundButtonExpandedSideInsetInterpolator addValue:12 forReferenceMetric:320];
 		[roundButtonExpandedSideInsetInterpolator addValue:16 forReferenceMetric:375];
 		[roundButtonExpandedSideInsetInterpolator addValue:16 forReferenceMetric:414];
+		[roundButtonExpandedSideInsetInterpolator addValue:14 forReferenceMetric:768];
 		cachedRoundButtonExpandedSizeInsetSize = [roundButtonExpandedSideInsetInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
@@ -92,6 +97,8 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 		[sliderExpandedHeightInterpolator addValue:254 forReferenceMetric:568];
 		[sliderExpandedHeightInterpolator addValue:315 forReferenceMetric:667];
 		[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:736];
+		[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:1024];
+		[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:768];
 	}
 
 	if (!sliderExpandedWidthInterpolator) {
@@ -99,7 +106,11 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 		[sliderExpandedWidthInterpolator addValue:106 forReferenceMetric:320];
 		[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:375];
 		[sliderExpandedWidthInterpolator addValue:132 forReferenceMetric:414];
+		[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:768];
+		[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:1024];
 	}
+
+	// 123 - 340
 
 	// if (!flipSwitchGlyphSizeInterpolator) {
 	// 	flipSwitchGlyphSizeInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];

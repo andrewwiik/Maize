@@ -10,6 +10,8 @@
 #define NSCCenterY     NSLayoutAttributeCenterY
 #define NSCBaseline    NSLayoutAttributeBaseline
 
+#define isPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+
 #define NSCLessThanOrEqual     NSLayoutRelationLessThanOrEqual
 #define NSCEqual               NSLayoutRelationEqual
 #define NSCGreaterThanOrEqual  NSLayoutRelationGreaterThanOrEqual

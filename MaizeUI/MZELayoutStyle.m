@@ -7,11 +7,23 @@
 	if (self) {
 		_isLandscape = isLandscape;
 		if (isLandscape) {
-			self.rows = 3;
-			self.columns = -1;
+			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+				_isLandscape = YES;
+				self.rows = 2;
+				self.columns = -1;
+			} else {
+				self.rows = 3;
+				self.columns = -1;
+			}
 		} else {
-			self.columns = 4;
-			self.rows = -1;
+			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+				_isLandscape = YES;
+				self.rows = 2;
+				self.columns = -1;
+			} else {
+				self.columns = 4;
+				self.rows = -1;
+			}
 		}
 
 		self.spacing = [MZELayoutOptions itemSpacingSize];
