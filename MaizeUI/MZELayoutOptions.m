@@ -200,6 +200,10 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 	return [sliderExpandedWidthInterpolator valueForReferenceMetric:[[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size.width];
 }
 
++ (CGRect)orientationRelativeScreenBounds {
+	return [[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation];
+}
+
 
 #pragma mark FlipSwitchCalculations
 
@@ -211,4 +215,5 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 	CGFloat origin = ([self edgeSize] - [self flipSwitchGlyphSize])/2;
 	return CGPointMake(origin,origin);
 }
+
 @end

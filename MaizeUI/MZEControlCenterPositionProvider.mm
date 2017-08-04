@@ -37,6 +37,7 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 		_layoutStyle = layoutStyle;
 		_orderedIdentifiers = orderedIdentifiers;
 		_orderedSizes = orderedSizes;
+		_cachedLayoutSize = CGSizeMake(-1,-1);
 
 		BOOL isLandscape = _layoutStyle.rows == -1 ? NO : YES;
 	
@@ -59,8 +60,16 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 		}
 		//_numberOfRows += 1;
 
-		_binPacker = new rbp::MaxRectsBinPack((int)_numberOfColumns,(int)_numberOfRows);
+		//_binPacker = new rbp::MaxRectsBinPack((int)_numberOfColumns,(int)_numberOfRows);
 		_framesByIdentifiers = [self orderedStuff];
+		NSInteger numberOfRows = _numberOfRows;
+		NSInteger numberOfColumns = _numberOfColumns;
+
+		CGFloat width = numberOfColumns*_layoutStyle.moduleSize + (numberOfColumns-1)*_layoutStyle.spacing + (_layoutStyle.inset * 2);
+		CGFloat height = numberOfRows*_layoutStyle.moduleSize + (numberOfRows - 1)*_layoutStyle.spacing + (_layoutStyle.inset * 2);
+
+		_cachedLayoutSize = CGSizeMake(width, height);
+
 	}
 	return self;
 }
@@ -76,30 +85,19 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 }
 
 - (CGSize)sizeOfLayoutView {
-	BOOL isLandscape = _layoutStyle.rows == -1 ? NO : YES;
-
-	NSInteger numberOfSpacesTaken = 0;
-	NSInteger numberOfRows = 0;
-	NSInteger numberOfColumns = 0;
-	for (NSValue *sizeValue in _orderedSizes) {
-		CGSize size = [sizeValue CGSizeValue];
-		numberOfSpacesTaken += (size.width * size.height);
-	}
-
-	if (isLandscape) {
-		numberOfRows = _layoutStyle.rows;
-		numberOfColumns = (NSInteger)ceil((CGFloat)numberOfSpacesTaken/(CGFloat)numberOfRows);
-
+	if (_cachedLayoutSize.width != -1) {
+		return _cachedLayoutSize;
 	} else {
-		numberOfColumns = _layoutStyle.columns;
-		numberOfRows = (NSInteger)ceil((CGFloat)numberOfSpacesTaken/(CGFloat)numberOfColumns);
-		//if (numberOfRows == 0) numberOfRows = 1;
+
+		NSInteger numberOfRows = _numberOfRows;
+		NSInteger numberOfColumns = _numberOfColumns;
+
+		CGFloat width = numberOfColumns*_layoutStyle.moduleSize + (numberOfColumns-1)*_layoutStyle.spacing + (_layoutStyle.inset * 2);
+		CGFloat height = numberOfRows*_layoutStyle.moduleSize + (numberOfRows - 1)*_layoutStyle.spacing + (_layoutStyle.inset * 2);
+
+		_cachedLayoutSize = CGSizeMake(width, height);
+		return _cachedLayoutSize;
 	}
-
-	CGFloat width = numberOfColumns*_layoutStyle.moduleSize + (numberOfColumns-1)*_layoutStyle.spacing + (_layoutStyle.inset * 2);
-	CGFloat height = numberOfRows*_layoutStyle.moduleSize + (numberOfRows - 1)*_layoutStyle.spacing + (_layoutStyle.inset * 1);
-
-	return CGSizeMake(width, height);
 }
 
 - (void)generateAllFrames {
@@ -135,10 +133,75 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 }
 
 - (NSMutableDictionary *)orderedStuff {
+	if (self.layoutStyle.isLandscape) {
+		_numberOfColumns += 10;
+	}
+
+	_cachedTest = [NSMutableArray new];
+
 	_framesByIdentifiers = [NSMutableDictionary new];
+	NSMutableArray *identifiersToProcess = [_orderedIdentifiers mutableCopy];
+	NSMutableArray *finalGrid = [NSMutableArray new];
+	NSUInteger currentEnumCount = 0;
+
+	for (int r = 0; r < _numberOfRows; r++) {
+	    finalGrid[r] = [NSMutableArray new];
+	    for (int c = 0; c < _numberOfColumns; c++) {
+	        finalGrid[r][c] = [NSNull null];
+	    }
+	}
+
+
+	while ([identifiersToProcess count] > 0) {
+		NSMutableDictionary *processedDict = [self testOtherOrderWithIdentifiers:[identifiersToProcess mutableCopy]];
+		identifiersToProcess = [[processedDict objectForKey:@"uncalculatedIdentifiers"] mutableCopy];
+		NSMutableArray *calculatedGrid = [processedDict objectForKey:@"calculatedGrid"];
+		for (int r = 0; r < [calculatedGrid count]; r++) {
+			NSMutableArray *row = calculatedGrid[r];
+			for (int c = 0; c < [row count]; c++) {
+				finalGrid[r][c + 2*currentEnumCount] = calculatedGrid[r][c];
+			}
+		}
+		[_cachedTest addObject:calculatedGrid];
+		currentEnumCount++;
+	}
+	_enumCount = currentEnumCount;
+
+	self.otherCachedTest = finalGrid; 
+
+	NSMutableArray *orderedSizes = [NSMutableArray new];
+
+	NSUInteger maxCol = 0;
+	NSUInteger maxRow = 0;
+	for (int r = 0; r < [finalGrid count]; r++) {
+		NSMutableArray *row = finalGrid[r];
+	    for (int c = 0; c < [row count]; c++) {
+	     
+	        if (!isNSNull(finalGrid[r][c])) {
+	            if (c > maxCol) maxCol = c;
+	            if (r > maxRow) maxRow = r;
+	  
+	        } else {
+	        }
+	    }
+	}
+
+	_numberOfColumns = maxCol + 1;
+	_numberOfRows = maxRow + 1;
+
+	for (int r = 0; r < _numberOfRows; r++) {
+	    for (int c = 0; c < _numberOfColumns; c++) {
+	        if (!isNSNull(finalGrid[r][c])) {
+	            [orderedSizes addObject:finalGrid[r][c]];
+	        } else {
+	        	[orderedSizes addObject:@"empty"];
+	        }
+	    }
+	}
+
+
 	//NSMutableArray *ordered = [NSMutableArray new];
-	NSMutableArray *orderedSizes = [self testOtherOrder];
-	for (NSString *identifier in _orderedIdentifiers) {
+	for (NSString *identifier in _orderedIdentifiers) { 
 		if ([orderedSizes containsObject:identifier]) {
 			NSInteger index = [orderedSizes indexOfObject:identifier];
 			MZEModuleCoordinate coord = MZEModuleCoordinateMake((index / (int)_numberOfColumns) + 1, (index % (int)_numberOfColumns) + 1);
@@ -158,14 +221,14 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 	return _framesByIdentifiers;
 }
 
-- (NSMutableArray *)testOtherOrder {
+- (NSMutableDictionary *)testOtherOrderWithIdentifiers:(NSMutableArray *)_unfinishedIdentifiers {
 	NSInteger maxNumberOfRows = _numberOfRows;
-	NSInteger maxNumberOfColumns = _numberOfColumns;
+	NSInteger maxNumberOfColumns = self.layoutStyle.isLandscape ? 20 : _numberOfColumns;
 
-	NSMutableArray *identifiers = [_orderedIdentifiers mutableCopy];
+	NSMutableArray *identifiers = [_unfinishedIdentifiers mutableCopy];
 
-
-	NSMutableArray *grid = [NSMutableArray new]; 
+	//BOOL isEnumiration = _unfinishedIdentifiers == nil ? NO : YES;
+	NSMutableArray *grid =  [NSMutableArray new]; 
 	for (int r = 0; r < maxNumberOfRows; r++) {
 	    grid[r] = [NSMutableArray new];
 	    for (int c = 0; c < maxNumberOfColumns; c++) {
@@ -173,7 +236,7 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 	    }
 	}
 
-	NSMutableArray *unfinishedIdentifiers = [_orderedIdentifiers mutableCopy];
+	NSMutableArray *unfinishedIdentifiers = [_unfinishedIdentifiers mutableCopy];
 
 	for (NSString *identifier in identifiers) {
 	    // NSInteger index = [self indexForModuleID:identifier];
@@ -181,12 +244,12 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 	    //     index = 0;
 	    // }
 
-	    NSInteger index = 0;
+	    //NSInteger index = 0;
 
 	    MZEModuleCoordinate coord;
 	    MZEModuleCoordinate origCoord;
 
-	    coord = MZEModuleCoordinateMake((index / maxNumberOfColumns) + 1, (index % maxNumberOfColumns) + 1);
+	    coord = MZEModuleCoordinateMake(1,1);
 	    origCoord = coord;
 
 	    int moduleWidth = [[_orderedSizes objectAtIndex:[_orderedIdentifiers indexOfObject:identifier]] CGSizeValue].width;
@@ -196,19 +259,32 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 	    BOOL isPlaced = NO;
 	                    
 	    while (!isPlaced) {
+	        if (self.layoutStyle.isLandscape) {
+
+	        	if (coord.row + moduleHeight - 1 > maxNumberOfRows) {
+	                
+	                coord.col += 1;
+	                coord.row = 1;
+	            }
+
+	            if (coord.col + moduleWidth - 1 > maxNumberOfColumns || coord.row + moduleHeight - 1 > maxNumberOfRows) {
+	                isPlaced = YES;
+	                continue;
+	            }
+	        } else {
+	            if (coord.col + moduleWidth - 1 > maxNumberOfColumns) {
+	                
+	                coord.row = coord.row + 1;
+	                coord.col = 1;
+	            }
 	        
-            if (coord.col + moduleWidth - 1 > maxNumberOfColumns) {
-                
-                coord.row = coord.row + 1;
-                coord.col = 1;
-            }
-        
-            if (coord.row + moduleHeight - 1 > maxNumberOfRows) {
-                
-                [unfinishedIdentifiers removeObject: identifier];
-                isPlaced = YES;
-                continue;
-            }
+	            if (coord.row + moduleHeight - 1 > maxNumberOfRows) {
+	                
+	                //[unfinishedIdentifiers removeObject: identifier];
+	                isPlaced = YES;
+	                continue;
+	            }
+	        }
 	        
 	        BOOL isValid = YES;
 	        
@@ -252,65 +328,77 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 	            
 	        }
 	        else {
-	            
-	            if (coord.col + moduleWidth - 1 == maxNumberOfColumns) {
-	                
-	                coord.row = coord.row + 1;
-	                coord.col = 1;
+	            if (self.layoutStyle.isLandscape) {
+	            	if (coord.row + moduleHeight - 1 == maxNumberOfRows) {
+	            		coord.col += 1;
+	                	coord.row = 1;
+	            	} else {
+	            		coord.row += 1;
+	            	}
 	            } else {
-	                
-	                coord.col = coord.col + 1;
+	            	if (coord.col + moduleWidth - 1 == maxNumberOfColumns) {
+		                
+		                coord.row += 1;
+		                coord.col = 1;
+		            } else {
+		                
+		                coord.col += 1;
+		            }
 	            }
 	        }
 	    }
 	}
 
-	NSMutableArray *finalGrid = [NSMutableArray new];
+	//NSMutableArray *finalGrid = [NSMutableArray new];
 	        
-	for (int row = 0; row < maxNumberOfRows; row++) {
-	    for (int col = 0; col < maxNumberOfColumns; col++) {
+	// for (int row = 0; row < maxNumberOfRows; row++) {
+	//     for (int col = 0; col < maxNumberOfColumns; col++) {
 	        
-	        if (!isNSNull(grid[row][col])) {
+	//         if (!isNSNull(grid[row][col])) {
 	            
-	            [finalGrid addObject:grid[row][col]];
-	        } else {
-	        	[finalGrid addObject:@"empty"];
-	        }
-	    }
-	}
+	//             [finalGrid addObject:grid[row][col]];
+	//         } else {
+	//         	[finalGrid addObject:@"empty"];
+	//         }
+	//     }
+	// }
 
-	return finalGrid;
+	NSMutableDictionary *finalDict = [NSMutableDictionary new];
+	[finalDict setObject:[grid mutableCopy] forKey:@"calculatedGrid"];
+	[finalDict setObject:unfinishedIdentifiers forKey:@"uncalculatedIdentifiers"];
+
+	return finalDict;
 }
 
-+ (id)justTest {
-	MZELayoutStyle *layoutStyle = [[MZELayoutStyle alloc] initWithSize:CGSizeMake(1,3)];
-	NSMutableArray<NSString *> *orderedIdentifiers = [NSMutableArray new];
-	NSMutableArray<NSValue *> *orderedSizes = [NSMutableArray new];
+// + (id)justTest {
+// 	MZELayoutStyle *layoutStyle = [[MZELayoutStyle alloc] initWithSize:CGSizeMake(1,3)];
+// 	NSMutableArray<NSString *> *orderedIdentifiers = [NSMutableArray new];
+// 	NSMutableArray<NSValue *> *orderedSizes = [NSMutableArray new];
 
-	[orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,2)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,2)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,2)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(2,2)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,2)]]; //
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(2,1)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(2,2)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
-    [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
+// 	[orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,2)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,2)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,2)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(2,2)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,2)]]; //
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(2,1)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(2,2)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
+//     [orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake(1,1)]];
 
-    int count = 0;
-    for (NSValue *value in orderedSizes) {
-    	NSLog(@"%@", value);
-    	[orderedIdentifiers addObject:[NSString stringWithFormat:@"com.ioscreatix.maize.%@", [NSNumber numberWithInteger:count]]];
-    	count++;
-    }
+//     int count = 0;
+//     for (NSValue *value in orderedSizes) {
+//     	NSLog(@"%@", value);
+//     	[orderedIdentifiers addObject:[NSString stringWithFormat:@"com.ioscreatix.maize.%@", [NSNumber numberWithInteger:count]]];
+//     	count++;
+//     }
 
-	MZEControlCenterPositionProvider *provider = [[MZEControlCenterPositionProvider alloc] initWithLayoutStyle:layoutStyle orderedIdentifiers:[orderedIdentifiers copy] orderedSizes:[orderedSizes copy]];
-	[provider generateAllFrames];
-	return provider;
+// 	MZEControlCenterPositionProvider *provider = [[MZEControlCenterPositionProvider alloc] initWithLayoutStyle:layoutStyle orderedIdentifiers:[orderedIdentifiers copy] orderedSizes:[orderedSizes copy]];
+// 	[provider generateAllFrames];
+// 	return provider;
 
-}
+// }
 @end

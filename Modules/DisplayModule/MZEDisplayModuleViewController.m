@@ -15,6 +15,7 @@
             _sliderView.clipsToBounds = YES;
             [_sliderView setThrottleUpdates:NO];
             [_sliderView addTarget:self action:@selector(_sliderValueDidChange:) forControlEvents:UIControlEventValueChanged];
+            [_sliderView  setAutoresizingMask:18];
 	}
 	return self;
 }
@@ -55,23 +56,24 @@
 
 - (void)willTransitionToExpandedContentMode:(BOOL)willTransition {
 	_expanded = willTransition;
-	// [_sliderView setGlyphVisible:willTransition ? NO : YES];
-	// _sliderView.layer.cornerRadius = willTransition ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
+	[_sliderView setGlyphVisible:willTransition ? NO : YES];
+	_sliderView.layer.cornerRadius = willTransition ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+	//_sliderView.clipsToBounds = NO;
     [_sliderView viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
   //       [_sliderView setNeedsLayout];
 		// [_sliderView layoutIfNeeded];
 		// [_sliderView _layoutValueViews];
-		[_sliderView setGlyphVisible:_expanded ? NO : YES];
-		_sliderView.layer.cornerRadius = _expanded ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
+		// [_sliderView setGlyphVisible:_expanded ? NO : YES];
+		//_sliderView.layer.cornerRadius = _expanded ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
         // do whatever
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
 
     }];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
 

@@ -252,6 +252,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 }
 
 - (BOOL)shouldForwardSelector:(SEL)aSelector {
+    if (aSelector == @selector(setBounds:)) return NO;
     return [self.layer respondsToSelector:aSelector];
 }
 

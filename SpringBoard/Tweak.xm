@@ -27,6 +27,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 
 @interface CCUIControlCenterViewController (MZE)
+@property (assign,getter=isPresented,nonatomic) BOOL presented; 
 @property (nonatomic, retain) MZEModularControlCenterViewController *mze_viewController;
 - (BOOL)isPresented;
 @end
@@ -36,17 +37,28 @@ typedef struct CAColorMatrix CAColorMatrix;
 @property (nonatomic, assign) BOOL allowsGroupBlending;
 @end
 
+static BOOL hasCalled = NO;
+
 %hook CCUIControlCenterViewController
 %property (nonatomic, retain) MZEModularControlCenterViewController *mze_viewController;
 
 -(void)setRevealPercentage:(CGFloat)revealPercentage {
-  %orig;
 
   if (!self.mze_viewController) {
     self.mze_viewController = [[MZEModularControlCenterViewController alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
     [self.mze_viewController loadView];
+    self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     [self.view addSubview:self.mze_viewController.view];
   }
+
+  %orig;
+
+  if (!self.presented && !hasCalled) {
+    [self.mze_viewController willBecomeActive];
+  }
+  hasCalled = YES;
+
+ // self.mze_viewController.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height);
 
   // [self.mze_viewController ]
   // if (!self.mze_animatedBlurView) {
@@ -256,31 +268,77 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 // }
 
--(void)controlCenterWillPresent {
-  %orig;
-  if (self.mze_viewController) {
-    [self.mze_viewController willBecomeActive];
+// -(void)controlCenterWillPresent {
+//   %orig;
+//   if (self.mze_viewController) {
+//     [self.mze_viewController willBecomeActive];
+//   }
+// }
+
+// -(void)controlCenterDidDismiss {
+//   %orig;
+//   if (self.mze_viewController) {
+//     [self.mze_viewController willResignActive];
+//   }
+// }
+
+// -(void)controlCenterWillBeginTransition {
+//   if (![self isPresented]) {
+//     if (self.mze_viewController) {
+//       [self.mze_viewController willBecomeActive];
+//     }
+//   }
+// }
+// -(void)controlCenterDidFinishTransition {
+//   %orig;
+//   if ([self isPresented]) {
+//     if (self.mze_viewController) {
+//       [self.mze_viewController willResignActive];
+//     }
+//   }
+// }
+
+// -(void)_handlePan:(UIPanGestureRecognizer *)recognizer {
+//   if (recognizer.state == UIGestureRecognizerStateBegan) {
+//     if (!self.mze_viewController) {
+//       self.mze_viewController = [[MZEModularControlCenterViewController alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
+//       [self.mze_viewController loadView];
+//       self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+//       [self.view addSubview:self.mze_viewController.view];
+//     }
+
+//     if (!self.presented) {
+//       [self.mze_viewController willBecomeActive];
+//     }
+//   }
+
+//   %orig;
+
+// }
+
+- (void)setPresented:(BOOL)presented {
+  if (!presented && self.mze_viewController && self.presented && hasCalled) {
+    [self.mze_viewController willResignActive];
+    hasCalled = NO;
   }
+  %orig;
+}
+-(void)controlCenterWillFinishTransitionOpen:(BOOL)arg1 withDuration:(NSTimeInterval)arg2 {
+  if (!arg1) {
+    if (self.mze_viewController && hasCalled) {
+      hasCalled = NO;
+      [self.mze_viewController willResignActive];
+    }
+  }
+  %orig;
 }
 
 -(void)controlCenterDidDismiss {
   %orig;
-  if (self.mze_viewController) {
-    [self.mze_viewController willResignActive];
-  }
-}
-
--(void)controlCenterDidFinishTransition {
-  %orig;
-  if ([self isPresented]) {
-    if (self.mze_viewController) {
-      [self.mze_viewController willBecomeActive];
-    }
-  } else {
-    if (self.mze_viewController) {
+  if (self.mze_viewController && hasCalled) {
+      hasCalled = NO;
       [self.mze_viewController willResignActive];
     }
-  }
 }
 %end
 

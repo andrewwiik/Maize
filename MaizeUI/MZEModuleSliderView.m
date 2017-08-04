@@ -21,6 +21,10 @@
     @synthesize glyphVisible=_glyphVisible;
 
 
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    [self layoutEverything];
+}
 
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
@@ -171,10 +175,30 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    //CGSize bounds = self.bounds.size;
+
+   // [self _layoutValueViews];
+
+    // CGFloat x = bounds.width*0.5;
+    // CGFloat y = bounds.height - x;
+    // CGPoint center = UIPointRoundToViewScale(CGPointMake(x,y), self);
+    // if (_glyphImageView) {
+    //     _glyphImageView.center = center;
+    //     _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    // }
+
+    // if (_glyphPackage) {
+    //     _glyphPackageView.center = center;
+    //     _otherGlyphPackageView.center = center;
+    //     _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    //     _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    // }
+}
+
+- (void)layoutEverything {
+
     CGSize bounds = self.bounds.size;
-
     [self _layoutValueViews];
-
     CGFloat x = bounds.width*0.5;
     CGFloat y = bounds.height - x;
     CGPoint center = UIPointRoundToViewScale(CGPointMake(x,y), self);
@@ -274,7 +298,7 @@
         }
 
     } else {
-        CGRect bounds = self.frame;
+        CGRect bounds = self.bounds;
         CGFloat sliderHeight = UICeilToViewScale([self _sliderHeight], self);
         CGRect sliderFrame = CGRectMake(0,CGRectGetHeight(bounds) - sliderHeight, CGRectGetWidth(bounds), sliderHeight);
         [(UIView *)[_stepBackgroundViews objectAtIndex:0] setFrame:sliderFrame];
@@ -352,7 +376,7 @@
 }
 
 - (CGFloat)_sliderHeight {
-    return CGRectGetHeight([self frame]) * _value;
+    return CGRectGetHeight([self bounds]) * _value;
 }
 
 - (CGFloat)_fullStepHeight {
@@ -429,8 +453,8 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-         [self setNeedsLayout];
-         [self layoutIfNeeded];
+         // [self setNeedsLayout];
+         // [self layoutIfNeeded];
         // [_sliderView _layoutValueViews];
         // do whatever
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
@@ -438,11 +462,20 @@
     }];
 }
 
+- (void)setGlyphVisible:(BOOL)visible {
+    _glyphVisible = visible;
+    _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+
+}
+
 - (CALayer *)punchOutRootLayer {
     return [_otherGlyphPackageView layer];
 }
 
 - (BOOL)shouldForwardSelector:(SEL)aSelector {
+    if (aSelector == @selector(setBounds:)) return NO;
     return [self.layer respondsToSelector:aSelector];
 }
 

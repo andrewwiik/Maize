@@ -21,6 +21,7 @@
 @property (nonatomic, retain, readwrite) UIViewPropertyAnimator *animator;
 - (id)initWithFrame:(CGRect)frame;
 - (void)revealWithProgress:(CGFloat)progress;
+- (BOOL)isLandscape;
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willRemoveModuleContainerViewController:(MZEContentModuleContainerViewController *)moduleContainerViewController;
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController didAddModuleContainerViewController:(MZEContentModuleContainerViewController *)moduleContainerViewController;
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController didCloseExpandedModule:(id <MZEContentModule>)module;

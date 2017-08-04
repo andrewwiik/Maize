@@ -20,6 +20,14 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 @implementation MZEMaterialView
 
+
+- (void)setFrame:(CGRect)frame {
+	[super setFrame:frame];
+	if (self.backdropView) {
+		self.backdropView.frame = CGRectMake(0,0,frame.size.width,frame.size.height);
+	}
+}
+
 + (instancetype)materialViewWithStyle:(MZEMaterialStyle)style {
 	MZEMaterialView *materialView = [[MZEMaterialView alloc] init];
 
@@ -64,14 +72,15 @@ typedef struct CAColorMatrix CAColorMatrix;
 	self = [super init];
 	if (self) {
 		self.backdropView = [[_MZEBackdropView alloc] init];
-		self.backdropView.translatesAutoresizingMaskIntoConstraints = NO;
+		[self.backdropView setAutoresizingMask:18];
+		//self.backdropView.translatesAutoresizingMaskIntoConstraints = NO;
 
 		[self addSubview:self.backdropView];
 
-		[self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+		// [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+  //       [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+  //       [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+  //       [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
         self.layer.allowsGroupBlending = NO;
 	}
 	return self;
@@ -174,6 +183,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 }
 
 - (BOOL)shouldForwardSelector:(SEL)aSelector {
+    if (aSelector == @selector(setBounds:)) return NO;
     return [self.layer respondsToSelector:aSelector];
 }
 

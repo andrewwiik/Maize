@@ -2,10 +2,10 @@
 #import "MZELayoutOptions.h"
 
 @implementation MZELayoutStyle
-- (id)initWithSize:(CGSize)size {
+- (id)initWithSize:(CGSize)size isLandscape:(BOOL)isLandscape {
 	self = [super init];
 	if (self) {
-		BOOL isLandscape = size.width > size.height;
+		_isLandscape = isLandscape;
 		if (isLandscape) {
 			self.rows = 3;
 			self.columns = -1;
@@ -19,5 +19,9 @@
 		self.moduleSize = [MZELayoutOptions edgeSize];
 	}
 	return self;
+}
+
+- (BOOL)isLandscape {
+	return _isLandscape;
 }
 @end

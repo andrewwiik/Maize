@@ -5,6 +5,7 @@
 #import "_MZEBackdropView.h"
 #import "MZEExpandedModulePresentationTransition.h"
 #import "MZEExpandedModulePresentationController.h"
+#import "MZEExpandedModuleDismissTransition.h"
 #import <UIKit/UIViewController+Window.h>
 
 #if __cplusplus
@@ -69,6 +70,7 @@
 	} else {
 		[self.previewInteraction cancelInteraction];
 	}
+	[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
 }
 
 - (MZEContentModuleContainerView *)moduleContainerView {
@@ -87,6 +89,9 @@
 }
 
 - (void)willResignActive {
+	if ([self isExpanded]) {
+		[self closeModule];
+	}
 	if ([_contentViewController respondsToSelector:@selector(willResignActive)]) {
 		[_contentViewController willResignActive];
 	} else {
@@ -167,6 +172,11 @@
 
 	[_contentView setFrame:frame];
 	[_contentContainerView addSubview:_contentView];
+
+	if (_backgroundViewController) {
+		[_backgroundViewController.view setAutoresizingMask:18];
+		[_backgroundView addSubview:_backgroundViewController.view];
+	}
 
 	_previewInteraction = [[UIPreviewInteraction alloc] initWithView:self.view];
 	_previewInteraction.delegate = self;
@@ -330,13 +340,27 @@
 }
 
 - (void)previewInteraction:(UIPreviewInteraction *)previewInteraction didUpdatePreviewTransition:(CGFloat)progress ended:(BOOL)ended {
+	if (!ended) {
+		[UIView animateWithDuration:0.1 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
+			self.view.transform = CGAffineTransformMakeScale(progress * (0.25 - (_bubbled ? 0.05 : 0)) + 1.0 + (_bubbled ? 0.05 : 0),progress * (0.25 - (_bubbled ? 0.05 : 0)) + 1.0 + (_bubbled ? 0.05 : 0));
+		} completion:nil];
+	}
+
 	if (ended) {
+		_bubbled = NO;
+		[UIView animateWithDuration:0 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+			self.view.transform = CGAffineTransformIdentity;
+		} completion:nil];
 		[_delegate contentModuleContainerViewController:self openExpandedModule:_contentModule];
 	}
 	return;
 }
 
 - (void)previewInteractionDidCancel:(UIPreviewInteraction *)previewInteraction {
+	_bubbled = NO;
+	[UIView animateWithDuration:0.1 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+		self.view.transform = CGAffineTransformIdentity;
+	} completion:nil];
 	[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
 }
 
@@ -374,7 +398,9 @@
 }
 
 - (CGRect)_backgroundFrameForExpandedState {
-	return [[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation];
+	if ([_delegate isLandscape]) {
+		return [[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:UIInterfaceOrientationLandscapeLeft];
+	} else return [[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:UIInterfaceOrientationPortrait];
 }
 
 - (CGRect)_contentBoundsForTransitionProgress:(CGFloat)progress {
@@ -440,7 +466,7 @@
 }
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
-   return [[MZEExpandedModulePresentationTransition alloc] init];
+   return [[MZEExpandedModuleDismissTransition alloc] init];
 }
 
 // show the proxy method of the view

@@ -17,6 +17,7 @@
 	  	self.luminanceBackdropView = [[_MZEBackdropView alloc] init];
 	  	self.luminanceBackdropView.frame = CGRectMake(0,0,frame.size.width, frame.size.height);
 	  	self.luminanceBackdropView.luminanceAlpha = 1.0f;
+	  	self.luminanceBackdropView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 	    //self.mze_lumnianceView.alpha = 0.45;
 	  	[self.luminanceBackgroundView addSubview:self.luminanceBackdropView];
 
@@ -30,9 +31,17 @@
 	    _animatedBackgroundView.backdropSettings.grayscaleTintLevel = 0;
 	    _animatedBackgroundView.backdropSettings.usesGrayscaleTintView = NO;
 	    _animatedBackgroundView.backdropSettings.usesColorTintView = NO;
+	    _animatedBackgroundView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 
 	    _collectionViewController = [[MZEModuleCollectionViewController alloc] initWithModuleInstanceManager:[MZEModuleInstanceManager sharedInstance]];
+	    _collectionViewController.delegate = self;
 	    [_collectionViewController loadView];
+	    //collectionViewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	    if ([self isLandscape]) {
+	    	_openCollectionViewYOrigin = frame.size.height/2 - _collectionViewController.view.frame.size.height/2;
+	    } else {
+	    	_openCollectionViewYOrigin = frame.size.height - _collectionViewController.view.frame.size.height;
+	    }
 	    _openCollectionViewYOrigin = frame.size.height - _collectionViewController.view.frame.size.height;
 	    CGRect collectionViewFrame = _collectionViewController.view.frame;
 	    collectionViewFrame.origin.y = _closedCollectionViewYOrigin;
@@ -66,39 +75,82 @@
 
 - (void)revealWithProgress:(CGFloat)progress {
 
-	if (!_animator && _collectionViewController && _collectionViewController.view) {
-		_animator = [[UIViewPropertyAnimator alloc] initWithDuration:0 curve:UIViewAnimationCurveLinear animations:^{
-	    	self.collectionViewController.view.frame = CGRectMake(0,_openCollectionViewYOrigin,self.collectionViewController.view.frame.size.width,self.collectionViewController.view.frame.size.height);
-	    }];
+	if (!_animator) {
+		[self willBecomeActive];
 	}
 
 	if (_animator) {
-		_animator.fractionComplete = progress;
+		[UIView animateWithDuration:0.05 animations:^{
+			_collectionViewController.view.center = CGPointMake(_collectionViewController.view.center.x, (CGRectGetHeight([self.view bounds]) + (([_collectionViewController layoutSize].height*0.5)*fabs(progress-1.0))) - (CGRectGetHeight(self.view.bounds) - _openCollectionViewYOrigin)*progress) ;
+			if (_animatedBackgroundView) {
+				_animatedBackgroundView.progress = progress;
+			}
+
+			if (_luminanceBackdropView) {
+				if (progress <= 1) {
+				    _luminanceBackdropView.alpha = 0.45*progress;
+				} else if (progress > 1) {
+					_luminanceBackdropView.alpha = 0.45;
+				}
+			}
+		//_animator.fractionComplete = progress;
+		} completion:nil];
+		// CGFloat wantedY = CGRectGetHeight(self.view.bounds) - ((CGRectGetHeight(self.view.bounds)-_openCollectionViewYOrigin)*progress);
+		//_collectionViewController.view.center = CGPointMake(_collectionViewController.view.center.x, (CGRectGetHeight([self.view bounds]) + (([_collectionViewController layoutSize].height*0.5)*fabs(progress-1.0))) - (CGRectGetHeight(self.view.bounds) - _openCollectionViewYOrigin)*progress) ;
+		//_animator.fractionComplete = progress;
 	}
 
-	if (_animatedBackgroundView) {
-		_animatedBackgroundView.progress = progress;
-	}
+	// if (_animatedBackgroundView) {
+	// 	_animatedBackgroundView.progress = progress;
+	// }
 
-	if (_luminanceBackdropView) {
-		if (progress <= 1) {
-		    _luminanceBackdropView.alpha = 0.45*progress;
-		} else if (progress > 1) {
-			_luminanceBackdropView.alpha = 0.45;
-		}
-	}
+	// if (_luminanceBackdropView) {
+	// 	if (progress <= 1) {
+	// 	    _luminanceBackdropView.alpha = 0.45*progress;
+	// 	} else if (progress > 1) {
+	// 		_luminanceBackdropView.alpha = 0.45;
+	// 	}
+	// }
 }
 
 - (void)willResignActive {
+	_animator = nil;
 	if (_collectionViewController) {
 		[_collectionViewController willResignActive];
 	}
 }
 - (void)willBecomeActive {
+
+	if ([self isLandscape]) {
+    	_openCollectionViewYOrigin = self.view.center.y;
+    } else {
+    	_openCollectionViewYOrigin = CGRectGetHeight(self.view.bounds) - [_collectionViewController layoutSize].height*0.5;
+    }
+
+    if (_collectionViewController && _collectionViewController.view) {
+    	if ([self isLandscape]) {
+    		CGSize layoutSize = [_collectionViewController layoutSize];
+    		self.collectionViewController.view.frame = CGRectMake(self.collectionViewController.view.frame.origin.x,self.collectionViewController.view.frame.origin.y, layoutSize.width,layoutSize.height);
+    		_animator = [[UIViewPropertyAnimator alloc] initWithDuration:0 curve:UIViewAnimationCurveLinear animations:^{
+		    	self.collectionViewController.view.center = CGPointMake(self.collectionViewController.view.center.x,self.view.center.y);
+		    }];
+    	} else {
+    		CGSize layoutSize = [_collectionViewController layoutSize];
+    		self.collectionViewController.view.frame = CGRectMake(self.collectionViewController.view.frame.origin.x,self.collectionViewController.view.frame.origin.y, layoutSize.width,layoutSize.height);
+    		_animator = [[UIViewPropertyAnimator alloc] initWithDuration:0 curve:UIViewAnimationCurveLinear animations:^{
+		    	self.collectionViewController.view.frame = CGRectMake(0,_openCollectionViewYOrigin,self.collectionViewController.view.frame.size.width,self.collectionViewController.view.frame.size.height);
+		    }];
+    	}
+	}
+
 	if (_collectionViewController) {
 		//self.view.backgroundColor = [UIColor redColor];
 		[_collectionViewController willBecomeActive];
 	}
+}
+
+- (BOOL)isLandscape {
+	return UIInterfaceOrientationIsLandscape((UIInterfaceOrientation)[[self.view window] interfaceOrientation]);
 }
 
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willRemoveModuleContainerViewController:(MZEContentModuleContainerViewController *)moduleContainerViewController {
@@ -122,7 +174,6 @@
 }
 
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willOpenExpandedModule:(id <MZEContentModule>)module {
-	
 
 }
 
