@@ -55,7 +55,7 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 
 		} else {
 			_numberOfColumns = _layoutStyle.columns;
-			_numberOfRows = (NSInteger)ceil((CGFloat)numberOfSpacesTaken/(CGFloat)_numberOfColumns);
+			_numberOfRows = numberOfSpacesTaken;
 			//if (_numberOfRows == 0) _numberOfRows = 1;
 		}
 		//_numberOfRows += 1;
