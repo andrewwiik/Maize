@@ -51,6 +51,7 @@
 	centerPoint = UIPointRoundToViewScale(centerPoint, _headerImageView);
 	_headerImageView.center = centerPoint;
 	_packageView.center = centerPoint;
+	_packageView.frame = CGRectMake(_packageView.frame.origin.x,_packageView.frame.origin.y,_package.rootLayer.bounds.size.width,_package.rootLayer.bounds.size.height);
 
 }
 
@@ -61,6 +62,7 @@
 
 - (void)setGlyphPackage:(CAPackage *)glyphPackage {
 	[self loadViewIfNeeded];
+	_package = glyphPackage;
 	[_packageView setPackage:glyphPackage];
 }
 

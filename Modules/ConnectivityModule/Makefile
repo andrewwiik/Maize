@@ -8,8 +8,9 @@ ConnectivityModule_FILES = $(wildcard *.m)
 ConnectivityModule_FRAMEWORKS = Foundation UIKit CoreGraphics CoreImage QuartzCore CoreTelephony
 ConnectivityModule_PRIVATE_FRAMEWORKS = AppSupport BluetoothManager
 ConnectivityModule_EXTRA_FRAMEWORKS = MaizeUI
-ConnectivityModule_LDFLAGS = $(THEOS)/vendor/lib/libsubstrate.tbd
+ConnectivityModule_LIBRARIES = MobileGestalt
+ConnectivityModule_LDFLAGS += ./MobileWiFi.tbd
 ConnectivityModule_INSTALL_PATH = /Library/Maize/Bundles/
-ConnectivityModule_LDFLAGS = -F../../.theos/$(THEOS_OBJ_DIR_NAME)
+ConnectivityModule_LDFLAGS += -F../../.theos/$(THEOS_OBJ_DIR_NAME)
 
 include $(THEOS_MAKE_PATH)/bundle.mk

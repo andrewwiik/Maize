@@ -32,6 +32,7 @@
 		[self.layer addSublayer:package.rootLayer];
 		_stateController = [[CAStateController alloc] initWithLayer:package.rootLayer];
 		package.rootLayer.geometryFlipped = YES;
+		// self.frame = CGRectMake(self.frame.origin.x,self.frame.origin.y,package.rootLayer.bounds.size.width,package.rootLayer.bounds.size.height);
 
 		_packageLayer = package.rootLayer;
 		_package = package;
