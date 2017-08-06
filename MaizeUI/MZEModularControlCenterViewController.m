@@ -14,7 +14,7 @@
 		self.luminanceBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0,0,frame.size.width, frame.size.height)];
 	    self.luminanceBackgroundView.layer.allowsGroupBlending = NO;
 	    //[self.view addSubview:self.luminanceViewHolder];
-	  	
+
 	  	self.luminanceBackdropView = [[_MZEBackdropView alloc] init];
 	  	self.luminanceBackdropView.frame = CGRectMake(0,0,frame.size.width, frame.size.height);
 	  	self.luminanceBackdropView.luminanceAlpha = 1.0f;
@@ -72,6 +72,10 @@
 
 		}
 	}
+
+	self.headerPocket = [[MZEHeaderPocketView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height/8.875)];
+	[self.view addSubview:self.headerPocket];
+
 }
 
 - (void)revealWithProgress:(CGFloat)progress {
@@ -100,6 +104,11 @@
 		//_collectionViewController.view.center = CGPointMake(_collectionViewController.view.center.x, (CGRectGetHeight([self.view bounds]) + (([_collectionViewController layoutSize].height*0.5)*fabs(progress-1.0))) - (CGRectGetHeight(self.view.bounds) - _openCollectionViewYOrigin)*progress) ;
 		//_animator.fractionComplete = progress;
 	}
+	float height = self.view.frame.size.height/8.875;
+	self.headerPocket.frame = CGRectMake(0,height * (1 - progress),self.view.frame.size.width, height);
+	[self.headerPocket animateProgress:progress];
+
+	self.headerPocket.headerChevronView.alpha = progress - 0.35;
 
 	// if (_animatedBackgroundView) {
 	// 	_animatedBackgroundView.progress = progress;
@@ -116,6 +125,7 @@
 
 - (void)willResignActive {
 	_animator = nil;
+
 	if (_collectionViewController) {
 		[_collectionViewController willResignActive];
 	}
@@ -148,6 +158,8 @@
 		//self.view.backgroundColor = [UIColor redColor];
 		[_collectionViewController willBecomeActive];
 	}
+
+	self.headerPocket.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height/8.875);
 }
 
 - (BOOL)isLandscape {
