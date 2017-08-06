@@ -3,6 +3,7 @@
 #import "MZEModuleCollectionViewController.h"
 #import "MZEAnimatedBlurView.h"
 #import "_MZEBackdropView.h"
+#import "MZEHeaderPocketView.h"
 
 @interface MZEModularControlCenterViewController : UIViewController <MZEModuleCollectionViewControllerDelegate> {
 	CGRect _initFrame;
@@ -16,6 +17,7 @@
 }
 @property (nonatomic, retain, readwrite) MZEAnimatedBlurView *animatedBackgroundView;
 @property (nonatomic, retain, readwrite) UIView *luminanceBackgroundView;
+@property (nonatomic, retain, readwrite) MZEHeaderPocketView *headerPocket;
 @property (nonatomic, retain, readwrite) _MZEBackdropView *luminanceBackdropView;
 @property (nonatomic, retain, readwrite) MZEModuleCollectionViewController *collectionViewController;
 @property (nonatomic, retain, readwrite) UIViewPropertyAnimator *animator;
