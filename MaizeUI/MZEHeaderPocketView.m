@@ -10,12 +10,12 @@
   [self.headerChevronView setColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:1]];
   [self addSubview:self.headerChevronView];
 
-  self.headerChevronView.frame = CGRectMake(self.frame.size.width/2 - self.frame.size.width/24,(self.frame.size.height/2)-7,self.frame.size.width/12, 14);
+  self.headerChevronView.frame = CGRectMake(self.frame.size.width/2 - self.frame.size.width/20,(self.frame.size.height/2)-7,self.frame.size.width/10, 14);
 
   return self;
 }
 -(void)layoutSubviews{
-  self.headerChevronView.frame = CGRectMake(self.frame.size.width/2 - self.frame.size.width/24,(self.frame.size.height/2)-7,self.frame.size.width/12, 14);
+  self.headerChevronView.frame = CGRectMake(self.frame.size.width/2 - self.frame.size.width/20,(self.frame.size.height/2)-7,self.frame.size.width/10, 14);
 }
 -(void)animateProgress:(CGFloat)arg1 {
   if(arg1 >= 0.8){
