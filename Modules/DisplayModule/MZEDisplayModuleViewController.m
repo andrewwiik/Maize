@@ -118,7 +118,7 @@
 
 - (void)_sliderValueDidChange:(MZEModuleSliderView *)slider {
 	[self _setBacklightLevel:[slider value]];
-	//[_delegate displayModuleViewController:self brightnessDidChange:[slider value]];
+	[_delegate displayModuleViewController:self brightnessDidChange:[slider value]];
 }
 
 - (CALayer *)punchOutRootLayer {
