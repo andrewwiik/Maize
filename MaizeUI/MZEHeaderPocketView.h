@@ -10,10 +10,10 @@
 
 @property(nonatomic) CGFloat backgroundAlpha;
 @property(nonatomic, getter=isChevronPointingDown) BOOL chevronPointingDown;
-@property(nonatomic) double chevronAlpha;
+@property(nonatomic) CGFloat chevronAlpha;
 - (void)layoutSubviews;
 - (CGSize)intrinsicContentSize;
-- (CGSize)sizeThatFits:(struct CGSize)size;
+- (CGSize)sizeThatFits:(CGSize)size;
 - (id)initWithFrame:(CGRect)frame;
 
 @end

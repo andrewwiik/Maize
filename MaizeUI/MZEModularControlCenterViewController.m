@@ -7,7 +7,6 @@
 @implementation MZEModularControlCenterViewController
 
 + (MZEModuleCollectionViewController *)sharedCollectionViewController {
-	+ (instancetype)sharedInstance {
 	static MZEModuleCollectionViewController *_sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -15,7 +14,6 @@
     });
     return _sharedInstance;
 }
-
 
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithNibName:nil bundle:nil];
@@ -38,8 +36,12 @@
 	return self;
 }
 
-- (void)loadView {
-	self.view = [[UIView alloc] initWithFrame:CGRectMake(0,0,_initFrame.size.width, _initFrame.size.height)];
+- (void)viewDidLoad {
+	[super viewDidLoad];
+}
+
+// - (void)loadView {
+// 	self.view = [[UIView alloc] initWithFrame:CGRectMake(0,0,_initFrame.size.width, _initFrame.size.height)];
 	// if (self.luminanceBackgroundView) {
 	// 	[self.view addSubview:self.luminanceBackgroundView];
 	// }
@@ -60,7 +62,7 @@
 	// self.headerPocket = [[MZEHeaderPocketView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height/8.875)];
 	// [self.view addSubview:self.headerPocket];
 
-}
+//}
 
 - (void)revealWithProgress:(CGFloat)progress {
 
@@ -118,10 +120,15 @@
 
 	if (_collectionViewController) {
 		//self.view.backgroundColor = [UIColor redColor];
+		
 		[_collectionViewController willBecomeActive];
 	}
 
 	//self.headerPocket.frame = CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height/8.875);
+}
+
+- (MZEModuleCollectionViewController *)moduleCollectionViewController {
+	return _collectionViewController;
 }
 
 - (BOOL)isLandscape {

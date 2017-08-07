@@ -1,4 +1,5 @@
 #import <QuartzCore/CAState+Private.h>
+#import <QuartzCore/CAFilter+Private.h>
 
 @interface CALayer (Private)
 @property (assign) CGColorRef contentsMultiplyColor; 

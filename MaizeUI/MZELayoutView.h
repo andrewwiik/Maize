@@ -1,9 +1,9 @@
-#import "MZELayoutViewLayoutSource-Protcol.h"
+#import "MZELayoutViewLayoutSource-Protocol.h"
 
 @interface MZELayoutView : UIScrollView {
     BOOL _shouldLayout;
     UIEdgeInsets _edgeInsets;
-    id <MZELayoutViewLayoutSource> _layoutSource;
+    __weak id <MZELayoutViewLayoutSource> _layoutSource;
 }
 @property(nonatomic) __weak id <MZELayoutViewLayoutSource> layoutSource;
 - (id)initWithLayoutSource:(id<MZELayoutViewLayoutSource>)layoutSource frame:(CGRect)frame;

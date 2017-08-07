@@ -1,7 +1,8 @@
 #import "MZEModuleCollectionViewController.h"
 #import <UIKit/UIScreen+Private.h>
 #import "MZELayoutOptions.h"
-#import <SpringBoard/SBControlCenterController.h>
+#import <SpringBoard/SBControlCenterController+Private.h>
+#import <UIKit/UIWindow+Orientation.h>
 
 @implementation MZEModuleCollectionViewController
 	@synthesize delegate=_delegate;
@@ -112,9 +113,9 @@
 	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 
 	if ([self isLandscape]) {
-		self.view.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,0,_currentLayoutStyle.inset);
+		self.containerView.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,0,_currentLayoutStyle.inset);
 	} else {
-		self.view.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,_currentLayoutStyle.inset,_currentLayoutStyle.inset);
+		self.containerView.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,_currentLayoutStyle.inset,_currentLayoutStyle.inset);
 	}
 
 	[super viewWillLayoutSubviews];

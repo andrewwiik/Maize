@@ -3,9 +3,9 @@
 #import "MZEScrollViewDelegate-Protocol.h"
 #import "MZEPresentationState.h"
 #import "MZEBackgroundView.h"
-#import "MZEHeaderPocketView"
+#import "MZEHeaderPocketView.h"
 
-@interface MZEModularControlCenterOverlayViewController : MZEModularControlCenterViewController <MZEScrollViewDelegate> {
+@interface MZEModularControlCenterOverlayViewController : MZEModularControlCenterViewController <MZEScrollViewDelegate, UIGestureRecognizerDelegate> {
 	CGRect _cachedTargetPresentationFrame;
 	CGRect _cachedSourcePresentationFrame;
 	MZEPresentationState _presentationState;
@@ -26,7 +26,7 @@
 @property (nonatomic, retain, readwrite) MZEBackgroundView *backgroundView;
 @property (nonatomic, readwrite) MZEPresentationState presentationState;
 
-
+- (UIViewController *)contentViewController;
 - (CGRect)_targetPresentationFrame;
 - (CGRect)_sourcePresentationFrame;
 - (void)_beginPresentationAnimated:(BOOL)animated;
@@ -36,7 +36,7 @@
 - (void)updatePresentationForRevealPercentage:(CGFloat)percentage;
 - (void)revealWithProgress:(CGFloat)progress;
 
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id)coordinator;
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator;
 - (void)viewWillLayoutSubviews;
 - (void)viewDidLoad;
 
@@ -45,6 +45,7 @@
 - (void)_makePresentationFramesDirty;
 - (BOOL)_allowScrollWithPanGesture:(UIPanGestureRecognizer *)panRecognizer;
 - (CGFloat)_presentationGestureActivationMinimumYOffset;
+- (CGFloat)_dismissalGestureActivationMinimumYOffset;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 - (BOOL)scrollView:(MZEScrollView *)scrollView gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer;
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer;
@@ -52,6 +53,10 @@
 
 #pragma mark Dismissal Gesture
 
+
+- (BOOL)_allowDismissalWithPanGesture:(UIPanGestureRecognizer *)gesture;
+- (BOOL)_allowDismissalWithTapGesture:(UITapGestureRecognizer *)gesture;
+- (BOOL)_allowDismissalWithCollectionPanGesture:(UIPanGestureRecognizer *)gesture;
 - (void)_handleControlCenterDismissalPanGesture:(UIPanGestureRecognizer *)gesture;
 
 - (void)_beginDismissal;

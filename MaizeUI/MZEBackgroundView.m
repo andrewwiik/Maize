@@ -30,11 +30,19 @@
 	return self;
 }
 
+- (void)layoutSubviews {
+	if (_luminanceView) {
+		_luminanceView.frame = self.bounds;
+	}
+	if (_blurView) {
+		_blurView.frame = self.bounds;
+	}
+}
+
 - (void)setEffectProgress:(CGFloat)progress {
 	if (progress != _effectProgress) {
 		_effectProgress = progress;
 		[UIView animateWithDuration:0.05 animations:^{
-			CGFloat pro
 			_luminanceView.alpha = progress*0.45;
 			_blurView.progress = progress;
 		//_animator.fractionComplete = progress;

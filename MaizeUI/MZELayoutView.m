@@ -24,7 +24,7 @@
 }
 
 - (void)willRemoveSubview:(UIView *)subview {
-	[super willRemoveSubview];
+	[super willRemoveSubview:subview];
 	[self setNeedsLayout];
 }
 
@@ -43,7 +43,7 @@
 }
 
 - (CGSize)intrinsicContentSize {
-	return [self sizeThatFits:CGRectZero];
+	return [self sizeThatFits:CGSizeZero];
 }
 
 - (void)layoutSubviews {

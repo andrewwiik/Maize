@@ -10,6 +10,6 @@
 @property (nonatomic, retain, readwrite) MZEAnimatedBlurView *blurView;
 @property (nonatomic, retain, readwrite) MZEMaterialView *luminanceView;
 @property (nonatomic, assign) CGFloat effectProgress;
-- (id)initWithFrame;
+- (id)initWithFrame:(CGRect)frame;
 - (void)setEffectProgress:(CGFloat)effectProgress;
 @end

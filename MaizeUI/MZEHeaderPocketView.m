@@ -43,7 +43,7 @@
 }
 
 - (CGSize)intrinsicContentSize {
-    return [self sizeThatFits:CGRectZero];
+    return [self sizeThatFits:CGSizeZero];
 }
 
 - (void)layoutSubviews {

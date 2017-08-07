@@ -1,7 +1,7 @@
 typedef NS_ENUM(NSInteger, MZEPresentationState)
 {
-	MZEPresentationStateUnknown
+	MZEPresentationStateUnknown,
 	MZEPresentationStateDismissed,
 	MZEPresentationStatePresented,
-    MZEPresentationStateTransitioning,
+    MZEPresentationStateTransitioning
 };

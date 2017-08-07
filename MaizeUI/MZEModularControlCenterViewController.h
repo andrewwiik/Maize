@@ -17,6 +17,7 @@
 @property (nonatomic, retain, readwrite) _MZEBackdropView *luminanceBackdropView;
 @property (nonatomic, retain, readwrite) MZEModuleCollectionViewController *collectionViewController;
 @property (nonatomic, retain, readwrite) UIViewPropertyAnimator *animator;
+@property (nonatomic, retain, readonly) MZEModuleCollectionViewController *moduleCollectionViewController;
 
 + (MZEModuleCollectionViewController *)sharedCollectionViewController;
 

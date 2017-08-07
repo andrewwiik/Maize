@@ -1,6 +1,6 @@
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
 
-@interface SBControlCenterController : NSObject
+@interface SBControlCenterController : UIViewController
 + (instancetype)sharedInstance;
 + (instancetype)sharedInstanceIfExists;
 + (instancetype)_sharedInstanceCreatingIfNeeded:(BOOL)ifNeeded;
