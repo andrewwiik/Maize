@@ -27,7 +27,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self _updateState];
-	// [self _beginObservingStateChanges];
+	[self _beginObservingStateChanges];
 
 	// if ([self _enabledForState:[self _currentState]]) {
 	// 	[self.bluetoothManager setDeviceScanningEnabled:YES];

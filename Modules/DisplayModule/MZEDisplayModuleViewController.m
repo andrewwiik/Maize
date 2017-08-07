@@ -62,10 +62,10 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
 	//_sliderView.clipsToBounds = NO;
-    [_sliderView viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+   // [_sliderView viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-  //       [_sliderView setNeedsLayout];
-		// [_sliderView layoutIfNeeded];
+        [_sliderView setNeedsLayout];
+		[_sliderView layoutIfNeeded];
 		// [_sliderView _layoutValueViews];
 		// [_sliderView setGlyphVisible:_expanded ? NO : YES];
 		//_sliderView.layer.cornerRadius = _expanded ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];

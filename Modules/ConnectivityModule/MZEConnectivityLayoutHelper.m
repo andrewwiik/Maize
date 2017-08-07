@@ -78,9 +78,9 @@ static BOOL loadedInterpolators = NO;
 
 	BOOL isLandscape = containerSize.width > containerSize.height;
 	if (isLandscape) {
-		return containerSize.width - (insets.left * 2 + ((colCount - 1)*(insets.left * 0.5)))/colCount;
+		return (containerSize.width - (insets.left * 2 + ((colCount - 1)*(insets.left * 0.5))))/colCount;
 	} else {
-		return containerSize.width - (insets.left * 2 + ((colCount - 1)*insets.left))/colCount;
+		return (containerSize.width - (insets.left * 2 + ((colCount - 1)*insets.left)))/colCount;
 	}
 	//return insets.left * 2 + 
 }
