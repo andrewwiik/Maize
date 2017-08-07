@@ -1,5 +1,7 @@
 #import "MZEModularControlCenterOverlayViewController.h"
 #import <UIKit/UIView+Private.h>
+#import <SpringBoard/SBControlCenterController+Private.h>
+#import <ControlCenterUI/CCUIControlCenterViewController.h>
 #import "macros.h"
 
 @implementation MZEModularControlCenterOverlayViewController
@@ -101,27 +103,29 @@
 }
 
 - (void)presentAnimated:(BOOL)animated withCompletionHandler:(id)completionHandler {
-	if (animated) {
-		[UIView animateWithDuration:1.0f animations:^{
-			[self updatePresentationForRevealPercentage:1.0f];
-		} completion:completionHandler];
-	} else {
-		[UIView performWithoutAnimation:^{
-			[self updatePresentationForRevealPercentage:1.0f];
-		}];
-	}
+	[[NSClassFromString(@"SBControlCenterController") sharedInstance] presentAnimated:animated completion:completionHandler];
+	// if (animated) {
+	// 	[UIView animateWithDuration:1.0f animations:^{
+	// 		[self updatePresentationForRevealPercentage:1.0f];
+	// 	} completion:completionHandler];
+	// } else {
+	// 	[UIView performWithoutAnimation:^{
+	// 		[self updatePresentationForRevealPercentage:1.0f];
+	// 	}];
+	// }
 }
 
 - (void)dismissAnimated:(BOOL)animated withCompletionHandler:(id)completionHandler {
-	if (animated) {
-		[UIView animateWithDuration:1.0f animations:^{
-			[self updatePresentationForRevealPercentage:0.0f];
-		} completion:completionHandler];
-	} else {
-		[UIView performWithoutAnimation:^{
-			[self updatePresentationForRevealPercentage:0.0f];
-		}];
-	}
+	[[NSClassFromString(@"SBControlCenterController") sharedInstance] dismissAnimated:animated completion:completionHandler];
+	// if (animated) {
+	// 	[UIView animateWithDuration:1.0f animations:^{
+	// 		[self updatePresentationForRevealPercentage:0.0f];
+	// 	} completion:completionHandler];
+	// } else {
+	// 	[UIView performWithoutAnimation:^{
+	// 		[self updatePresentationForRevealPercentage:0.0f];
+	// 	}];
+	// }
 }
 
 - (void)revealWithProgress:(CGFloat)progress {
@@ -143,9 +147,9 @@
 
 	CGFloat sourceYOrigin = [self _sourcePresentationFrame].origin.y;
 	CGFloat yOrigin = sourceYOrigin - (sourceYOrigin - [self _targetPresentationFrame].origin.y)*percentage;
-	[self _animateSetCollectionViewOriginYUpdatingRevealPercentage:yOrigin];
+	[self _animateSetCollectionViewOriginYUpdatingRevealPercentage:fmaxf(yOrigin, CGRectGetMinY([self _targetPresentationFrame]) - (CGRectGetMinY([self _targetPresentationFrame])*0.15))];
 }
-
+ 
 - (CGFloat)_presentationGestureActivationMinimumYOffset {
 	return [self _targetPresentationFrame].origin.y * 0.75;
 }
@@ -195,16 +199,16 @@
 #pragma mark Dismissal Gesture
 
 - (BOOL)_allowDismissalWithPanGesture:(UIPanGestureRecognizer *)gesture {
-	if ([gesture velocityInView:self.view].y < 0) {
-		return YES;
-	} 
-	return NO;
+	if ([gesture translationInView:self.view].y < 0) {
+		return NO;
+	}
+	return YES;
 }
 
 - (BOOL)_allowDismissalWithTapGesture:(UITapGestureRecognizer *)gesture {
 	if ([self presentationState] != MZEPresentationStateTransitioning && [self presentationState] != MZEPresentationStateDismissed) {
 		CGRect targetFrame = [self _targetPresentationFrame];
-		CGPoint touchPoint = [gesture locationInView:self.view];
+		CGPoint touchPoint = [gesture locationInView:_scrollView];
 		return !CGRectContainsPoint(targetFrame, touchPoint);
 	}
 	return NO;
@@ -212,14 +216,14 @@
 
 - (BOOL)_allowDismissalWithCollectionPanGesture:(UIPanGestureRecognizer *)gesture {
 	if ([self _allowDismissalWithPanGesture:gesture] && _scrollView.contentOffset.y <= 0) {
-		CGPoint point = [gesture locationInView:_scrollView];
-		UIView *hitView = [_scrollView hitTest:point withEvent:nil];
+		CGPoint point = [gesture locationInView:self.moduleCollectionViewController.view];
+		UIView *hitView = [self.moduleCollectionViewController.view hitTest:point withEvent:nil];
+		HBLogInfo(@"HIT VIEW: %@", hitView);
 		if ([hitView isExclusiveTouch]) {
 			// CGPoint velocity = [gesture velocityInView:self.view];
 			// velocity.x = velocity.x*0.15;
 			// velocity.y = velocity.y*0.15;
 			return NO;
-
 		} else {
 			return YES;
 		}
@@ -345,6 +349,15 @@
 // }
 
 - (void)_handleControlCenterDismissalPanGesture:(UIPanGestureRecognizer *)recognizer {
+
+	if ([NSClassFromString(@"SBControlCenterController") sharedInstance]) {
+		SBControlCenterController *controller = [NSClassFromString(@"SBControlCenterController") sharedInstance];
+		if ([controller valueForKey:@"_viewController"]) {
+			[(CCUIControlCenterViewController *)[controller valueForKey:@"_viewController"] _handlePan:recognizer];
+			return;
+		}
+	}
+
 	switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
         	[self _beginDismissalWithPanGesture:recognizer];
@@ -385,7 +398,7 @@
 	CGFloat locY = [gesture locationInView:self.view].y;
 	CGFloat offset = locY - _dismissalGestureYOffset;
 	CGFloat presentMinY = CGRectGetMinY([self _targetPresentationFrame]);
-	[self _animateSetCollectionViewOriginYUpdatingRevealPercentage:fminf(offset+presentMinY, CGRectGetMinY([self _targetPresentationFrame]) - (CGRectGetMinY([self _targetPresentationFrame])*0.15))];
+	[self _animateSetCollectionViewOriginYUpdatingRevealPercentage:fmaxf(offset+presentMinY, CGRectGetMinY([self _targetPresentationFrame]) - (CGRectGetMinY([self _targetPresentationFrame])*0.15))];
 
 }
 
@@ -550,6 +563,7 @@
 }
 
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willCloseExpandedModule:(id <MZEContentModule>)module {
+	_headerPocketView.alpha = 1.0;
 	[self _updateHotPocketAnimated:YES];
 	[super moduleCollectionViewController:collectionViewController willCloseExpandedModule:module];
 }

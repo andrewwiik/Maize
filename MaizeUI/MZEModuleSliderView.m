@@ -453,6 +453,10 @@
     }];
 }
 
+- (BOOL)isExclusiveTouch {
+    return YES;
+}
+
 - (void)setGlyphVisible:(BOOL)visible {
     _glyphVisible = visible;
     _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;

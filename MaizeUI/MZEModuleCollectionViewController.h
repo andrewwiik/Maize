@@ -38,6 +38,7 @@
 
 - (void)willResignActive;
 - (void)willBecomeActive;
+- (BOOL)handleMenuButtonTap;
 
 - (void)_populateModuleViewControllers;
 - (NSArray<MZEModuleInstance *> *)_moduleInstances;

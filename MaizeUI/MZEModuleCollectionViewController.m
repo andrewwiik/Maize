@@ -3,6 +3,7 @@
 #import "MZELayoutOptions.h"
 #import <SpringBoard/SBControlCenterController+Private.h>
 #import <UIKit/UIWindow+Orientation.h>
+#import <UIKit/UIView+Private.h>
 
 @implementation MZEModuleCollectionViewController
 	@synthesize delegate=_delegate;
@@ -118,6 +119,8 @@
 		self.containerView.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,_currentLayoutStyle.inset,_currentLayoutStyle.inset);
 	}
 
+	[self.view setSize:[self preferredContentSize]];
+
 	[super viewWillLayoutSubviews];
 }
 
@@ -191,8 +194,12 @@
 
 - (BOOL)layoutView:(MZELayoutView *)layoutView shouldIgnoreSubview:(UIView *)subview {
 	if ([subview isKindOfClass:[MZEContentModuleContainerView class]]) {
-		return NO;
-	} else return YES;
+		if (CGAffineTransformEqualToTransform(subview.transform,CGAffineTransformIdentity)) {
+			return NO;
+		}
+	}
+
+	return YES;
 }
 
 - (CGRect)layoutView:(MZELayoutView *)layoutView layoutRectForSubview:(UIView *)subview {
@@ -279,8 +286,21 @@
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (BOOL)handleMenuButtonTap {
+	if ([_currentModules count] > 0) {
+		[self dismissViewControllerAnimated:YES completion:nil];
+		return YES;
+	}
+	return NO;
+}
+
 
 - (CGRect)compactModeFrameForContentModuleContainerViewController:(MZEContentModuleContainerViewController *)viewController {
-	return [_portraitPositionProvider  positionForIdentifier:viewController.moduleIdentifier];
+	CGFloat xOriginOffset = _currentLayoutStyle.inset;
+
+	CGRect frame = [_currentPositionProvider positionForIdentifier:viewController.moduleIdentifier];
+	frame.origin.x += xOriginOffset;
+
+	return frame;
 }
 @end
