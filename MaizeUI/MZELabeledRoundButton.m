@@ -2,17 +2,7 @@
 #import "MZEFontOptions.h"
 #import "MZELayoutOptions.h"
 #import <UIKit/UIFont+Private.h>
-#import <macros.h>
-
-
-#if __cplusplus
-	extern "C" {
-#endif
-	CGFloat UIRoundToViewScale(CGFloat, UIView *);
-#if __cplusplus
-}
-#endif
-
+#import "macros.h"
 
 @implementation MZELabeledRoundButton
 

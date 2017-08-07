@@ -1,15 +1,7 @@
 #import <QuartzCore/CALayer+Private.h>
 #import <QuartzCore/CAPackage+Private.h>
 #import <QuartzCore/CAStateController+Private.h>
-
-
-#if __cplusplus
-	extern "C" {
-#endif
-	CGPoint UIRectGetCenter(CGRect);
-#if __cplusplus
-}
-#endif
+#import "macros.h"
 
 @interface MZECAPackageView : UIView
 {

@@ -2,6 +2,7 @@
 
 @interface SBControlCenterController : NSObject
 + (instancetype)sharedInstance;
-+ (id)sharedInstanceIfExists;
++ (instancetype)sharedInstanceIfExists;
++ (instancetype)_sharedInstanceCreatingIfNeeded:(BOOL)ifNeeded;
 - (CCUIControlCenterViewController *)_controlCenterViewController;
 @end

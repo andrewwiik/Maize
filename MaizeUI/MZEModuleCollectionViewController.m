@@ -1,6 +1,7 @@
 #import "MZEModuleCollectionViewController.h"
 #import <UIKit/UIScreen+Private.h>
 #import "MZELayoutOptions.h"
+#import <SpringBoard/SBControlCenterController.h>
 
 @implementation MZEModuleCollectionViewController
 	@synthesize delegate=_delegate;
@@ -28,29 +29,40 @@
 
 		_portraitPositionProvider = [[MZEControlCenterPositionProvider alloc] initWithLayoutStyle:_portraitLayoutStyle orderedIdentifiers:[orderedIdentifiers copy] orderedSizes:[orderedSizes copy]];
 		_landscapePositionProvider = [[MZEControlCenterPositionProvider alloc] initWithLayoutStyle:_landscapeLayoutStyle orderedIdentifiers:[orderedIdentifiers copy] orderedSizes:[orderedSizes copy]];
+	
+		_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
+		_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 	}
 	return self;
 }
 
 - (BOOL)isLandscape {
-	return UIInterfaceOrientationIsLandscape((UIInterfaceOrientation)[_delegate interfaceOrientationForModuleCollectionViewController:self]);
+	if (_delegate) {
+		return UIInterfaceOrientationIsLandscape((UIInterfaceOrientation)[_delegate interfaceOrientationForModuleCollectionViewController:self]);
+	} else {
+		SBControlCenterController *mainController = [NSClassFromString(@"SBControlCenterController") _sharedInstanceCreatingIfNeeded:YES];
+		if (mainController && mainController.view) {
+			return UIInterfaceOrientationIsLandscape([[mainController.view window] interfaceOrientation]);
+		}
+	}
+	return NO;
 }
 
 - (void)willBecomeActive {
-	MZEControlCenterPositionProvider *positionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
-	MZELayoutStyle *layoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+	_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 
-	self.scrollView.contentInset = UIEdgeInsetsMake(layoutStyle.inset,0,0,0);
-	self.scrollView.contentSize = CGSizeMake([positionProvider sizeOfLayoutView].width,[positionProvider sizeOfLayoutView].height - self.scrollView.contentInset.top);
+	// self.scrollView.contentInset = UIEdgeInsetsMake(layoutStyle.inset,0,0,0);
+	// self.scrollView.contentSize = CGSizeMake([positionProvider sizeOfLayoutView].width,[positionProvider sizeOfLayoutView].height - self.scrollView.contentInset.top);
 	if (_moduleViewControllerByIdentifier) {
 		//self.view.backgroundColor = [UIColor redColor];
 		NSArray<MZEContentModuleContainerViewController *> *viewControllers = [_moduleViewControllerByIdentifier allValues];
 		//HBLogInfo(@"ALL CURRENT CONTROLLERS: %@", viewControllers);
 		for (MZEContentModuleContainerViewController *viewController in viewControllers) {
-			if (![_currentModules containsObject:viewController]) {
-				viewController.view.frame = [positionProvider  positionForIdentifier:viewController.moduleIdentifier];
-				//viewController.view.backgroundColor = [viewController.view.backgroundColor isEqual:[UIColor whiteColor]] ? [UIColor blackColor] : [UIColor whiteColor];
-			}
+			// if (![_currentModules containsObject:viewController]) {
+			// 	viewController.view.frame = [_currentPositionProvider  positionForIdentifier:viewController.moduleIdentifier];
+			// 	//viewController.view.backgroundColor = [viewController.view.backgroundColor isEqual:[UIColor whiteColor]] ? [UIColor blackColor] : [UIColor whiteColor];
+			// }
 			[viewController willBecomeActive];
 			//viewController.view.backgroundColor = [UIColor greenColor];
 		}
@@ -75,28 +87,53 @@
 }
 
 - (void)loadView {
-	MZEControlCenterPositionProvider *positionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
-	self.scrollView = [[MZEModuleCollectionView alloc] initWithFrame:CGRectZero];
-	self.scrollView.delegate = self;
-	self.view = self.scrollView;
+	_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+
+	CGSize preferredContentSize = [self preferredContentSize];
+	self.containerView = [[MZEModuleCollectionView alloc] initWithLayoutSource:self frame:CGRectMake(0,0,preferredContentSize.width,preferredContentSize.height)];
+	self.containerView.delegate = self;
+	self.view = self.containerView;
+}
+
+- (void)viewDidLoad {
+
 	if (self.view) {
-		CGRect frame = self.view.frame;
-		frame.size = [positionProvider sizeOfLayoutView];
-		self.view.frame = frame;
+		// CGRect frame = self.view.frame;
+		// frame.size = [_currentPositionProvider sizeOfLayoutView];
+		// self.view.frame = frame;
 		[self _populateModuleViewControllers];
 	}
 }
 
 - (void)viewWillLayoutSubviews {
+
+	_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+
+	if ([self isLandscape]) {
+		self.view.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,0,_currentLayoutStyle.inset);
+	} else {
+		self.view.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,_currentLayoutStyle.inset,_currentLayoutStyle.inset);
+	}
+
 	[super viewWillLayoutSubviews];
 }
 
 - (CGSize)layoutSize {
+	return [_currentPositionProvider sizeOfLayoutView];
+}
+
+- (CGSize)preferredContentSize {
+
+	CGSize contentSize = [self layoutSize];
 	if ([self isLandscape]) {
-		return [_landscapePositionProvider sizeOfLayoutView];
+		contentSize.width += _landscapeLayoutStyle.inset*2;
 	} else {
-		return [_portraitPositionProvider sizeOfLayoutView];
+		contentSize.width += _portraitLayoutStyle.inset*2;
+		contentSize.height += _portraitLayoutStyle.inset;
 	}
+	return contentSize;
 }
 
 
@@ -124,7 +161,9 @@
 
 }
 - (void)_populateModuleViewControllers {
-	MZEControlCenterPositionProvider *positionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+
 	NSArray<MZEModuleInstance *> *moduleInstances = [self _moduleInstances];
 	NSMutableDictionary<NSString *, MZEContentModuleContainerViewController *> *moduleViewControllerByIdentifier = [NSMutableDictionary new];
 
@@ -132,7 +171,7 @@
 		NSString *moduleIdentifier = moduleInstance.metadata.identifier;
 		MZEContentModuleContainerViewController *viewController = [[MZEContentModuleContainerViewController alloc] initWithModuleIdentifier:moduleIdentifier contentModule:moduleInstance.module];
 		[moduleViewControllerByIdentifier setObject:viewController forKey:moduleIdentifier];
-		viewController.view.frame = [positionProvider  positionForIdentifier:viewController.moduleIdentifier];
+		//viewController.view.frame = [positionProvider  positionForIdentifier:viewController.moduleIdentifier];
 		[self _setupAndAddModuleViewControllerToHierarchy:viewController];
 	}
 
@@ -141,6 +180,29 @@
 
 - (NSArray<MZEModuleInstance *> *)_moduleInstances {
 	return [_moduleInstanceManager moduleInstances];
+}
+
+- (MZEModuleCollectionView *)moduleCollectionView {
+	return self.containerView;
+}
+
+#pragma mark MZELayoutViewLayoutSourceDelegate
+
+- (BOOL)layoutView:(MZELayoutView *)layoutView shouldIgnoreSubview:(UIView *)subview {
+	if ([subview isKindOfClass:[MZEContentModuleContainerView class]]) {
+		return NO;
+	} else return YES;
+}
+
+- (CGRect)layoutView:(MZELayoutView *)layoutView layoutRectForSubview:(UIView *)subview {
+	MZEContentModuleContainerView *view = (MZEContentModuleContainerView *)subview;
+	if (view) {
+		return [_currentPositionProvider positionForIdentifier:view.moduleIdentifier];
+	} else return CGRectZero;
+}
+
+- (CGSize)layoutSizeForLayoutView:(MZELayoutView *)layoutView {
+	return [self layoutSize];
 }
 
 #pragma mark MZEContentModuleContainerViewControllerDelegate
@@ -218,10 +280,6 @@
 
 
 - (CGRect)compactModeFrameForContentModuleContainerViewController:(MZEContentModuleContainerViewController *)viewController {
-	if ([self isLandscape]) {
-		return [_landscapePositionProvider  positionForIdentifier:viewController.moduleIdentifier];
-	} else {
-		return [_portraitPositionProvider  positionForIdentifier:viewController.moduleIdentifier];
-	}
+	return [_portraitPositionProvider  positionForIdentifier:viewController.moduleIdentifier];
 }
 @end

@@ -2,16 +2,6 @@
 #import "MZELayoutOptions.h"
 #import "macros.h"
 
-#if __cplusplus
-    extern "C" {
-#endif
-    CGPoint UIPointRoundToViewScale(CGPoint point, UIView *view);
-    CGFloat UICeilToViewScale(CGFloat value, UIView *view);
-    CGFloat UIRoundToViewScale(CGFloat value, UIView *view);
-#if __cplusplus
-}
-#endif
-
 @implementation MZESliderModuleBackgroundViewController
 
 - (void)viewDidLoad {

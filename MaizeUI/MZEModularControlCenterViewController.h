@@ -9,18 +9,17 @@
 	CGRect _initFrame;
 	CGFloat _openCollectionViewYOrigin;
 	CGFloat _closedCollectionViewYOrigin;
-	MZEAnimatedBlurView *_animatedBackgroundView;
-	UIView *_luminanceBackgroundView;
 	_MZEBackdropView *_luminanceBackdropView;
 	MZEModuleCollectionViewController *_collectionViewController;
 	UIViewPropertyAnimator *_animator;
 }
-@property (nonatomic, retain, readwrite) MZEAnimatedBlurView *animatedBackgroundView;
-@property (nonatomic, retain, readwrite) UIView *luminanceBackgroundView;
-@property (nonatomic, retain, readwrite) MZEHeaderPocketView *headerPocket;
+
 @property (nonatomic, retain, readwrite) _MZEBackdropView *luminanceBackdropView;
 @property (nonatomic, retain, readwrite) MZEModuleCollectionViewController *collectionViewController;
 @property (nonatomic, retain, readwrite) UIViewPropertyAnimator *animator;
+
++ (MZEModuleCollectionViewController *)sharedCollectionViewController;
+
 - (id)initWithFrame:(CGRect)frame;
 - (void)revealWithProgress:(CGFloat)progress;
 - (BOOL)isLandscape;
@@ -36,4 +35,5 @@
 - (BOOL)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController shouldForwardAppearanceCall:(BOOL)shouldForward animated:(BOOL)animated;
 - (void)willResignActive;
 - (void)willBecomeActive;
+- (NSInteger)_interfaceOrientation;
 @end

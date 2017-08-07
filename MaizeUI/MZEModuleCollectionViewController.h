@@ -5,11 +5,12 @@
 #import "MZEContentModuleContainerViewController.h"
 #import "MZEModuleCollectionViewControllerDelegate-Protocol.h"
 #import "MZEModuleCollectionView.h"
+#import "MZELayoutViewLayoutSource-Protocol.h"
 
 
 #import <MaizeServices/MZEModuleRepository.h>
 
-@interface MZEModuleCollectionViewController : UIViewController <MZEContentModuleContainerViewControllerDelegate, UIScrollViewDelegate> {
+@interface MZEModuleCollectionViewController : UIViewController <MZEContentModuleContainerViewControllerDelegate, UIScrollViewDelegate, MZELayoutViewLayoutSource> {
 	CGFloat _itemSpacingSize;
 	CGFloat _edgeInsetSize;
 	CGFloat _itemEdgeSize;
@@ -21,14 +22,18 @@
     MZEControlCenterPositionProvider *_landscapePositionProvider;
     NSMutableArray<MZEContentModuleContainerViewController *> *_currentModules;
     __weak id <MZEModuleCollectionViewControllerDelegate> _delegate;
-    MZEModuleCollectionView *_scrollView;
+    MZEModuleCollectionView *_containerView;
+    MZEControlCenterPositionProvider *_currentPositionProvider;
+    MZELayoutStyle *_currentLayoutStyle;
 }
 @property(nonatomic) __weak id <MZEModuleCollectionViewControllerDelegate> delegate; // @synthesize delegate=_delegate;
-@property(nonatomic, retain, readwrite) MZEModuleCollectionView *scrollView;
+@property(nonatomic, retain, readwrite) MZEModuleCollectionView *containerView;
+@property(nonatomic, retain, readonly) MZEModuleCollectionView *moduleCollectionView;
 
 - (instancetype)initWithModuleInstanceManager:(MZEModuleInstanceManager *)moduleInstanceManager;
 - (BOOL)isLandscape;
 - (CGSize)layoutSize;
+- (CGSize)preferredContentSize;
 
 
 - (void)willResignActive;
@@ -38,6 +43,12 @@
 - (NSArray<MZEModuleInstance *> *)_moduleInstances;
 - (void)_removeAndTearDownModuleViewControllerFromHierarchy:(MZEContentModuleContainerViewController *)viewController;
 - (void)_setupAndAddModuleViewControllerToHierarchy:(MZEContentModuleContainerViewController *)viewController;
+
+#pragma mark MZELayoutViewLayoutSourceDelegate
+
+- (BOOL)layoutView:(MZELayoutView *)layoutView shouldIgnoreSubview:(UIView *)subview;
+- (CGRect)layoutView:(MZELayoutView *)arg1 layoutRectForSubview:(UIView *)subview;
+- (CGSize)layoutSizeForLayoutView:(MZELayoutView *)layoutView;
 
 #pragma mark MZEContentModuleContainerViewControllerDelegate
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didCloseExpandedModule:(id <MZEContentModule>)arg2;

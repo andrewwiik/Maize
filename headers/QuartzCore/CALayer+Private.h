@@ -3,6 +3,7 @@
 @interface CALayer (Private)
 @property (assign) CGColorRef contentsMultiplyColor; 
 @property (nonatomic, retain) NSArray *backgroundFilters;
+@property (nonatomic, retain) CAFilter *compositingFilter;
 @property BOOL hitTestsAsOpaque;
 - (void)setAllowsGroupBlending:(BOOL)allowed;
 - (CAState *)stateWithName:(NSString *)name;

@@ -1,17 +1,19 @@
-#import "MZEPocketMaterialView.h"
+#import "MZEMaterialView.h"
+#import <SpringBoardUI/SBUIChevronView.h>
 
-@interface SBUIChevronView : UIView
--(void)setState:(long long)arg1 animated:(BOOL)arg2 ;
--(void)setColor:(UIColor *)arg1 ;
-@end
+@interface MZEHeaderPocketView : UIView {
+    MZEMaterialView *_headerBackgroundView;
+    UIView *_headerLineView;
+    SBUIChevronView *_headerChevronView;
+    CGFloat _backgroundAlpha;
+}
 
-@interface MZEHeaderPocketView : UIView
-@property(retain, nonatomic, readwrite) SBUIChevronView *headerChevronView; // @synthesize subtitleLabel=_subtitleLabel;
-@property(retain, nonatomic, readwrite) UIView *headerDivider; // @synthesize subtitleLabel=_subtitleLabel;
-@property(retain, nonatomic, readwrite) MZEPocketMaterialView *headerBackgroundView; // @synthesize subtitleLabel=_subtitleLabel;
-@property(assign, nonatomic, readwrite) BOOL chevronPointingDown; // @synthesize subtitleLabel=_subtitleLabel;
-@property(assign, nonatomic, readwrite) BOOL showingBackground; // @synthesize subtitleLabel=_subtitleLabel;
-@property(assign, nonatomic, readwrite) CGFloat chevronAlpha; // @synthesize subtitleLabel=_subtitleLabel;
--(void)animateProgress:(CGFloat)arg1;
--(void)toggleDividerVisibility;
+@property(nonatomic) CGFloat backgroundAlpha;
+@property(nonatomic, getter=isChevronPointingDown) BOOL chevronPointingDown;
+@property(nonatomic) double chevronAlpha;
+- (void)layoutSubviews;
+- (CGSize)intrinsicContentSize;
+- (CGSize)sizeThatFits:(struct CGSize)size;
+- (id)initWithFrame:(CGRect)frame;
+
 @end

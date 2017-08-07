@@ -1,2 +1,0 @@
-@interface MZEPocketMaterialView : UIView
-@end

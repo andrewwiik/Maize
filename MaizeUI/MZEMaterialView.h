@@ -24,6 +24,7 @@ typedef NS_ENUM(NSInteger, MZEMaterialStyle)
 @property (nonatomic, retain) UIColor *colorAddColor;
 @property (nonatomic, retain) NSValue *forcedColorMatrix;
 + (instancetype)materialViewWithStyle:(MZEMaterialStyle)style;
+- (id)initWithStyleDict:(NSDictionary *)styleDictionary
 //- (void)updateCornerRadius;
 //- (void)setCompactCornerRadius:(CGFloat)compactCornerRadius expandedCornerRadius:(CGFloat)expandedCornerRadius compactSize:(CGSize)compactSize expandedSize:(CGSize)expandedSize;
 // - (void)_setCornerRadius:(CGFloat)cornerRadius;
