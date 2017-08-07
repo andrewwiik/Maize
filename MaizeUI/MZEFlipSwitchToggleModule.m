@@ -30,20 +30,24 @@
 	return self;
 }
 
+- (BOOL)isReversed {
+	return NO;
+}
+
 - (UIColor *)selectedColor {
 	return [[NSClassFromString(@"FSSwitchPanel") sharedPanel] primaryColorForSwitchIdentifier:_switchIdentifier];
 }
 
 - (UIImage *)iconGlyph {
 	if (!_cachedIconImage) {
-		_cachedIconImage = [[NSClassFromString(@"FSSwitchPanel") sharedPanel] imageOfSwitchState:FSSwitchStateOff controlState:UIControlStateNormal forSwitchIdentifier:_switchIdentifier usingTemplate:_templateBundle];
+		_cachedIconImage = [[NSClassFromString(@"FSSwitchPanel") sharedPanel] imageOfSwitchState:[self isReversed] ? FSSwitchStateOn : FSSwitchStateOff controlState:UIControlStateNormal forSwitchIdentifier:_switchIdentifier usingTemplate:_templateBundle];
 	}
 	return _cachedIconImage;
 }
 
 - (UIImage *)selectedIconGlyph {
 	if (!_cachedSelectedIconImage) {
-		_cachedSelectedIconImage = [[NSClassFromString(@"FSSwitchPanel") sharedPanel] imageOfSwitchState:FSSwitchStateOn controlState:UIControlStateNormal forSwitchIdentifier:_switchIdentifier usingTemplate:_templateBundle];
+		_cachedSelectedIconImage = [[NSClassFromString(@"FSSwitchPanel") sharedPanel] imageOfSwitchState:[self isReversed] ? FSSwitchStateOff : FSSwitchStateOn controlState:UIControlStateNormal forSwitchIdentifier:_switchIdentifier usingTemplate:_templateBundle];
 	}
 	return _cachedSelectedIconImage;
 }
@@ -57,19 +61,32 @@
 }
 
 - (BOOL)isSelected {
-	switch (_currentState) {
-		case FSSwitchStateOff:
-			return NO;
-		case FSSwitchStateOn:
-			return YES;
-		default:
-			return NO;
+
+	if ([self isReversed]) {
+		switch (_currentState) {
+			case FSSwitchStateOff:
+				return YES;
+			case FSSwitchStateOn:
+				return NO;
+			default:
+				return NO;
+		}
+	} else {
+			switch (_currentState) {
+			case FSSwitchStateOff:
+				return NO;
+			case FSSwitchStateOn:
+				return YES;
+			default:
+				return NO;
+		}
 	}
 	//return [[NSClassFromString(@"FSSwitchPanel") sharedPanel] ;
 }
 
 - (void)setSelected:(BOOL)isSelected {
-	[[NSClassFromString(@"FSSwitchPanel") sharedPanel] setState:isSelected ? FSSwitchStateOn : FSSwitchStateOff forSwitchIdentifier:_switchIdentifier];
+	BOOL isReversed = [self isReversed];
+	[[NSClassFromString(@"FSSwitchPanel") sharedPanel] setState:isSelected ? (isReversed ? FSSwitchStateOff : FSSwitchStateOn) : (isReversed ? FSSwitchStateOn : FSSwitchStateOff) forSwitchIdentifier:_switchIdentifier];
 	[_viewController setSelected:isSelected];
 	[super setSelected:isSelected];
 	return;

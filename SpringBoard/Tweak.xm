@@ -2,7 +2,7 @@
 #import <MaizeUI/_MZEBackdropView.h>
 #import <MaizeUI/MZELayoutOptions.h>
 // #import "BinPackingFactory2D.h"
-#import <MaizeUI/MZEModularControlCenterViewController.h>
+#import <MaizeUI/MZEModularControlCenterOverlayViewController.h>
 #import <MaizeUI/MZECurrentActions.h>
 #import <QuartzCore/CAFilter+Private.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
@@ -45,10 +45,17 @@ static BOOL hasCalled = NO;
 -(void)setRevealPercentage:(CGFloat)revealPercentage {
 
   if (!self.mze_viewController) {
-    self.mze_viewController = [[MZEModularControlCenterViewController alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
-    [self.mze_viewController loadView];
-    self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    self.mze_viewController = [[MZEModularControlCenterOverlayViewController alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:self.mze_viewController.view];
+    [self addChildViewController:self.mze_viewController];
+    [self.mze_viewController didMoveToParentViewController:self];
+
+    // [self.mze_viewController loadView];
+    // [self.mze_viewController viewDidLoad];
+    // [self.mze_viewController viewWillLayoutSubviews];
+   // self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    // [self.view addSubview:self.mze_viewController.view];
+    //self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
   }
 
   %orig;
@@ -56,6 +63,8 @@ static BOOL hasCalled = NO;
   if (!self.presented && !hasCalled) {
     [self.mze_viewController willBecomeActive];
   }
+
+  self.mze_viewController.view.userInteractionEnabled = YES;
   hasCalled = YES;
 
  // self.mze_viewController.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height);
@@ -253,20 +262,12 @@ static BOOL hasCalled = NO;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)recognizer shouldReceiveTouch:(UITouch *)touch {
-  if ([recognizer isKindOfClass:NSClassFromString(@"UITapGestureRecognizer")] || [recognizer isKindOfClass:NSClassFromString(@"UIPanGestureRecognizer")]) {
-    if ([NSClassFromString(@"MZECurrentActions") isSliding]) {
-      return NO;
-    } else {
-      return %orig;
-    }
-  } else {
-    return YES;
-  }
+  return NO;
 }
 
-// -(BOOL)gestureRecognizerShouldBegin:(id)arg1 {
-
-// }
+-(BOOL)gestureRecognizerShouldBegin:(id)arg1 {
+  return NO;
+}
 
 // -(void)controlCenterWillPresent {
 //   %orig;
@@ -282,21 +283,18 @@ static BOOL hasCalled = NO;
 //   }
 // }
 
-// -(void)controlCenterWillBeginTransition {
-//   if (![self isPresented]) {
-//     if (self.mze_viewController) {
-//       [self.mze_viewController willBecomeActive];
-//     }
-//   }
-// }
-// -(void)controlCenterDidFinishTransition {
-//   %orig;
-//   if ([self isPresented]) {
-//     if (self.mze_viewController) {
-//       [self.mze_viewController willResignActive];
-//     }
-//   }
-// }
+-(void)controlCenterWillBeginTransition {
+  %orig;
+  if (self.mze_viewController) {
+      [self.mze_viewController viewWillLayoutSubviews];
+    }
+}
+-(void)controlCenterDidFinishTransition {
+  %orig;
+    if (self.mze_viewController) {
+      [self.mze_viewController viewWillLayoutSubviews];
+    }
+}
 
 // -(void)_handlePan:(UIPanGestureRecognizer *)recognizer {
 //   if (recognizer.state == UIGestureRecognizerStateBegan) {
@@ -319,6 +317,8 @@ static BOOL hasCalled = NO;
 - (void)setPresented:(BOOL)presented {
   if (!presented && self.mze_viewController && self.presented && hasCalled) {
     [self.mze_viewController willResignActive];
+    [self.mze_viewController viewWillLayoutSubviews];
+    self.mze_viewController.view.userInteractionEnabled = YES;
     hasCalled = NO;
   }
   %orig;
@@ -328,7 +328,12 @@ static BOOL hasCalled = NO;
     if (self.mze_viewController && hasCalled) {
       hasCalled = NO;
       [self.mze_viewController willResignActive];
+      [self.mze_viewController viewWillLayoutSubviews];
+      self.mze_viewController.view.userInteractionEnabled = YES;
     }
+  }
+  if (self.mze_viewController) {
+    self.mze_viewController.view.userInteractionEnabled = YES;
   }
   %orig;
 }
@@ -338,7 +343,21 @@ static BOOL hasCalled = NO;
   if (self.mze_viewController && hasCalled) {
       hasCalled = NO;
       [self.mze_viewController willResignActive];
+      [self.mze_viewController viewWillLayoutSubviews];
     }
+}
+%end
+
+%hook SBControlCenterController
+-(BOOL)handleMenuButtonTap {
+  MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
+  if (collectionViewController) {
+    if ([collectionViewController handleMenuButtonTap]) {
+      return YES;
+    }
+  }
+
+  return %orig;
 }
 %end
 

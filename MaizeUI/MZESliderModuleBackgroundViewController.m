@@ -1,15 +1,6 @@
 #import "MZESliderModuleBackgroundViewController.h"
 #import "MZELayoutOptions.h"
-
-#if __cplusplus
-    extern "C" {
-#endif
-    CGPoint UIPointRoundToViewScale(CGPoint point, UIView *view);
-    CGFloat UICeilToViewScale(CGFloat value, UIView *view);
-    CGFloat UIRoundToViewScale(CGFloat value, UIView *view);
-#if __cplusplus
-}
-#endif
+#import "macros.h"
 
 @implementation MZESliderModuleBackgroundViewController
 
@@ -26,21 +17,31 @@
 	[super viewWillLayoutSubviews];
 
 	CGRect bounds = CGRectZero;
+	CGPoint centerPoint = CGPointMake(0,0);
 	if (self.view) {
 		bounds = [self.view bounds];
 	}
 
-	CGFloat boundsHeight = CGRectGetHeight(bounds);
-	CGFloat expandedHeight = [MZELayoutOptions defaultExpandedSliderHeight];
-	CGFloat centerSpaceLeft = (boundsHeight - expandedHeight) * 0.5;
-	CGFloat midX = CGRectGetMidX(bounds);
-	CGPoint centerPoint;
-	centerPoint.y = centerSpaceLeft * 0.5;
-	centerPoint.x = midX;
+	if (bounds.size.width > bounds.size.height && !(isPad)) {
+		CGFloat boundsWidth = CGRectGetHeight(bounds);
+		CGFloat expandedWidth = [MZELayoutOptions defaultExpandedSliderWidth];
+		CGFloat centerSpaceLeft = (boundsWidth - expandedWidth) * 0.5;
+		CGFloat midY = CGRectGetMidY(bounds);
+		centerPoint.y = midY;
+		centerPoint.x = centerSpaceLeft;
+	} else {
+		CGFloat boundsHeight = CGRectGetHeight(bounds);
+		CGFloat expandedHeight = [MZELayoutOptions defaultExpandedSliderHeight];
+		CGFloat centerSpaceLeft = (boundsHeight - expandedHeight) * 0.5;
+		CGFloat midX = CGRectGetMidX(bounds);
+		centerPoint.y = centerSpaceLeft * 0.5;
+		centerPoint.x = midX;
+	}
 
 	centerPoint = UIPointRoundToViewScale(centerPoint, _headerImageView);
 	_headerImageView.center = centerPoint;
 	_packageView.center = centerPoint;
+	_packageView.frame = CGRectMake(_packageView.frame.origin.x,_packageView.frame.origin.y,_package.rootLayer.bounds.size.width,_package.rootLayer.bounds.size.height);
 
 }
 
@@ -51,6 +52,7 @@
 
 - (void)setGlyphPackage:(CAPackage *)glyphPackage {
 	[self loadViewIfNeeded];
+	_package = glyphPackage;
 	[_packageView setPackage:glyphPackage];
 }
 

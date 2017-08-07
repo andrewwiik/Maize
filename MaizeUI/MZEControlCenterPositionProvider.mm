@@ -55,7 +55,7 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 
 		} else {
 			_numberOfColumns = _layoutStyle.columns;
-			_numberOfRows = (NSInteger)ceil((CGFloat)numberOfSpacesTaken/(CGFloat)_numberOfColumns);
+			_numberOfRows = numberOfSpacesTaken;
 			//if (_numberOfRows == 0) _numberOfRows = 1;
 		}
 		//_numberOfRows += 1;
@@ -65,8 +65,8 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 		NSInteger numberOfRows = _numberOfRows;
 		NSInteger numberOfColumns = _numberOfColumns;
 
-		CGFloat width = numberOfColumns*_layoutStyle.moduleSize + (numberOfColumns-1)*_layoutStyle.spacing + (_layoutStyle.inset * 2);
-		CGFloat height = numberOfRows*_layoutStyle.moduleSize + (numberOfRows - 1)*_layoutStyle.spacing + (_layoutStyle.inset * 2);
+		CGFloat width = numberOfColumns*_layoutStyle.moduleSize + (numberOfColumns-1)*_layoutStyle.spacing;
+		CGFloat height = numberOfRows*_layoutStyle.moduleSize + (numberOfRows - 1)*_layoutStyle.spacing;
 
 		_cachedLayoutSize = CGSizeMake(width, height);
 
@@ -92,8 +92,8 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 		NSInteger numberOfRows = _numberOfRows;
 		NSInteger numberOfColumns = _numberOfColumns;
 
-		CGFloat width = numberOfColumns*_layoutStyle.moduleSize + (numberOfColumns-1)*_layoutStyle.spacing + (_layoutStyle.inset * 2);
-		CGFloat height = numberOfRows*_layoutStyle.moduleSize + (numberOfRows - 1)*_layoutStyle.spacing + (_layoutStyle.inset * 2);
+		CGFloat width = numberOfColumns*_layoutStyle.moduleSize + (numberOfColumns-1)*_layoutStyle.spacing;
+		CGFloat height = numberOfRows*_layoutStyle.moduleSize + (numberOfRows - 1)*_layoutStyle.spacing;
 
 		_cachedLayoutSize = CGSizeMake(width, height);
 		return _cachedLayoutSize;
@@ -209,7 +209,7 @@ struct MZEModuleCoordinate MZEModuleCoordinateMake(long long row, long long col)
 	    	int moduleHeight = [[_orderedSizes objectAtIndex:[_orderedIdentifiers indexOfObject:identifier]] CGSizeValue].height;
 			CGRect position = CGRectMake(coord.col,coord.row,moduleWidth,moduleHeight);
 
-			CGFloat x = (position.origin.x -1)*_layoutStyle.moduleSize + (position.origin.x -1)*_layoutStyle.spacing + _layoutStyle.inset;
+			CGFloat x = (position.origin.x -1)*_layoutStyle.moduleSize + (position.origin.x -1)*_layoutStyle.spacing;
 			CGFloat y = (position.origin.y -1)*_layoutStyle.moduleSize + (position.origin.y -1)*_layoutStyle.spacing;
 			CGFloat width = position.size.width*_layoutStyle.moduleSize+(position.size.width - 1)*_layoutStyle.spacing;
 			CGFloat height = position.size.height*_layoutStyle.moduleSize+(position.size.height - 1)*_layoutStyle.spacing;

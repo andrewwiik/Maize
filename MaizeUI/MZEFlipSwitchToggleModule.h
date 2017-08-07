@@ -15,6 +15,6 @@
 @property (nonatomic, retain, readwrite) UIImage *cachedSelectedIconImage;
 @property (nonatomic, retain, readwrite) NSBundle *templateBundle;
 - (id)initWithSwitchIdentifier:(NSString *)switchIdentifier;
-
 + (NSBundle *)sharedTemplateBundle;
+- (BOOL)isReversed;
 @end

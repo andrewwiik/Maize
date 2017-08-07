@@ -1,16 +1,7 @@
 #import "MZEModuleSliderView.h"
 #import "MZECurrentActions.h"
 #import <UIKit/UIView+Private.h>
-
-#if __cplusplus
-    extern "C" {
-#endif
-    CGPoint UIPointRoundToViewScale(CGPoint point, UIView *view);
-    CGFloat UICeilToViewScale(CGFloat value, UIView *view);
-    CGFloat UIRoundToViewScale(CGFloat value, UIView *view);
-#if __cplusplus
-}
-#endif
+#import "macros.h"
 
 @implementation MZEModuleSliderView
     @synthesize step=_step;
@@ -460,6 +451,10 @@
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
 
     }];
+}
+
+- (BOOL)isExclusiveTouch {
+    return YES;
 }
 
 - (void)setGlyphVisible:(BOOL)visible {

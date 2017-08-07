@@ -7,14 +7,7 @@
 #import "MZEExpandedModulePresentationController.h"
 #import "MZEExpandedModuleDismissTransition.h"
 #import <UIKit/UIViewController+Window.h>
-
-#if __cplusplus
-	extern "C" {
-#endif
-	CGPoint UIRectGetCenter(CGRect);
-#if __cplusplus
-}
-#endif
+#import "macros.h"
 
 @implementation MZEContentModuleContainerViewController
 	@synthesize delegate=_delegate;

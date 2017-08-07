@@ -10,4 +10,6 @@
 - (void)nc_removeAllVibrantStyling;
 - (CCUIControlCenterPagePlatterView *)ccuiPunchOutMaskedContainer;
 - (BOOL)_shouldAnimatePropertyWithKey:(id)key;
+- (UIScreen *)_screen;
+- (void)setSize:(CGSize)size;
 @end

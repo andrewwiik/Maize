@@ -1,0 +1,52 @@
+#import "MZEBackgroundView.h"
+#import <UIKit/_UIBackdropViewSettings+Private.h>
+#import <QuartzCore/CALayer+Private.h>
+
+@implementation MZEBackgroundView
+- (id)initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
+	if (self) {
+		_effectProgress = 0.0f;
+
+		_luminanceView = [[MZEMaterialView alloc] init];
+		_luminanceView.luminanceAlpha = 1.0f;
+		_luminanceView.alpha = 0;
+		_luminanceView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+		[self addSubview:_luminanceView];
+
+		_blurView = [[MZEAnimatedBlurView alloc] initWithFrame:[self bounds]];
+	  	_blurView.backdropSettings = [NSClassFromString(@"_UIBackdropViewSettings") settingsForStyle:-2];
+	  	_blurView.backdropSettings.blurRadius = 30.0f;
+	  	_blurView.backdropSettings.saturationDeltaFactor = 1.9f;
+	    _blurView.backdropSettings.grayscaleTintAlpha = 0;
+	    _blurView.backdropSettings.colorTintAlpha = 0;
+	    _blurView.backdropSettings.grayscaleTintLevel = 0;
+	    _blurView.backdropSettings.usesGrayscaleTintView = NO;
+	    _blurView.backdropSettings.usesColorTintView = NO;
+	    _blurView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+
+	    [self addSubview:_blurView];
+	}
+	return self;
+}
+
+- (void)layoutSubviews {
+	if (_luminanceView) {
+		_luminanceView.frame = self.bounds;
+	}
+	if (_blurView) {
+		_blurView.frame = self.bounds;
+	}
+}
+
+- (void)setEffectProgress:(CGFloat)progress {
+	if (progress != _effectProgress) {
+		_effectProgress = progress;
+		[UIView animateWithDuration:0.05 animations:^{
+			_luminanceView.alpha = progress*0.45;
+			_blurView.progress = progress;
+		//_animator.fractionComplete = progress;
+		} completion:nil];
+	}
+}
+@end

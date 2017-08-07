@@ -68,7 +68,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 }
 
 
-- (id)init {
+- (instancetype)init {
 	self = [super init];
 	if (self) {
 		self.backdropView = [[_MZEBackdropView alloc] init];
@@ -82,6 +82,16 @@ typedef struct CAColorMatrix CAColorMatrix;
   //       [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
   //       [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
         self.layer.allowsGroupBlending = NO;
+	}
+	return self;
+}
+
+- (id)initWithStyleDict:(NSDictionary *)styleDictionary {
+	self = [self init];
+	if (self) {
+		if (self.backdropView) {
+			[self.backdropView setStyleDictionary:[styleDictionary copy]];
+		}
 	}
 	return self;
 }

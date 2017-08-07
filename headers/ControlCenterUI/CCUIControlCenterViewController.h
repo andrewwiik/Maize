@@ -10,6 +10,7 @@
 -(void)_addPageViewController:(id)arg1;
 -(void)_loadPages;
 -(void)_removeContentViewController:(id)arg1;
+-(void)_handlePan:(id)arg1;
 -(id<CCUIControlCenterPageContentProviding>)_selectedContentViewController;
 -(CCUIControlCenterPageContainerViewController *)_selectedViewController;
 @end

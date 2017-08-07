@@ -18,6 +18,10 @@
 	return @"";
 }
 
+- (BOOL)isReversed {
+	return YES;
+}
+
 - (NSString *)glyphState {
 	if ([self isSelected]) {
 		return @"silent";

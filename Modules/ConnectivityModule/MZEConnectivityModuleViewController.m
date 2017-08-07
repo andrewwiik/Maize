@@ -13,7 +13,9 @@
 		for (NSString *className in [[self class] defaultButtonClasses]) {
 			if ([NSClassFromString(className) isSupported]) {
 				MZEConnectivityButtonViewController *buttonController = [self _makeButtonWithClass:NSClassFromString(className)];
-				[_buttonViewControllers addObject:buttonController];
+				if (buttonController) {
+					[_buttonViewControllers addObject:buttonController];
+				}
 			}
 		}
 		_isExpanded = NO;
@@ -91,7 +93,7 @@
 		[buttonController.view setAlpha:1.0];
 	}
 
-	for (NSUInteger x = ([self visibleRows] * [self visibleColumns]) - 1; x < [_buttonViewControllers count]; x++) {
+	for (NSUInteger x = ([self visibleRows] * [self visibleColumns]); x < [_buttonViewControllers count]; x++) {
 		_buttonViewControllers[x].view.alpha = _isExpanded ? 1.0 : 0.0;
 	}
 }
@@ -150,16 +152,19 @@
 
 - (MZEConnectivityButtonViewController *)_makeButtonWithClass:(Class)buttonClass {
 	MZEConnectivityButtonViewController *controller = [[buttonClass alloc] init];
-	[self addChildViewController:controller];
-	[controller didMoveToParentViewController:self];
-	return controller;
+	if (controller) {
+		[self addChildViewController:controller];
+		[controller didMoveToParentViewController:self];
+		return controller;
+	}
+	return nil;
 }
 
 + (NSArray *)defaultButtonClasses {
 	NSMutableArray *buttonClasses = [NSMutableArray new];
 	[buttonClasses addObject:@"MZEConnectivityAirplaneViewController"];
 	[buttonClasses addObject:@"MZEConnectivityCellularDataViewController"];
-
+	[buttonClasses addObject:@"MZEConnectivityWifiViewController"];
 	[buttonClasses addObject:@"MZEConnectivityBluetoothViewController"];
 	return [buttonClasses copy];
 }

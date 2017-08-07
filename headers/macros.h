@@ -22,3 +22,14 @@
 #define ConstantConstraint(item, attr, rel, con) Constraint((item), (attr), (rel), nil, NSLayoutAttributeNotAnAttribute, (con))
 
 #define horizontallyFillSuperview ^(UIView *view, NSUInteger idx, BOOL *stop) {[view.superview addConstraints:VisualConstraints(@"|[view]|", view)];}
+
+#if __cplusplus
+    extern "C" {
+#endif
+    CGPoint UIRectGetCenter(CGRect rect);
+	CGFloat UICeilToViewScale(CGFloat value, UIView *view);
+	CGFloat UIRoundToViewScale(CGFloat value, UIView *view);
+	CGPoint UIPointRoundToViewScale(CGPoint point, UIView *view);
+#if __cplusplus
+}
+#endif

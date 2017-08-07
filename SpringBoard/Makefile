@@ -13,8 +13,8 @@ Maize_CFLAGS = -fobjc-arc -I../headers -I ../
 TWEAK_NAME = Maize
 Maize_FILES = $(wildcard *.m) $(wildcard *.xm)
 Maize_EXTRA_FRAMEWORKS = MaizeUI
-Maize_LDFLAGS = -F../.theos/$(THEOS_OBJ_DIR_NAME)
-Maize_LIBRARIES = flipswitch
+Maize_LDFLAGS += -F../.theos/$(THEOS_OBJ_DIR_NAME)
+Maize_LIBRARIES += flipswitch
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

@@ -44,11 +44,17 @@ typedef struct CAColorMatrix CAColorMatrix;
 			if (styleDictionary[@"brightness"]) {
 				_brightness = [(NSNumber *)styleDictionary[@"brightness"] floatValue];
 			}
+
 			if (styleDictionary[@"saturation"]) {
 				_saturation = [(NSNumber *)styleDictionary[@"saturation"] floatValue];
 			}
+
 			if (styleDictionary[@"luminanceAlpha"]) {
-				_saturation = [(NSNumber *)styleDictionary[@"luminanceAlpha"] floatValue];
+				_luminanceAlpha = [(NSNumber *)styleDictionary[@"luminanceAlpha"] floatValue];
+			}
+
+			if (styleDictionary[@"blurRadius"]) {
+				_blurRadius = [(NSNumber *)styleDictionary[@"blurRadius"] floatValue];
 			}
 
 			if (styleDictionary[@"colorMatrixColor"]) {
@@ -78,7 +84,11 @@ typedef struct CAColorMatrix CAColorMatrix;
 				_saturation = [(NSNumber *)styleDictionary[@"saturation"] floatValue];
 			}
 			if (styleDictionary[@"luminanceAlpha"]) {
-				_saturation = [(NSNumber *)styleDictionary[@"luminanceAlpha"] floatValue];
+				_luminanceAlpha = [(NSNumber *)styleDictionary[@"luminanceAlpha"] floatValue];
+			}
+
+			if (styleDictionary[@"blurRadius"]) {
+				_blurRadius = [(NSNumber *)styleDictionary[@"blurRadius"] floatValue];
 			}
 
 			if (styleDictionary[@"colorMatrixColor"]) {
@@ -128,6 +138,17 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 - (CGFloat)luminanceAlpha {
 	return _luminanceAlpha;
+}
+
+- (void)setBlurRadius:(CGFloat)blurRadius {
+	if (blurRadius != _blurRadius) {
+		_blurRadius = blurRadius;
+		[self recomputeFilters];
+	}
+}
+
+- (CGFloat)blurRadius {
+	return _blurRadius;
 }
 
 - (void)setColorMatrixColor:(UIColor *)colorMatrixColor {
@@ -204,6 +225,12 @@ typedef struct CAColorMatrix CAColorMatrix;
 	    [filters addObject:filter];
 	}
 
+	if (_blurRadius != 0.0f) {
+		CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"gaussianBlur"];
+		[filter setValue:[NSNumber numberWithFloat:_blurRadius] forKey:@"inputRadius"];
+		[filters addObject:filter];
+	}
+
 	if (_luminanceAlpha != 0) {
 		CAFilter *monochrome = [NSClassFromString(@"CAFilter") filterWithType:@"colorMonochrome"];
 		[monochrome setValue:(id)[[UIColor whiteColor] CGColor] forKey:@"inputColor"];
@@ -247,6 +274,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 		[filter setValue:[NSNumber numberWithFloat:_brightness] forKey:@"inputAmount"];
 		[filters addObject:filter];
 	}
+
 
 	[self.layer setFilters:[filters copy]];
 }
