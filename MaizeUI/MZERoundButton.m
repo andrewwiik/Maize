@@ -108,6 +108,8 @@
 	 		_glyphImageView.alpha = 0;
 	 	}
 
+	 	_glyphPackageView.alpha = alpha;
+
 	 	if (_glyphPackageView) {
 	 		[_glyphPackageView setStateName:_glyphState];
 	 	}

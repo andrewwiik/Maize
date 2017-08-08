@@ -18,6 +18,7 @@
 	if ([self.presentedViewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
 		MZEContentModuleContainerViewController *controller = (MZEContentModuleContainerViewController *)self.presentedViewController;
 		controller.expanded = YES;
+		[controller willBecomeActive];
 		id<UIViewControllerTransitionCoordinator> coordinator = self.presentingViewController.transitionCoordinator;
 		[controller viewWillTransitionToSize:[controller _backgroundFrameForExpandedState].size withTransitionCoordinator:coordinator];
 		[coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
@@ -43,10 +44,13 @@
 		[coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
 			[[MZEModularControlCenterViewController sharedCollectionViewController] contentModuleContainerViewController:controller willCloseExpandedModule:controller.contentModule];
 		} completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-			[[MZEModularControlCenterViewController sharedCollectionViewController] contentModuleContainerViewController:controller didCloseExpandedModule:controller.contentModule];
-			[[MZEModularControlCenterViewController sharedCollectionViewController].view addSubview:self.presentedViewController.view];
-			[[MZEModularControlCenterViewController sharedCollectionViewController] addChildViewController:self.presentedViewController];
-			[controller didMoveToParentViewController:[MZEModularControlCenterViewController sharedCollectionViewController]];
+			[UIView performWithoutAnimation:^{
+				[[MZEModularControlCenterViewController sharedCollectionViewController] contentModuleContainerViewController:controller didCloseExpandedModule:controller.contentModule];
+				[[MZEModularControlCenterViewController sharedCollectionViewController].view addSubview:self.presentedViewController.view];
+				[[MZEModularControlCenterViewController sharedCollectionViewController] addChildViewController:self.presentedViewController];
+				[controller didMoveToParentViewController:[MZEModularControlCenterViewController sharedCollectionViewController]];
+				[controller willBecomeActive];
+			}];
 		}];
 	}
 }

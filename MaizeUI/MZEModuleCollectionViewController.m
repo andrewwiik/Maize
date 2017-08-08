@@ -275,9 +275,12 @@
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController openExpandedModule:(id <MZEContentModule>)expandedModule {
-	[containerViewController.view removeFromSuperview];
-	[containerViewController willMoveToParentViewController:nil];
-	[containerViewController removeFromParentViewController];
+	
+	[UIView performWithoutAnimation:^{
+		[containerViewController.view removeFromSuperview];
+		[containerViewController willMoveToParentViewController:nil];
+		[containerViewController removeFromParentViewController];
+	}];
 
 	[self presentViewController:containerViewController animated:true completion:nil];
 }

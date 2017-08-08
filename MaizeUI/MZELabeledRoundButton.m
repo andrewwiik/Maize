@@ -43,12 +43,12 @@
 		[self addConstraint:self.buttonHeightConstraint];
 
 		[self addConstraint:Constraint(self.titleLabel,NSCCenterX,NSCEqual,self,NSCCenterX,0)];
-		CGFloat titlePadding = _buttonView.bounds.size.height + ([[MZEFontOptions roundButtonTitleFont] _scaledValueForValue:13.5] - [MZEFontOptions roundButtonTitleFont].descender);
+		CGFloat titlePadding = _buttonView.bounds.size.height + ([[MZEFontOptions roundButtonTitleFont] _scaledValueForValue:5] - [MZEFontOptions roundButtonTitleFont].descender);
 		[self addConstraint:Constraint(self.titleLabel,NSCTop,NSCEqual,self.buttonView,NSCBottom,titlePadding)];
 
 		[self addConstraint:Constraint(self.subtitleLabel,NSCCenterX,NSCEqual,self,NSCCenterX,0)];
 		[self addConstraint:Constraint(self.subtitleLabel,NSCTop,NSCEqual,self.titleLabel,NSCBottom,[MZEFontOptions roundButtonTitleFont].leading)];
-
+		// -2.89
 	}
 
 	return self;
@@ -74,7 +74,7 @@
 		[self addConstraint:self.buttonHeightConstraint];
 
 		[self addConstraint:Constraint(self.titleLabel,NSCCenterX,NSCEqual,self,NSCCenterX,0)];
-		CGFloat titlePadding = _buttonView.bounds.size.height + ([[MZEFontOptions roundButtonTitleFont] _scaledValueForValue:13.5] - [MZEFontOptions roundButtonTitleFont].descender);
+		CGFloat titlePadding = _buttonView.bounds.size.height + ([[MZEFontOptions roundButtonTitleFont] _scaledValueForValue:5] - [MZEFontOptions roundButtonTitleFont].descender);
 		[self addConstraint:Constraint(self.titleLabel,NSCTop,NSCEqual,self.buttonView,NSCBottom,titlePadding)];
 
 		[self addConstraint:Constraint(self.subtitleLabel,NSCCenterX,NSCEqual,self,NSCCenterX,0)];
@@ -177,12 +177,12 @@
 - (CGSize)sizeThatFits:(CGSize)size {
 	CGSize buttonSize = [_buttonView sizeThatFits:size];
 	if (_labelsVisible) {
-		CGFloat titleLineHeight = [MZEFontOptions roundButtonTitleFont].lineHeight;
+		CGFloat titleLineHeight = [MZEFontOptions roundButtonTitleFont].lineHeight + (([[MZEFontOptions roundButtonTitleFont] _scaledValueForValue:5] - [MZEFontOptions roundButtonTitleFont].descender));
 		CGFloat titleLeading = [MZEFontOptions roundButtonTitleFont].leading;
 		CGFloat subtitleLineHeight = [MZEFontOptions roundButtonSubtitleFont].lineHeight;
 		CGFloat subtitleDescender = [MZEFontOptions roundButtonSubtitleFont].descender;
 		CGFloat subtitleLeading = [MZEFontOptions roundButtonSubtitleFont].leading;
-		CGFloat labelsHeight = UIRoundToViewScale(((subtitleLineHeight + subtitleLeading) + subtitleDescender) + ((titleLeading * 3.0) + titleLineHeight), self);
+		CGFloat labelsHeight = UIRoundToViewScale(((subtitleLineHeight + subtitleLeading) + subtitleDescender) + ((titleLeading * 1.0) + titleLineHeight), self);
 		buttonSize.height += labelsHeight;
 	}
 

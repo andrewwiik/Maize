@@ -8,6 +8,7 @@
     NSBundle *_bundle;
     RadiosPreferences *_airplaneModeController;
     NSBundle *_iapBundle;
+    NSString *_lastGlyphState;
 }
 @property (nonatomic, retain, readwrite) RadiosPreferences *airplaneModeController;
 - (id)init;

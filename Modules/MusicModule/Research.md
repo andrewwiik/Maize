@@ -102,6 +102,7 @@ frame: 0, 108, 321,201
 
 Media COntrols timer:
 frame: 24,0, 273, 54
+style: 2
 
 left timer control:
 frame: 0, 34.5, 30, 16
@@ -179,6 +180,19 @@ expanded view
 frame: 27,150,321,368
 
 screen size:375,667
+
+
+### iPhone 7 Plus:
+
+Module size: 166, 166
+
+title container frame: 0,38.3333,166,60
+media controls frame:0,94,166,50
+left control: 16,18,24.666,15
+middle control: 70,12,25.3333,26.6667
+right control: 125.333,18,24.6667,15
+
+
 
 
 

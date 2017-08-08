@@ -117,9 +117,9 @@
 - (CGFloat)preferredExpandedContentHeight {
 	if (!_prefferedContentExpandedHeight) {
 		MPULayoutInterpolator *interpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-		[interpolator addValue:403.5 forReferenceMetric:320];
-		[interpolator addValue:417.5 forReferenceMetric:375];
-		[interpolator addValue:455.5 forReferenceMetric:414];
+		[interpolator addValue:306 forReferenceMetric:320];
+		[interpolator addValue:446 forReferenceMetric:375];
+		[interpolator addValue:468 forReferenceMetric:414];
 		_prefferedContentExpandedHeight = [interpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
@@ -182,6 +182,12 @@
 	}
 	return 2;
 }
+
+// - (CGSize)preferredContentSize {
+// 	if (_isExpanded) {
+
+// 	}
+// }
 
 
 
