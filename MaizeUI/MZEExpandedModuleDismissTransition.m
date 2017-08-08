@@ -1,5 +1,6 @@
 #import "MZEExpandedModuleDismissTransition.h"
 #import "MZEContentModuleContainerViewController.h"
+#import "MZEModularControlCenterViewController.h"
 
 
 @implementation MZEExpandedModuleDismissTransition
@@ -15,7 +16,7 @@
     //UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
 
 
-	CGRect relativeFrame = [[transitionContext containerView] convertRect:[toViewController _contentFrameForRestState] fromView:((UIViewController *)toViewController.delegate).view];
+	CGRect relativeFrame = [[transitionContext containerView] convertRect:[[MZEModularControlCenterViewController sharedCollectionViewController] compactModeFrameForContentModuleContainerViewController:toViewController] fromView:[MZEModularControlCenterViewController sharedCollectionViewController].view];
 	// toViewController.contentContainerView.frame = relativeFrame;
 
 	// if (toViewController.backgroundViewController) {

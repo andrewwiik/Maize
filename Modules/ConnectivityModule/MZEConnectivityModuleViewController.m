@@ -2,7 +2,7 @@
 #import <MPUFoundation/MPULayoutInterpolator.h>
 #import "MZEConnectivityLayoutHelper.h"
 #import <UIKit/UIScreen+Private.h>
-
+#import "MZEConnectivityModuleView.h"
 
 @implementation MZEConnectivityModuleViewController
 
@@ -23,12 +23,20 @@
 	return self;
 }
 
+- (void)loadView {
+	self.containerView = [[MZEConnectivityModuleView alloc] initWithFrame:CGRectZero];
+	self.containerView.layoutDelegate = self;
+	self.view = self.containerView;
+
+}
+
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	self.view.clipsToBounds = YES;
 	for (MZEConnectivityButtonViewController *buttonController in _buttonViewControllers) {
 		[self.view addSubview:buttonController.view];
 	}
+	[self layoutButtons];
 }
 
 - (void)willBecomeActive {
@@ -43,14 +51,40 @@
 	}
 }
 
-- (void)viewWillLayoutSubviews {
-
+- (void)layoutButtons {
 	NSUInteger colCount = [self numberOfColumns];
 	//NSUInteger rowCount = [self numberOfRows];
 	NSUInteger visibleColCount = [self visibleColumns];
 	//NSUInteger visibleRowCount = [self visibleRows];
 
 	if (_isExpanded) {
+
+		CGRect bounds = self.view.bounds;
+		NSUInteger cols = visibleColCount;
+		NSUInteger rows = [self visibleRows];
+		UIEdgeInsets edgeInsets = [MZEConnectivityLayoutHelper expandedLayoutInsetsForSize:bounds.size];
+		CGSize buttonSize = [self _buttonSize];
+		buttonSize.width = [MZEConnectivityLayoutHelper buttonWidthForInsets:edgeInsets containerSize:bounds.size numberOfColumns:cols];
+		CGFloat spacingX = bounds.size.width - edgeInsets.left - edgeInsets.right - (buttonSize.width * cols);
+		if (cols - 1 > 0) {
+			spacingX = spacingX/(cols - 1);
+		}
+
+		CGFloat spacingY = bounds.size.height - edgeInsets.top - edgeInsets.bottom - (buttonSize.height * rows);
+		if (rows - 1 > 0) {
+			spacingY = spacingY/(rows - 1);
+		}
+
+		for (NSUInteger x = 0; x < [_buttonViewControllers count]; x++) {
+			NSUInteger row = (x / colCount) + 1;
+			NSUInteger col = (x % colCount) + 1;
+
+			CGFloat xOrigin = edgeInsets.left + (spacingX * (col  - 1)) + (buttonSize.width * (col - 1));
+			CGFloat yOrigin = edgeInsets.top + (spacingY * (row - 1)) + (buttonSize.height * (row - 1));
+			_buttonViewControllers[x].view.frame = CGRectMake(xOrigin,yOrigin,buttonSize.width,buttonSize.height);
+
+		}
+
 
 	} else {
 
@@ -69,6 +103,12 @@
 	}
 }
 
+- (void)viewWillLayoutSubviews {
+
+	[super viewWillLayoutSubviews];
+	[self layoutButtons];
+}
+
 - (CGFloat)preferredExpandedContentWidth {
 	CGSize containerSize = [[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size;
 	return [MZEConnectivityLayoutHelper widthForExpandedContainerWithContainerSize:containerSize defaultButtonSize:[self _buttonSize]];
@@ -77,9 +117,9 @@
 - (CGFloat)preferredExpandedContentHeight {
 	if (!_prefferedContentExpandedHeight) {
 		MPULayoutInterpolator *interpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-		[interpolator addValue:403.5 forReferenceMetric:320];
-		[interpolator addValue:417.5 forReferenceMetric:375];
-		[interpolator addValue:455.5 forReferenceMetric:414];
+		[interpolator addValue:306 forReferenceMetric:320];
+		[interpolator addValue:446 forReferenceMetric:375];
+		[interpolator addValue:468 forReferenceMetric:414];
 		_prefferedContentExpandedHeight = [interpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
@@ -99,15 +139,14 @@
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+	[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+	HBLogInfo(@"DID CALL TRANSITITON TO SIZE IN CONNECTIVITY");
 	[coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        [self.view setNeedsLayout];
-		[self.view layoutIfNeeded];
+        [self.view layoutIfNeeded];
         // do whatever
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
 
     }];
-
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
 - (BOOL)providesOwnPlatter {
@@ -143,6 +182,12 @@
 	}
 	return 2;
 }
+
+// - (CGSize)preferredContentSize {
+// 	if (_isExpanded) {
+
+// 	}
+// }
 
 
 

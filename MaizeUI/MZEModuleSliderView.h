@@ -56,7 +56,7 @@
 - (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event;
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event;
 - (void)layoutSubviews;
-- (void)layoutEverything;
+// - (void)layoutEverything;
 - (BOOL)isGroupRenderingRequired;
 @property(readonly, nonatomic, getter=isStepped) BOOL stepped;
 - (id)initWithFrame:(struct CGRect)arg1;

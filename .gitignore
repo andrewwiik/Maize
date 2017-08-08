@@ -14,7 +14,5 @@ PPackages
 .DS-Store
 *.DS_Store
 .DS_Store
-Modules/MusicModule/
 Modules/CellularDataModule/
-Modules/FlashlightModule/
 

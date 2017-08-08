@@ -132,16 +132,14 @@
 		frame = containerView.bounds;
 
 	_highlightWrapperView = [[UIView alloc] initWithFrame:frame];
-	[_highlightWrapperView setBackgroundColor:[UIColor clearColor]];
-	[_highlightWrapperView setAutoresizingMask:18];
+	_highlightWrapperView.backgroundColor = [UIColor clearColor];
+	_highlightWrapperView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 	[containerView addSubview:_highlightWrapperView];
 
 	_backgroundView = [[MZEContentModuleBackgroundView alloc] init];
+	_backgroundView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                           UIViewAutoresizingFlexibleHeight);
 	frame = CGRectZero;
-	if (containerView)
-		frame = containerView.bounds;
-
-	[_backgroundView setFrame:frame];
 	[_highlightWrapperView addSubview:_backgroundView];
 
 	_contentContainerView = [[MZEContentModuleContentContainerView alloc] init];
@@ -157,6 +155,7 @@
 
 	[_highlightWrapperView addSubview:_contentContainerView];
 	_contentView = _contentViewController.view;
+
 	[_contentView setAutoresizingMask:18];
 
 	frame = CGRectZero;
@@ -164,10 +163,16 @@
 		frame = _contentContainerView.bounds;
 
 	[_contentView setFrame:frame];
+
 	[_contentContainerView addSubview:_contentView];
+	[self addChildViewController:_contentViewController];
+	[_contentViewController didMoveToParentViewController:self];
+
+
+	//_contentView.autoresizingMask =  UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
 
 	if (_backgroundViewController) {
-		[_backgroundViewController.view setAutoresizingMask:18];
+		_backgroundViewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 		[_backgroundView addSubview:_backgroundViewController.view];
 	}
 
@@ -341,10 +346,11 @@
 
 	if (ended) {
 		_bubbled = NO;
-		[UIView animateWithDuration:0 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
-			self.view.transform = CGAffineTransformIdentity;
-		} completion:nil];
 		[_delegate contentModuleContainerViewController:self openExpandedModule:_contentModule];
+		[UIView animateWithDuration:0.1 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+			self.view.transform = CGAffineTransformIdentity;
+		} completion:^(BOOL completed) {
+		}];
 	}
 	return;
 }
@@ -368,7 +374,9 @@
 
 - (CGRect)_contentFrameForRestState {
 	if (_delegate) {
-		return [_delegate compactModeFrameForContentModuleContainerViewController:self];
+		CGRect frame = [_delegate compactModeFrameForContentModuleContainerViewController:self];
+		frame.origin = CGPointZero;
+		return frame;
 	} else return CGRectZero;
 }
 
@@ -448,11 +456,41 @@
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-	if ([_contentViewController respondsToSelector:@selector(viewWillTransitionToSize:withTransitionCoordinator:)]) {
-		[_contentViewController viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+	//[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+	if (size.height == [self _backgroundFrameForExpandedState].size.height) {
+		CGSize expandedContentSize = [self _contentFrameForExpandedState].size;
+		[_contentViewController viewWillTransitionToSize:expandedContentSize withTransitionCoordinator:coordinator];
+		[_backgroundViewController viewWillTransitionToSize:[self _backgroundFrameForExpandedState].size withTransitionCoordinator:coordinator];
+	} else {
+		CGSize compactContentSize = [self _contentFrameForExpandedState].size;
+		[_contentViewController viewWillTransitionToSize:compactContentSize withTransitionCoordinator:coordinator];
+		[_backgroundViewController viewWillTransitionToSize:[self _backgroundFrameForRestState].size withTransitionCoordinator:coordinator];
 	}
-	[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-}
+	// if ([_contentViewController respondsToSelector:@selector(viewWillTransitionToSize:withTransitionCoordinator:)]) {
+	// 	[_contentViewController viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+	// }
+	// [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+} 
+
+// - (CGSize)sizeForChildContentContainer:(id<UIContentContainer>)container withParentContainerSize:(CGSize)parentSize {
+// 	if (container == _contentViewController) {
+// 		if ([self isExpanded]) {
+// 			return [self _contentFrameForExpandedState].size;
+// 		} else {
+// 			return [self _contentFrameForRestState].size;
+// 		}
+// 	} else {
+// 		return [super sizeForChildContentContainer:container withParentContainerSize:parentSize];
+// 	}
+// }
+
+// - (CGSize)preferredContentSize {
+// 	if ([self isExpanded]) {
+// 		return [self _contentFrameForExpandedState].size;
+// 	} else {
+// 		return [self _contentFrameForRestState].size;
+// 	}
+// }
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
 	return [[MZEExpandedModulePresentationTransition alloc] init];

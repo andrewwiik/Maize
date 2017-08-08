@@ -12,10 +12,10 @@
     @synthesize glyphVisible=_glyphVisible;
 
 
-- (void)setFrame:(CGRect)frame {
-    [super setFrame:frame];
-    [self layoutEverything];
-}
+// - (void)setFrame:(CGRect)frame {
+//     [super setFrame:frame];
+//     [self layoutEverything];
+// }
 
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
@@ -166,30 +166,10 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    //CGSize bounds = self.bounds.size;
-
-   // [self _layoutValueViews];
-
-    // CGFloat x = bounds.width*0.5;
-    // CGFloat y = bounds.height - x;
-    // CGPoint center = UIPointRoundToViewScale(CGPointMake(x,y), self);
-    // if (_glyphImageView) {
-    //     _glyphImageView.center = center;
-    //     _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    // }
-
-    // if (_glyphPackage) {
-    //     _glyphPackageView.center = center;
-    //     _otherGlyphPackageView.center = center;
-    //     _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    //     _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    // }
-}
-
-- (void)layoutEverything {
-
     CGSize bounds = self.bounds.size;
-    [self _layoutValueViews];
+
+   [self _layoutValueViews];
+
     CGFloat x = bounds.width*0.5;
     CGFloat y = bounds.height - x;
     CGPoint center = UIPointRoundToViewScale(CGPointMake(x,y), self);
@@ -205,6 +185,26 @@
         _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
     }
 }
+
+// - (void)layoutEverything {
+
+//     CGSize bounds = self.bounds.size;
+//     [self _layoutValueViews];
+//     CGFloat x = bounds.width*0.5;
+//     CGFloat y = bounds.height - x;
+//     CGPoint center = UIPointRoundToViewScale(CGPointMake(x,y), self);
+//     if (_glyphImageView) {
+//         _glyphImageView.center = center;
+//         _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
+//     }
+
+//     if (_glyphPackage) {
+//         _glyphPackageView.center = center;
+//         _otherGlyphPackageView.center = center;
+//         _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+//         _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+//     }
+// }
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     CGPoint touchPoint = [touch locationInView:self];
@@ -444,8 +444,8 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-         // [self setNeedsLayout];
-         // [self layoutIfNeeded];
+         [self setNeedsLayout];
+         [self layoutIfNeeded];
         // [_sliderView _layoutValueViews];
         // do whatever
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
@@ -459,9 +459,9 @@
 
 - (void)setGlyphVisible:(BOOL)visible {
     _glyphVisible = visible;
-    _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    // _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    // _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    // _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
 
 }
 

@@ -1,5 +1,6 @@
 #import "MZEExpandedModulePresentationTransition.h"
 #import "MZEContentModuleContainerViewController.h"
+#import "MZEModularControlCenterViewController.h"
 
 
 @implementation MZEExpandedModulePresentationTransition
@@ -15,7 +16,7 @@
     //UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
 
 
-	CGRect relativeFrame = [[transitionContext containerView] convertRect:toViewController.view.frame fromView:((UIViewController *)toViewController.delegate).view];
+	CGRect relativeFrame = [[transitionContext containerView] convertRect:toViewController.view.frame fromView:[MZEModularControlCenterViewController sharedCollectionViewController].view];
 	toViewController.contentContainerView.frame = relativeFrame;
 	toViewController.backgroundView.frame = [toViewController _backgroundFrameForExpandedState];
 	[toViewController.view bringSubviewToFront:toViewController.contentContainerView];

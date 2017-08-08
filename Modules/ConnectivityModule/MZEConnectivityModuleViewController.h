@@ -2,6 +2,8 @@
 #import <MaizeUI/MZEContentModuleContentViewController-Protocol.h>
 #import "MZEConnectivityButtonViewController.h"
 
+@class MZEConnectivityModuleView;
+
 @interface MZEConnectivityModuleViewController : UIViewController <MZEContentModuleContentViewController> {
 	CGFloat _prefferedContentExpandedHeight;
 	NSMutableArray<MZEConnectivityButtonViewController *> *_buttonViewControllers;
@@ -9,6 +11,7 @@
 
 }
 @property (nonatomic, retain, readwrite) NSMutableArray<MZEConnectivityButtonViewController *> *buttonViewControllers;
+@property (nonatomic, retain, readwrite) MZEConnectivityModuleView *containerView;
 @property (nonatomic, readwrite) BOOL isExpanded;
 - (id)initWithNibName:(id)arg1 bundle:(id)arg2;
 - (CGFloat)preferredExpandedContentWidth;
@@ -24,4 +27,5 @@
 - (NSUInteger)numberOfRows;
 - (void)willBecomeActive;
 - (void)willResignActive;
+- (void)layoutButtons;
 @end

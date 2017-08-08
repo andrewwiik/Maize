@@ -1,5 +1,5 @@
 #import <MaizeUI/MZEAnimatedFlipSwitchToggleModule.h>
-
+#import <ControlCenterUI/CCUIRecordScreenShortcut.h>
 
 
 @interface RPScreenRecorder : NSObject
@@ -14,6 +14,7 @@
 	NSString *_temporaryGlyphState;
 	BOOL _countingDown;
 	BOOL _isRecording;
+	CCUIRecordScreenShortcut *_recordToggle;
 }
 - (id)init;
 - (CAPackage *)glyphPackage;

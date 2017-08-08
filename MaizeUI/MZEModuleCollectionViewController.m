@@ -218,8 +218,8 @@
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController didCloseExpandedModule:(id <MZEContentModule>)module {
 	[_currentModules removeObject:containerViewController];
 	
-	containerViewController.view.frame = [self compactModeFrameForContentModuleContainerViewController:containerViewController];
-	containerViewController.contentViewController.view.frame = CGRectMake(0,0,containerViewController.view.frame.size.width,containerViewController.view.frame.size.height);
+	// containerViewController.view.frame = [self compactModeFrameForContentModuleContainerViewController:containerViewController];
+	// containerViewController.contentViewController.view.frame = CGRectMake(0,0,containerViewController.view.frame.size.width,containerViewController.view.frame.size.height);
 
 	// [containerViewController.view removeFromSuperview];
 	// [containerViewController willMoveToParentViewController:nil];
@@ -275,9 +275,12 @@
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController openExpandedModule:(id <MZEContentModule>)expandedModule {
-	[containerViewController.view removeFromSuperview];
-	[containerViewController willMoveToParentViewController:nil];
-	[containerViewController removeFromParentViewController];
+	
+	[UIView performWithoutAnimation:^{
+		[containerViewController.view removeFromSuperview];
+		[containerViewController willMoveToParentViewController:nil];
+		[containerViewController removeFromParentViewController];
+	}];
 
 	[self presentViewController:containerViewController animated:true completion:nil];
 }
