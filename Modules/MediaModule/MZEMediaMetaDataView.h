@@ -2,6 +2,7 @@
 #import <objc/runtime.h>
 #import <AVFoundation/AVFoundation.h>
 #import "MZEMediaEffectLabel.h"
+#import "MZEMediaArtworkView.h"
 
 // My SDK and Headers are stuffed so this hack need be done
 @interface UIImage (Image)
@@ -23,8 +24,8 @@
 @property (nonatomic, retain, readwrite) MZEMediaEffectLabel *titleLabel;
 @property (nonatomic, retain, readwrite) MZEMediaEffectLabel *subtitleLabel;
 @property (nonatomic, retain, readwrite) MZEMediaEffectLabel *sourceLabel;
+@property (nonatomic, retain, readwrite) MZEMediaArtworkView *artworkView;
 @property (nonatomic, retain, readwrite) UIView *headerDivider;
-@property (nonatomic, retain, readwrite) UIImageView *artworkView;
 @property (nonatomic, readwrite) BOOL expanded;
 -(id)initWithFrame:(CGRect)arg1;
 @end

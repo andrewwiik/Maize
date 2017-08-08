@@ -25,16 +25,22 @@
   self.subtitleLabel.frame = self.bounds;
   [self addSubview:self.subtitleLabel];
 
+  self.artworkView = [[MZEMediaArtworkView alloc] init];
+  self.artworkView.alpha = 0;
+  [self addSubview:self.artworkView];
+
   return self;
 }
 -(void)layoutSubviews {
   if(self.expanded){
     self.titleLabel.frame = CGRectMake(self.frame.size.width/4, 0, self.frame.size.width/2, self.frame.size.height/2);
     self.subtitleLabel.frame = CGRectMake(self.frame.size.width/4, self.frame.size.height/2, self.frame.size.width/2, self.frame.size.height/2);
+    self.artworkView.frame = CGRectMake(self.frame.size.width/12, self.frame.size.width/12, self.frame.size.width/5, self.frame.size.width/5);
 
     self.titleLabel.textAlignment = NSTextAlignmentLeft;
     self.subtitleLabel.textAlignment = NSTextAlignmentLeft;
 
+    self.artworkView.alpha = 1;
     self.headerDivider.alpha = 1;
   } else {
     self.titleLabel.frame = CGRectMake(5,self.frame.size.width/7,self.frame.size.width-10,self.frame.size.width/6);
@@ -43,6 +49,7 @@
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
 
+    self.artworkView.alpha = 0;
     self.headerDivider.alpha = 0;
   }
 
@@ -67,6 +74,11 @@
           if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtist] != nil) {
                       NSString *artistText = [[NSString alloc] initWithString:[dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtist]];
                       self.subtitleLabel.text = artistText;
+          }
+
+          if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtworkData]!= NULL) {
+              UIImage *image = [UIImage imageWithData:[dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtworkData]];
+              [self.artworkView setImage:image];
           }
 
           if(self.titleLabel.style == 1 || self.subtitleLabel.style == 0){
