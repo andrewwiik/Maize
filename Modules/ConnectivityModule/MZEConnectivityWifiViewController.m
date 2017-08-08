@@ -1,4 +1,4 @@
-#import "MZEConnectivityWifiViewController.h"
+#import "MZEConnectivityWiFiViewController.h"
 #import <SpringBoard/SBWiFiManager+Private.h>
 
 #if __cplusplus
@@ -33,7 +33,7 @@
 }
 #endif
 
-static MZEConnectivityWifiViewController *sharedWifiController;
+static MZEConnectivityWiFiViewController *sharedWifiController;
 static void *_wifiManager;
 static void *_wifiClient;
 static void *_registeredWifiClient;
@@ -41,7 +41,7 @@ static void *_registeredWifiClient;
 static void wifiEventCallback(void);
 static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 
-@implementation MZEConnectivityWifiViewController
+@implementation MZEConnectivityWiFiViewController
 
 + (BOOL)isSupported {
 	return YES;

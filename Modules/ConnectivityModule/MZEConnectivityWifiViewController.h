@@ -2,7 +2,7 @@
 #import <UIKit/UIImage+Private.h>
 #import <UIKit/UIColor+Private.h>
 
-@interface MZEConnectivityWifiViewController : MZEConnectivityButtonViewController {
+@interface MZEConnectivityWiFiViewController : MZEConnectivityButtonViewController {
     NSBundle *_bundle;
     BOOL _isWAPI;
 }

@@ -209,7 +209,7 @@
 	NSMutableArray *buttonClasses = [NSMutableArray new];
 	[buttonClasses addObject:@"MZEConnectivityAirplaneViewController"];
 	[buttonClasses addObject:@"MZEConnectivityCellularDataViewController"];
-	[buttonClasses addObject:@"MZEConnectivityWifiViewController"];
+	[buttonClasses addObject:@"MZEConnectivityWiFiViewController"];
 	[buttonClasses addObject:@"MZEConnectivityBluetoothViewController"];
 	return [buttonClasses copy];
 }

@@ -9,7 +9,7 @@ ConnectivityModule_FRAMEWORKS = Foundation UIKit CoreGraphics CoreImage QuartzCo
 ConnectivityModule_PRIVATE_FRAMEWORKS = AppSupport BluetoothManager
 ConnectivityModule_EXTRA_FRAMEWORKS = MaizeUI
 ConnectivityModule_LIBRARIES = MobileGestalt
-ConnectivityModule_LDFLAGS += ./MobileWiFi.tbd
+ConnectivityModule_LDFLAGS += ./MobileWiFi.tbd ./AirPortSettings.tbd $(THEOS)/vendor/lib/libsubstrate.tbd
 ConnectivityModule_INSTALL_PATH = /Library/Maize/Bundles/
 ConnectivityModule_LDFLAGS += -F../../.theos/$(THEOS_OBJ_DIR_NAME)
 
