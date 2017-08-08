@@ -73,7 +73,7 @@
 						[moduleBundle unload];
 					}
 				} else {
-					HBLogError(@"%@", error);
+					HBLogError(@"LOADING MAIZE MODULE ERROR: %@", error);
 				}
 			}
 		}
