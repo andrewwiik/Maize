@@ -4,7 +4,7 @@
 - (id)init {
 	self = [super initWithSwitchIdentifier:@"com.a3tweaks.switch.record-screen"];
 	if (self) {
-
+		_recordToggle = [[NSClassFromString(@"CCUIRecordScreenShortcut") alloc] init];
 	}
 	return self;
 }
@@ -42,10 +42,12 @@
 		// }];
 	} else {
 		//[super setSelected:isSelected];
-		[super setSelected:NO];
+		[_viewController setSelected:isSelected];
 		_isRecording = isSelected;
 	}
 }
+
+
 
 - (void)_setSelected:(NSNumber *)selected {
 	// if ([selected boolValue]) {
@@ -68,7 +70,12 @@
 	// 		[]
 	// 	}
 	// }
-	[super setSelected:[selected boolValue]];
+	if ([selected boolValue]) {
+		[_recordToggle _startRecording];
+	} else {
+		[_recordToggle _stopRecording];
+	}
+	[_viewController setSelected:[selected boolValue]];
 	//[_viewController setSelected:[selected boolValue]];
 }
 
