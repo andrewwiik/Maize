@@ -94,7 +94,7 @@
     self.artworkView.alpha = 0;
     self.headerDivider.alpha = 0;
 
-    self.titleLabel.frame = CGRectMake(self.frame.size.width/12, 0, self.frame.size.width - self.frame.size.width/6, self.frame.size.height/2);
+    self.titleLabel.frame = CGRectMake(self.frame.size.width/12, self.frame.size.width/12, self.frame.size.width - self.frame.size.width/6, self.frame.size.height/2 - self.frame.size.width/12);
     self.subtitleLabel.frame = CGRectMake(0, self.frame.size.height/2, self.frame.size.width, self.frame.size.height/2);
 
     [self.titleLabel contentView].frame = self.titleLabel.label.bounds;
