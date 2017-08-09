@@ -29,4 +29,5 @@
 @property (nonatomic, retain, readwrite) UIView *headerDivider;
 @property (nonatomic, readwrite) BOOL expanded;
 -(id)initWithFrame:(CGRect)arg1;
+-(void)updateFrame;
 @end
