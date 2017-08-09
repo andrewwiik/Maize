@@ -91,6 +91,7 @@
 
   } else {
 
+
     self.artworkView.alpha = 0;
     self.headerDivider.alpha = 0;
 
