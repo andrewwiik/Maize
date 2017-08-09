@@ -7,12 +7,16 @@
 #import "MZEMediaMetaDataView.h"
 #import "MZEMediaMetaDataView.h"
 
+@interface MPUControlCenterMediaControlsViewController : UIViewController
+@end
+
 @interface MZEMediaModuleViewController : UIViewController <MZEContentModuleContentViewController> {
 	CGFloat _prefferedContentExpandedHeight;
 	BOOL _isExpanded;
 
 }
 @property (nonatomic, retain, readwrite) MZEMediaMetaDataView *metadataView;
+@property (nonatomic, retain, readwrite) MPUControlCenterMediaControlsViewController *controlsView;
 @property (nonatomic, readwrite) BOOL isExpanded;
 - (id)initWithNibName:(id)arg1 bundle:(id)arg2;
 - (CGFloat)preferredExpandedContentWidth;

@@ -3,6 +3,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "MZEMediaEffectLabel.h"
 #import "MZEMediaArtworkView.h"
+#import "MZEMediaMarqueeLabel.h"
 
 // My SDK and Headers are stuffed so this hack need be done
 @interface UIImage (Image)
@@ -21,8 +22,8 @@
 @end
 
 @interface MZEMediaMetaDataView : UIView
-@property (nonatomic, retain, readwrite) MZEMediaEffectLabel *titleLabel;
-@property (nonatomic, retain, readwrite) MZEMediaEffectLabel *subtitleLabel;
+@property (nonatomic, retain, readwrite) MZEMediaMarqueeLabel *titleLabel;
+@property (nonatomic, retain, readwrite) MZEMediaMarqueeLabel *subtitleLabel;
 @property (nonatomic, retain, readwrite) MZEMediaEffectLabel *sourceLabel;
 @property (nonatomic, retain, readwrite) MZEMediaArtworkView *artworkView;
 @property (nonatomic, retain, readwrite) UIView *headerDivider;

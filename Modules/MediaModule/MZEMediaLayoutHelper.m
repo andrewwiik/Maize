@@ -97,40 +97,4 @@ static BOOL loadedInterpolators = NO;
 		return size.width - ([expandedPortraitContainerInsetInterpolator valueForReferenceMetric:size.width]*2);
 	}
 }
-
-	/*
-
-	small : 64 inset landscape
-
-
-	button width = inset landscape * 2 + ((number of cols - 1)*(inset landscape * 0.5);
-
-	inset landscape = compact inset * (5.0 + (1.0/3.0));
-	container width landscape = outside container width - (default button width * 2);
-	container width porttrait = outside conaine width - (default container side inset * 2.0)
-
-	container Height landscape =
-
-	16, 27, 34
-	1.629
-
-	top container inset for large is 31 , for small is 17
-	top inset is 52 for large, 44 for mid, and 42 for small
-
-	bottom inset is 54 for large, 46 for mid, 44 ,so really 2+ the top
-
-	top inset is 36 for large and mid and 32 for small
-
-	80 side for large and mid and 64 for small
-
-	32 landscaoe spacing for small
-
-	36 land spaing for large
-
-	34 for mid
-
-
-
-	*/
-
 @end

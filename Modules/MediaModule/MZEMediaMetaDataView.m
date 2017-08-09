@@ -9,9 +9,9 @@
     name:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDidChangeNotification
     object:nil];
 
-  self.titleLabel = [[MZEMediaEffectLabel alloc] init];
+  self.titleLabel = [[MZEMediaMarqueeLabel alloc] init];
   self.titleLabel.frame = self.bounds;
-  self.titleLabel.textAlignment = NSTextAlignmentCenter;
+  self.titleLabel.label.textAlignment = NSTextAlignmentCenter;
   [self addSubview:self.titleLabel];
 
   self.headerDivider = [[UIView alloc] init];
@@ -21,7 +21,7 @@
   self.headerDivider.layer.compositingFilter = [NSClassFromString(@"CAFilter") filterWithType:@"plusL"];
   [self addSubview:self.headerDivider];
 
-  self.subtitleLabel = [[MZEMediaEffectLabel alloc] init];
+  self.subtitleLabel = [[MZEMediaMarqueeLabel alloc] init];
   self.subtitleLabel.frame = self.bounds;
   [self addSubview:self.subtitleLabel];
 
@@ -29,37 +29,48 @@
   self.artworkView.alpha = 0;
   [self addSubview:self.artworkView];
 
+  [self updateMedia];
+
   return self;
 }
 -(void)layoutSubviews {
   if(self.expanded){
-    self.titleLabel.frame = CGRectMake(self.frame.size.width/4, 0, self.frame.size.width/2, self.frame.size.height/2);
-    self.subtitleLabel.frame = CGRectMake(self.frame.size.width/4, self.frame.size.height/2, self.frame.size.width/2, self.frame.size.height/2);
-    self.artworkView.frame = CGRectMake(self.frame.size.width/12, self.frame.size.width/12, self.frame.size.width/5, self.frame.size.width/5);
 
-    self.titleLabel.textAlignment = NSTextAlignmentLeft;
-    self.subtitleLabel.textAlignment = NSTextAlignmentLeft;
+    float artwork = self.frame.size.height - self.frame.size.width/7;
+
+    self.titleLabel.frame = CGRectMake(artwork + self.frame.size.width/10, self.frame.size.height/4, self.frame.size.width/2, self.frame.size.height/4);
+    self.subtitleLabel.frame = CGRectMake(artwork + self.frame.size.width/10, self.frame.size.height/2, self.frame.size.width/2, self.frame.size.height/4);
+    self.artworkView.frame = CGRectMake(self.frame.size.width/14, self.frame.size.width/14, artwork, artwork);
+    self.headerDivider.frame = CGRectMake(0,self.frame.size.height - 0.5, self.frame.size.width, 0.5);
+
+    self.titleLabel.label.textAlignment = NSTextAlignmentLeft;
+    self.subtitleLabel.label.textAlignment = NSTextAlignmentLeft;
 
     self.artworkView.alpha = 1;
-    self.headerDivider.alpha = 1;
+    self.headerDivider.alpha = 0.16f;
   } else {
     self.titleLabel.frame = CGRectMake(5,self.frame.size.width/7,self.frame.size.width-10,self.frame.size.width/6);
     self.subtitleLabel.frame = CGRectMake(5,self.frame.size.width/3.5,self.frame.size.width-10,self.frame.size.width/6);
 
-    self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
+    self.titleLabel.label.textAlignment = NSTextAlignmentCenter;
+    self.subtitleLabel.label.textAlignment = NSTextAlignmentCenter;
 
     self.artworkView.alpha = 0;
     self.headerDivider.alpha = 0;
   }
 
-  if(self.titleLabel.text == nil){
-    self.titleLabel.text = @"IPHONE";
-    self.subtitleLabel.text = @"Music";
+  if(self.titleLabel.label.text == nil){
+    self.titleLabel.label.text = @"IPHONE";
+    self.subtitleLabel.label.text = @"Music";
 
-    [self.titleLabel setEffects:1];
-    [self.subtitleLabel setEffects:0];
+    [self.titleLabel.label setEffects:1];
+    [self.subtitleLabel.label setEffects:0];
   }
+
+  [self.titleLabel setContentSize:CGSizeMake(self.titleLabel.frame.size.width, self.titleLabel.frame.size.height)];
+  [self.titleLabel setMarqueeScrollRate:30];
+  [self.titleLabel setBounds:self.titleLabel.bounds];
+  [self.titleLabel setMarqueeEnabled:TRUE];
 }
 -(void)updateMedia {
   MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef information) {
@@ -68,12 +79,12 @@
       if(dict != NULL && [dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoTitle]!= NULL ){
           if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoTitle] != nil) {
                       NSString *titleText = [[NSString alloc] initWithString:[dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoTitle]];
-                      self.titleLabel.text = titleText;
+                      self.titleLabel.label.text = titleText;
           }
 
           if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtist] != nil) {
                       NSString *artistText = [[NSString alloc] initWithString:[dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtist]];
-                      self.subtitleLabel.text = artistText;
+                      self.subtitleLabel.label.text = artistText;
           }
 
           if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtworkData]!= NULL) {
@@ -81,9 +92,9 @@
               [self.artworkView setImage:image];
           }
 
-          if(self.titleLabel.style == 1 || self.subtitleLabel.style == 0){
-            [self.titleLabel setEffects:0];
-            [self.subtitleLabel setEffects:2];
+          if(self.titleLabel.label.style == 1 || self.subtitleLabel.label.style == 0){
+            [self.titleLabel.label setEffects:0];
+            [self.subtitleLabel.label setEffects:2];
           }
       }
   });
