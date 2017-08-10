@@ -3,6 +3,7 @@
 @interface APTableCell : UITableViewCell
 
 @property (nonatomic,retain) WiFiNetwork * network;              //@synthesize network=_network - In the implementation block
+
 +(id)__cellularProtocolStringForTetherDevice:(id)arg1 ;
 -(void)layoutSubviews;
 -(void)dealloc;

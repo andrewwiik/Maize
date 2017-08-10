@@ -1,6 +1,7 @@
 #import "MZEConnectivityWiFiNetworksListController.h"
-#import <AirPortSettings/APTableCell.h>
+#import "APTableCell.h"
 #import <objc/runtime.h>
+#import <MaizeUI/MZELayoutOptions.h>
 
 
 // #ifndef __GNUC__
@@ -11,8 +12,32 @@
 // __asm__(".weak_reference _OBJC_CLASS_$_APNetworksController");
 // __asm__(".weak_reference _OBJC_METACLASS_$_APNetworksController");
 
-%subclass MZEConnectivityWiFiNetworksListController : APNetworksController
+static CGFloat cellHeight = 0;
 
+%subclass MZEConnectivityWiFiNetworksListController : APNetworksController
+%new
++ (id)sharedInstance {
+	static MZEConnectivityWiFiNetworksListController *_sharedInstance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedInstance = [[NSClassFromString(@"MZEConnectivityWiFiNetworksListController") alloc] init];
+    });
+    return _sharedInstance;
+}
+
+// + (id)alloc {
+// 	static MZEConnectivityWiFiNetworksListController *_sharedInstance;
+//     static dispatch_once_t onceToken;
+//     dispatch_once(&onceToken, ^{
+//         _sharedInstance = [[NSClassFromString(@"MZEConnectivityWiFiNetworksListController") alloc] init];
+//     });
+//     return _sharedInstance;
+// }
+
+
+- (Class)class {
+	return NSClassFromString(@"APNetworksController");
+}
 // + (void) initialize {
 // 	#pragma clang diagnostic push
 // 	#pragma clang diagnostic ignored "-Wdeprecated"
@@ -45,27 +70,35 @@
 	%orig;
 	if ([cell isKindOfClass:NSClassFromString(@"APTableCell")]) {
 		[(APTableCell *)cell setNoAccessory:YES];
-		[(APTableCell *)cell setHidesInfoButton:YES];
+		//[(APTableCell *)cell setHidesInfoButton:YES];
 		[(APTableCell *)cell setAccessoryType: UITableViewCellAccessoryNone];
-		[(APTableCell *)cell setDetailText:nil];
+		//[(APTableCell *)cell setDetailText:nil];
+		cell.backgroundColor = [UIColor clearColor];
+		((APTableCell *)cell).mze_isMZECell = YES;
+		 cell.hidden = NO;
+		 cell.alpha = 1.0;
 	} else {
 		cell.hidden = YES;
 		cell.alpha = 0;
+		cell.frame = CGRectZero;
 	}
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.row == 0 && indexPath.section == 0) return 0.0;
 	// if (indexP.)
-	return %orig;
+	if (cellHeight == 0) {
+		cellHeight = [MZELayoutOptions defaultMenuItemHeight];
+	}
+	return cellHeight;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	return 0.0;
+	return 0.001;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-	return 0.0;
+	return 0.001;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -84,14 +117,30 @@
 	UITableViewCell *cell = %orig;
 	if ([cell isKindOfClass:NSClassFromString(@"APTableCell")]) {
 		[(APTableCell *)cell setNoAccessory:YES];
-		[(APTableCell *)cell setHidesInfoButton:YES];
+		// [(APTableCell *)cell setHidesInfoButton:YES];
 		[(APTableCell *)cell setAccessoryType: UITableViewCellAccessoryNone];
-		[(APTableCell *)cell setDetailText:nil];
+		cell.backgroundColor = [UIColor clearColor];
+		((APTableCell *)cell).mze_isMZECell = YES;
+		cell.alpha = 1.0;
+		cell.hidden = NO;
+		//[(APTableCell *)cell setDetailText:nil];
 	} else {
 		cell.hidden = YES;
 		cell.alpha = 0;
+		cell.frame = CGRectZero;
 	}
 	return cell;
+}
+
+- (void)viewWillLayoutSubviews {
+	%orig;
+	self.view.backgroundColor = [UIColor clearColor];
+	if ([self valueForKey:@"_table"]) {
+		[(UITableView *)[self valueForKey:@"_table"] setBackgroundColor:[UIColor clearColor]];
+		[(UITableView *)[self valueForKey:@"_table"] setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+		((UITableView *)[self valueForKey:@"_table"]).sectionHeaderHeight = 0.0;
+		((UITableView *)[self valueForKey:@"_table"]).sectionFooterHeight = 0.0;
+	}
 }
 %end
 

@@ -10,6 +10,8 @@ static CGFloat cachedRoundButtonSize = 0;
 static CGFloat cachedRoundButtonExpandedSizeInsetSize = 0;
 static CGFloat cachedRoundButtonExpandedContainerWidth = 0;
 static CGFloat cachedRoundButtonExpandedContainerHeight = 0;
+static CGFloat cachedDefaultExpandedModuleWidth = 0;
+static CGFloat cachedDefaultMenuItemHeight = 0;
 
 MPULayoutInterpolator *spacingInterpolator;
 MPULayoutInterpolator *edgeInterpolator;
@@ -20,6 +22,8 @@ MPULayoutInterpolator *roundButtonContainerExpandedSizeHeight;
 MPULayoutInterpolator *roundButtonContainerExpandedSizeWidth;
 MPULayoutInterpolator *sliderExpandedHeightInterpolator;
 MPULayoutInterpolator *sliderExpandedWidthInterpolator;
+MPULayoutInterpolator *defaultExpandedWidthInterpolator;
+MPULayoutInterpolator *defaultMenuItemHeightInterpolator;
 // MPULayoutInterpolator *flipSwitchGlyphSizeInterpolator;
 // MPULayoutInterpolator *flipSwitchOriginValueInterpolator;
 // MPULayoutInterpolator *roundButtonTitlePaddingInterpolator;
@@ -108,6 +112,28 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 		[sliderExpandedWidthInterpolator addValue:132 forReferenceMetric:414];
 		[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:768];
 		[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:1024];
+	}
+
+	if (!defaultExpandedWidthInterpolator) {
+		defaultExpandedWidthInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+		[defaultExpandedWidthInterpolator addValue:288 forReferenceMetric:320];
+		[defaultExpandedWidthInterpolator addValue:321 forReferenceMetric:375];
+		[defaultExpandedWidthInterpolator addValue:346 forReferenceMetric:414];
+		[defaultExpandedWidthInterpolator addValue:321 forReferenceMetric:768];
+		[defaultExpandedWidthInterpolator addValue:321 forReferenceMetric:1024];
+
+		cachedDefaultExpandedModuleWidth = [defaultExpandedWidthInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
+	}
+
+	if (!defaultMenuItemHeightInterpolator) {
+		defaultMenuItemHeightInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+		[defaultMenuItemHeightInterpolator addValue:50.5 forReferenceMetric:320];
+		[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:375];
+		[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:414];
+		[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:768];
+		[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:1024];
+
+		cachedDefaultMenuItemHeight = [defaultMenuItemHeightInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
 	// 123 - 340
@@ -213,6 +239,22 @@ MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 
 + (CGRect)orientationRelativeScreenBounds {
 	return [[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation];
+}
+
++ (CGFloat)defaultExpandedModuleWidth {
+	if (!sliderExpandedWidthInterpolator) {
+		[MZELayoutOptions setupInterpolators];
+	}
+	
+	return cachedDefaultExpandedModuleWidth;
+}
+
++ (CGFloat)defaultMenuItemHeight {
+	if (!defaultMenuItemHeightInterpolator) {
+		[MZELayoutOptions setupInterpolators];
+	}
+
+	return cachedDefaultMenuItemHeight;
 }
 
 

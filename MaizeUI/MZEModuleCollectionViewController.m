@@ -291,7 +291,7 @@
 
 - (BOOL)handleMenuButtonTap {
 	if ([_currentModules count] > 0) {
-		[self dismissViewControllerAnimated:YES completion:nil];
+		[[_currentModules objectAtIndex:0] closeModule];
 		return YES;
 	}
 	return NO;

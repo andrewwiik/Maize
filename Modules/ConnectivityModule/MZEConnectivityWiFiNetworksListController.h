@@ -2,6 +2,7 @@
 
 
 @interface MZEConnectivityWiFiNetworksListController : APNetworksController
++ (id)sharedInstance;
 - (id)init;
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;

@@ -1,5 +1,6 @@
 #import "MZEConnectivityWiFiViewController.h"
 #import <SpringBoard/SBWiFiManager+Private.h>
+#import "MZEConnectivityWiFiNetworksViewController.h"
 
 #if __cplusplus
     extern "C" {
@@ -112,8 +113,12 @@ static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 }
 
 - (void)buttonTapped:(UIControl *)button {
-	[self _toggleState];
-	[super buttonTapped:button];
+	// [self _toggleState];
+	// [super buttonTapped:button];
+	MZEConnectivityWiFiNetworksViewController *wifiController = [[MZEConnectivityWiFiNetworksViewController alloc] init];
+	wifiController.buttonController = self;
+	[self.buttonDelegate buttonViewController:self willPresentSecondaryViewController:wifiController];
+	[self presentViewController:wifiController animated:true completion:nil];
 }
 
 - (NSString *)displayName {

@@ -54,16 +54,28 @@
 	return nil;
 }
 
-- (void)closeModule {
-	if ([_contentViewController respondsToSelector:@selector(canDismissPresentedContent)] && [_contentViewController canDismissPresentedContent]) {
-		if (![_contentViewController respondsToSelector:@selector(dismissPresentedContent)]) {
-			return;
+- (BOOL)closeModule {
+	if ([_contentViewController respondsToSelector:@selector(canDismissPresentedContent)] && [self isExpanded]) {
+		if ([_contentViewController canDismissPresentedContent]) {
+			[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
+			return YES;
+		} else {
+			if ([_contentViewController respondsToSelector:@selector(dismissPresentedContent)]) {
+				[_contentViewController dismissPresentedContent];
+			}
+			return YES;
 		}
-		[_contentViewController dismissPresentedContent];
 	} else {
-		[self.previewInteraction cancelInteraction];
+		if ([self isExpanded]) {
+			[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
+			return YES;
+		} else {
+			[self.previewInteraction cancelInteraction];
+		}
+
 	}
-	[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
+	return YES;
+	//[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
 }
 
 - (MZEContentModuleContainerView *)moduleContainerView {

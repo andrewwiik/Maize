@@ -1,6 +1,11 @@
 #import <MaizeUI/MZELabeledRoundButtonViewController.h>
+#import "MZEConnectivityButtonViewControllerDelegate-Protocol.h"
 
-@interface MZEConnectivityButtonViewController : MZELabeledRoundButtonViewController
+@interface MZEConnectivityButtonViewController : MZELabeledRoundButtonViewController {
+	__weak id <MZEConnectivityButtonViewControllerDelegate> _buttonDelegate;
+}
+
+@property(nonatomic) __weak id <MZEConnectivityButtonViewControllerDelegate> buttonDelegate;
 
 + (BOOL)isSupported;
 - (void)_updateStringForEnabledStatus:(BOOL)enabledStatus;
@@ -12,5 +17,5 @@
 - (void)viewDidLoad;
 - (void)willResignActive;
 - (void)willBecomeActive;
-
+- (void)didDismissSecondaryViewController:(UIViewController *)viewController;
 @end

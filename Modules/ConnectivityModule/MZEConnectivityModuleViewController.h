@@ -1,13 +1,15 @@
 #import <MaizeUI/MZEExpandingModuleDelegate-Protocol.h>
 #import <MaizeUI/MZEContentModuleContentViewController-Protocol.h>
 #import "MZEConnectivityButtonViewController.h"
+#import "MZEConnectivityButtonViewControllerDelegate-Protocol.h"
 
 @class MZEConnectivityModuleView;
 
-@interface MZEConnectivityModuleViewController : UIViewController <MZEContentModuleContentViewController> {
+@interface MZEConnectivityModuleViewController : UIViewController <MZEContentModuleContentViewController, MZEConnectivityButtonViewControllerDelegate> {
 	CGFloat _prefferedContentExpandedHeight;
 	NSMutableArray<MZEConnectivityButtonViewController *> *_buttonViewControllers;
 	BOOL _isExpanded;
+	UIViewController *_presentedSecondaryViewController;
 
 }
 @property (nonatomic, retain, readwrite) NSMutableArray<MZEConnectivityButtonViewController *> *buttonViewControllers;
@@ -28,4 +30,9 @@
 - (void)willBecomeActive;
 - (void)willResignActive;
 - (void)layoutButtons;
+- (BOOL)canDismissPresentedContent;
+- (void)dismissPresentedContent;
+
+- (void)buttonViewController:(MZEConnectivityButtonViewController *)buttonController willPresentSecondaryViewController:(UIViewController *)secondaryViewController;
+- (void)buttonViewController:(MZEConnectivityButtonViewController *)buttonController didDismissSecondaryViewController:(UIViewController *)secondaryViewController;
 @end

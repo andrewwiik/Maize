@@ -14,6 +14,8 @@
 + (CGFloat)defaultExpandedSliderHeight;
 + (CGFloat)defaultExpandedSliderWidth;
 + (CGRect)orientationRelativeScreenBounds;
++ (CGFloat)defaultExpandedModuleWidth; 
++ (CGFloat)defaultMenuItemHeight;
 
 #pragma mark FlipSwitch Support
 

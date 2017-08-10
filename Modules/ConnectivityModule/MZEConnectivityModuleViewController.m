@@ -198,11 +198,35 @@
 - (MZEConnectivityButtonViewController *)_makeButtonWithClass:(Class)buttonClass {
 	MZEConnectivityButtonViewController *controller = [[buttonClass alloc] init];
 	if (controller) {
+		controller.buttonDelegate = self;
 		[self addChildViewController:controller];
 		[controller didMoveToParentViewController:self];
 		return controller;
 	}
 	return nil;
+}
+
+- (BOOL)canDismissPresentedContent {
+	if (_presentedSecondaryViewController) {
+		return NO;
+	} else return YES;
+}
+- (void)dismissPresentedContent {
+	if (_presentedSecondaryViewController) {
+		[_presentedSecondaryViewController dismissViewControllerAnimated:YES completion:nil];
+		_presentedSecondaryViewController = nil;
+	}
+}
+
+
+- (void)buttonViewController:(MZEConnectivityButtonViewController *)buttonController willPresentSecondaryViewController:(UIViewController *)secondaryViewController {
+	_presentedSecondaryViewController = secondaryViewController;
+}
+
+- (void)buttonViewController:(MZEConnectivityButtonViewController *)buttonController didDismissSecondaryViewController:(UIViewController *)secondaryViewController {
+	if (secondaryViewController == _presentedSecondaryViewController) {
+		_presentedSecondaryViewController = nil;
+	}
 }
 
 + (NSArray *)defaultButtonClasses {

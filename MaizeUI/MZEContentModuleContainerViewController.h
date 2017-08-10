@@ -5,8 +5,9 @@
 #import "MZEContentModuleContainerViewControllerDelegate-Protocol.h"
 #import "MZEContentModuleContentViewController-Protocol.h"
 #import "MZEBreatheGestureRecognizer.h"
+#import "MZEExpandedModuleTransition-Protocol.h"
 
-@interface MZEContentModuleContainerViewController : UIViewController <UIGestureRecognizerDelegate, UIPreviewInteractionDelegate, UIViewControllerTransitioningDelegate>
+@interface MZEContentModuleContainerViewController : UIViewController <UIGestureRecognizerDelegate, UIPreviewInteractionDelegate, UIViewControllerTransitioningDelegate, MZEExpandedModuleTransition>
 {
     BOOL _expanded;
     BOOL _contentModuleProvidesOwnPlatter;
@@ -59,7 +60,7 @@
 - (id)init;
 - (id)initWithCoder:(id)arg1;
 - (id)initWithNibName:(id)arg1 bundle:(id)arg2;
-- (void)closeModule;
+- (BOOL)closeModule;
 - (void)willBecomeActive;
 - (void)willResignActive;
 - (BOOL)shouldAutomaticallyForwardAppearanceMethods;

@@ -21,6 +21,7 @@
 - (void)setSelected:(BOOL)isSelected {
 
 	if (isSelected) {
+		_isRecording = YES;
 		_countingDown = YES;
 		[_viewController setGlyphState:@"countdown|1.0"];
 		_countingDown = NO;
@@ -42,6 +43,8 @@
 		// }];
 	} else {
 		//[super setSelected:isSelected];
+		[_recordToggle _stopRecording];
+		[_viewController setGlyphState:@"off"];
 		[_viewController setSelected:isSelected];
 		_isRecording = isSelected;
 	}
@@ -76,6 +79,7 @@
 		[_recordToggle _stopRecording];
 	}
 	[_viewController setSelected:[selected boolValue]];
+	_isRecording = YES;
 	//[_viewController setSelected:[selected boolValue]];
 }
 
@@ -88,7 +92,7 @@
 }
 
 - (BOOL)isSelected {
-	return [[NSClassFromString(@"RPScreenRecorder") sharedRecorder] isRecording];
+	return _isRecording;
 }
 
 // - (BOOL)isEnabled {

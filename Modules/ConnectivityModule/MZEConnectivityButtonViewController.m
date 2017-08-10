@@ -1,6 +1,8 @@
 #import "MZEConnectivityButtonViewController.h"
 
 @implementation MZEConnectivityButtonViewController
+	@synthesize buttonDelegate = _buttonDelegate;
+
 + (BOOL)isSupported {
 	return YES;
 }
@@ -49,6 +51,10 @@
 
 - (void)willBecomeActive {
 	
+}
+
+- (void)didDismissSecondaryViewController:(UIViewController *)viewController {
+	[self.buttonDelegate buttonViewController:self didDismissSecondaryViewController:viewController];
 }
 
 @end
