@@ -1,10 +1,12 @@
 include $(THEOS)/makefiles/common.mk
+
 BUNDLE_NAME = ConnectivityModule
 ConnectivityModule_BUNDLE_NAME = com.ioscreatix.maize.ConnectivityModule
 ConnectivityModule_BUNDLE_EXTENSION = bundle
 ConnectivityModule_CFLAGS =  -fobjc-arc
 ConnectivityModule_FILES =  $(wildcard *.xm) $(wildcard *.m)
 ConnectivityModule_FRAMEWORKS = Foundation UIKit CoreGraphics CoreImage QuartzCore CoreTelephony
+ConnectivityModule_PRIVATE_FRAMEWORKS = AppSupport BluetoothManager
 ConnectivityModule_EXTRA_FRAMEWORKS = MaizeUI
 ConnectivityModule_LIBRARIES = MobileGestalt
 ConnectivityModule_LDFLAGS += ./MobileWiFi.tbd $(THEOS)/vendor/lib/libsubstrate.tbd

@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>documentHeight</key>
-	<real>48</real>
+	<real>40</real>
 	<key>documentResizesToView</key>
 	<false/>
 	<key>documentWidth</key>
-	<real>48</real>
+	<real>40</real>
 	<key>dynamicGuidesEnabled</key>
 	<true/>
 	<key>geometryFlipped</key>

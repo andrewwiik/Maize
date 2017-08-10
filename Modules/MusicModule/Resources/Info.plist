@@ -5,9 +5,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>MediaModule</string>
+	<string>MusicModule</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.ioscreatix.maize.MediaModule</string>
+	<string>com.ioscreatix.maize.MusicModule</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -25,8 +25,6 @@
 		<integer>1</integer>
 		<integer>2</integer>
 	</array>
-	<key>NSPrincipalClass</key>
-	<string>MZEMediaModule</string>
 	<key>MZEModuleSize</key>
 	<dict>
 		<key>width</key>
@@ -34,6 +32,8 @@
 		<key>height</key>
 		<string>2</string>
 	</dict>
+	<key>NSPrincipalClass</key>
+	<string>MZECellularDataModule</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>iPhoneOS</string>
