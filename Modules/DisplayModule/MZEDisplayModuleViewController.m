@@ -70,7 +70,7 @@
 		// [_sliderView setGlyphVisible:_expanded ? NO : YES];
 		//_sliderView.layer.cornerRadius = _expanded ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
         // do whatever
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
 
     }];
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
@@ -81,7 +81,7 @@
 	// [super viewWillAppear:willAppear];
 	[self _updateWithCurrentBrightnessAnimated:NO];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_noteScreenBrightnessDidChange:) name:@"UIScreenBrightnessDidChangeNotification" object:nil];
-		
+
 }
 
 - (void)willResignActive {
