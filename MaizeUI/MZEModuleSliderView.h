@@ -3,7 +3,7 @@
 #import "MZEMaterialView.h"
 #import <QuartzCore/CAPackage+Private.h>
 
-@interface MZEModuleSliderView : UIControl
+@interface MZEModuleSliderView : UIControl <CALayerDelegate>
 {
     UIImageView *_glyphImageView;
     MZECAPackageView *_glyphPackageView;
@@ -26,8 +26,23 @@
     NSUInteger _numberOfSteps;
     NSUInteger _step;
     UIView *_glyphMaskView;
+    CADisplayLink *_displayLink;
+    CGFloat _wantedRadius;
+    CGFloat _startRadius;
+    CGFloat _percent;
+    CGFloat _startAlpha;
+    CGFloat _wantedAlpha;
+    CGFloat _radiusDiff;
+    CFAbsoluteTime _startTime;
+    BOOL _displayLinkActive;
 }
 
+@property (nonatomic, assign) CFAbsoluteTime startTime;
+@property (nonatomic, assign) CGFloat wantedRadius;
+@property (nonatomic, assign) CGFloat startRadius;
+@property (nonatomic, assign) CGFloat percent;
+@property (nonatomic, assign) CGFloat radiusDiff;
+@property (nonatomic, assign) BOOL displayLinkActive;
 @property(nonatomic) NSUInteger step;
 @property(nonatomic) BOOL firstStepIsDisabled;
 @property(nonatomic) NSUInteger numberOfSteps;
@@ -39,7 +54,12 @@
 @property (retain, nonatomic, readwrite) CAPackage *otherGlyphPackage;
 @property(retain, nonatomic, readwrite) UIImage *glyphImage;
 @property(retain, nonatomic, readwrite) UIView *glyphMaskView;
-@property(nonatomic, readonly) CALayer *punchOutRootLayer; 
+@property(nonatomic, readonly) CALayer *punchOutRootLayer;
+@property (nonatomic, assign) CGFloat layerCornerRadius;
+@property (nonatomic, retain, readwrite) CADisplayLink *displayLink;
+ 
+// + (Class)layerClass;
+
 - (void)_updateStepFromValue:(float)arg1;
 - (void)_updateValueForTouchLocation:(CGPoint)arg1 withAbsoluteReference:(BOOL)arg2;
 - (float)_valueFromStep:(NSUInteger)arg1;
@@ -63,9 +83,11 @@
 
 
 #pragma mark Make Corner Radius Animatable
-- (BOOL)shouldForwardSelector:(SEL)aSelector;
-- (id)forwardingTargetForSelector:(SEL)aSelector;
-- (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key;
+// - (BOOL)shouldForwardSelector:(SEL)aSelector;
+// - (id)forwardingTargetForSelector:(SEL)aSelector;
+// - (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key;
+- (void)stopDisplayLink;
+- (void)handleDisplayLink:(CADisplayLink *)displayLink;
 
 #pragma mark for expanding animation
 

@@ -1,6 +1,6 @@
 include $(THEOS)/makefiles/common.mk
 
-export TARGET = iphone:10.1:10.1
+# export TARGET = iphone:10.1:10.1
 
 BUNDLE_NAME = DisplayModule
 DisplayModule_BUNDLE_NAME = com.ioscreatix.maize.DisplayModule

@@ -1,5 +1,6 @@
 #import "MZEModuleSliderView.h"
 #import "MZECurrentActions.h"
+#import "MZECAContinuousCornerLayer.h"
 #import <UIKit/UIView+Private.h>
 #import "macros.h"
 
@@ -12,6 +13,11 @@
     @synthesize glyphVisible=_glyphVisible;
 
 
+
+// + (Class) layerClass {
+//    return [MZECAContinuousCornerLayer class];
+// }
+
 // - (void)setFrame:(CGRect)frame {
 //     [super setFrame:frame];
 //     [self layoutEverything];
@@ -20,6 +26,7 @@
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
+             //self.layer.delegate = self;
             _glyphVisible = YES;
             _throttleUpdates = NO;
             _numberOfSteps = 1;
@@ -165,6 +172,10 @@
 }
 
 - (void)layoutSubviews {
+
+    if (!self.layer.delegate) {
+        self.layer.delegate = self;
+    }
     [super layoutSubviews];
     CGSize bounds = self.bounds.size;
 
@@ -175,16 +186,24 @@
     CGPoint center = UIPointRoundToViewScale(CGPointMake(x,y), self);
     if (_glyphImageView) {
         _glyphImageView.center = center;
-        _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
+        _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.01;
     }
 
     if (_glyphPackage) {
         _glyphPackageView.center = center;
         _otherGlyphPackageView.center = center;
-        _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
-        _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+        _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.01;
+        _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.01;
     }
 }
+
+// - (void)displayLayer:(CALayer *)layer {
+//     if ([layer isKindOfClass:[MZECAContinuousCornerLayer class]]) {
+//         if (((MZECAContinuousCornerLayer *)layer).continuousCorners != self._continuousCornerRadius) {
+//             self._continuousCornerRadius = ((MZECAContinuousCornerLayer *)layer).continuousCorners;
+//         }
+//     }
+// }
 
 // - (void)layoutEverything {
 
@@ -459,9 +478,11 @@
 
 - (void)setGlyphVisible:(BOOL)visible {
     _glyphVisible = visible;
-    // _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    // _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    // _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    // [UIView performWithoutAnimation:^{
+    //     _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    //     _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    //     _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    // }];
 
 }
 
@@ -469,16 +490,129 @@
     return [_otherGlyphPackageView layer];
 }
 
+- (CGFloat)layerCornerRadius {
+    return self._continuousCornerRadius;
+}
+
+- (void)setLayerCornerRadius:(CGFloat)radius {
+
+    if (self._continuousCornerRadius != radius && !self.displayLinkActive) {
+        _startAlpha = 0;
+        _wantedAlpha = 1.0;
+        self.wantedRadius = radius;
+        self.startRadius = self._continuousCornerRadius;
+        self.radiusDiff = _wantedRadius - _startRadius;
+
+        if (!_displayLinkActive) {
+            self.percent = 0;
+            if (!self.displayLink) {
+                self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(handleDisplayLink:)];
+            
+            }
+            // self.displayLink.frameInterval = 2;
+            self.startTime = CACurrentMediaTime();
+            self.displayLinkActive = YES;
+            [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        }
+    }
+
+
+
+    // ((MZECAContinuousCornerLayer *)self.layer).continuousCorners = radius;
+    // [self setNeedsDisplay];
+}
+
+- (void)stopDisplayLink {
+    if (self.displayLink && _displayLinkActive) {
+        self._continuousCornerRadius = _wantedRadius;
+        self.wantedRadius = 0;
+        self.startRadius = 0;
+        [self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        // [self.displayLink invalidate];
+        // self.displayLink = nil;
+        self.displayLinkActive = NO;
+    }
+    // [self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    // [self.displayLink invalidate];
+    // self.displayLink = nil;
+    // _displayLinkActive = NO;
+    // _wantedRadius = 9999;
+}
+
+- (void)handleDisplayLink:(CADisplayLink *)displayLink {
+    CFAbsoluteTime elapsed = CACurrentMediaTime() - self.startTime;
+    self.percent = elapsed / 0.325 - floor(elapsed / 0.325);
+   // _percent = _glyphPackageView.alpha;
+   // self.backgroundColor = [UIColor colorWithWhite:0 alpha:_startAlpha + ((_wantedAlpha - _startAlpha)*_percent)];
+    CGFloat cornerRadius = UIRoundToViewScale(self.startRadius + (self.radiusDiff*self.percent), self);
+    if (cornerRadius != self._continuousCornerRadius) {
+        //[UIView performWithoutAnimation:^{
+             self._continuousCornerRadius = cornerRadius;
+
+             if (cornerRadius == self.wantedRadius) {
+                [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+                self._continuousCornerRadius = self.wantedRadius;
+                self.displayLinkActive = NO;
+             }
+             // //[self.layer setNeedsDisplay];
+             // if (_wantedRadius == 38.0) {
+             //   // self.backgroundColor = [UIColor redColor];
+             // }
+       // }];
+    }
+
+    // if (elapsed >= 14.99) {
+    //     [self stopDisplayLink];
+    // } else if (_percent >= 1.0) {
+    //      [self stopDisplayLink];
+    // }
+}
+
+
+// - (id <CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event {
+//     if ([event isEqualToString:@"cornerRadius"]) {
+//         CABasicAnimation *boundsAnimation;
+//         boundsAnimation = (id)[layer animationForKey:@"bounds.size"];
+        
+//         if (boundsAnimation) {
+//             CABasicAnimation *animation = (id)boundsAnimation.copy;
+//             animation.keyPath = @"cornerRadius";
+            
+//             CornerRadiusAnimationAction *action;
+//             action = [CornerRadiusAnimationAction new];
+//             action.pendingAnimation = animation;
+//             action.priorCornerRadius = layer.cornerRadius;
+//             return action;
+//         }
+        
+//     }
+    
+//     return [super actionForLayer:layer forKey:event];
+// }
+
+
+
+
 - (BOOL)shouldForwardSelector:(SEL)aSelector {
     if (aSelector == @selector(setBounds:)) return NO;
+    if (aSelector == @selector(_setContinuousCornerRadius:)) return YES;
+    if (aSelector == @selector(_continuousCornerRadius)) return YES;
     return [self.layer respondsToSelector:aSelector];
 }
 
 - (id)forwardingTargetForSelector:(SEL)aSelector {
+     if (aSelector == @selector(_setContinuousCornerRadius:)) return self;
+     if (aSelector == @selector(_continuousCornerRadius)) return self;
     return (![self respondsToSelector:aSelector] && [self shouldForwardSelector:aSelector]) ? self.layer : self;
 }
 
 - (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key {
-   return ([self shouldForwardSelector:NSSelectorFromString(key)] || [super _shouldAnimatePropertyWithKey:key]);
+    if (key) {
+        //if ([key isEqual:@"_continuousCornerRadius"] || [key isEqual:@"_setContinuousCornerRadius:"]) return YES;
+        // if ([key isEqual:@"cornerContentsCenter"] || [key isEqual:@"cornerContents"] || [key isEqual:@"cornerRadius"]) return YES;
+        // if ([key isEqual:@"scale"] || [key isEqual:@"anchor"]) return YES;
+    }
+    //if ([key isEqual:@"_continuousCornerRadius"] || [key isEqual:@"_setContinuousCornerRadius:"]) return YES;
+    return ([self shouldForwardSelector:NSSelectorFromString(key)] || [super _shouldAnimatePropertyWithKey:key]);
 }
 @end

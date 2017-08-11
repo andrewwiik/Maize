@@ -7,7 +7,7 @@
 
 @implementation MZEExpandedModulePresentationTransition
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    return 0.4;
+    return 0.325;
 }
 
 
@@ -16,20 +16,20 @@
 	if ([[transitionContext viewControllerForKey:UITransitionContextToViewControllerKey] isKindOfClass:NSClassFromString(@"MZEContentModuleContainerViewController")]) {
 
 		MZEContentModuleContainerViewController* toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-	    //UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+	    //UIViewController* UITransitionContextFromViewControllerKeyler = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
 
-
+		toViewController.view.alpha = 1.0;
 		CGRect relativeFrame = [[transitionContext containerView] convertRect:toViewController.view.frame fromView:[MZEModularControlCenterViewController sharedCollectionViewController].view];
 		toViewController.contentContainerView.frame = relativeFrame;
 		toViewController.backgroundView.frame = [toViewController _backgroundFrameForExpandedState];
 		[toViewController.view bringSubviewToFront:toViewController.contentContainerView];
 		toViewController.view.frame = [transitionContext containerView].bounds;
 		[[transitionContext containerView] addSubview:toViewController.view];
-
+		[UIView setAnimationsEnabled:YES];
 		toViewController.expanded = YES;
 
 		//[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
-		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
+		[UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
 			toViewController.backgroundView.alpha = 1.0;
 			[toViewController.contentContainerView transitionToExpandedMode:YES];
 			toViewController.contentContainerView.frame = [toViewController _contentFrameForExpandedState];

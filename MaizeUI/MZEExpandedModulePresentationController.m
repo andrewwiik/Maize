@@ -16,6 +16,8 @@
 - (void)presentationTransitionWillBegin {
 
 	if ([self.presentedViewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+		//[UIView setAnimationsEnabled:YES];
+		[UIView setAnimationsEnabled:YES];
 		MZEContentModuleContainerViewController *controller = (MZEContentModuleContainerViewController *)self.presentedViewController;
 		controller.expanded = YES;
 		[controller willBecomeActive];
@@ -44,13 +46,13 @@
 		[coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
 			[[MZEModularControlCenterViewController sharedCollectionViewController] contentModuleContainerViewController:controller willCloseExpandedModule:controller.contentModule];
 		} completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-			[UIView performWithoutAnimation:^{
+			[UIView setAnimationsEnabled:NO];
 				[[MZEModularControlCenterViewController sharedCollectionViewController] contentModuleContainerViewController:controller didCloseExpandedModule:controller.contentModule];
 				[[MZEModularControlCenterViewController sharedCollectionViewController].view addSubview:self.presentedViewController.view];
 				[[MZEModularControlCenterViewController sharedCollectionViewController] addChildViewController:self.presentedViewController];
 				[controller didMoveToParentViewController:[MZEModularControlCenterViewController sharedCollectionViewController]];
 				[controller willBecomeActive];
-			}];
+			[UIView setAnimationsEnabled:YES];
 		}];
 	}
 }

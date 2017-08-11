@@ -1,5 +1,6 @@
 #import "MZEConnectivityWiFiNetworksViewController.h"
 #import <MaizeUI/MZELayoutOptions.h>
+#import <UIKit/UIView+Private.h>
 
 @implementation MZEConnectivityWiFiNetworksViewController
 - (id)init {
@@ -37,7 +38,7 @@
  										   UIViewAutoresizingFlexibleTopMargin | 
  										   UIViewAutoresizingFlexibleBottomMargin);
 
-		_containerView.layer.cornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+		_containerView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
 		_containerView.clipsToBounds = YES;
 
 		_backgroundView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];

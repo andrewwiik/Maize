@@ -1,5 +1,5 @@
 include $(THEOS)/makefiles/common.mk
-export TARGET iphone:10.1:10.1
+# export TARGET iphone:10.1:10.1
 BUNDLE_NAME = AudioModule
 AudioModule_BUNDLE_NAME = com.ioscreatix.maize.AudioModule
 AudioModule_BUNDLE_EXTENSION = bundle

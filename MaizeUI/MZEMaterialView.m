@@ -193,11 +193,15 @@ typedef struct CAColorMatrix CAColorMatrix;
 }
 
 - (BOOL)shouldForwardSelector:(SEL)aSelector {
-    if (aSelector == @selector(setBounds:)) return NO;
+   // if (aSelector == @selector(setBounds:)) return NO;
+    if (aSelector == @selector(_setContinuousCornerRadius:)) return YES;
+    if (aSelector == @selector(_continuousCornerRadius)) return YES;
     return [self.layer respondsToSelector:aSelector];
 }
 
 - (id)forwardingTargetForSelector:(SEL)aSelector {
+    if (aSelector == @selector(_setContinuousCornerRadius:)) return self;
+    if (aSelector == @selector(_continuousCornerRadius)) return self;
     return (![self respondsToSelector:aSelector] && [self shouldForwardSelector:aSelector]) ? self.layer : self;
 }
 

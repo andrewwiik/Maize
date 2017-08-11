@@ -1,6 +1,7 @@
 #import "MZEButtonModuleView.h"
 #import "MZELayoutOptions.h"
 #import "MZEMaterialView.h"
+#import <UIKit/UIView+Private.h>
 
 @implementation MZEButtonModuleView
 
@@ -10,7 +11,7 @@
 		_highlightedBackgroundView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleLight];
 		[_highlightedBackgroundView setFrame:self.bounds];
 		[_highlightedBackgroundView setAutoresizingMask:18];
-		[_highlightedBackgroundView _setCornerRadius:[MZELayoutOptions regularCornerRadius]];
+		_highlightedBackgroundView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
 		[_highlightedBackgroundView setAlpha:0x12];
 		[self addSubview:_highlightedBackgroundView];
 		[self addTarget:self action:@selector(_touchDown:) forControlEvents:0x1];

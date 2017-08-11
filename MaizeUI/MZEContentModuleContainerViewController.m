@@ -358,10 +358,10 @@
 
 	if (ended) {
 		_bubbled = NO;
-		[_delegate contentModuleContainerViewController:self openExpandedModule:_contentModule];
-		[UIView animateWithDuration:0.1 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+		[UIView animateWithDuration:0.05 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 			self.view.transform = CGAffineTransformIdentity;
 		} completion:^(BOOL completed) {
+			[_delegate contentModuleContainerViewController:self openExpandedModule:_contentModule];
 		}];
 	}
 	return;
@@ -469,6 +469,16 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
 	//[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+
+	[coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+		// [_sliderView _layoutValueViews];
+		// [_sliderView setGlyphVisible:_expanded ? NO : YES];
+		//_sliderView.layer.cornerRadius = _expanded ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
+        // do whatever
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+    	[self.contentContainerView stopDisplayLink];
+    }];
+
 	if (size.height == [self _backgroundFrameForExpandedState].size.height) {
 		CGSize expandedContentSize = [self _contentFrameForExpandedState].size;
 		[_contentViewController viewWillTransitionToSize:expandedContentSize withTransitionCoordinator:coordinator];
@@ -478,6 +488,7 @@
 		[_contentViewController viewWillTransitionToSize:compactContentSize withTransitionCoordinator:coordinator];
 		[_backgroundViewController viewWillTransitionToSize:[self _backgroundFrameForRestState].size withTransitionCoordinator:coordinator];
 	}
+
 	// if ([_contentViewController respondsToSelector:@selector(viewWillTransitionToSize:withTransitionCoordinator:)]) {
 	// 	[_contentViewController viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 	// }

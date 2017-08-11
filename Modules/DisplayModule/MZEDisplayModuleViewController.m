@@ -3,6 +3,7 @@
 #import <UIKit/UIApplication+VolumeHUD.h>
 #import <BackBoardServices/BKSDisplayBrightness.h>
 #import <SpringBoard/SBBrightnessController+Private.h>
+#import <UIKit/UIView+Private.h>
 
 @implementation MZEDisplayModuleViewController
 	@synthesize delegate=_delegate;
@@ -11,8 +12,8 @@
 	self = [super initWithNibName:arg1 bundle:arg2];
 	if (self) {
             _sliderView = [[MZEModuleSliderView alloc] initWithFrame:CGRectZero];
-            _sliderView.layer.cornerRadius = [MZELayoutOptions regularCornerRadius];
-            _sliderView.clipsToBounds = YES;
+           // _sliderView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
+           // _sliderView.clipsToBounds = YES;
             [_sliderView setThrottleUpdates:NO];
             [_sliderView addTarget:self action:@selector(_sliderValueDidChange:) forControlEvents:UIControlEventValueChanged];
             [_sliderView  setAutoresizingMask:18];
@@ -56,8 +57,12 @@
 
 - (void)willTransitionToExpandedContentMode:(BOOL)willTransition {
 	_expanded = willTransition;
-	[_sliderView setGlyphVisible:willTransition ? NO : YES];
-	_sliderView.layer.cornerRadius = willTransition ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
+	if (willTransition) {
+		[_sliderView setGlyphVisible:NO];
+	}
+	//[UIView performWithoutAnimation:^{
+		//_sliderView.layerCornerRadius = willTransition ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
+	//}];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -71,6 +76,10 @@
 		//_sliderView.layer.cornerRadius = _expanded ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
         // do whatever
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+    	//[_sliderView stopDisplayLink];
+    	if (!_expanded) {
+    		[_sliderView setGlyphVisible:YES];
+    	}
 
     }];
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];

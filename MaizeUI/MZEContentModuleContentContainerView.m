@@ -1,18 +1,21 @@
 #import "MZEContentModuleContentContainerView.h"
 #import "MZELayoutOptions.h"
+#import <UIKit/UIView+Private.h>
+#import "macros.h"
 
 @implementation MZEContentModuleContentContainerView
 	@synthesize moduleMaterialView=_moduleMaterialView;
 
-- (void)_setContinuousCornerRadius:(CGFloat)cornerRadius {
-	if (_moduleMaterialView) {
-		_moduleMaterialView.layer.cornerRadius = cornerRadius;
-		_moduleMaterialView.clipsToBounds = cornerRadius > 0 ? YES : NO;
-	}
-}
+// - (void)_setContinuousCornerRadius:(CGFloat)cornerRadius {
+// 	if (_moduleMaterialView) {
+// 		_moduleMaterialView._continuousCornerRadius = cornerRadius;
+// 		_moduleMaterialView.clipsToBounds = cornerRadius > 0 ? YES : NO;
+// 	}
+// }
 
 - (void)layoutSubviews {
 	[self _configureModuleMaterialViewIfNecessary];
+	self.clipsToBounds = YES;
 	[super layoutSubviews];
 }
 
@@ -56,12 +59,104 @@
 	if (force || _expanded != expanded) {
 		_expanded = expanded;
 		if (expanded) {
+			self.animationDuration = 0.38;
 			cornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
 		} else {
+			self.animationDuration = 0.215;
 			cornerRadius = [MZELayoutOptions regularCornerRadius];
 		}
-		[self _setContinuousCornerRadius:cornerRadius];
+		if (force) {
+			self._continuousCornerRadius = cornerRadius;
+		} else {
+			self.layerCornerRadius = cornerRadius;
+		}
 	}
+}
+
+- (CGFloat)layerCornerRadius {
+    return self._continuousCornerRadius;
+}
+
+- (void)setLayerCornerRadius:(CGFloat)radius {
+
+    if (self._continuousCornerRadius != radius && !self.displayLinkActive) {
+        self.wantedRadius = radius;
+        self.startRadius = self._continuousCornerRadius;
+        self.radiusDiff = self.wantedRadius - self.startRadius;
+
+        if (!_displayLinkActive) {
+            self.percent = 0;
+            if (!self.displayLink) {
+                self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(handleDisplayLink:)];
+            
+            }
+            // self.displayLink.frameInterval = 2;
+            self.startTime = CACurrentMediaTime();
+            self.displayLinkActive = YES;
+            [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        }
+    }
+
+
+
+    // ((MZECAContinuousCornerLayer *)self.layer).continuousCorners = radius;
+    // [self setNeedsDisplay];
+}
+
+- (void)stopDisplayLink {
+    if (self.displayLink && _displayLinkActive) {
+        self._continuousCornerRadius = _wantedRadius;
+        self.wantedRadius = 0;
+        self.startRadius = 0;
+        self.percent = 0;
+        [self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        // [self.displayLink invalidate];
+        // self.displayLink = nil;
+        self.displayLinkActive = NO;
+    }
+    // [self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    // [self.displayLink invalidate];
+    // self.displayLink = nil;
+    // _displayLinkActive = NO;
+    // _wantedRadius = 9999;
+}
+
+- (void)handleDisplayLink:(CADisplayLink *)displayLink {
+    CFAbsoluteTime elapsed = CACurrentMediaTime() - self.startTime;
+    CGFloat newPercent = elapsed / self.animationDuration - floor(elapsed / self.animationDuration);
+    if (self.percent > newPercent) {
+    	[self stopDisplayLink];
+    	return;
+    }
+  	self.percent = newPercent;
+   // _percent = _glyphPackageView.alpha;
+   // self.backgroundColor = [UIColor colorWithWhite:0 alpha:_startAlpha + ((_wantedAlpha - _startAlpha)*_percent)];
+    CGFloat cornerRadius = UIRoundToViewScale(self.startRadius + (self.radiusDiff*self.percent), self);
+    if (cornerRadius != self._continuousCornerRadius) {
+        //[UIView performWithoutAnimation:^{
+    		// [CATransaction begin];
+      //       [CATransaction setDisableActions:YES];
+            self._continuousCornerRadius = cornerRadius;
+            // [CATransaction commit];
+
+             if (cornerRadius == self.wantedRadius || elapsed >= self.animationDuration - 0.15) {
+                [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+                self._continuousCornerRadius = self.wantedRadius;
+                self.displayLinkActive = NO;
+                self.percent = 0;
+             }
+             // //[self.layer setNeedsDisplay];
+             // if (_wantedRadius == 38.0) {
+             //   // self.backgroundColor = [UIColor redColor];
+             // }
+       // }];
+    }
+
+    // if (elapsed >= 14.99) {
+    //     [self stopDisplayLink];
+    // } else if (_percent >= 1.0) {
+    //      [self stopDisplayLink];
+    // }
 }
 
 - (id)initWithFrame:(CGRect)frame {

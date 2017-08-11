@@ -1,6 +1,7 @@
 #import "MZEAudioModuleViewController.h"
 #import <MaizeUI/MZELayoutOptions.h>
 #import <UIKit/UIApplication+VolumeHUD.h>
+#import <UIKit/UIView+Private.h>
 
 @implementation MZEAudioModuleViewController
 	@synthesize delegate=_delegate;
@@ -10,8 +11,8 @@
 	if (self) {
             _sliderView = [[MZEModuleSliderView alloc] initWithFrame:CGRectZero];
             [_sliderView setThrottleUpdates:YES];
-            _sliderView.layer.cornerRadius = [MZELayoutOptions regularCornerRadius];
-            _sliderView.clipsToBounds = YES;
+          //  _sliderView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
+          //  _sliderView.clipsToBounds = YES;
             [_sliderView addTarget:self action:@selector(_sliderValueDidChange:) forControlEvents:UIControlEventValueChanged];
             _volumeController = [[MPVolumeController alloc] init];
             [_volumeController setDelegate:self];
@@ -55,7 +56,7 @@
 
 - (void)willTransitionToExpandedContentMode:(BOOL)willTransition {
 	[_sliderView setGlyphVisible:willTransition ? NO : YES];
-	_sliderView.layer.cornerRadius = willTransition ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
+	//_sliderView.layerCornerRadius = willTransition ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -69,7 +70,7 @@
 		//_sliderView.layer.cornerRadius = _expanded ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
         // do whatever
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
-
+    	//[_sliderView stopDisplayLink];
     }];
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
