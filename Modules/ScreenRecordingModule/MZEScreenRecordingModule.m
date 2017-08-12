@@ -20,12 +20,22 @@
 
 - (void)setSelected:(BOOL)isSelected {
 
-	if (isSelected) {
-		_isRecording = YES;
+
+	if (_countingDown) {
+		if (self.countDownTimer) {
+			[self.countDownTimer invalidate];
+			self.countDownTimer = nil;
+		}
+		_countingDown = NO;
+		[_viewController setGlyphState:@"off"];
+		[_viewController setSelected:NO];
+
+		_isRecording = NO;
+	} else if (isSelected) {
 		_countingDown = YES;
 		[_viewController setGlyphState:@"countdown|1.0"];
-		_countingDown = NO;
-		[self performSelector:@selector(_setSelected:) withObject:[NSNumber numberWithBool:YES] afterDelay:3.0];
+		self.countDownTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(countDownMethodFired:) userInfo:nil repeats:NO];
+		//[self performSelector:@selector(_setSelected:) withObject:[NSNumber numberWithBool:YES] afterDelay:3.0];
 		// [UIView animateWithDuration:0 delay:3.0 options:UIViewAnimationOptionCurveLinear animations:^{
 		// 	// _countingDown = NO;
 		// 	// [_viewController setGlyphState:@"recording"];
@@ -48,6 +58,22 @@
 		[_viewController setSelected:isSelected];
 		_isRecording = isSelected;
 	}
+}
+
+- (void)countDownMethodFired:(NSTimer *)timer {
+	if (_countingDown) {
+		_isRecording = YES;
+		[_recordToggle _startRecording];
+		_countingDown = NO;
+		[_viewController setSelected:YES];
+	} else {
+		_isRecording = NO;
+		[_viewController setSelected:NO];
+		[_viewController setGlyphState:@"off"];
+	}
+
+	[self.countDownTimer invalidate];
+	self.countDownTimer = nil;
 }
 
 
@@ -73,13 +99,17 @@
 	// 		[]
 	// 	}
 	// }
-	if ([selected boolValue]) {
-		[_recordToggle _startRecording];
-	} else {
-		[_recordToggle _stopRecording];
+	if (_countingDown) {
+		if ([selected boolValue]) {
+			[_recordToggle _startRecording];
+			_isRecording = YES;
+		} else {
+			[_recordToggle _stopRecording];
+			_isRecording = NO;
+		}
+		[_viewController setSelected:[selected boolValue]];
+		_countingDown = NO;
 	}
-	[_viewController setSelected:[selected boolValue]];
-	_isRecording = YES;
 	//[_viewController setSelected:[selected boolValue]];
 }
 

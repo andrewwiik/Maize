@@ -16,6 +16,8 @@
 	BOOL _isRecording;
 	CCUIRecordScreenShortcut *_recordToggle;
 }
+
+@property (nonatomic, retain) NSTimer *countDownTimer;
 - (id)init;
 - (CAPackage *)glyphPackage;
 - (NSString *)glyphState;

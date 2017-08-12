@@ -103,13 +103,13 @@
 		[self _setGlyphImage:glyphImage];
 
 		CGFloat alpha;
-		if ([self isHighlighted]) {
-				alpha = 1.0;
-		}
-		else {
+		if ([self isHighlighted] && ![self isSelected]) {
+				alpha = 0.25;
+		} else {
 				alpha = [self isSelected] ? 1.0 : 0;
 		}
 		_highlightedBackgroundView.alpha = alpha;
+
 		if (glyphColor) {
 				[_glyphImageView setTintColor:glyphColor];
 		}

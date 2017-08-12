@@ -7,6 +7,7 @@
 #import "MZEExpandedModulePresentationController.h"
 #import "MZEExpandedModuleDismissTransition.h"
 #import <UIKit/UIViewController+Window.h>
+#import <UIKit/UIPanGestureRecognizer+Private.h>
 #import "macros.h"
 
 @implementation MZEContentModuleContainerViewController
@@ -357,11 +358,13 @@
 	}
 
 	if (ended) {
+		[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:NO];
 		_bubbled = NO;
 		[UIView animateWithDuration:0.05 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 			self.view.transform = CGAffineTransformIdentity;
 		} completion:^(BOOL completed) {
 			[_delegate contentModuleContainerViewController:self openExpandedModule:_contentModule];
+			[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:YES];
 		}];
 	}
 	return;
