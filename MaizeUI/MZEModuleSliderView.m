@@ -4,6 +4,9 @@
 #import <UIKit/UIView+Private.h>
 #import "macros.h"
 
+
+static CGFloat separatorHeight = 0;
+
 @implementation MZEModuleSliderView
     @synthesize step=_step;
     @synthesize firstStepIsDisabled=_firstStepIsDisabled;
@@ -26,11 +29,15 @@
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
+            if (separatorHeight == 0) {
+                separatorHeight = 1.0f/[UIScreen mainScreen].scale;
              //self.layer.delegate = self;
+            }
             _glyphVisible = YES;
             _throttleUpdates = NO;
             _numberOfSteps = 1;
             _firstStepIsDisabled = NO;
+            _changingValue = NO;
             [self _createStepViewsForNumberOfSteps:_numberOfSteps];
             [self setExclusiveTouch:YES];
     }
@@ -251,14 +258,17 @@
 }
 
 - (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    BOOL absoluteReference = [self isStepped];
     CGPoint touchPoint = [touch locationInView:self];
     if (CGRectGetHeight([self bounds]) != _startingHeight) {
         _startingLocation = touchPoint;
         _startingHeight = CGRectGetHeight([self bounds]);
         _startingValue = _value;
+        absoluteReference = NO;
+
     }
 
-    [self _updateValueForTouchLocation:touchPoint withAbsoluteReference:[self isStepped]];
+    [self _updateValueForTouchLocation:touchPoint withAbsoluteReference:absoluteReference];
     if (!_throttleUpdates) {
         [self sendActionsForControlEvents:UIControlEventValueChanged];
     }
@@ -288,22 +298,34 @@
             if (x < _numberOfSteps - 1) {
                 UIView *separatorView = [_separatorViews objectAtIndex:x];
                 CGRect bounds = [self bounds];
-                CGFloat separatorOriginY = CGRectGetHeight(bounds) - (([self _fullStepHeight] * (x + 1)) - (x + 1));
-                CGRect seperatorFrame = CGRectMake(0,separatorOriginY,CGRectGetWidth(bounds), 1.0);
+                CGFloat separatorOriginY = CGRectGetHeight(bounds) - (([self _fullStepHeight] * (x + 1)) + (separatorHeight * (x + 1)));
+                CGRect seperatorFrame = CGRectMake(0,separatorOriginY,CGRectGetWidth(bounds), separatorHeight);
                 separatorView.frame = seperatorFrame;
             }
 
             if (x < _step) {
-                [stepBackgroundView setAlpha:1];
                 CGRect bounds = [self bounds];
-                //[UIView performWithoutAnimation:^{
+
+                if (_changingValue) {
+                    [UIView performWithoutAnimation:^{
+                        CGFloat fullStepHeight = [self _fullStepHeight];
+                        CGFloat stepOriginY = CGRectGetHeight(bounds) - ((fullStepHeight * (x + 1)) + (fullStepHeight - [self _heightForStep:(x+1)]) + (x * separatorHeight));
+                        CGRect stepFrame = CGRectMake(0,stepOriginY,CGRectGetWidth(bounds),[self _heightForStep:x + 1]);
+                        stepBackgroundView.frame = stepFrame;
+                    }];
+                } else {
                     CGFloat fullStepHeight = [self _fullStepHeight];
-                    CGFloat stepOriginY = CGRectGetHeight(bounds) - ((fullStepHeight * x) - [self _heightForStep:(x+1)] - x);
+                    CGFloat stepOriginY = CGRectGetHeight(bounds) - ((fullStepHeight * (x + 1)) + (fullStepHeight - [self _heightForStep:(x+1)]) + (x * separatorHeight));
                     CGRect stepFrame = CGRectMake(0,stepOriginY,CGRectGetWidth(bounds),[self _heightForStep:x + 1]);
                     stepBackgroundView.frame = stepFrame;
-               // }];
+                }
+                [stepBackgroundView setAlpha:1];
             } else {
-                [stepBackgroundView setAlpha:0];
+                if (x == 0 && _firstStepIsDisabled) {
+                    [stepBackgroundView setAlpha:1];
+                } else {
+                    [stepBackgroundView setAlpha:0];
+                }
             }
         }
 
@@ -327,9 +349,12 @@
     if (stepsArray) {
         for (NSUInteger x = 0; x < numberOfSteps; x++) {
             MZEMaterialView *stepView = [self _createBackgroundViewForStep:x+1];
-            [self addSubview:stepView];
-            [stepsArray addObject:stepView];
-            
+            if (stepView) {
+                 [self addSubview:stepView];
+                [stepsArray addObject:stepView];
+            } else {
+                HBLogError(@"COULDN'T CREATE STEP");
+            }
         }
     }
 
@@ -351,8 +376,12 @@
         if (separatorsArray) {
             for (NSUInteger x = 0; x < numberOfSteps - 1; x++) {
                 MZEMaterialView *separatorView = [self _createSeparatorView];
-                [self addSubview:separatorView];
-                [separatorsArray addObject:separatorView];
+                if (separatorView) {
+                    [self addSubview:separatorView];
+                    [separatorsArray addObject:separatorView];
+                } else {
+                    HBLogError(@"COULDN'T CREATE SEPARATOR VIEW");
+                }
             }
         }
 
@@ -386,26 +415,30 @@
 }
 
 - (CGFloat)_sliderHeight {
-    return CGRectGetHeight([self bounds]) * _value;
+    if ([self isStepped]) {
+        return CGRectGetHeight([self bounds]);
+    } else {
+        return CGRectGetHeight([self bounds]) * _value;
+    }
 }
 
 - (CGFloat)_fullStepHeight {
-    CGFloat usableHeight = [self _sliderHeight] - (1 * (_numberOfSteps - 1));
-    return UIRoundToViewScale(usableHeight/_numberOfSteps + -1, self);
+    CGFloat usableHeight = [self _sliderHeight] - (separatorHeight * ((float)_numberOfSteps - 1));
+    return UIRoundToViewScale(usableHeight/(float)_numberOfSteps, self);
 }
 
 - (CGFloat)_heightForStep:(NSUInteger)step { // 1
-    NSUInteger otherStep = [self _stepFromValue:_value] - 1; // 4
-    if (otherStep <= step) { // 4 <= 5
-        CGFloat result = 0.0;
-        if ((otherStep + 1) == step) {
-            CGFloat sliderHeight = [self _sliderHeight];
-            CGFloat fullStepHeight = [self _fullStepHeight];
-            result = sliderHeight - (fullStepHeight * otherStep);
-        } else {
-            result = [self _fullStepHeight];
+    CGFloat otherStepValue = [self _valueFromStep:step]; // 4
+    CGFloat thisStepValue = [self _valueFromStep:(float)_numberOfSteps * _value];
+    if (otherStepValue != thisStepValue && (step - 1) > 0) {
+        CGFloat lowerStepValue = [self _valueFromStep:step - 1];
+        CGFloat percentDiff = fabs(lowerStepValue - _value) * (float)_numberOfSteps;
+        percentDiff = fminf(fmaxf(percentDiff, 0.0), 1.0);
+        CGFloat stepHeight = [self _fullStepHeight];
+        if (step == _numberOfSteps) {
+            stepHeight = [self _sliderHeight] - (stepHeight * (_numberOfSteps - 1)) - (separatorHeight * (_numberOfSteps - 1));
         }
-        return result;
+        return stepHeight * percentDiff;
     } else {
         return [self _fullStepHeight];
     }
@@ -415,16 +448,19 @@
     if (_numberOfSteps <= 1) {
         return 1;
     } else {
-        NSUInteger step = ceilf((float)_numberOfSteps * value);
+        NSUInteger step = roundf((float)_numberOfSteps * value);
+        if (step == 0) {
+            step = 1;
+        }
         if ([self firstStepIsDisabled] && step == 0)
             step = 1;
         return step; 
     }
 }
 
-- (float)_valueFromStep:(NSUInteger)step {
+- (float)_valueFromStep:(float)step {
     if (step > 0 && _numberOfSteps > 0) {
-        return step/_numberOfSteps;
+        return (float)((float)step/(float)_numberOfSteps);
     } else {
         if (step > 0) {
             return 1;
@@ -454,10 +490,13 @@
 
 - (void)_updateStepFromValue:(float)value {
     _step = [self _stepFromValue:value];
-    _value = [self _valueFromStep:_step];
+    _value = [self _valueFromStep:(float)_step];
 
-    [UIView animateWithDuration:0.25 animations:^{
+    _changingValue = YES;
+    [UIView animateWithDuration:0.15 animations:^{
         [self _layoutValueViews];
+    } completion:^(BOOL completed) {
+        _changingValue = NO;
     }];
 }
 

@@ -1,4 +1,7 @@
 #import "MZEFlashlightModule.h"
+#import "MZEFlashlightModuleViewController.h"
+#import <UIKit/UIColor+Private.h>
+
 @implementation MZEFlashlightModule
 
 - (id)init {
@@ -10,7 +13,15 @@
 }
 
 - (UIColor *)selectedColor {
-	return [UIColor colorWithRed:0.00 green:0.48 blue:1.00 alpha:1.0];
+	return [UIColor systemBlueColor];
+}
+
+- (UIViewController<MZEContentModuleContentViewController> *)contentViewController {
+	if (!_viewController) {
+		_viewController = [[MZEFlashlightModuleViewController alloc] init];
+		[_viewController setModule:self];
+	}
+	return _viewController;
 }
 
 @end

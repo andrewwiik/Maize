@@ -15,7 +15,6 @@
 
 - (void)layoutSubviews {
 	[self _configureModuleMaterialViewIfNecessary];
-	self.clipsToBounds = YES;
 	[super layoutSubviews];
 }
 
@@ -55,14 +54,17 @@
 }
 
 - (void)_transitionToExpandedMode:(BOOL)expanded force:(BOOL)force {
+	self.clipsToBounds = YES;
 	CGFloat cornerRadius = 0;
 	if (force || _expanded != expanded) {
 		_expanded = expanded;
 		if (expanded) {
-			self.animationDuration = 0.38;
+			self.animationDuration = 0.1;
+			self.animationDelay = 0.15;
 			cornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
 		} else {
 			self.animationDuration = 0.215;
+			self.animationDelay = 0;
 			cornerRadius = [MZELayoutOptions regularCornerRadius];
 		}
 		if (force) {
@@ -123,34 +125,36 @@
 
 - (void)handleDisplayLink:(CADisplayLink *)displayLink {
     CFAbsoluteTime elapsed = CACurrentMediaTime() - self.startTime;
+    if (elapsed < self.animationDelay) return;
     CGFloat newPercent = elapsed / self.animationDuration - floor(elapsed / self.animationDuration);
-    if (self.percent > newPercent) {
-    	[self stopDisplayLink];
-    	return;
-    }
-  	self.percent = newPercent;
-   // _percent = _glyphPackageView.alpha;
-   // self.backgroundColor = [UIColor colorWithWhite:0 alpha:_startAlpha + ((_wantedAlpha - _startAlpha)*_percent)];
-    CGFloat cornerRadius = UIRoundToViewScale(self.startRadius + (self.radiusDiff*self.percent), self);
-    if (cornerRadius != self._continuousCornerRadius) {
-        //[UIView performWithoutAnimation:^{
-    		// [CATransaction begin];
-      //       [CATransaction setDisableActions:YES];
-            self._continuousCornerRadius = cornerRadius;
-            // [CATransaction commit];
+	newPercent = fminf(fmaxf(newPercent, 0.0), 1.0);
+	if (self.percent > newPercent) {
+		[self stopDisplayLink];
+		return;
+	}
+	self.percent = newPercent;
+	// _percent = _glyphPackageView.alpha;
+	// self.backgroundColor = [UIColor colorWithWhite:0 alpha:_startAlpha + ((_wantedAlpha - _startAlpha)*_percent)];
+	CGFloat cornerRadius = roundf(self.startRadius + (self.radiusDiff*self.percent));
+	if (cornerRadius != self._continuousCornerRadius && self.percent > 0) {
+	    //[UIView performWithoutAnimation:^{
+			// [CATransaction begin];
+	  //       [CATransaction setDisableActions:YES];
+	        self._continuousCornerRadius = cornerRadius;
+	        // [CATransaction commit];
 
-             if (cornerRadius == self.wantedRadius || elapsed >= self.animationDuration - 0.15) {
-                [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-                self._continuousCornerRadius = self.wantedRadius;
-                self.displayLinkActive = NO;
-                self.percent = 0;
-             }
-             // //[self.layer setNeedsDisplay];
-             // if (_wantedRadius == 38.0) {
-             //   // self.backgroundColor = [UIColor redColor];
-             // }
-       // }];
-    }
+	         if (cornerRadius == self.wantedRadius) {
+	            [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	            self._continuousCornerRadius = self.wantedRadius;
+	            self.displayLinkActive = NO;
+	            self.percent = 0;
+	         }
+	         // //[self.layer setNeedsDisplay];
+	         // if (_wantedRadius == 38.0) {
+	         //   // self.backgroundColor = [UIColor redColor];
+	         // }
+	   // }];
+	}
 
     // if (elapsed >= 14.99) {
     //     [self stopDisplayLink];
@@ -171,5 +175,18 @@
 
 - (id)init {
 	return [self initWithFrame:CGRectZero];
+}
+
+- (BOOL)shouldForwardSelector:(SEL)aSelector {
+    return [self.layer respondsToSelector:aSelector];
+}
+
+- (id)forwardingTargetForSelector:(SEL)aSelector {
+    return (![self respondsToSelector:aSelector] && [self shouldForwardSelector:aSelector]) ? self.layer : self;
+}
+
+- (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key {
+    //if ([key isEqual:@"_continuousCornerRadius"] || [key isEqual:@"_setContinuousCornerRadius:"]) return YES;
+    return ([self shouldForwardSelector:NSSelectorFromString(key)] || [super _shouldAnimatePropertyWithKey:key]);
 }
 @end

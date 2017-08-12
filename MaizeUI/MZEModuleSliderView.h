@@ -35,6 +35,7 @@
     CGFloat _radiusDiff;
     CFAbsoluteTime _startTime;
     BOOL _displayLinkActive;
+    BOOL _changingValue;
 }
 
 @property (nonatomic, assign) CFAbsoluteTime startTime;
@@ -62,7 +63,7 @@
 
 - (void)_updateStepFromValue:(float)arg1;
 - (void)_updateValueForTouchLocation:(CGPoint)arg1 withAbsoluteReference:(BOOL)arg2;
-- (float)_valueFromStep:(NSUInteger)arg1;
+- (float)_valueFromStep:(float)arg1;
 - (NSUInteger)_stepFromValue:(float)arg1;
 - (CGFloat)_sliderHeight;
 - (CGFloat)_fullStepHeight;

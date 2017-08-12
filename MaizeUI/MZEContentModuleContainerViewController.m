@@ -20,6 +20,8 @@
 		_contentModule = contentModule;
 		_contentViewController = [_contentModule contentViewController];
 
+		if (!_contentViewController) return nil;
+
 		if ([_contentViewController respondsToSelector:@selector(providesOwnPlatter)]) {
 			_contentModuleProvidesOwnPlatter = [_contentViewController providesOwnPlatter];	
 		}
@@ -75,6 +77,7 @@
 		}
 
 	}
+	_canBubble = YES;
 	return YES;
 	//[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
 }
@@ -339,8 +342,11 @@
 	if ([self isExpanded]) {
 		return NO;
 	} else {
-		[_delegate contentModuleContainerViewController:self didBeginInteractionWithModule:_contentModule];
-		return YES;
+		if (_bubbled) {
+			return YES;
+		}
+		//[_delegate contentModuleContainerViewController:self didBeginInteractionWithModule:_contentModule];
+		return NO;
 	}
 }
 
@@ -351,31 +357,42 @@
 }
 
 - (void)previewInteraction:(UIPreviewInteraction *)previewInteraction didUpdatePreviewTransition:(CGFloat)progress ended:(BOOL)ended {
-	if (!ended) {
-		[UIView animateWithDuration:0.1 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
-			self.view.transform = CGAffineTransformMakeScale(progress * (0.25 - (_bubbled ? 0.05 : 0)) + 1.0 + (_bubbled ? 0.05 : 0),progress * (0.25 - (_bubbled ? 0.05 : 0)) + 1.0 + (_bubbled ? 0.05 : 0));
-		} completion:nil];
-	}
+	if (_bubbled) {
+		if (!ended) {
+			[UIView animateWithDuration:0.1 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
+				self.view.transform = CGAffineTransformMakeScale(progress * (0.25 - (_bubbled ? 0.05 : 0)) + 1.0 + (_bubbled ? 0.05 : 0),progress * (0.25 - (_bubbled ? 0.05 : 0)) + 1.0 + (_bubbled ? 0.05 : 0));
+			} completion:nil];
+		}
 
-	if (ended) {
-		[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:NO];
-		_bubbled = NO;
-		[UIView animateWithDuration:0.05 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
-			self.view.transform = CGAffineTransformIdentity;
-		} completion:^(BOOL completed) {
-			[_delegate contentModuleContainerViewController:self openExpandedModule:_contentModule];
-			[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:YES];
-		}];
+		if (ended) {
+			self.view.userInteractionEnabled = NO;
+			[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:NO];
+			_bubbled = NO;
+			_canBubble = NO;
+			[UIView animateWithDuration:0.05 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+				self.view.transform = CGAffineTransformIdentity;
+			} completion:^(BOOL completed) {
+				self.view.userInteractionEnabled = YES;
+				[_delegate contentModuleContainerViewController:self openExpandedModule:_contentModule];
+				[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:YES];
+				_canBubble = YES;
+				//[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:YES];
+			}];
+		}
 	}
 	return;
 }
 
 - (void)previewInteractionDidCancel:(UIPreviewInteraction *)previewInteraction {
-	_bubbled = NO;
-	[UIView animateWithDuration:0.1 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
-		self.view.transform = CGAffineTransformIdentity;
-	} completion:nil];
-	[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+	if (_canBubble) {
+		[UIView animateWithDuration:0.1 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+			self.view.transform = CGAffineTransformIdentity;
+		} completion:^(BOOL completed) {
+			[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+
+		}];
+	}
+	//[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
 }
 
 
@@ -441,6 +458,7 @@
 		switch (recognizer.state) {
 	        case UIGestureRecognizerStateBegan: {
 	        	_bubbled = YES;
+	        	[_delegate contentModuleContainerViewController:self didBeginInteractionWithModule:_contentModule];
 	            [UIView animateWithDuration:0.25 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
 					self.view.transform = CGAffineTransformMakeScale(1.05,1.05);
 				} completion:nil];
@@ -450,10 +468,14 @@
 	        case UIGestureRecognizerStateCancelled:
 	        case UIGestureRecognizerStateFailed:
 	        case UIGestureRecognizerStateEnded: {
-	        	_bubbled = NO;
-	        	[UIView animateWithDuration:0.25 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
-					self.view.transform = CGAffineTransformIdentity;
-				} completion:nil];
+	        	if (_bubbled && _canBubble) {
+		        	[self.previewInteraction cancelInteraction];
+		        	[UIView animateWithDuration:0.25 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+						self.view.transform = CGAffineTransformIdentity;
+					} completion:^(BOOL completed){
+						[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+					}];
+				}
 	            // do something
 	            break;
 	        }

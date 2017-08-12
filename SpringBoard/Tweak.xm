@@ -28,7 +28,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 @interface CCUIControlCenterViewController (MZE)
 @property (assign,getter=isPresented,nonatomic) BOOL presented; 
-@property (nonatomic, retain) MZEModularControlCenterViewController *mze_viewController;
+@property (nonatomic, retain) MZEModularControlCenterOverlayViewController *mze_viewController;
 - (BOOL)isPresented;
 @end
 
@@ -42,6 +42,14 @@ static BOOL hasCalled = NO;
 %hook CCUIControlCenterViewController
 %property (nonatomic, retain) MZEModularControlCenterViewController *mze_viewController;
 
+
+
+-(CGFloat)_scrollviewContentMaxHeight {
+  if (self.mze_viewController) {
+    return CGRectGetHeight(self.view.bounds) - [self.mze_viewController _targetPresentationFrame].origin.y;
+  }
+  return %orig;
+}
 -(void)setRevealPercentage:(CGFloat)revealPercentage {
 
   if (!self.mze_viewController) {

@@ -23,6 +23,20 @@
 	return self;
 }
 
+- (void)setBounds:(CGRect)bounds {
+	if ([self isTracking]) {
+		[self cancelTrackingWithEvent:nil];
+	}
+	[super setBounds:bounds];
+}
+
+- (void)setFrame:(CGRect)frame {
+	if ([self isTracking]) {
+		[self cancelTrackingWithEvent:nil];
+	}
+	[super setFrame:frame];
+}
+
 - (void)setGlyphState:(NSString *)glyphState {
 	if (glyphState != _glyphState) {
 		_glyphState = glyphState;
@@ -141,6 +155,15 @@
 	// } else {
 	// 	[self setHighlighted:NO];
 	// }
+}
+
+- (void)willMoveToWindow:(UIWindow *)window {
+	[super willMoveToWindow:window];
+}
+
+- (void)setCenter:(CGPoint)center {
+	[self cancelTrackingWithEvent:nil];
+	[super setCenter:center];
 }
 
 - (void)_touchDown:(id)arg1 {

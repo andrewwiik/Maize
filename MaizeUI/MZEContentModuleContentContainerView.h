@@ -31,6 +31,7 @@
 @property (nonatomic, assign) BOOL displayLinkActive;
 @property (nonatomic, assign) CGFloat layerCornerRadius;
 @property (nonatomic, assign) CGFloat animationDuration;
+@property (nonatomic, assign) CGFloat animationDelay;
 @property (nonatomic, retain, readwrite) CADisplayLink *displayLink;
 - (void)stopDisplayLink;
 - (void)handleDisplayLink:(CADisplayLink *)displayLink;

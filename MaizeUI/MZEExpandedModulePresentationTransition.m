@@ -7,7 +7,7 @@
 
 @implementation MZEExpandedModulePresentationTransition
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    return 0.325;
+    return 0.25;
 }
 
 

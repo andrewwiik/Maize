@@ -10,17 +10,17 @@
     [_headerImageView setContentMode:0x4];
     [_headerImageView sizeToFit];
 
-    _headerImageView.layer.shadowOpacity = 0.6f;
+    _headerImageView.layer.shadowOpacity = 0.2f;
     _headerImageView.layer.shadowOffset = CGSizeZero;
-    _headerImageView.layer.shadowColor = [UIColor colorWithWhite:0 alpha:0.48].CGColor;
-    _headerImageView.layer.shadowRadius = 8.0f;
+    _headerImageView.layer.shadowColor = [UIColor blackColor].CGColor;
+    _headerImageView.layer.shadowRadius = 10.0f;
 
     _packageView = [[MZECAPackageView alloc] init];
 
-    _packageView.layer.shadowOpacity = 0.6f;
+    _packageView.layer.shadowOpacity = 0.2f;
     _packageView.layer.shadowOffset = CGSizeZero;
-    _packageView.layer.shadowColor = [UIColor colorWithWhite:0 alpha:0.48].CGColor;
-    _packageView.layer.shadowRadius = 8.0f;
+    _packageView.layer.shadowColor = [UIColor blackColor].CGColor;
+    _packageView.layer.shadowRadius = 10.0f;
 
     [self.view addSubview:_packageView];
 }

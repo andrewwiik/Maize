@@ -174,9 +174,11 @@
 	for (MZEModuleInstance *moduleInstance in moduleInstances) {
 		NSString *moduleIdentifier = moduleInstance.metadata.identifier;
 		MZEContentModuleContainerViewController *viewController = [[MZEContentModuleContainerViewController alloc] initWithModuleIdentifier:moduleIdentifier contentModule:moduleInstance.module];
-		[moduleViewControllerByIdentifier setObject:viewController forKey:moduleIdentifier];
-		//viewController.view.frame = [positionProvider  positionForIdentifier:viewController.moduleIdentifier];
-		[self _setupAndAddModuleViewControllerToHierarchy:viewController];
+		if (viewController) {
+			[moduleViewControllerByIdentifier setObject:viewController forKey:moduleIdentifier];
+			//viewController.view.frame = [positionProvider  positionForIdentifier:viewController.moduleIdentifier];
+			[self _setupAndAddModuleViewControllerToHierarchy:viewController];
+		}
 	}
 
 	_moduleViewControllerByIdentifier = moduleViewControllerByIdentifier;
@@ -271,7 +273,7 @@
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didBeginInteractionWithModule:(id <MZEContentModule>)arg2 {
-
+	[_delegate moduleCollectionViewController:self didBeginInteractionWithModule:arg2];
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController openExpandedModule:(id <MZEContentModule>)expandedModule {
@@ -280,7 +282,6 @@
 	// [containerViewController.view removeFromSuperview];
 	[containerViewController willMoveToParentViewController:nil];
 	[containerViewController removeFromParentViewController];
-
 	[self presentViewController:containerViewController animated:true completion:nil];
 }
 

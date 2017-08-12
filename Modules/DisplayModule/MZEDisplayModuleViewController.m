@@ -12,6 +12,7 @@
 	self = [super initWithNibName:arg1 bundle:arg2];
 	if (self) {
             _sliderView = [[MZEModuleSliderView alloc] initWithFrame:CGRectZero];
+           // _sliderView.numberOfSteps = 5;
            // _sliderView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
            // _sliderView.clipsToBounds = YES;
             [_sliderView setThrottleUpdates:NO];

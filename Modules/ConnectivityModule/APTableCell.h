@@ -1,4 +1,4 @@
-#import <AirportSettings/APTableCell.h>
+#import <AirPortSettings/APTableCell.h>
 #import <MaizeUI/MZEMaterialView.h>
 
 @interface APTableCell (MZE)

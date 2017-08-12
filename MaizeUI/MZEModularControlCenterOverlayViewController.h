@@ -21,6 +21,7 @@
 	UITapGestureRecognizer *_collectionViewDismissalTapGesture;
 	UIPanGestureRecognizer *_collectionViewScrollPanGesture;
 	CGFloat _dismissalGestureYOffset;
+	BOOL _isInteractingWithModule;
 }
 
 @property (nonatomic, retain, readwrite) MZEBackgroundView *backgroundView;

@@ -2,6 +2,7 @@
 #import <UIKit/UIView+Private.h>
 #import <SpringBoard/SBControlCenterController+Private.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
+#import <UIKit/UIPanGestureRecognizer+Private.h>
 #import "macros.h"
 
 @implementation MZEModularControlCenterOverlayViewController
@@ -61,7 +62,8 @@
 }
 
 - (void)_handleControlCenterDismissalTapGesture:(UITapGestureRecognizer *)gesture {
-	if ([self presentationState] == MZEPresentationStatePresented) {
+	return;
+	if ([self presentationState] == MZEPresentationStatePresented && !_isInteractingWithModule) {
 		[self dismissAnimated:YES withCompletionHandler:nil];
 	}
 }
@@ -129,6 +131,7 @@
 }
 
 - (void)revealWithProgress:(CGFloat)progress {
+	_isInteractingWithModule = NO;
 	[self updatePresentationForRevealPercentage:progress];
 }
 
@@ -349,7 +352,22 @@
 // }
 
 - (void)_handleControlCenterDismissalPanGesture:(UIPanGestureRecognizer *)recognizer {
-
+	// if (_isInteractingWithModule) {
+	// 	return;
+	// }
+	if (_isInteractingWithModule) {
+		//self.view.backgroundColor = [UIColor greenColor];
+		recognizer.fakePossible = YES;
+		//recognizer.state = UIGestureRecognizerStatePossible;
+	} else {
+		if (recognizer.fakePossible) {
+			recognizer.fakePossible = NO;
+			recognizer.fakeBegan = YES;
+		} else if (recognizer.fakeBegan) {
+			recognizer.fakeBegan = NO;
+		}
+		//self.view.backgroundColor = [UIColor redColor];
+	}
 	if ([NSClassFromString(@"SBControlCenterController") sharedInstance]) {
 		SBControlCenterController *controller = [NSClassFromString(@"SBControlCenterController") sharedInstance];
 		if ([controller valueForKey:@"_viewController"]) {
@@ -556,15 +574,63 @@
 	return cachedFrame;
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	if (gestureRecognizer) {
+		if (_isInteractingWithModule && [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+			return NO;
+		}
+	}
+	return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press {
+	if (gestureRecognizer) {
+		if (_isInteractingWithModule && [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+			return NO;
+		}
+	}
+	return YES;
+}
+
+- (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController didFinishInteractionWithModule:(id <MZEContentModule>)module {
+	_isInteractingWithModule = NO;
+	// _collectionViewScrollPanGesture.enabled = YES;
+	// _collectionViewDismissalTapGesture.enabled = YES;
+	// _collectionViewDismissalPanGesture.enabled = YES;
+	// _headerPocketViewDismissalTapGesture.enabled = YES;
+	// _headerPocketViewDismissalPanGesture.enabled = YES;
+}
+
+- (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController didBeginInteractionWithModule:(id <MZEContentModule>)module {
+	_isInteractingWithModule = YES;
+	// _collectionViewScrollPanGesture.enabled = NO;
+	// _collectionViewDismissalTapGesture.enabled = NO;
+	// _collectionViewDismissalPanGesture.enabled = NO;
+	// _headerPocketViewDismissalTapGesture.enabled = NO;
+	// _headerPocketViewDismissalPanGesture.enabled = NO;
+}
+
 
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willOpenExpandedModule:(id <MZEContentModule>)module {
 	_headerPocketView.alpha = 0;
+	_collectionViewScrollPanGesture.enabled = NO;
+	_collectionViewDismissalTapGesture.enabled = NO;
+	_collectionViewDismissalPanGesture.enabled = NO;
+	_headerPocketViewDismissalTapGesture.enabled = NO;
+	_headerPocketViewDismissalPanGesture.enabled = NO;
+	_isInteractingWithModule = YES;
 	[super moduleCollectionViewController:collectionViewController willOpenExpandedModule:module];
 }
 
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willCloseExpandedModule:(id <MZEContentModule>)module {
 	_headerPocketView.alpha = 1.0;
 	[self _updateHotPocketAnimated:YES];
+	_isInteractingWithModule = NO;
+	_collectionViewScrollPanGesture.enabled = YES;
+	_collectionViewDismissalTapGesture.enabled = YES;
+	_collectionViewDismissalPanGesture.enabled = YES;
+	_headerPocketViewDismissalTapGesture.enabled = YES;
+	_headerPocketViewDismissalPanGesture.enabled = YES;
 	[super moduleCollectionViewController:collectionViewController willCloseExpandedModule:module];
 }
 // CGRectIsNull
