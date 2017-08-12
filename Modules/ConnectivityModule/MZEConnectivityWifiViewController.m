@@ -1,4 +1,4 @@
-#import "MZEConnectivityWiFiViewController.h"
+#import "MZEConnectivityWifiViewController.h"
 #import <SpringBoard/SBWiFiManager+Private.h>
 #import "MZEConnectivityWiFiNetworksViewController.h"
 
