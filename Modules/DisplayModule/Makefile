@@ -11,6 +11,6 @@ DisplayModule_FRAMEWORKS = Foundation UIKit CoreGraphics CoreImage QuartzCore Me
 DisplayModule_EXTRA_FRAMEWORKS = MaizeUI
 DisplayModule_LDFLAGS = $(THEOS)/vendor/lib/libsubstrate.tbd ./MediaPlayerUI.tbd ./BackBoardServices.tbd
 DisplayModule_INSTALL_PATH = /Library/Maize/Bundles/
-DisplayModule_LDFLAGS = -F../../.theos/$(THEOS_OBJ_DIR_NAME)
+DisplayModule_LDFLAGS += -F../../.theos/$(THEOS_OBJ_DIR_NAME)
 
 include $(THEOS_MAKE_PATH)/bundle.mk

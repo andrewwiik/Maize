@@ -1,5 +1,5 @@
 #import "MZEFlipSwitchToggleModule.h"
-#import <FlipSwitch/FSSwitchPanel.h>
+#import <Flipswitch/FSSwitchPanel.h>
 #import <FlipSwitch/FSSwitchPanel+Private.h>
 
 @interface NSBundle (MZE)
