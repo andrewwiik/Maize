@@ -17,5 +17,5 @@ before_install:
   - git clone --recursive git://github.com/theos/theos.git ~/theos
 
 script:
-  # build!
+  # build Maize
   - make
