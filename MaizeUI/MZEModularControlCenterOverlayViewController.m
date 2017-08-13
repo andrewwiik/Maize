@@ -534,7 +534,7 @@
 	CGRect cachedFrame = _cachedSourcePresentationFrame;
 	if (CGRectIsNull(cachedFrame)) {
 		CGRect targetFrame = [self _targetPresentationFrame];
-		targetFrame.origin.y = CGRectGetMaxY(targetFrame);
+		targetFrame.origin.y = CGRectGetHeight([self.view bounds]);
 		cachedFrame = targetFrame;
 		_cachedSourcePresentationFrame = cachedFrame;
 	}

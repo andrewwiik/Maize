@@ -1,8 +1,14 @@
 #import "MZEFlashlightModule.h"
 #import "MZEFlashlightModuleViewController.h"
 #import <UIKit/UIColor+Private.h>
+#import <AVFoundation/AVFlashlight.h>
 
 @implementation MZEFlashlightModule
+
+
++ (BOOL)isSupported {
+	return [NSClassFromString(@"AVFlashlight") hasFlashlight];
+}
 
 - (id)init {
 	self = [super initWithSwitchIdentifier:@"com.a3tweaks.switch.flashlight"];
