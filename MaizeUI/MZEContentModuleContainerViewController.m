@@ -169,6 +169,10 @@
 	[_contentContainerView setClipsContentInCompactMode:NO];
 	[self _configureForContentModuleGroupRenderingIfNecessary];
 
+	_contentContainerView.expandedFrame = [self _contentFrameForExpandedState];
+	_contentContainerView.compactFrame = [self _contentFrameForRestState];
+	[_contentContainerView _transitionToExpandedMode:NO force:YES];
+
 	[_highlightWrapperView addSubview:_contentContainerView];
 	_contentView = _contentViewController.view;
 
@@ -222,6 +226,8 @@
 - (void)viewWillLayoutSubviews {
 	[super viewWillLayoutSubviews];
 
+	_contentContainerView.expandedFrame = [self _contentFrameForExpandedState];
+	_contentContainerView.compactFrame = [self _contentFrameForRestState];
 	if ([self isExpanded]) {
 		_highlightWrapperView.frame = [self _backgroundFrameForExpandedState];
 		_backgroundView.frame = [self _backgroundFrameForExpandedState];
@@ -494,15 +500,6 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
 	//[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-
-	[coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-		// [_sliderView _layoutValueViews];
-		// [_sliderView setGlyphVisible:_expanded ? NO : YES];
-		//_sliderView.layer.cornerRadius = _expanded ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
-        // do whatever
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-    	[self.contentContainerView stopDisplayLink];
-    }];
 
 	if (size.height == [self _backgroundFrameForExpandedState].size.height) {
 		CGSize expandedContentSize = [self _contentFrameForExpandedState].size;

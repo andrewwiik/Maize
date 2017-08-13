@@ -1,10 +1,18 @@
 #import "MZEContentModuleContentContainerView.h"
 #import "MZELayoutOptions.h"
 #import <UIKit/UIView+Private.h>
+#import <MPUFoundation/MPULayoutInterpolator.h>
+#import <QuartzCore/CALayer+Private.h>
 #import "macros.h"
+
+
+MPULayoutInterpolator *interpolator;
+
 
 @implementation MZEContentModuleContentContainerView
 	@synthesize moduleMaterialView=_moduleMaterialView;
+	@synthesize expandedFrame = _expandedFrame;
+	@synthesize compactFrame = _compactFrame;
 
 // - (void)_setContinuousCornerRadius:(CGFloat)cornerRadius {
 // 	if (_moduleMaterialView) {
@@ -14,8 +22,52 @@
 // }
 
 - (void)layoutSubviews {
+
 	[self _configureModuleMaterialViewIfNecessary];
 	[super layoutSubviews];
+
+	// if (!_psuedoView) {
+	// 	_psuedoView = [[UIView alloc] initWithFrame:self.bounds];
+	// 	_psuedoView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
+	// 	interpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+	// 	//self._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
+	// 	self.smallRadius = 30;
+	// 	self._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+	// 	self.bigRadius = 59;
+	// 	self.layer.cornerRadius = self.smallRadius;
+	// }
+
+	// [UIView performWithoutAnimation:^{
+	// 	_psuedoView.bounds = self.bounds;
+	// }]
+	//self._continuousCornerRadius = [interpolator valueForReferenceMetric:self.bounds.size.width];
+}
+
+- (void)setCompactFrame:(CGRect)frame {
+
+	if (!_psuedoCompactView) {
+		_psuedoCompactView = [[UIView alloc] initWithFrame:frame];
+		//_psuedoCompactView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
+	}
+
+	if (_psuedoCompactView && frame.size.width != _compactFrame.size.width) {
+		_compactFrame = frame;
+		_psuedoCompactView.frame = _compactFrame;
+		_psuedoCompactView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
+	}
+}
+
+- (void)setExpandedFrame:(CGRect)frame {
+	if (!_psuedoExpandedView) {
+		_psuedoExpandedView = [[UIView alloc] initWithFrame:frame];
+		//_psuedoExpandedView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+	}
+
+	if (_psuedoExpandedView && frame.size.width != _expandedFrame.size.width) {
+		_expandedFrame = frame;
+		_psuedoExpandedView.frame = _expandedFrame;
+		_psuedoExpandedView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+	}
 }
 
 - (void)addSubview:(UIView *)subview {
@@ -56,111 +108,36 @@
 - (void)_transitionToExpandedMode:(BOOL)expanded force:(BOOL)force {
 	self.clipsToBounds = YES;
 	CGFloat cornerRadius = 0;
+
+	if (self._continuousCornerRadius < 1.0f) {
+		self._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+	}
+
+	if (expanded) {
+		cornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+	} else {
+		cornerRadius = [MZELayoutOptions regularCornerRadius];
+	}
+
+	CGRect cornerCenter = CGRectZero;
+
 	if (force || _expanded != expanded) {
 		_expanded = expanded;
-		if (expanded) {
-			self.animationDuration = 0.1;
-			self.animationDelay = 0.15;
-			cornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+		if (_psuedoExpandedView && expanded) {
+			cornerRadius = _psuedoExpandedView.layer.cornerRadius;
+			cornerCenter = _psuedoExpandedView.layer.cornerContentsCenter;
 		} else {
-			self.animationDuration = 0.215;
-			self.animationDelay = 0;
-			cornerRadius = [MZELayoutOptions regularCornerRadius];
+			if (_psuedoCompactView) {
+				cornerRadius = _psuedoCompactView.layer.cornerRadius;
+				cornerCenter = _psuedoCompactView.layer.cornerContentsCenter;
+			}
 		}
-		if (force) {
-			self._continuousCornerRadius = cornerRadius;
-		} else {
-			self.layerCornerRadius = cornerRadius;
+
+		self.layer.cornerRadius = cornerRadius;
+		if (cornerCenter.origin.x != 0) {
+			self.layer.cornerContentsCenter = cornerCenter;
 		}
 	}
-}
-
-- (CGFloat)layerCornerRadius {
-    return self._continuousCornerRadius;
-}
-
-- (void)setLayerCornerRadius:(CGFloat)radius {
-
-    if (self._continuousCornerRadius != radius && !self.displayLinkActive) {
-        self.wantedRadius = radius;
-        self.startRadius = self._continuousCornerRadius;
-        self.radiusDiff = self.wantedRadius - self.startRadius;
-
-        if (!_displayLinkActive) {
-            self.percent = 0;
-            if (!self.displayLink) {
-                self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(handleDisplayLink:)];
-            
-            }
-            // self.displayLink.frameInterval = 2;
-            self.startTime = CACurrentMediaTime();
-            self.displayLinkActive = YES;
-            [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        }
-    }
-
-
-
-    // ((MZECAContinuousCornerLayer *)self.layer).continuousCorners = radius;
-    // [self setNeedsDisplay];
-}
-
-- (void)stopDisplayLink {
-    if (self.displayLink && _displayLinkActive) {
-        self._continuousCornerRadius = _wantedRadius;
-        self.wantedRadius = 0;
-        self.startRadius = 0;
-        self.percent = 0;
-        [self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        // [self.displayLink invalidate];
-        // self.displayLink = nil;
-        self.displayLinkActive = NO;
-    }
-    // [self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    // [self.displayLink invalidate];
-    // self.displayLink = nil;
-    // _displayLinkActive = NO;
-    // _wantedRadius = 9999;
-}
-
-- (void)handleDisplayLink:(CADisplayLink *)displayLink {
-    CFAbsoluteTime elapsed = CACurrentMediaTime() - self.startTime;
-    if (elapsed < self.animationDelay) return;
-    CGFloat newPercent = elapsed / self.animationDuration - floor(elapsed / self.animationDuration);
-	newPercent = fminf(fmaxf(newPercent, 0.0), 1.0);
-	if (self.percent > newPercent) {
-		[self stopDisplayLink];
-		return;
-	}
-	self.percent = newPercent;
-	// _percent = _glyphPackageView.alpha;
-	// self.backgroundColor = [UIColor colorWithWhite:0 alpha:_startAlpha + ((_wantedAlpha - _startAlpha)*_percent)];
-	CGFloat cornerRadius = roundf(self.startRadius + (self.radiusDiff*self.percent));
-	if (cornerRadius != self._continuousCornerRadius && self.percent > 0) {
-	    //[UIView performWithoutAnimation:^{
-			// [CATransaction begin];
-	  //       [CATransaction setDisableActions:YES];
-	        self._continuousCornerRadius = cornerRadius;
-	        // [CATransaction commit];
-
-	         if (cornerRadius == self.wantedRadius) {
-	            [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	            self._continuousCornerRadius = self.wantedRadius;
-	            self.displayLinkActive = NO;
-	            self.percent = 0;
-	         }
-	         // //[self.layer setNeedsDisplay];
-	         // if (_wantedRadius == 38.0) {
-	         //   // self.backgroundColor = [UIColor redColor];
-	         // }
-	   // }];
-	}
-
-    // if (elapsed >= 14.99) {
-    //     [self stopDisplayLink];
-    // } else if (_percent >= 1.0) {
-    //      [self stopDisplayLink];
-    // }
 }
 
 - (id)initWithFrame:(CGRect)frame {
