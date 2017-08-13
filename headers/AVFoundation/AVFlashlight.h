@@ -23,3 +23,8 @@
 -(BOOL)setFlashlightLevel:(float)arg1 withError:(id*)arg2 ;
 -(BOOL)isAvailable;
 @end
+
+
+@interface AVFlashlight (MZE)
++ (instancetype)sharedFlashlight;
+@end

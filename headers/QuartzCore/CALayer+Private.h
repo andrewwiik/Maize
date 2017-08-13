@@ -5,6 +5,7 @@
 @property (assign) CGColorRef contentsMultiplyColor; 
 @property (nonatomic, retain) NSArray *backgroundFilters;
 @property (nonatomic, retain) CAFilter *compositingFilter;
+@property (assign) CGRect cornerContentsCenter;
 @property BOOL hitTestsAsOpaque;
 - (void)setAllowsGroupBlending:(BOOL)allowed;
 - (CAState *)stateWithName:(NSString *)name;

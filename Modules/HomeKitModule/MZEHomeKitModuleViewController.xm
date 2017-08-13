@@ -1,0 +1,1 @@
+%subclass MZEHomeKitModuleViewController : HUHomeControlCenterViewController 

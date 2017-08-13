@@ -130,6 +130,20 @@
 		else {
 			[_glyphImageView setTintColor:[UIColor whiteColor]];
 		}
+
+		if (![self isEnabled]) {
+	 		alpha = 0.2;
+	 	} else {
+	 		alpha = 1;
+	 	}
+
+	 	if (_glyphImageView) {
+	 		_glyphImageView.alpha = alpha;
+	 	}
+
+	 	if (_glyphPackageView) {
+	 		_glyphPackageView.alpha = alpha;
+	 	}
 	}];
 }
 

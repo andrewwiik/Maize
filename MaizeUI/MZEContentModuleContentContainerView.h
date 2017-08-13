@@ -6,7 +6,10 @@
     BOOL _moduleProvidesOwnPlatter;
     BOOL _clipsContentInCompactMode;
     MZEMaterialView *_moduleMaterialView;
-    CADisplayLink *_displayLink;
+    UIView *_psuedoCompactView;
+    UIView *_psuedoExpandedView;
+    CGRect _compactFrame;
+    CGRect _expandedFrame;
 }
 
 @property(nonatomic, readwrite) BOOL clipsContentInCompactMode; // @synthesize clipsContentInCompactMode=_clipsContentInCompactMode;
@@ -23,18 +26,10 @@
 
 #pragma mark stupid corners
 
-@property (nonatomic, assign) CFAbsoluteTime startTime;
-@property (nonatomic, assign) CGFloat wantedRadius;
-@property (nonatomic, assign) CGFloat startRadius;
-@property (nonatomic, assign) CGFloat percent;
-@property (nonatomic, assign) CGFloat radiusDiff;
-@property (nonatomic, assign) BOOL displayLinkActive;
-@property (nonatomic, assign) CGFloat layerCornerRadius;
-@property (nonatomic, assign) CGFloat animationDuration;
-@property (nonatomic, assign) CGFloat animationDelay;
-@property (nonatomic, retain, readwrite) CADisplayLink *displayLink;
-- (void)stopDisplayLink;
-- (void)handleDisplayLink:(CADisplayLink *)displayLink;
+@property (nonatomic, assign) CGRect compactFrame;
+@property (nonatomic, assign) CGRect expandedFrame;
+@property (nonatomic, retain, readwrite) UIView *psuedoCompactView; 
+@property (nonatomic, retain, readwrite) UIView *psuedoExpandedView; 
 
 
 @end
