@@ -6,7 +6,6 @@ AudioModule_BUNDLE_EXTENSION = bundle
 AudioModule_CFLAGS =  -fobjc-arc
 AudioModule_FILES = $(wildcard *.m)
 AudioModule_FRAMEWORKS = Foundation UIKit CoreGraphics CoreImage QuartzCore MediaPlayer
-AudioModule_PRIVATE_FRAMEWORKS = 
 AudioModule_EXTRA_FRAMEWORKS = MaizeUI
 AudioModule_LDFLAGS = $(THEOS)/vendor/lib/libsubstrate.tbd
 AudioModule_INSTALL_PATH = /Library/Maize/Bundles/
