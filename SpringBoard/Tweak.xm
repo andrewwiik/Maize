@@ -392,36 +392,6 @@ static BOOL hasCalled = NO;
 
     [self.layer setFilters:[filters copy]];
 }
-
-// %new
-// - (void)doGradientThing {
-//   CAGradientLayer *gradient = [CAGradientLayer layer];
-//   gradient.frame = view.bounds;
-
-// }
-
-// %new
-// - (id)binPackingTest {
-// 	BinPackingFactory2D *binPackingFactory2D = [[BinPackingFactory2D alloc] initWithStorageWidth:4 
-//                                                                                    storageHeight:6 
-//                                                                            	storageHeightLimited:NO];
-
-// 	NSMutableArray *inputRectangles = [NSMutableArray new];
-// 	[inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,2,2)]];
-// 	[inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,2,1)]];
-// 	[inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,1,1)]];
-// 	[inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,2,2)]];
-// 	[inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,2,1)]];
-// 	[inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,1,1)]];
-// 	[inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,1,1)]];
-// 	[inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,1,1)]];
-// 	[inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,1,1)]];
-// 	[inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,1,1)]];
-
-// 	[binPackingFactory2D shelfNextFitDecreasingAlgorithm2DForGivenRectangles:inputRectangles];
-//     [binPackingFactory2D showStorageUsageDetails];
-//     return binPackingFactory2D;
-// }
 %end
 
 %hook NSObject
