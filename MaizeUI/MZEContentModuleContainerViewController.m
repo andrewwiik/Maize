@@ -178,7 +178,7 @@ static BOOL forceTouchIsSupported;
 	[_highlightWrapperView addSubview:_contentContainerView];
 	_contentView = _contentViewController.view;
 
-	[_contentView setAutoresizingMask:18];
+	[_contentView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 
 	frame = CGRectZero;
 	if (_contentContainerView)
@@ -250,11 +250,11 @@ static BOOL forceTouchIsSupported;
 
 		if (!_maskView && _contentContainerView && _contentContainerView.moduleMaterialView) {
 			self.maskView = [[UIView alloc] initWithFrame:self.view.bounds];
-            [_maskView setAutoresizingMask:18];
+            [_maskView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
             _maskView.backgroundColor = [UIColor clearColor];
 
             UIView *cutoutView = [[UIView alloc] initWithFrame:self.view.bounds];
-            [cutoutView setAutoresizingMask:18];
+            [cutoutView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
             cutoutView.backgroundColor = [UIColor blackColor];
             [_maskView addSubview:cutoutView];
 
@@ -304,7 +304,7 @@ static BOOL forceTouchIsSupported;
 
 			// UIView *_maskView2 = [[UIView alloc] initWithFrame:self.view.bounds];
 			// _maskView2.backgroundColor = [UIColor blackColor];
-			// [_maskView2 setAutoresizingMask:18];
+			// [_maskView2 setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 			// [otherMaskView addSubview:_maskView2];
 
 			// [_contentViewController punchOutRootLayer].compositingFilter = @"destOut";

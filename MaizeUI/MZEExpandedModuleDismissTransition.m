@@ -24,7 +24,7 @@
 
 		// if (toViewController.backgroundViewController) {
 		// 	// toViewController.backgroundViewController.view.frame = [toViewController _backgroundFrameForExpandedState];
-		// 	[toViewController.backgroundViewController.view setAutoresizingMask:18];
+		// 	[toViewController.backgroundViewController.view setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		// 	[toViewController.backgroundView addSubview:toViewController.backgroundViewController.view];
 		// 	// [toViewController.view sendSubviewToBack:toViewController.backgroundViewController.view];
 		// 	// [toViewController.view sendSubviewToBack:toViewController.backgroundView];

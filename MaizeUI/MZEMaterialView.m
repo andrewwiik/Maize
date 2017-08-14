@@ -72,7 +72,7 @@ typedef struct CAColorMatrix CAColorMatrix;
 	self = [super init];
 	if (self) {
 		self.backdropView = [[_MZEBackdropView alloc] init];
-		[self.backdropView setAutoresizingMask:18];
+		[self.backdropView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		//self.backdropView.translatesAutoresizingMaskIntoConstraints = NO;
 
 		[self addSubview:self.backdropView];

@@ -15,7 +15,7 @@
 		[self.view addSubview:_buttonModuleView];
 	}
 	[_buttonModuleView addTarget:self action:@selector(buttonTapped:forEvent:) forControlEvents:UIControlEventTouchUpInside];
-	[_buttonModuleView setAutoresizingMask:18];
+	[_buttonModuleView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 	//[_buttonModuleView addTarget:self action:@selector(buttonTapped:forEvent:) forControlEvents:UIControlEventTouchUpInside];
 }
 
