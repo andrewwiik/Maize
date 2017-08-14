@@ -6,9 +6,9 @@
 
 }
 
-@property (getter=isAvailable,nonatomic,readonly) BOOL available; 
-@property (getter=isOverheated,nonatomic,readonly) BOOL overheated; 
-@property (nonatomic,readonly) float flashlightLevel; 
+@property (getter=isAvailable,nonatomic,readonly) BOOL available;
+@property (getter=isOverheated,nonatomic,readonly) BOOL overheated;
+@property (nonatomic,readonly) float flashlightLevel;
 +(void)initialize;
 +(BOOL)hasFlashlight;
 -(id)init;

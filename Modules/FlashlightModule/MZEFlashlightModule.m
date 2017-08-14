@@ -4,6 +4,10 @@
 #import <UIKit/UIImage+Private.h>
 #import <AVFoundation/AVFlashlight.h>
 
+@interface AVFlashlight (Extra)
++(id)sharedFlashlight;
+@end
+
 @implementation MZEFlashlightModule
 
 - (UIViewController *)backgroundViewController {

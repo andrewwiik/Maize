@@ -5,6 +5,10 @@
 #import <QuartzCore/CALayer+Private.h>
 #import "macros.h"
 
+@interface CALayer (Extra)
+@property (assign) CGRect cornerContentsCenter;
+@end
+
 
 MPULayoutInterpolator *interpolator;
 
