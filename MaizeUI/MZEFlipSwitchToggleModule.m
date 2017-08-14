@@ -89,7 +89,6 @@
 	[[NSClassFromString(@"FSSwitchPanel") sharedPanel] setState:isSelected ? (isReversed ? FSSwitchStateOff : FSSwitchStateOn) : (isReversed ? FSSwitchStateOn : FSSwitchStateOff) forSwitchIdentifier:_switchIdentifier];
 	[_viewController setSelected:isSelected];
 	[super setSelected:isSelected];
-	return;
 }
 
 - (void)switchStateDidChange:(NSNotification *)notification

@@ -22,7 +22,7 @@
     _packageView.layer.shadowColor = [UIColor blackColor].CGColor;
     _packageView.layer.shadowRadius = 10.0f;
 
-    [self.view addSubview:_packageView];
+   // [self.view addSubview:_packageView];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -51,10 +51,15 @@
 	}
 
 	centerPoint = UIPointRoundToViewScale(centerPoint, _headerImageView);
+	if (_headerImageView.image) {
+		_headerImageView.frame = CGRectMake(_headerImageView.frame.origin.x,_headerImageView.frame.origin.y,_headerImageView.image.size.width,_headerImageView.image.size.height);
+	}
 	_headerImageView.center = centerPoint;
-	_packageView.center = centerPoint;
-	_packageView.frame = CGRectMake(_packageView.frame.origin.x,_packageView.frame.origin.y,_package.rootLayer.bounds.size.width,_package.rootLayer.bounds.size.height);
 
+	if (_package) {
+		_packageView.frame = CGRectMake(_packageView.frame.origin.x,_packageView.frame.origin.y,_package.rootLayer.bounds.size.width,_package.rootLayer.bounds.size.height);
+	}
+	_packageView.center = centerPoint;
 }
 
 - (void)setGlyphState:(NSString *)glyphState {
@@ -65,12 +70,22 @@
 - (void)setGlyphPackage:(CAPackage *)glyphPackage {
 	[self loadViewIfNeeded];
 	_package = glyphPackage;
+	if (![_packageView superview]) {
+		[self.view addSubview:_packageView];
+	}
 	[_packageView setPackage:glyphPackage];
+	[self.view setNeedsLayout];
+	[self.view layoutIfNeeded];
 }
 
 - (void)setGlyphImage:(UIImage *)glyphImage {
 	[self loadViewIfNeeded];
+	if (![_headerImageView superview]) {
+		[self.view addSubview:_headerImageView];
+	}
 	[_headerImageView setImage:glyphImage];
+	[self.view setNeedsLayout];
+	[self.view layoutIfNeeded];
 
 }
 

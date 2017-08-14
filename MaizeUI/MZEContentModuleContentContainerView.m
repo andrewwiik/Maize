@@ -94,8 +94,8 @@ MPULayoutInterpolator *interpolator;
 	if (!_moduleMaterialView && !_moduleProvidesOwnPlatter) {
 		_moduleMaterialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];
 		[_moduleMaterialView setFrame:[self bounds]];
-		[_moduleMaterialView setAutoresizingMask:18];
 		[self addSubview:_moduleMaterialView];
+		[_moduleMaterialView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[self sendSubviewToBack:_moduleMaterialView];
 		[self setNeedsLayout];
 	}

@@ -10,6 +10,8 @@
 #import <UIKit/UIPanGestureRecognizer+Private.h>
 #import "macros.h"
 
+static BOOL forceTouchIsSupported;
+
 @implementation MZEContentModuleContainerViewController
 	@synthesize delegate=_delegate;
 
@@ -203,6 +205,8 @@
 	[_backgroundView addGestureRecognizer:_tapRecognizer];
 
 	_breatheRecognizer = [[MZEBreatheGestureRecognizer alloc] initWithTarget:self action:@selector(handelBubbleGestureRecognizer:)];
+	_breatheRecognizer.tracksTime = [self forceTouchSupported] ? NO : YES;
+	_breatheRecognizer.wantedPressDuration = 0.5;
 	_breatheRecognizer.minimumPressDuration = 0;
 	_breatheRecognizer.numberOfTouchesRequired = 1;
 	_breatheRecognizer.allowableMovement = 10.0;
@@ -375,15 +379,16 @@
 			[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:NO];
 			_bubbled = NO;
 			_canBubble = NO;
-			[UIView animateWithDuration:0.05 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+			[UIView animateWithDuration:0.125 delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 				self.view.transform = CGAffineTransformIdentity;
 			} completion:^(BOOL completed) {
-				self.view.userInteractionEnabled = YES;
-				[_delegate contentModuleContainerViewController:self openExpandedModule:_contentModule];
-				[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:YES];
-				_canBubble = YES;
 				//[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:YES];
 			}];
+
+			self.view.userInteractionEnabled = YES;
+			[_delegate contentModuleContainerViewController:self openExpandedModule:_contentModule];
+			[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:YES];
+			_canBubble = YES;
 		}
 	}
 	return;
@@ -465,10 +470,33 @@
 	        case UIGestureRecognizerStateBegan: {
 	        	_bubbled = YES;
 	        	[_delegate contentModuleContainerViewController:self didBeginInteractionWithModule:_contentModule];
-	            [UIView animateWithDuration:0.25 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
+	            [UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
 					self.view.transform = CGAffineTransformMakeScale(1.05,1.05);
 				} completion:nil];
 	            break;
+	        }
+
+	        case UIGestureRecognizerStateChanged: {
+	        	if (![self forceTouchSupported]) {
+	        		if (!_previewInteractionDidBegin) {
+	        			_previewInteractionShouldBegin = [self previewInteractionShouldBegin:nil];
+	        			_previewInteractionDidBegin = YES;
+	        		} else {
+	        			if (_previewInteractionShouldBegin) {
+	        				if (recognizer.percentComplete < 0.95) {
+	        					[self previewInteraction:nil didUpdatePreviewTransition:recognizer.percentComplete ended:NO];
+	        				} else {
+	        					if ([self _previewInteractionShouldFinishTransitionToPreview:nil]) {
+	        						[self previewInteraction:nil didUpdatePreviewTransition:recognizer.percentComplete ended:YES];
+	        					} else {
+	        						recognizer.enabled = NO;
+	        						recognizer.enabled = YES;
+	        					}
+	        				}
+	        			}
+	        		}
+	        	}
+	        	break;
 	        }
 
 	        case UIGestureRecognizerStateCancelled:
@@ -476,12 +504,15 @@
 	        case UIGestureRecognizerStateEnded: {
 	        	if (_bubbled && _canBubble) {
 		        	[self.previewInteraction cancelInteraction];
-		        	[UIView animateWithDuration:0.25 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+		        	[UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 						self.view.transform = CGAffineTransformIdentity;
 					} completion:^(BOOL completed){
 						[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
 					}];
 				}
+
+				_previewInteractionDidBegin = NO;
+				_previewInteractionShouldBegin = NO;
 	            // do something
 	            break;
 	        }
@@ -503,6 +534,14 @@
 
 	if (size.height == [self _backgroundFrameForExpandedState].size.height) {
 		CGSize expandedContentSize = [self _contentFrameForExpandedState].size;
+
+
+		// [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+	 //        self.view.transform = CGAffineTransformIdentity;
+	 //        // do whatever
+	 //    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
+
+	 //    }];
 		[_contentViewController viewWillTransitionToSize:expandedContentSize withTransitionCoordinator:coordinator];
 		[_backgroundViewController viewWillTransitionToSize:[self _backgroundFrameForExpandedState].size withTransitionCoordinator:coordinator];
 	} else {
@@ -516,6 +555,15 @@
 	// }
 	// [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 } 
+
+
+- (BOOL)forceTouchSupported {
+	static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        forceTouchIsSupported = [[self.view traitCollection] forceTouchCapability] == UIForceTouchCapabilityAvailable;
+    });
+	return forceTouchIsSupported;
+}
 
 // - (CGSize)sizeForChildContentContainer:(id<UIContentContainer>)container withParentContainerSize:(CGSize)parentSize {
 // 	if (container == _contentViewController) {

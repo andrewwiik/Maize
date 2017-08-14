@@ -10,13 +10,13 @@
 	if (self) {
 		_highlightedBackgroundView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleLight];
 		[_highlightedBackgroundView setFrame:self.bounds];
-		[_highlightedBackgroundView setAutoresizingMask:18];
 		_highlightedBackgroundView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
-		[_highlightedBackgroundView setAlpha:0x12];
+		[_highlightedBackgroundView setAlpha:0];
 		[self addSubview:_highlightedBackgroundView];
+		[_highlightedBackgroundView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[self addTarget:self action:@selector(_touchDown:) forControlEvents:0x1];
-		[self addTarget:self action:@selector(_touchUpInside:) forControlEvents:0x40];
-		[self addTarget:self action:@selector(_touchUpOutside:) forControlEvents:0x80];
+		[self addTarget:self action:@selector(_touchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+		[self addTarget:self action:@selector(_touchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
 		[self addTarget:self action:@selector(_dragEnter:) forControlEvents:0x10];
 		[self addTarget:self action:@selector(_dragExit:) forControlEvents:0x20];
 	}

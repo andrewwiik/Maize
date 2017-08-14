@@ -401,7 +401,7 @@ static CGFloat separatorHeight = 0;
         materialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
     } else {
         materialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleLight];
-        materialView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        //materialView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     }
 
     [materialView setUserInteractionEnabled:NO];
@@ -632,26 +632,26 @@ static CGFloat separatorHeight = 0;
 
 
 
-- (BOOL)shouldForwardSelector:(SEL)aSelector {
-    if (aSelector == @selector(setBounds:)) return NO;
-    if (aSelector == @selector(_setContinuousCornerRadius:)) return YES;
-    if (aSelector == @selector(_continuousCornerRadius)) return YES;
-    return [self.layer respondsToSelector:aSelector];
-}
+// - (BOOL)shouldForwardSelector:(SEL)aSelector {
+//     if (aSelector == @selector(setBounds:)) return NO;
+//     if (aSelector == @selector(_setContinuousCornerRadius:)) return YES;
+//     if (aSelector == @selector(_continuousCornerRadius)) return YES;
+//     return [self.layer respondsToSelector:aSelector];
+// }
 
-- (id)forwardingTargetForSelector:(SEL)aSelector {
-     if (aSelector == @selector(_setContinuousCornerRadius:)) return self;
-     if (aSelector == @selector(_continuousCornerRadius)) return self;
-    return (![self respondsToSelector:aSelector] && [self shouldForwardSelector:aSelector]) ? self.layer : self;
-}
+// - (id)forwardingTargetForSelector:(SEL)aSelector {
+//      if (aSelector == @selector(_setContinuousCornerRadius:)) return self;
+//      if (aSelector == @selector(_continuousCornerRadius)) return self;
+//     return (![self respondsToSelector:aSelector] && [self shouldForwardSelector:aSelector]) ? self.layer : self;
+// }
 
-- (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key {
-    if (key) {
-        //if ([key isEqual:@"_continuousCornerRadius"] || [key isEqual:@"_setContinuousCornerRadius:"]) return YES;
-        // if ([key isEqual:@"cornerContentsCenter"] || [key isEqual:@"cornerContents"] || [key isEqual:@"cornerRadius"]) return YES;
-        // if ([key isEqual:@"scale"] || [key isEqual:@"anchor"]) return YES;
-    }
-    //if ([key isEqual:@"_continuousCornerRadius"] || [key isEqual:@"_setContinuousCornerRadius:"]) return YES;
-    return ([self shouldForwardSelector:NSSelectorFromString(key)] || [super _shouldAnimatePropertyWithKey:key]);
-}
+// - (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key {
+//     if (key) {
+//         //if ([key isEqual:@"_continuousCornerRadius"] || [key isEqual:@"_setContinuousCornerRadius:"]) return YES;
+//         // if ([key isEqual:@"cornerContentsCenter"] || [key isEqual:@"cornerContents"] || [key isEqual:@"cornerRadius"]) return YES;
+//         // if ([key isEqual:@"scale"] || [key isEqual:@"anchor"]) return YES;
+//     }
+//     //if ([key isEqual:@"_continuousCornerRadius"] || [key isEqual:@"_setContinuousCornerRadius:"]) return YES;
+//     return ([self shouldForwardSelector:NSSelectorFromString(key)] || [super _shouldAnimatePropertyWithKey:key]);
+// }
 @end

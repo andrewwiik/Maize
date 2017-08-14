@@ -12,6 +12,10 @@ static CGFloat cachedRoundButtonExpandedContainerWidth = 0;
 static CGFloat cachedRoundButtonExpandedContainerHeight = 0;
 static CGFloat cachedDefaultExpandedModuleWidth = 0;
 static CGFloat cachedDefaultMenuItemHeight = 0;
+static CGFloat cachedRegularCornerRadius = 0;
+static CGFloat cachedExpandedCornerRadius = 0;
+static CGFloat cachedExpandedSliderHeight;
+static CGFloat cachedExpandedSliderWidth;
 
 MPULayoutInterpolator *spacingInterpolator;
 MPULayoutInterpolator *edgeInterpolator;
@@ -24,6 +28,8 @@ MPULayoutInterpolator *sliderExpandedHeightInterpolator;
 MPULayoutInterpolator *sliderExpandedWidthInterpolator;
 MPULayoutInterpolator *defaultExpandedWidthInterpolator;
 MPULayoutInterpolator *defaultMenuItemHeightInterpolator;
+MPULayoutInterpolator *regularCornerRadiusInterpolator;
+MPULayoutInterpolator *expandedCornerRadiusInterpolator;
 // MPULayoutInterpolator *flipSwitchGlyphSizeInterpolator;
 // MPULayoutInterpolator *flipSwitchOriginValueInterpolator;
 // MPULayoutInterpolator *roundButtonTitlePaddingInterpolator;
@@ -103,6 +109,8 @@ MPULayoutInterpolator *defaultMenuItemHeightInterpolator;
 		[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:736];
 		[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:1024];
 		[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:768];
+
+		cachedExpandedSliderHeight = [sliderExpandedHeightInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.height];
 	}
 
 	if (!sliderExpandedWidthInterpolator) {
@@ -112,6 +120,8 @@ MPULayoutInterpolator *defaultMenuItemHeightInterpolator;
 		[sliderExpandedWidthInterpolator addValue:132 forReferenceMetric:414];
 		[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:768];
 		[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:1024];
+
+		cachedExpandedSliderWidth = [sliderExpandedWidthInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
 	if (!defaultExpandedWidthInterpolator) {
@@ -134,6 +144,28 @@ MPULayoutInterpolator *defaultMenuItemHeightInterpolator;
 		[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:1024];
 
 		cachedDefaultMenuItemHeight = [defaultMenuItemHeightInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
+	}
+
+	if (!regularCornerRadiusInterpolator) {
+		regularCornerRadiusInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+		[regularCornerRadiusInterpolator addValue:17 forReferenceMetric:320];
+		[regularCornerRadiusInterpolator addValue:19 forReferenceMetric:375];
+		[regularCornerRadiusInterpolator addValue:21 forReferenceMetric:414];
+		[regularCornerRadiusInterpolator addValue:19 forReferenceMetric:768];
+		[regularCornerRadiusInterpolator addValue:19 forReferenceMetric:1024];
+
+		cachedRegularCornerRadius = [regularCornerRadiusInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
+	}
+
+	if (!expandedCornerRadiusInterpolator) {
+		expandedCornerRadiusInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+		[expandedCornerRadiusInterpolator addValue:34 forReferenceMetric:320];
+		[expandedCornerRadiusInterpolator addValue:39 forReferenceMetric:375];
+		[expandedCornerRadiusInterpolator addValue:41 forReferenceMetric:414];
+		[expandedCornerRadiusInterpolator addValue:39 forReferenceMetric:768];
+		[expandedCornerRadiusInterpolator addValue:39 forReferenceMetric:1024];
+
+		cachedExpandedCornerRadius = [expandedCornerRadiusInterpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
 	// 123 - 340
@@ -209,11 +241,21 @@ MPULayoutInterpolator *defaultMenuItemHeightInterpolator;
 }
 
 + (CGFloat)regularCornerRadius {
-	return 19.0f;
+	if (cachedRegularCornerRadius == 0) {
+		[MZELayoutOptions setupInterpolators];
+	}
+	return cachedRegularCornerRadius;
+
+	// 17 for small
 }
 
 + (CGFloat)expandedModuleCornerRadius {
-	return 38.0f;
+	if (cachedExpandedCornerRadius == 0) {
+		[MZELayoutOptions setupInterpolators];
+	}
+	return cachedExpandedCornerRadius;
+
+	//34 for small
 }
 
 + (CGFloat)defaultExpandedContentModuleWidth {
@@ -227,14 +269,14 @@ MPULayoutInterpolator *defaultMenuItemHeightInterpolator;
 	if (!sliderExpandedHeightInterpolator) {
 		[MZELayoutOptions setupInterpolators];
 	}
-	return [sliderExpandedHeightInterpolator valueForReferenceMetric:[[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size.height];
+	return cachedExpandedSliderHeight;
 }
 
 + (CGFloat)defaultExpandedSliderWidth {
-	if (!sliderExpandedWidthInterpolator) {
+	if (!defaultExpandedWidthInterpolator) {
 		[MZELayoutOptions setupInterpolators];
 	}
-	return [sliderExpandedWidthInterpolator valueForReferenceMetric:[[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size.width];
+	return cachedExpandedSliderWidth;
 }
 
 + (CGRect)orientationRelativeScreenBounds {
@@ -242,7 +284,7 @@ MPULayoutInterpolator *defaultMenuItemHeightInterpolator;
 }
 
 + (CGFloat)defaultExpandedModuleWidth {
-	if (!sliderExpandedWidthInterpolator) {
+	if (!regularCornerRadiusInterpolator) {
 		[MZELayoutOptions setupInterpolators];
 	}
 	

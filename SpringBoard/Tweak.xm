@@ -50,6 +50,29 @@ static BOOL hasCalled = NO;
   }
   return %orig;
 }
+
+- (CGRect)_frameForChildViewController:(CCUIControlCenterPageContainerViewController *)viewController {
+  if (self.mze_viewController) {
+    return [self.mze_viewController _targetPresentationFrame];
+  } else return %orig;
+}
+
+// - (void)_loadPages {
+//    if (!self.mze_viewController) {
+//     self.mze_viewController = [[MZEModularControlCenterOverlayViewController alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
+//     [self.view addSubview:self.mze_viewController.view];
+//     [self addChildViewController:self.mze_viewController];
+//     [self.mze_viewController didMoveToParentViewController:self];
+
+//     // [self.mze_viewController loadView];
+//     // [self.mze_viewController viewDidLoad];
+//     // [self.mze_viewController viewWillLayoutSubviews];
+//    // self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+//     // [self.view addSubview:self.mze_viewController.view];
+//     //self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+//   }
+// }
+
 -(void)setRevealPercentage:(CGFloat)revealPercentage {
 
   if (!self.mze_viewController) {

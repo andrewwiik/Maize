@@ -40,6 +40,7 @@
 	if ([_module shouldSelfSelect])
 		[self setSelected:isSelected];
 	[_module setSelected:isSelected];
+	[super buttonTapped:button forEvent:event];
 }
 
 - (CGFloat)preferredExpandedContentHeight {
