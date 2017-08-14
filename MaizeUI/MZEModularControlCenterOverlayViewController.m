@@ -46,6 +46,8 @@
 	[_headerPocketView addGestureRecognizer:_headerPocketViewDismissalPanGesture];
 
 	_headerPocketViewDismissalTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleControlCenterDismissalTapGesture:)];
+	_headerPocketViewDismissalTapGesture.cancelsTouchesInView = NO;
+	_headerPocketViewDismissalTapGesture.delaysTouchesEnded = NO;
 	[_headerPocketViewDismissalTapGesture setDelegate:self];
 	[_headerPocketView addGestureRecognizer:_headerPocketViewDismissalTapGesture];
 
@@ -55,6 +57,8 @@
 
 	_collectionViewDismissalTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleControlCenterDismissalTapGesture:)];
 	[_collectionViewDismissalTapGesture setDelegate:self];
+	_collectionViewDismissalTapGesture.cancelsTouchesInView = NO;
+	_collectionViewDismissalTapGesture.delaysTouchesEnded = NO;
 	[_scrollView addGestureRecognizer:_collectionViewDismissalTapGesture];
 
 	_collectionViewScrollPanGesture = [_scrollView panGestureRecognizer];
@@ -62,7 +66,6 @@
 }
 
 - (void)_handleControlCenterDismissalTapGesture:(UITapGestureRecognizer *)gesture {
-	return;
 	if ([self presentationState] == MZEPresentationStatePresented && !_isInteractingWithModule) {
 		[self dismissAnimated:YES withCompletionHandler:nil];
 	}
@@ -209,10 +212,10 @@
 }
 
 - (BOOL)_allowDismissalWithTapGesture:(UITapGestureRecognizer *)gesture {
-	if ([self presentationState] != MZEPresentationStateTransitioning && [self presentationState] != MZEPresentationStateDismissed) {
-		CGRect targetFrame = [self _targetPresentationFrame];
+	if ([self presentationState] != MZEPresentationStateTransitioning && [self presentationState] != MZEPresentationStateDismissed && !_isInteractingWithModule) {
+		//CGRect targetFrame = [self _targetPresentationFrame];
 		CGPoint touchPoint = [gesture locationInView:_scrollView];
-		return !CGRectContainsPoint(targetFrame, touchPoint);
+		return !CGRectContainsPoint(self.moduleCollectionViewController.view.frame, touchPoint);
 	}
 	return NO;
 }
@@ -595,18 +598,18 @@
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController didFinishInteractionWithModule:(id <MZEContentModule>)module {
 	_isInteractingWithModule = NO;
 	// _collectionViewScrollPanGesture.enabled = YES;
-	// _collectionViewDismissalTapGesture.enabled = YES;
+	_collectionViewDismissalTapGesture.enabled = YES;
 	// _collectionViewDismissalPanGesture.enabled = YES;
-	// _headerPocketViewDismissalTapGesture.enabled = YES;
+	_headerPocketViewDismissalTapGesture.enabled = YES;
 	// _headerPocketViewDismissalPanGesture.enabled = YES;
 }
 
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController didBeginInteractionWithModule:(id <MZEContentModule>)module {
 	_isInteractingWithModule = YES;
 	// _collectionViewScrollPanGesture.enabled = NO;
-	// _collectionViewDismissalTapGesture.enabled = NO;
+	_collectionViewDismissalTapGesture.enabled = NO;
 	// _collectionViewDismissalPanGesture.enabled = NO;
-	// _headerPocketViewDismissalTapGesture.enabled = NO;
+	_headerPocketViewDismissalTapGesture.enabled = NO;
 	// _headerPocketViewDismissalPanGesture.enabled = NO;
 }
 

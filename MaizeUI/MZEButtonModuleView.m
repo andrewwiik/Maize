@@ -10,15 +10,15 @@
 	if (self) {
 		_highlightedBackgroundView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleLight];
 		[_highlightedBackgroundView setFrame:self.bounds];
-		[_highlightedBackgroundView setAutoresizingMask:18];
 		_highlightedBackgroundView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
-		[_highlightedBackgroundView setAlpha:0x12];
+		[_highlightedBackgroundView setAlpha:0];
 		[self addSubview:_highlightedBackgroundView];
-		[self addTarget:self action:@selector(_touchDown:) forControlEvents:0x1];
-		[self addTarget:self action:@selector(_touchUpInside:) forControlEvents:0x40];
-		[self addTarget:self action:@selector(_touchUpOutside:) forControlEvents:0x80];
-		[self addTarget:self action:@selector(_dragEnter:) forControlEvents:0x10];
-		[self addTarget:self action:@selector(_dragExit:) forControlEvents:0x20];
+		[_highlightedBackgroundView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+		[self addTarget:self action:@selector(_touchDown:) forControlEvents:UIControlEventTouchDown];
+		[self addTarget:self action:@selector(_touchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+		[self addTarget:self action:@selector(_touchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
+		[self addTarget:self action:@selector(_dragEnter:) forControlEvents:UIControlEventTouchDragEnter];
+		[self addTarget:self action:@selector(_dragExit:) forControlEvents:UIControlEventTouchDragExit];
 	}
 	return self;
 }
@@ -66,7 +66,7 @@
 	if (!_glyphPackageView) {
 		_glyphPackageView = [[MZECAPackageView alloc] init];
 		[_glyphPackageView setStateName:[self glyphState]];
-		[_glyphPackageView setAutoresizingMask:18];
+		[_glyphPackageView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[self addSubview:_glyphPackageView];
 	}
 
@@ -83,7 +83,7 @@
 		else {
 			[_glyphImageView setTintColor:[UIColor whiteColor]];
 		}
-		[_glyphImageView setAutoresizingMask:18];
+		[_glyphImageView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[_glyphImageView setFrame:self.bounds];
 		[self addSubview:_glyphImageView];
 	}

@@ -11,26 +11,26 @@
 
 		_normalStateBackgroundView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
 		[_normalStateBackgroundView setFrame:self.bounds];
-		[_normalStateBackgroundView setAutoresizingMask:18];
+		[_normalStateBackgroundView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[_normalStateBackgroundView setUserInteractionEnabled:NO];
 		[self addSubview:_normalStateBackgroundView];
 
 		_highlightStateBackgroundView = [[UIView alloc] initWithFrame:_normalStateBackgroundView.frame];
-		[_highlightStateBackgroundView setAutoresizingMask:18];
+		[_highlightStateBackgroundView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[_highlightStateBackgroundView setBackgroundColor:_highlightColor];
 		[_highlightStateBackgroundView setUserInteractionEnabled:NO];
 		[_highlightStateBackgroundView setAlpha:0.0];
 		_highlightStateBackgroundView.backgroundColor = highlightColor;
 		[self addSubview:_highlightStateBackgroundView];
 
-		[self addTarget:self action:@selector(_touchDown:) forControlEvents:0x1];
-		[self addTarget:self action:@selector(_touchUpOutside:) forControlEvents:0x80];
-		[self addTarget:self action:@selector(_dragEnter:) forControlEvents:0x10];
-		[self addTarget:self action:@selector(_dragExit:) forControlEvents:0x20];
+		[self addTarget:self action:@selector(_touchDown:) forControlEvents:UIControlEventTouchDown];
+		[self addTarget:self action:@selector(_touchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
+		[self addTarget:self action:@selector(_dragEnter:) forControlEvents:UIControlEventTouchDragEnter];
+		[self addTarget:self action:@selector(_dragExit:) forControlEvents:UIControlEventTouchDragExit];
 		[self addTarget:self action:@selector(_primaryActionPerformed:) forEvents:0x2000];
-		[self addObserver:self forKeyPath:@"enabled" options:0x0 context:0x0];
-		[self addObserver:self forKeyPath:@"highlighted" options:0x0 context:0x0];
-		[self addObserver:self forKeyPath:@"selected" options:0x0 context:0x0];
+		[self addObserver:self forKeyPath:@"enabled" options:nil context:nil];
+		[self addObserver:self forKeyPath:@"highlighted" options:nil context:nil];
+		[self addObserver:self forKeyPath:@"selected" options:nil context:nil];
 	}
 
 	return self;
@@ -41,10 +41,10 @@
 	if (self) {
 		_glyphPackage = glyphPackage;
 		_glyphPackageView = [[MZECAPackageView alloc] init];
-		[_glyphPackageView setAutoresizingMask:18];
+		[_glyphPackageView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[_glyphPackageView setPackage:_glyphPackage];
 		[self addSubview:_glyphPackageView];
-		[self addObserver:self forKeyPath:@"glyphState" options:0x0 context:0x0];
+		[self addObserver:self forKeyPath:@"glyphState" options:nil context:nil];
 	}
 	return self;
 }
@@ -54,14 +54,14 @@
 		_glyphImage = [glyphImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		_glyphImageView = [[UIImageView alloc] initWithImage:_glyphImage];
 		[_glyphImageView setFrame:CGRectZero];
-		[_glyphImageView setAutoresizingMask:18];
+		[_glyphImageView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[_glyphImageView setContentMode:UIViewContentModeCenter];
 		_glyphImageView.tintColor = [UIColor whiteColor];
 		[self addSubview:_glyphImageView];
 
 		_highlightedGlyphView = [[UIImageView alloc] initWithImage:_glyphImage];
 		[_highlightedGlyphView setFrame:CGRectZero];
-		[_highlightedGlyphView setAutoresizingMask:18];
+		[_highlightedGlyphView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[_highlightedGlyphView setContentMode:UIViewContentModeCenter];
 		[_highlightedGlyphView setAlpha:0];
 		_highlightedGlyphView.tintColor = [UIColor whiteColor];

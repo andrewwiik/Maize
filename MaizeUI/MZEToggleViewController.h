@@ -14,7 +14,7 @@
     MZEToggleModule *_module;
 }
 
-@property(nonatomic, readwrite) MZEToggleModule *module; // @synthesize module=_module;
+@property(nonatomic, retain, readwrite) MZEToggleModule *module; // @synthesize module=_module;
 @property(readonly, nonatomic) CGFloat preferredExpandedContentHeight;
 - (BOOL)shouldBeginTransitionToExpandedContentModule;
 - (void)viewDidLoad;

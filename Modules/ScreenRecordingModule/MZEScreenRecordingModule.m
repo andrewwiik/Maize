@@ -65,6 +65,7 @@
 		_isRecording = YES;
 		[_recordToggle _startRecording];
 		_countingDown = NO;
+		[_viewController setGlyphState:@"recording"];
 		[_viewController setSelected:YES];
 	} else {
 		_isRecording = NO;
@@ -123,6 +124,10 @@
 
 - (BOOL)isSelected {
 	return _isRecording;
+}
+
+- (BOOL)isEnabled {
+	return YES;
 }
 
 // - (BOOL)isEnabled {

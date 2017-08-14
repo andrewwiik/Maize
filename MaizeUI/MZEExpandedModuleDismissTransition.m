@@ -1,6 +1,8 @@
 #import "MZEExpandedModuleDismissTransition.h"
 #import "MZEContentModuleContainerViewController.h"
 #import "MZEModularControlCenterViewController.h"
+#import <SpringBoard/SBFolderCloseSettings.h>
+#import <BaseBoardUI/BSUIAnimationFactory.h>
 
 
 @implementation MZEExpandedModuleDismissTransition
@@ -22,7 +24,7 @@
 
 		// if (toViewController.backgroundViewController) {
 		// 	// toViewController.backgroundViewController.view.frame = [toViewController _backgroundFrameForExpandedState];
-		// 	[toViewController.backgroundViewController.view setAutoresizingMask:18];
+		// 	[toViewController.backgroundViewController.view setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		// 	[toViewController.backgroundView addSubview:toViewController.backgroundViewController.view];
 		// 	// [toViewController.view sendSubviewToBack:toViewController.backgroundViewController.view];
 		// 	// [toViewController.view sendSubviewToBack:toViewController.backgroundView];
@@ -36,7 +38,13 @@
 		toViewController.expanded = NO;
 
 		//[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
-		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+		SBFolderCloseSettings *settings = [NSClassFromString(@"SBFolderCloseSettings") new];
+		[settings setDefaultValues];
+		BSUIAnimationFactory *factory = [NSClassFromString(@"BSUIAnimationFactory") factoryWithSettings:[[settings centralAnimationSettings] BSAnimationSettings]];
+		//[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
+		
+
+		[NSClassFromString(@"BSUIAnimationFactory") animateWithFactory:factory actions:^{
 			toViewController.backgroundView.alpha = 0.0;
 			[toViewController.contentContainerView transitionToExpandedMode:NO];
 			toViewController.contentContainerView.frame = relativeFrame;

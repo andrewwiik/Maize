@@ -2,7 +2,11 @@
 #import "MZEContentModuleContainerViewController.h"
 #import "MZEModularControlCenterViewController.h"
 #import "MZEExpandedModuleTransition-Protocol.h"
+#import <SpringBoard/SBFolderOpenSettings.h>
+#import <BaseBoardUI/BSUIAnimationFactory.h>
 #import "macros.h"
+#import <UIKit/UIView+Private.h>
+
 
 
 @implementation MZEExpandedModulePresentationTransition
@@ -28,8 +32,14 @@
 		[UIView setAnimationsEnabled:YES];
 		toViewController.expanded = YES;
 
+
+		SBFolderOpenSettings *settings = [NSClassFromString(@"SBFolderOpenSettings") new];
+		[settings setDefaultValues];
+		BSUIAnimationFactory *factory = [NSClassFromString(@"BSUIAnimationFactory") factoryWithSettings:[[settings centralAnimationSettings] BSAnimationSettings]];
 		//[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
-		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
+		
+
+		[NSClassFromString(@"BSUIAnimationFactory") animateWithFactory:factory actions:^{
 			toViewController.backgroundView.alpha = 1.0;
 			[toViewController.contentContainerView transitionToExpandedMode:YES];
 			toViewController.contentContainerView.frame = [toViewController _contentFrameForExpandedState];

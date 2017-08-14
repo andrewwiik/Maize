@@ -10,15 +10,18 @@
 		frame = self.view.bounds;
 	}
 
-	_buttonModuleView = [[MZEButtonModuleView alloc] initWithFrame:frame];
-	[_buttonModuleView addTarget:self action:@selector(buttonTapped:forEvent:) forControlEvents:0x40];
-	[_buttonModuleView setAutoresizingMask:18];
-	[self.view addSubview:_buttonModuleView];
+	if (!_buttonModuleView) {
+		_buttonModuleView = [[MZEButtonModuleView alloc] initWithFrame:frame];
+		[self.view addSubview:_buttonModuleView];
+	}
+	[_buttonModuleView addTarget:self action:@selector(buttonTapped:forEvent:) forControlEvents:UIControlEventTouchUpInside];
+	[_buttonModuleView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 	//[_buttonModuleView addTarget:self action:@selector(buttonTapped:forEvent:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)buttonTapped:(UIControl *)button forEvent:(id)event {
 	HBLogInfo(@"THE BUTTON WAS TAPPED");
+	//self.view.backgroundColor = [UIColor redColor];
 	return;
 }
 

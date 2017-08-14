@@ -33,6 +33,11 @@
     BOOL _bubbled;
     MZEBreatheGestureRecognizer *_breatheRecognizer;
     CALayer *_maskLayer;
+    BOOL _supportsForceTouch;
+    BOOL _didCheckForceTouchCapability;
+    BOOL _previewInteractionDidBegin;
+    BOOL _previewInteractionShouldBegin;
+    BOOL _previewGestureBegan;
 }
 
 @property(retain, nonatomic, readwrite) UIViewController *originalParentViewController;
@@ -84,6 +89,8 @@
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed;
 - (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source;
 - (void)setAlpha:(CGFloat)alpha;
+
+- (BOOL)forceTouchSupported;
 // - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 // - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
 // - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
