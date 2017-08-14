@@ -11,7 +11,7 @@
 	_glyphImage = glyphImage;
 
     _highlightedBackgroundView = [[UIView alloc] initWithFrame:[self bounds]];
-	_highlightedBackgroundView.autoresizingMask = 18;
+	_highlightedBackgroundView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 	_highlightedBackgroundView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.4];
 	_highlightedBackgroundView.alpha = 0;
 	[self addSubview:_highlightedBackgroundView];
