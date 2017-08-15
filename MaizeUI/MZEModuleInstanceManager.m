@@ -1,4 +1,5 @@
 #import "MZEModuleInstanceManager.h"
+#import "MZEContentModule-Protocol.h"
 
 @implementation MZEModuleInstanceManager
 	@dynamic moduleInstances;
@@ -47,6 +48,12 @@
 			if (isLoaded) {
 				Class principalClass = [moduleBundle principalClass];
 				if ([principalClass conformsToProtocol:@protocol(MZEContentModule)]) {
+					if ([principalClass respondsToSelector:@selector(isSupported)]) {
+						if (![(Class<MZEContentModule>)principalClass isSupported]) {
+							[moduleBundle unload];
+							return nil;
+						}
+					}
 
 					id<MZEContentModule> module = [[principalClass alloc] init];
 					MZEModuleInstance *moduleInstance = [[MZEModuleInstance alloc] initWithMetadata:metadata module:module];
@@ -64,6 +71,12 @@
 
 					Class principalClass = [moduleBundle principalClass];
 					if ([principalClass conformsToProtocol:@protocol(MZEContentModule)]) {
+						if ([principalClass respondsToSelector:@selector(isSupported)]) {
+							if (![(Class<MZEContentModule>)principalClass isSupported]) {
+								[moduleBundle unload];
+								return nil;
+							}
+						}
 
 						id<MZEContentModule> module = [[principalClass alloc] init];
 						MZEModuleInstance *moduleInstance = [[MZEModuleInstance alloc] initWithMetadata:metadata module:module];

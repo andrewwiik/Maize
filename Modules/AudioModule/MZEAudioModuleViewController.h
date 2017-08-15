@@ -10,6 +10,7 @@
     __weak id <MZEAudioModuleViewControllerDelegate> _delegate;
     MZEModuleSliderView *_sliderView;
     MPVolumeController *_volumeController;
+    BOOL _expanded;
 }
 
 @property(retain, nonatomic, readwrite) MPVolumeController *volumeController;

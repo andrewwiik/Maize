@@ -28,9 +28,9 @@
 		[self addTarget:self action:@selector(_dragEnter:) forControlEvents:UIControlEventTouchDragEnter];
 		[self addTarget:self action:@selector(_dragExit:) forControlEvents:UIControlEventTouchDragExit];
 		[self addTarget:self action:@selector(_primaryActionPerformed:) forEvents:0x2000];
-		[self addObserver:self forKeyPath:@"enabled" options:nil context:nil];
-		[self addObserver:self forKeyPath:@"highlighted" options:nil context:nil];
-		[self addObserver:self forKeyPath:@"selected" options:nil context:nil];
+		[self addObserver:self forKeyPath:@"enabled" options:0 context:nil];
+		[self addObserver:self forKeyPath:@"highlighted" options:0 context:nil];
+		[self addObserver:self forKeyPath:@"selected" options:0 context:nil];
 	}
 
 	return self;
@@ -44,7 +44,7 @@
 		[_glyphPackageView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[_glyphPackageView setPackage:_glyphPackage];
 		[self addSubview:_glyphPackageView];
-		[self addObserver:self forKeyPath:@"glyphState" options:nil context:nil];
+		[self addObserver:self forKeyPath:@"glyphState" options:0 context:nil];
 	}
 	return self;
 }

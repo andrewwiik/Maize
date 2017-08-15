@@ -55,7 +55,10 @@
 }
 
 - (void)willTransitionToExpandedContentMode:(BOOL)willTransition {
-	[_sliderView setGlyphVisible:willTransition ? NO : YES];
+	_expanded = willTransition;
+	// if (willTransition) {
+	// 	[_sliderView setGlyphVisible:NO];
+	// }
 	//_sliderView.layerCornerRadius = willTransition ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
 }
 
@@ -65,11 +68,23 @@
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         [_sliderView setNeedsLayout];
 		[_sliderView layoutIfNeeded];
+		if (!_expanded) {
+			[UIView animateWithDuration:0.1f delay:0.1f options:0 animations:^{
+				[_sliderView setGlyphVisible:YES];
+			} completion:nil];
+		} else {
+			[UIView animateWithDuration:0.1f delay:0.0f options:0 animations:^{
+				[_sliderView setGlyphVisible:NO];
+			} completion:nil];
+		}
 		// [_sliderView _layoutValueViews];
 		// [_sliderView setGlyphVisible:_expanded ? NO : YES];
 		//_sliderView.layer.cornerRadius = _expanded ? [MZELayoutOptions expandedModuleCornerRadius] : [MZELayoutOptions regularCornerRadius];
         // do whatever
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+    	// if (!_expanded) {
+    	// 	[_sliderView setGlyphVisible:YES];
+    	// } 
     	//[_sliderView stopDisplayLink];
     }];
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];

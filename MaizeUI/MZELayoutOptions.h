@@ -1,4 +1,7 @@
 @interface MZELayoutOptions : NSObject
++ (CGFloat)deviceWidth;
++ (CGFloat)deviceHeight;
+
 + (CGFloat)itemSpacingSize;
 + (CGFloat)edgeSize;
 + (CGFloat)edgeInsetSize;
@@ -16,6 +19,11 @@
 + (CGRect)orientationRelativeScreenBounds;
 + (CGFloat)defaultExpandedModuleWidth; 
 + (CGFloat)defaultMenuItemHeight;
+
++ (CGFloat)expandedContinuousCornerRadius;
++ (CGFloat)regularContinuousCornerRadius;
++ (CGRect)regularCornerCenter;
++ (CGRect)expandedCornerCenter;
 
 #pragma mark FlipSwitch Support
 

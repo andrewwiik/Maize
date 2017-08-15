@@ -8,11 +8,16 @@
 
 MPULayoutInterpolator *interpolator;
 
+// static NSMutableDictionary *storedCornerRadiusExpanded;
+// static NSMutableDictionary *storedCornerRadiusRegular;
+// static NSMutableDictionary *storedCornerRadiusCenterExpanded;
+// static NSMutableDictionary *storedCornerRadiusCenterRegular;
+
 
 @implementation MZEContentModuleContentContainerView
 	@synthesize moduleMaterialView=_moduleMaterialView;
-	@synthesize expandedFrame = _expandedFrame;
-	@synthesize compactFrame = _compactFrame;
+	// @synthesize expandedFrame = _expandedFrame;
+	// @synthesize compactFrame = _compactFrame;
 
 // - (void)_setContinuousCornerRadius:(CGFloat)cornerRadius {
 // 	if (_moduleMaterialView) {
@@ -25,6 +30,7 @@ MPULayoutInterpolator *interpolator;
 
 	[self _configureModuleMaterialViewIfNecessary];
 	[super layoutSubviews];
+	//[storedCornerRadiusExpanded setValue:@16 forKey:@"stuff"];
 
 	// if (!_psuedoView) {
 	// 	_psuedoView = [[UIView alloc] initWithFrame:self.bounds];
@@ -41,33 +47,6 @@ MPULayoutInterpolator *interpolator;
 	// 	_psuedoView.bounds = self.bounds;
 	// }]
 	//self._continuousCornerRadius = [interpolator valueForReferenceMetric:self.bounds.size.width];
-}
-
-- (void)setCompactFrame:(CGRect)frame {
-
-	if (!_psuedoCompactView) {
-		_psuedoCompactView = [[UIView alloc] initWithFrame:frame];
-		//_psuedoCompactView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
-	}
-
-	if (_psuedoCompactView && frame.size.width != _compactFrame.size.width) {
-		_compactFrame = frame;
-		_psuedoCompactView.frame = _compactFrame;
-		_psuedoCompactView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
-	}
-}
-
-- (void)setExpandedFrame:(CGRect)frame {
-	if (!_psuedoExpandedView) {
-		_psuedoExpandedView = [[UIView alloc] initWithFrame:frame];
-		//_psuedoExpandedView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
-	}
-
-	if (_psuedoExpandedView && frame.size.width != _expandedFrame.size.width) {
-		_expandedFrame = frame;
-		_psuedoExpandedView.frame = _expandedFrame;
-		_psuedoExpandedView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
-	}
 }
 
 - (void)addSubview:(UIView *)subview {
@@ -109,34 +88,26 @@ MPULayoutInterpolator *interpolator;
 	self.clipsToBounds = YES;
 	CGFloat cornerRadius = 0;
 
+	//if (![storedCornerRadiusExpanded objectForKey:[NSString stringWithFormat:]])
+
 	if (self._continuousCornerRadius < 1.0f) {
 		self._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
-	}
-
-	if (expanded) {
-		cornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
-	} else {
-		cornerRadius = [MZELayoutOptions regularCornerRadius];
 	}
 
 	CGRect cornerCenter = CGRectZero;
 
 	if (force || _expanded != expanded) {
 		_expanded = expanded;
-		if (_psuedoExpandedView && expanded) {
-			cornerRadius = _psuedoExpandedView.layer.cornerRadius;
-			cornerCenter = _psuedoExpandedView.layer.cornerContentsCenter;
+		if (expanded) {
+			cornerRadius = [MZELayoutOptions expandedContinuousCornerRadius];
+			cornerCenter = [MZELayoutOptions expandedCornerCenter];
 		} else {
-			if (_psuedoCompactView) {
-				cornerRadius = _psuedoCompactView.layer.cornerRadius;
-				cornerCenter = _psuedoCompactView.layer.cornerContentsCenter;
-			}
+			cornerRadius = [MZELayoutOptions regularContinuousCornerRadius];
+			cornerCenter = [MZELayoutOptions regularCornerCenter];
 		}
 
 		self.layer.cornerRadius = cornerRadius;
-		if (cornerCenter.origin.x != 0) {
-			self.layer.cornerContentsCenter = cornerCenter;
-		}
+		self.layer.cornerContentsCenter = cornerCenter;
 	}
 }
 

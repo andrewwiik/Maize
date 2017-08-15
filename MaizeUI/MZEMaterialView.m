@@ -18,6 +18,10 @@ typedef struct CAColorMatrix CAColorMatrix;
 - (CAColorMatrix)CAColorMatrixValue;
 @end
 
+static NSMutableDictionary *darkStyleDict;
+static NSMutableDictionary *lightStyleDict;
+static NSMutableDictionary *normalStyleDict;
+
 @implementation MZEMaterialView
 
 
@@ -33,35 +37,41 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 	if (style == MZEMaterialStyleDark) {
 
-		NSMutableDictionary *styleDict = [NSMutableDictionary new];
-		styleDict[@"brightness"] = [NSNumber numberWithFloat:-0.12];
-		styleDict[@"saturation"] = [NSNumber numberWithFloat:1.8];
+		if (!darkStyleDict) {
+			darkStyleDict = [NSMutableDictionary new];
+			darkStyleDict[@"brightness"] = [NSNumber numberWithFloat:-0.12];
+			darkStyleDict[@"saturation"] = [NSNumber numberWithFloat:1.8];
 
-    	CAColorMatrix darkColorMatrix = {
-	        0.5f, 0, 0, 0, 0.125f,
-	        0, 0.5f, 0, 0, 0.125f,
-	        0, 0, 0.5f, 0, 0.125f,
-	        0, 0, 0, 1.0f, 0
-      	};
+	    	CAColorMatrix darkColorMatrix = {
+		        0.5f, 0, 0, 0, 0.125f,
+		        0, 0.5f, 0, 0, 0.125f,
+		        0, 0, 0.5f, 0, 0.125f,
+		        0, 0, 0, 1.0f, 0
+	      	};
 
-      	styleDict[@"forcedColorMatrix"] = [NSValue valueWithCAColorMatrix:darkColorMatrix];
+	      	darkStyleDict[@"forcedColorMatrix"] = [NSValue valueWithCAColorMatrix:darkColorMatrix];
+		}
 
-      	[materialView.backdropView setStyleDictionary:[styleDict copy]];
+      	[materialView.backdropView setStyleDictionary:[darkStyleDict copy]];
 	} else if (style == MZEMaterialStyleLight) {
-		NSMutableDictionary *styleDict = [NSMutableDictionary new];
+		if (!lightStyleDict) {
+			lightStyleDict = [NSMutableDictionary new];
 
-		styleDict[@"brightness"] = [NSNumber numberWithFloat:0.52];
-		styleDict[@"saturation"] = [NSNumber numberWithFloat:1.6];
-		styleDict[@"colorAddColor"] = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+			lightStyleDict[@"brightness"] = [NSNumber numberWithFloat:0.52];
+			lightStyleDict[@"saturation"] = [NSNumber numberWithFloat:1.6];
+			lightStyleDict[@"colorAddColor"] = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+		}
 
-		[materialView.backdropView setStyleDictionary:[styleDict copy]];
+		[materialView.backdropView setStyleDictionary:[lightStyleDict copy]];
 	} else if (style == MZEMaterialStyleNormal) {
-		NSMutableDictionary *styleDict = [NSMutableDictionary new];
+		if (!normalStyleDict) {
+			normalStyleDict = [NSMutableDictionary new];
 
-		styleDict[@"brightness"] = [NSNumber numberWithFloat:0.12];
-		styleDict[@"saturation"] = [NSNumber numberWithFloat:1.5];
+			normalStyleDict[@"brightness"] = [NSNumber numberWithFloat:0.12];
+			normalStyleDict[@"saturation"] = [NSNumber numberWithFloat:1.5];
+		}
 
-		[materialView.backdropView setStyleDictionary:[styleDict copy]];
+		[materialView.backdropView setStyleDictionary:[normalStyleDict copy]];
 	}
 
 	return materialView;
@@ -192,22 +202,22 @@ typedef struct CAColorMatrix CAColorMatrix;
 	[super setUserInteractionEnabled:NO];
 }
 
-- (BOOL)shouldForwardSelector:(SEL)aSelector {
-   // if (aSelector == @selector(setBounds:)) return NO;
-    if (aSelector == @selector(_setContinuousCornerRadius:)) return YES;
-    if (aSelector == @selector(_continuousCornerRadius)) return YES;
-    return [self.layer respondsToSelector:aSelector];
-}
+// - (BOOL)shouldForwardSelector:(SEL)aSelector {
+//    // if (aSelector == @selector(setBounds:)) return NO;
+//     if (aSelector == @selector(_setContinuousCornerRadius:)) return YES;
+//     if (aSelector == @selector(_continuousCornerRadius)) return YES;
+//     return [self.layer respondsToSelector:aSelector];
+// }
 
-- (id)forwardingTargetForSelector:(SEL)aSelector {
-    if (aSelector == @selector(_setContinuousCornerRadius:)) return self;
-    if (aSelector == @selector(_continuousCornerRadius)) return self;
-    return (![self respondsToSelector:aSelector] && [self shouldForwardSelector:aSelector]) ? self.layer : self;
-}
+// - (id)forwardingTargetForSelector:(SEL)aSelector {
+//     if (aSelector == @selector(_setContinuousCornerRadius:)) return self;
+//     if (aSelector == @selector(_continuousCornerRadius)) return self;
+//     return (![self respondsToSelector:aSelector] && [self shouldForwardSelector:aSelector]) ? self.layer : self;
+// }
 
-- (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key {
-   return ([self shouldForwardSelector:NSSelectorFromString(key)] || [super _shouldAnimatePropertyWithKey:key]);
-}
+// - (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key {
+//    return ([self shouldForwardSelector:NSSelectorFromString(key)] || [super _shouldAnimatePropertyWithKey:key]);
+// }
 
 // - (void)_setCornerRadius:(CGFloat)cornerRadius {
 // 	if (self.backdropView) {

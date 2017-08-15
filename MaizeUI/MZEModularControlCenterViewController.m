@@ -132,6 +132,9 @@
 }
 
 - (BOOL)isLandscape {
+	if (isPad) {
+		return NO;
+	}
 	return UIInterfaceOrientationIsLandscape((UIInterfaceOrientation)[[self.view window] interfaceOrientation]);
 }
 

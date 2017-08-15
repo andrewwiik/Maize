@@ -6,10 +6,10 @@
     BOOL _moduleProvidesOwnPlatter;
     BOOL _clipsContentInCompactMode;
     MZEMaterialView *_moduleMaterialView;
-    UIView *_psuedoCompactView;
-    UIView *_psuedoExpandedView;
-    CGRect _compactFrame;
-    CGRect _expandedFrame;
+    // UIView *_psuedoCompactView;
+    // UIView *_psuedoExpandedView;
+    // CGRect _compactFrame;
+    // CGRect _expandedFrame;
 }
 
 @property(nonatomic, readwrite) BOOL clipsContentInCompactMode; // @synthesize clipsContentInCompactMode=_clipsContentInCompactMode;
@@ -26,10 +26,10 @@
 
 #pragma mark stupid corners
 
-@property (nonatomic, assign) CGRect compactFrame;
-@property (nonatomic, assign) CGRect expandedFrame;
-@property (nonatomic, retain, readwrite) UIView *psuedoCompactView; 
-@property (nonatomic, retain, readwrite) UIView *psuedoExpandedView; 
+// @property (nonatomic, assign) CGRect compactFrame;
+// @property (nonatomic, assign) CGRect expandedFrame;
+// @property (nonatomic, retain, readwrite) UIView *psuedoCompactView; 
+// @property (nonatomic, retain, readwrite) UIView *psuedoExpandedView; 
 
 
 @end

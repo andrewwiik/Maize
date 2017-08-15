@@ -7,4 +7,5 @@
 @optional
 @property(readonly, nonatomic) UIViewController *backgroundViewController;
 - (void)setContentModuleContext:(MZEContentModuleContext *)arg1;
++ (BOOL)isSupported;
 @end

@@ -4,6 +4,7 @@
 #import <SpringBoard/SBControlCenterController+Private.h>
 #import <UIKit/UIWindow+Orientation.h>
 #import <UIKit/UIView+Private.h>
+#import "macros.h"
 
 @implementation MZEModuleCollectionViewController
 	@synthesize delegate=_delegate;
@@ -39,6 +40,9 @@
 }
 
 - (BOOL)isLandscape {
+	if (isPad) {
+		return NO;
+	}
 	if (_delegate) {
 		return UIInterfaceOrientationIsLandscape((UIInterfaceOrientation)[_delegate interfaceOrientationForModuleCollectionViewController:self]);
 	} else {

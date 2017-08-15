@@ -7,7 +7,7 @@
 
 @implementation MZEExpandedModuleDismissTransition
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    return 0.4;
+    return 0.375;
 }
 
 
@@ -38,13 +38,13 @@
 		toViewController.expanded = NO;
 
 		//[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
-		SBFolderCloseSettings *settings = [NSClassFromString(@"SBFolderCloseSettings") new];
-		[settings setDefaultValues];
-		BSUIAnimationFactory *factory = [NSClassFromString(@"BSUIAnimationFactory") factoryWithSettings:[[settings centralAnimationSettings] BSAnimationSettings]];
-		//[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
+		// SBFolderCloseSettings *settings = [NSClassFromString(@"SBFolderCloseSettings") new];
+		// [settings setDefaultValues];
+		// BSUIAnimationFactory *factory = [NSClassFromString(@"BSUIAnimationFactory") factoryWithSettings:[[settings centralAnimationSettings] BSAnimationSettings]];
+		// //[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
 		
 
-		[NSClassFromString(@"BSUIAnimationFactory") animateWithFactory:factory actions:^{
+		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:1 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
 			toViewController.backgroundView.alpha = 0.0;
 			[toViewController.contentContainerView transitionToExpandedMode:NO];
 			toViewController.contentContainerView.frame = relativeFrame;
