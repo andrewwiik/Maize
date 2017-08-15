@@ -11,7 +11,7 @@
 }
 
 + (BOOL)isDebug {
-	return YES;
+	return NO;
 }
 
 + (NSArray *)_defaultModuleDirectories {
@@ -27,22 +27,22 @@
 }
 
 + (NSString *)enabledKey {
-	return @"EnabledIdentifiers17";
+	return @"EnabledIdentifiers16";
 }
 
 + (NSString *)disabledKey {
-	return @"DisabledIdentifiers17";
+	return @"DisabledIdentifiers16";
 }
 
 + (NSArray *)defaultEnabledIdentifiers {
 	NSMutableArray *defaultEnabledIdentifiers = [NSMutableArray new];
-	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AudioModule"];
-	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.LowPowerModule"];
-	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
-	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DoNotDisturbModule"];
-	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.OrientationLockModule"];
-	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.RingerModule"];
-	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ScreenRecordingModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AudioModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.LowPowerModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DoNotDisturbModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.OrientationLockModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.RingerModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ScreenRecordingModule"];
 
 	//[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ConnectivityModule"];
 	return [defaultEnabledIdentifiers copy];
