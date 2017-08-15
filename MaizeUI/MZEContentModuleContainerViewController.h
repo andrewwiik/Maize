@@ -32,12 +32,9 @@
     BOOL _canBubble;
     BOOL _bubbled;
     MZEBreatheGestureRecognizer *_breatheRecognizer;
+    UILongPressGestureRecognizer *_longPressRecognizer;
     CALayer *_maskLayer;
-    BOOL _supportsForceTouch;
-    BOOL _didCheckForceTouchCapability;
-    BOOL _previewInteractionDidBegin;
-    BOOL _previewInteractionShouldBegin;
-    BOOL _previewGestureBegan;
+    UIViewPropertyAnimator *_bubblingAnimator;
 }
 
 @property(retain, nonatomic, readwrite) UIViewController *originalParentViewController;
@@ -60,6 +57,8 @@
 @property(copy, nonatomic, readwrite) NSString *moduleIdentifier;
 @property(readonly, nonatomic) MZEContentModuleContainerView *moduleContainerView;
 @property(retain,nonatomic,readwrite) MZEBreatheGestureRecognizer *breatheRecognizer;
+@property(retain, nonatomic, readwrite) UILongPressGestureRecognizer *longPressRecognizer;
+@property (retain, nonatomic, readwrite) UIViewPropertyAnimator *bubblingAnimator;
 @property (nonatomic, retain, readwrite) CALayer *maskLayer;
 - (id)initWithModuleIdentifier:(NSString *)identifier contentModule:(id<MZEContentModule>)contentModule;
 - (id)init;
@@ -78,6 +77,8 @@
 - (void)previewInteraction:(UIPreviewInteraction *)previewInteraction didUpdatePreviewTransition:(CGFloat)progress ended:(BOOL)ended;
 - (void)previewInteractionDidCancel:(UIPreviewInteraction *)previewInteraction;
 - (void)_handleTapGestureRecognizer:(UITapGestureRecognizer *)recognizer;
+- (void)handleLongPressGesture:(UILongPressGestureRecognizer *)recognizer;
+- (void)handleBubbleGestureRecognizer:(MZEBreatheGestureRecognizer *)recognizer;
 - (CGRect)_contentFrameForRestState;
 - (CGRect)_contentFrameForExpandedState;
 - (CGRect)_backgroundFrameForRestState;

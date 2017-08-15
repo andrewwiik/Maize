@@ -502,8 +502,8 @@ static CGFloat separatorHeight = 0;
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-         [self setNeedsLayout];
-         [self layoutIfNeeded];
+         // [self setNeedsLayout];
+         // [self layoutIfNeeded];
         // [_sliderView _layoutValueViews];
         // do whatever
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { 
@@ -517,11 +517,11 @@ static CGFloat separatorHeight = 0;
 
 - (void)setGlyphVisible:(BOOL)visible {
     _glyphVisible = visible;
-    // [UIView performWithoutAnimation:^{
-    //     _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    //     _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    //     _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    // }];
+    //[UIView performWithoutAnimation:^{
+        _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
+        _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+        _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+    //}];
 
 }
 

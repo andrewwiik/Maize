@@ -11,7 +11,7 @@
 
 @implementation MZEExpandedModulePresentationTransition
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    return 0.4;
+    return 0.375;
 }
 
 
@@ -33,13 +33,13 @@
 		toViewController.expanded = YES;
 
 
-		SBFolderOpenSettings *settings = [NSClassFromString(@"SBFolderOpenSettings") new];
-		[settings setDefaultValues];
-		BSUIAnimationFactory *factory = [NSClassFromString(@"BSUIAnimationFactory") factoryWithSettings:[[settings centralAnimationSettings] BSAnimationSettings]];
-		//[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
+		// SBFolderOpenSettings *settings = [NSClassFromString(@"SBFolderOpenSettings") new];
+		// [settings setDefaultValues];
+		// BSUIAnimationFactory *factory = [NSClassFromString(@"BSUIAnimationFactory") factoryWithSettings:[[settings centralAnimationSettings] BSAnimationSettings]];
+		// //[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
 		
 
-		[NSClassFromString(@"BSUIAnimationFactory") animateWithFactory:factory actions:^{
+		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:1 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 			toViewController.backgroundView.alpha = 1.0;
 			[toViewController.contentContainerView transitionToExpandedMode:YES];
 			toViewController.contentContainerView.frame = [toViewController _contentFrameForExpandedState];

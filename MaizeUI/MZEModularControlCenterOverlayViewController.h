@@ -8,6 +8,8 @@
 @interface MZEModularControlCenterOverlayViewController : MZEModularControlCenterViewController <MZEScrollViewDelegate, UIGestureRecognizerDelegate> {
 	CGRect _cachedTargetPresentationFrame;
 	CGRect _cachedSourcePresentationFrame;
+	CGRect _cachedHeaderPocketViewSize;
+	CGFloat _currentBasedWidth;
 	MZEPresentationState _presentationState;
 
 	MZEScrollView *_scrollView;

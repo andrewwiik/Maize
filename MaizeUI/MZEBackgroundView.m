@@ -10,6 +10,7 @@
 
 		_luminanceView = [[MZEMaterialView alloc] init];
 		_luminanceView.luminanceAlpha = 1.0f;
+		//_luminanceView.saturation = 1.9f;
 		_luminanceView.alpha = 0;
 		_luminanceView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 		[self addSubview:_luminanceView];

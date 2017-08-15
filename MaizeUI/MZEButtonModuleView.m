@@ -10,7 +10,7 @@
 	if (self) {
 		_highlightedBackgroundView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleLight];
 		[_highlightedBackgroundView setFrame:self.bounds];
-		_highlightedBackgroundView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
+		//_highlightedBackgroundView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
 		[_highlightedBackgroundView setAlpha:0];
 		[self addSubview:_highlightedBackgroundView];
 		[_highlightedBackgroundView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
@@ -181,7 +181,7 @@
 }
 
 - (void)_touchDown:(id)arg1 {
-	NSLog(@"TOUCHED DOWN YAYYYYY");
+	//NSLog(@"TOUCHED DOWN YAYYYYY");
 	if (_allowsHighlighting) 
 		[self setHighlighted:YES];
 }

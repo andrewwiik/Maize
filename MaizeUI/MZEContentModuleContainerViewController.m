@@ -10,7 +10,7 @@
 #import <UIKit/UIPanGestureRecognizer+Private.h>
 #import "macros.h"
 
-static BOOL forceTouchIsSupported;
+//static BOOL forceTouchIsSupported;
 
 @implementation MZEContentModuleContainerViewController
 	@synthesize delegate=_delegate;
@@ -171,8 +171,8 @@ static BOOL forceTouchIsSupported;
 	[_contentContainerView setClipsContentInCompactMode:NO];
 	[self _configureForContentModuleGroupRenderingIfNecessary];
 
-	_contentContainerView.expandedFrame = [self _contentFrameForExpandedState];
-	_contentContainerView.compactFrame = [self _contentFrameForRestState];
+	// _contentContainerView.expandedFrame = [self _contentFrameForExpandedState];
+	// _contentContainerView.compactFrame = [self _contentFrameForRestState];
 	[_contentContainerView _transitionToExpandedMode:NO force:YES];
 
 	[_highlightWrapperView addSubview:_contentContainerView];
@@ -204,12 +204,21 @@ static BOOL forceTouchIsSupported;
 	_tapRecognizer.delegate = self;
 	[_backgroundView addGestureRecognizer:_tapRecognizer];
 
-	_breatheRecognizer = [[MZEBreatheGestureRecognizer alloc] initWithTarget:self action:@selector(handelBubbleGestureRecognizer:)];
-	_breatheRecognizer.tracksTime = [self forceTouchSupported] ? NO : YES;
-	_breatheRecognizer.wantedPressDuration = 0.5;
+	_breatheRecognizer = [[MZEBreatheGestureRecognizer alloc] initWithTarget:self action:@selector(handleBubbleGestureRecognizer:)];
+	if ([self.view.gestureRecognizers count] == 0) {
+
+		_longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
+		_longPressRecognizer.minimumPressDuration = 0.5;
+		_longPressRecognizer.numberOfTouchesRequired = 1;
+		[_longPressRecognizer setCancelsTouchesInView:NO];
+		_longPressRecognizer.delaysTouchesEnded = NO;
+		_longPressRecognizer.allowableMovement = 10.0;
+		_longPressRecognizer.delegate = self;
+		[self.view addGestureRecognizer:_longPressRecognizer];
+	}
 	_breatheRecognizer.minimumPressDuration = 0;
 	_breatheRecognizer.numberOfTouchesRequired = 1;
-	_breatheRecognizer.allowableMovement = 10.0;
+	_breatheRecognizer.allowableMovement = 15.0;
 	_breatheRecognizer.delegate = self;
 
 
@@ -230,8 +239,8 @@ static BOOL forceTouchIsSupported;
 - (void)viewWillLayoutSubviews {
 	[super viewWillLayoutSubviews];
 
-	_contentContainerView.expandedFrame = [self _contentFrameForExpandedState];
-	_contentContainerView.compactFrame = [self _contentFrameForRestState];
+	// _contentContainerView.expandedFrame = [self _contentFrameForExpandedState];
+	// _contentContainerView.compactFrame = [self _contentFrameForRestState];
 	if ([self isExpanded]) {
 		_highlightWrapperView.frame = [self _backgroundFrameForExpandedState];
 		_backgroundView.frame = [self _backgroundFrameForExpandedState];
@@ -379,6 +388,10 @@ static BOOL forceTouchIsSupported;
 			[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:NO];
 			_bubbled = NO;
 			_canBubble = NO;
+			if (self.bubblingAnimator) {
+				[self.bubblingAnimator stopAnimation:YES];
+			}
+
 			[UIView animateWithDuration:0.125 delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 				self.view.transform = CGAffineTransformIdentity;
 			} completion:^(BOOL completed) {
@@ -464,55 +477,68 @@ static BOOL forceTouchIsSupported;
 	return;
 }
 
-- (void)handelBubbleGestureRecognizer:(MZEBreatheGestureRecognizer *)recognizer {
+- (void)handleLongPressGesture:(UILongPressGestureRecognizer *)recognizer {
+
+	if (recognizer.state == UIGestureRecognizerStateBegan) {
+		if (![self isExpanded]) {
+			if ([self _previewInteractionShouldFinishTransitionToPreview:nil]) {
+				[self previewInteraction:nil didUpdatePreviewTransition:1.0f ended:YES];
+				return;
+			}
+
+			_canBubble = NO;
+			if (self.bubblingAnimator) {
+				[self.bubblingAnimator stopAnimation:YES];
+			}
+	    	[self.previewInteraction cancelInteraction];
+	    	_canBubble = YES;
+	    	[UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+				self.view.transform = CGAffineTransformIdentity;
+			} completion:^(BOOL completed){
+				[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+			}];
+		}
+	}
+}
+
+- (void)handleBubbleGestureRecognizer:(MZEBreatheGestureRecognizer *)recognizer {
 	if (![self isExpanded]) {
 		switch (recognizer.state) {
 	        case UIGestureRecognizerStateBegan: {
 	        	_bubbled = YES;
 	        	[_delegate contentModuleContainerViewController:self didBeginInteractionWithModule:_contentModule];
-	            [UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
-					self.view.transform = CGAffineTransformMakeScale(1.05,1.05);
-				} completion:nil];
-	            break;
-	        }
+	        	if ([self forceTouchSupported]) {
+	        		[UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
+						self.view.transform = CGAffineTransformMakeScale(1.05,1.05);
+					} completion:nil];
+	        	} else {
+	        		self.bubblingAnimator = [[UIViewPropertyAnimator alloc] initWithDuration:0.5 curve:UIViewAnimationCurveEaseIn animations:^{
+	        			self.view.transform = CGAffineTransformMakeScale(1.25,1.25);
+	        		}];
 
-	        case UIGestureRecognizerStateChanged: {
-	        	if (![self forceTouchSupported]) {
-	        		if (!_previewInteractionDidBegin) {
-	        			_previewInteractionShouldBegin = [self previewInteractionShouldBegin:nil];
-	        			_previewInteractionDidBegin = YES;
-	        		} else {
-	        			if (_previewInteractionShouldBegin) {
-	        				if (recognizer.percentComplete < 0.95) {
-	        					[self previewInteraction:nil didUpdatePreviewTransition:recognizer.percentComplete ended:NO];
-	        				} else {
-	        					if ([self _previewInteractionShouldFinishTransitionToPreview:nil]) {
-	        						[self previewInteraction:nil didUpdatePreviewTransition:recognizer.percentComplete ended:YES];
-	        					} else {
-	        						recognizer.enabled = NO;
-	        						recognizer.enabled = YES;
-	        					}
-	        				}
-	        			}
-	        		}
+	        		self.bubblingAnimator.interruptible = YES;
+	        		self.bubblingAnimator.userInteractionEnabled = YES;
+	        		[self.bubblingAnimator startAnimation];
 	        	}
-	        	break;
+	            break;
 	        }
 
 	        case UIGestureRecognizerStateCancelled:
 	        case UIGestureRecognizerStateFailed:
 	        case UIGestureRecognizerStateEnded: {
 	        	if (_bubbled && _canBubble) {
+	        		_canBubble = NO;
+	        		if (self.bubblingAnimator) {
+	        			[self.bubblingAnimator stopAnimation:YES];
+	        		}
 		        	[self.previewInteraction cancelInteraction];
+		        	_canBubble = YES;
 		        	[UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 						self.view.transform = CGAffineTransformIdentity;
 					} completion:^(BOOL completed){
 						[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
 					}];
 				}
-
-				_previewInteractionDidBegin = NO;
-				_previewInteractionShouldBegin = NO;
 	            // do something
 	            break;
 	        }
@@ -532,7 +558,7 @@ static BOOL forceTouchIsSupported;
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
 	//[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 
-	if (size.height == [self _backgroundFrameForExpandedState].size.height) {
+	if (size.height > [self _backgroundFrameForRestState].size.height + 2) {
 		CGSize expandedContentSize = [self _contentFrameForExpandedState].size;
 
 
@@ -558,11 +584,12 @@ static BOOL forceTouchIsSupported;
 
 
 - (BOOL)forceTouchSupported {
-	static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        forceTouchIsSupported = [[self.view traitCollection] forceTouchCapability] == UIForceTouchCapabilityAvailable;
-    });
-	return forceTouchIsSupported;
+	return [[self.view traitCollection] forceTouchCapability] == UIForceTouchCapabilityAvailable;
+	// static dispatch_once_t onceToken;
+ //    dispatch_once(&onceToken, ^{
+ //        forceTouchIsSupported = [[self.view traitCollection] forceTouchCapability] == UIForceTouchCapabilityAvailable;
+ //    });
+	// return forceTouchIsSupported;
 }
 
 // - (CGSize)sizeForChildContentContainer:(id<UIContentContainer>)container withParentContainerSize:(CGSize)parentSize {

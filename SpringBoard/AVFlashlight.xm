@@ -4,10 +4,10 @@
 static AVFlashlight *sharedFlashlight;
 
 
-// @interface MZEFlashlightModuleViewController : NSObject
-// + (AVFlashlight *)currentFlashlight;
-// + (instancetype)sharedFlashlightModule;
-// @end
+@interface MZEFlashlightModuleViewController : NSObject
++ (AVFlashlight *)currentFlashlight;
++ (instancetype)sharedFlashlightModule;
+@end
 
 %hook AVFlashlight
 %new
@@ -37,4 +37,27 @@ static AVFlashlight *sharedFlashlight;
 	}
 	return orig;
 }
+
+- (void)dealloc {
+	if (NSClassFromString(@"MZEFlashlightModuleViewController")) {
+		MZEFlashlightModuleViewController *currentController = [NSClassFromString(@"MZEFlashlightModuleViewController") sharedFlashlightModule];
+		if (currentController) {
+			@try{
+				[self removeObserver:currentController forKeyPath:@"available" context:NULL];
+				[self removeObserver:currentController forKeyPath:@"flashlightLevel" context:NULL];
+			} @catch(id anException){
+				   //do nothing, obviously it wasn't attached because an exception was thrown
+			}
+		}
+	}
+}
 %end
+
+
+%ctor {
+	if (NSClassFromString(@"AVFlashlight")) {
+		if ([NSClassFromString(@"AVFlashlight") hasFlashlight]) {
+			%init;
+		}
+	}
+}

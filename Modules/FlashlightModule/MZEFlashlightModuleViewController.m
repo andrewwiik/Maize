@@ -56,8 +56,12 @@ static AVFlashlight *flashlight;
 
 - (void)newFlashlightMade:(NSNotification *)notification {
 	if (flashlight) {
-		[flashlight removeObserver:self forKeyPath:@"available" context:NULL];
-		[flashlight removeObserver:self forKeyPath:@"flashlightLevel" context:NULL];
+		@try{
+			[flashlight removeObserver:self forKeyPath:@"available" context:NULL];
+			[flashlight removeObserver:self forKeyPath:@"flashlightLevel" context:NULL];
+		}@catch(id anException){
+		   //do nothing, obviously it wasn't attached because an exception was thrown
+		}
 	}
 
 	flashlight = [NSClassFromString(@"AVFlashlight") sharedFlashlight];
@@ -173,11 +177,23 @@ static AVFlashlight *flashlight;
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+	//_expanded = size.width > self.view.bounds.size.width;
 	//_sliderView.clipsToBounds = NO;
    // [_sliderView viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+
+	// if (_expanded) {
+	// 	[UIView performWithoutAnimation:^{
+	// 		self.buttonView.alpha = 0;
+	// 	}];
+	// }
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-    	[_sliderView setAlpha:_expanded ? 1.0 : 0.0];
+    	if (!_expanded) {
+    		[UIView animateWithDuration:0.1f delay:_expanded ? 0.1 : 0.0 options:0 animations:^{
+    		//	self.buttonView.alpha = _expanded ? 0.0 : 1.0;
+    		} completion:nil];
+    	}
     	self.buttonView.alpha = _expanded ? 0.0 : 1.0;
+    	[_sliderView setAlpha:_expanded ? 1.0 : 0.0];
         [_sliderView setNeedsLayout];
 		[_sliderView layoutIfNeeded];
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
@@ -190,8 +206,12 @@ static AVFlashlight *flashlight;
 	_sliderView = nil;
 	_userDefaults = nil;
 	if (flashlight) {
-		[flashlight removeObserver:self forKeyPath:@"available" context:NULL];
-		[flashlight removeObserver:self forKeyPath:@"flashlightLevel" context:NULL];
+		@try{
+			[flashlight removeObserver:self forKeyPath:@"available" context:NULL];
+			[flashlight removeObserver:self forKeyPath:@"flashlightLevel" context:NULL];
+		}@catch(id anException){
+		   //do nothing, obviously it wasn't attached because an exception was thrown
+		}
 	}
 }
 @end

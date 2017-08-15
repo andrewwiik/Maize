@@ -4,6 +4,7 @@
 #import <SpringBoard/SBControlCenterController+Private.h>
 #import <UIKit/UIWindow+Orientation.h>
 #import <UIKit/UIView+Private.h>
+#import "macros.h"
 
 @implementation MZEModuleCollectionViewController
 	@synthesize delegate=_delegate;
@@ -39,6 +40,9 @@
 }
 
 - (BOOL)isLandscape {
+	if (isPad) {
+		return NO;
+	}
 	if (_delegate) {
 		return UIInterfaceOrientationIsLandscape((UIInterfaceOrientation)[_delegate interfaceOrientationForModuleCollectionViewController:self]);
 	} else {
@@ -236,13 +240,15 @@
 	[_delegate moduleCollectionViewController:self willCloseExpandedModule:module];
 
 	if (YES != NO) {
-		for (UIViewController *viewController in [self childViewControllers]) {
-			if (viewController != containerViewController) {
-				if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
-					viewController.view.alpha = 1;
+		[UIView performWithoutAnimation:^{
+			for (UIViewController *viewController in [self childViewControllers]) {
+				if (viewController != containerViewController) {
+					if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+						viewController.view.alpha = 1;
+					}
 				}
 			}
-		}
+		}];
 	}
 }
 
@@ -258,13 +264,15 @@
 	[_currentModules addObject:containerViewController];
 
 	if (YES != NO) {
-		for (UIViewController *viewController in [self childViewControllers]) {
-			if (viewController != containerViewController) {
-				if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
-					viewController.view.alpha = 0;
+		[UIView performWithoutAnimation:^{
+			for (UIViewController *viewController in [self childViewControllers]) {
+				if (viewController != containerViewController) {
+					if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+						viewController.view.alpha = 0;
+					}
 				}
 			}
-		}
+		}];
 	}
 }
 

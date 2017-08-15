@@ -5,11 +5,18 @@
 #import <UIKit/UIPanGestureRecognizer+Private.h>
 #import "macros.h"
 
+static CGRect cachedBounds;
+static CGFloat cachedBoundsHeight = 0;
+static CGFloat cachedBoundsWidth = 0;
+
 @implementation MZEModularControlCenterOverlayViewController
 
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
+		cachedBounds = [UIScreen mainScreen].bounds;
+		cachedBoundsWidth = CGRectGetWidth(cachedBounds);
+		cachedBoundsHeight = CGRectGetHeight(cachedBounds);
 		_cachedTargetPresentationFrame = CGRectNull;
 		_cachedSourcePresentationFrame = CGRectNull;
 		_presentationState = MZEPresentationStateDismissed;
@@ -72,6 +79,9 @@
 }
 
 - (void)viewWillLayoutSubviews {
+	cachedBounds = self.view.bounds;
+	cachedBoundsWidth = CGRectGetWidth(cachedBounds);
+	cachedBoundsHeight = CGRectGetHeight(cachedBounds);
 
 	[self _makePresentationFramesDirty];
 
@@ -481,12 +491,15 @@
 }
 
 - (void)_makePresentationFramesDirty {
+	cachedBounds = self.view.bounds;
+	cachedBoundsWidth = CGRectGetWidth(cachedBounds);
+	cachedBoundsHeight = CGRectGetHeight(cachedBounds);
 	_cachedSourcePresentationFrame = CGRectNull;
 	_cachedTargetPresentationFrame = CGRectNull;
 }
 
 - (void)_animateSetCollectionViewOriginYUpdatingRevealPercentage:(CGFloat)percentage {
-	[UIView animateWithDuration:0.05 animations:^{
+	[UIView animateWithDuration:0.00 animations:^{
 		[self _setCollectionViewOriginYUpdatingRevealPercentage:percentage];
 	} completion:nil];
 }
@@ -513,8 +526,8 @@
 
 	CGRect targetFrame = [self _targetPresentationFrame];
 
-	CGSize headerPocketSize = [_headerPocketView sizeThatFits:CGSizeMake(CGRectGetWidth([self.view bounds]),0.0f)];
-	CGFloat headerPocketBetween = CGRectGetHeight([self.view bounds]) - (CGRectGetHeight([self.view bounds]) - targetFrame.origin.y);
+	CGSize headerPocketSize = CGSizeMake(cachedBoundsWidth,64.0f);
+	CGFloat headerPocketBetween = cachedBoundsHeight - (cachedBoundsHeight - targetFrame.origin.y);
 	CGPoint headerPocketOrigin = CGPointMake(0,yOrigin - headerPocketBetween);
 	_headerPocketView.frame = CGRectMake(headerPocketOrigin.x,headerPocketOrigin.y,headerPocketSize.width,headerPocketSize.height);
 	CGFloat alpha = fminf(fmaxf((revealPercentage + -0.88) / 0.07, 0.0), 1.0);
@@ -537,7 +550,7 @@
 	CGRect cachedFrame = _cachedSourcePresentationFrame;
 	if (CGRectIsNull(cachedFrame)) {
 		CGRect targetFrame = [self _targetPresentationFrame];
-		targetFrame.origin.y = CGRectGetHeight([self.view bounds]);
+		targetFrame.origin.y = cachedBoundsHeight;
 		cachedFrame = targetFrame;
 		_cachedSourcePresentationFrame = cachedFrame;
 	}

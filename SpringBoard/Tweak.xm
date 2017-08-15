@@ -39,10 +39,18 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 static BOOL hasCalled = NO;
 
+
+%hook SBControlCenterController
+
+- (void)updateTransitionWithTouchLocation:(CGPoint)location velocity:(CGPoint)velocity {
+    MSHookIvar<BOOL>(self, "_dismissalPanHasGoneBelowCCTopEdge") = YES;
+    %orig;
+}
+
+%end
+
 %hook CCUIControlCenterViewController
 %property (nonatomic, retain) MZEModularControlCenterViewController *mze_viewController;
-
-
 
 -(CGFloat)_scrollviewContentMaxHeight {
   if (self.mze_viewController) {
@@ -57,7 +65,30 @@ static BOOL hasCalled = NO;
   } else return %orig;
 }
 
-// - (void)_loadPages {
+// -(CGFloat)_scrollviewContentMaxHeight {
+//   if (self.mze_viewController) {
+//    // if (!self.presented) {
+//       return [self.mze_viewController _targetPresentationFrame].size.height;
+//    // } else {
+//     //  return [self.mze_viewController _targetPresentationFrame].size.height;
+//     //}
+//   }
+//   return %orig;
+// }
+
+// - (CGRect)_frameForChildViewController:(CCUIControlCenterPageContainerViewController *)viewController {
+//   if (self.mze_viewController) {
+//    // return self.view.bounds;
+//     if (self.presented) {
+//       return self.view.bounds;
+//     }
+//     return [self.mze_viewController _targetPresentationFrame];
+//   } else return %orig;
+// }
+
+- (void)_loadPages {
+  return;
+}
 //    if (!self.mze_viewController) {
 //     self.mze_viewController = [[MZEModularControlCenterOverlayViewController alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
 //     [self.view addSubview:self.mze_viewController.view];
@@ -89,7 +120,11 @@ static BOOL hasCalled = NO;
     //self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
   }
 
-  %orig;
+  // if (self.mze_viewController && self.presented) {
+  //   revealPercentage = revealPercentage * (self.view.bounds.size.height/(CGRectGetHeight(self.view.bounds) - [self.mze_viewController _targetPresentationFrame].origin.y));
+  //   //revealPercentage = fmaxf(fminf(revealPercentage, 1.0), 0.0);
+  // }
+  %orig(revealPercentage);
 
   if (!self.presented && !hasCalled) {
     [self.mze_viewController willBecomeActive];
@@ -300,12 +335,13 @@ static BOOL hasCalled = NO;
   return NO;
 }
 
-// -(void)controlCenterWillPresent {
-//   %orig;
-//   if (self.mze_viewController) {
-//     [self.mze_viewController willBecomeActive];
-//   }
-// }
+-(void)controlCenterWillPresent {
+  %orig;
+  if (self.mze_viewController && !hasCalled) {
+    [self.mze_viewController willBecomeActive];
+    hasCalled = YES;
+  }
+}
 
 // -(void)controlCenterDidDismiss {
 //   %orig;
@@ -351,6 +387,9 @@ static BOOL hasCalled = NO;
     [self.mze_viewController viewWillLayoutSubviews];
     self.mze_viewController.view.userInteractionEnabled = YES;
     hasCalled = NO;
+  } else if (!hasCalled && presented) {
+    [self.mze_viewController willBecomeActive];
+    hasCalled = YES;
   }
   %orig;
 }
