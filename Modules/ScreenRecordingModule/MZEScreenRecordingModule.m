@@ -1,12 +1,25 @@
 #import "MZEScreenRecordingModule.h"
+#import <SpringBoard/SBCCRecordScreenShortcut.h>
+
 @implementation MZEScreenRecordingModule
 
 - (id)init {
 	self = [super initWithSwitchIdentifier:@"com.a3tweaks.switch.record-screen"];
 	if (self) {
-		_recordToggle = [[NSClassFromString(@"CCUIRecordScreenShortcut") alloc] init];
+		NSString *recordToggleClass = @"CCUIRecordScreenShortcut";
+		if (!NSClassFromString(@"CCUIRecordScreenShortcut"))
+			recordToggleClass = @"SBCCRecordScreenShortcut";
+		self.recordToggle = [[NSClassFromString(recordToggleClass) alloc] init];
 	}
 	return self;
+}
+
++ (BOOL)isSupported {
+	if (NSClassFromString(@"CCUIRecordScreenShortcut")) {
+		return [NSClassFromString(@"CCUIRecordScreenShortcut") isSupported:0];
+	} else {
+		return [NSClassFromString(@"SBCCRecordScreenShortcut") isSupported:0];
+	}
 }
 
 - (CAPackage *)glyphPackage {
@@ -53,7 +66,7 @@
 		// }];
 	} else {
 		//[super setSelected:isSelected];
-		[_recordToggle _stopRecording];
+		[self.recordToggle _stopRecording];
 		[_viewController setGlyphState:@"off"];
 		[_viewController setSelected:isSelected];
 		_isRecording = isSelected;
@@ -63,7 +76,7 @@
 - (void)countDownMethodFired:(NSTimer *)timer {
 	if (_countingDown) {
 		_isRecording = YES;
-		[_recordToggle _startRecording];
+		[self.recordToggle _startRecording];
 		_countingDown = NO;
 		[_viewController setGlyphState:@"recording"];
 		[_viewController setSelected:YES];
@@ -102,10 +115,10 @@
 	// }
 	if (_countingDown) {
 		if ([selected boolValue]) {
-			[_recordToggle _startRecording];
+			[self.recordToggle _startRecording];
 			_isRecording = YES;
 		} else {
-			[_recordToggle _stopRecording];
+			[self.recordToggle _stopRecording];
 			_isRecording = NO;
 		}
 		[_viewController setSelected:[selected boolValue]];

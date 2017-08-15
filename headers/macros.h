@@ -29,7 +29,9 @@
     CGPoint UIRectGetCenter(CGRect rect);
 	CGFloat UICeilToViewScale(CGFloat value, UIView *view);
 	CGFloat UIRoundToViewScale(CGFloat value, UIView *view);
-	CGPoint UIPointRoundToViewScale(CGPoint point, UIView *view);
+	//CGPoint UIPointRoundToViewScale(CGPoint point, UIView *view);
 #if __cplusplus
 }
 #endif
+
+#define UIPointRoundToViewScale(point, view) CGPointMake(UIRoundToViewScale(point.x, view), UIRoundToViewScale(point.y,view))

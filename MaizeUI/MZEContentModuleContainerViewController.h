@@ -24,7 +24,6 @@
     UIView *_contentView;
     UIView *_maskView;
     UITapGestureRecognizer *_tapRecognizer;
-    UIPreviewInteraction *_previewInteraction;
     UIViewController *_originalParentViewController;
     UIEdgeInsets _expandedContentEdgeInsets;
     CGFloat _firstX;
@@ -34,13 +33,12 @@
     MZEBreatheGestureRecognizer *_breatheRecognizer;
     UILongPressGestureRecognizer *_longPressRecognizer;
     CALayer *_maskLayer;
-    UIViewPropertyAnimator *_bubblingAnimator;
 }
 
 @property(retain, nonatomic, readwrite) UIViewController *originalParentViewController;
 @property(nonatomic, readwrite) BOOL didSendContentDisappearanceCalls; 
 @property(nonatomic, readwrite) BOOL didSendContentAppearanceCalls; 
-@property(retain, nonatomic, readwrite) UIPreviewInteraction *previewInteraction;
+@property(retain, nonatomic) UIPreviewInteraction *previewInteraction;
 @property(retain, nonatomic, readwrite) UITapGestureRecognizer *tapRecognizer;
 @property(retain, nonatomic, readwrite) UIView *maskView;
 @property(retain, nonatomic, readwrite) UIView *contentView;
@@ -58,7 +56,7 @@
 @property(readonly, nonatomic) MZEContentModuleContainerView *moduleContainerView;
 @property(retain,nonatomic,readwrite) MZEBreatheGestureRecognizer *breatheRecognizer;
 @property(retain, nonatomic, readwrite) UILongPressGestureRecognizer *longPressRecognizer;
-@property (retain, nonatomic, readwrite) UIViewPropertyAnimator *bubblingAnimator;
+@property (retain, nonatomic) UIViewPropertyAnimator *bubblingAnimator;
 @property (nonatomic, retain, readwrite) CALayer *maskLayer;
 - (id)initWithModuleIdentifier:(NSString *)identifier contentModule:(id<MZEContentModule>)contentModule;
 - (id)init;

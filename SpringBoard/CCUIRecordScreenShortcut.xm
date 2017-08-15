@@ -1,3 +1,7 @@
+#import <objc/runtime.h>
+#import <dlfcn.h>
+
+
 @interface RPScreenRecorder : NSObject
 + (instancetype)sharedRecorder;
 - (BOOL)isRecording;
@@ -12,13 +16,25 @@
 
 
 
-%hook CCUIRecordScreenShortcut
+%hook RecordScreenShortcutClass
 - (void)_toggleState {
 	if ([[NSClassFromString(@"RPScreenRecorder") sharedRecorder] isRecording]) {
-		[self _stopRecording];
+		[(CCUIRecordScreenShortcut *)self _stopRecording];
 	} else {
-		[self _startRecording];
+		[(CCUIRecordScreenShortcut *)self _startRecording];
 	}
 	return;
 }
 %end
+
+%ctor {
+
+	dlopen("/System/Library/Frameworks/ReplayKit.framework/ReplayKit", RTLD_NOW);
+
+	NSString *recordShortcutClass;
+	if (NSClassFromString(@"CCUIRecordScreenShortcut"))
+		recordShortcutClass = @"CCUIRecordScreenShortcut";
+	else
+		recordShortcutClass = @"SBCCRecordScreenShortcut";
+	%init(RecordScreenShortcutClass=NSClassFromString(recordShortcutClass));
+}

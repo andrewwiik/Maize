@@ -75,7 +75,9 @@
 			[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
 			return YES;
 		} else {
-			[self.previewInteraction cancelInteraction];
+			if (self.previewInteraction) {
+				[self.previewInteraction cancelInteraction];
+			}
 		}
 
 	}
@@ -198,8 +200,12 @@
 		[_backgroundView addSubview:_backgroundViewController.view];
 	}
 
-	_previewInteraction = [[UIPreviewInteraction alloc] initWithView:self.view];
-	_previewInteraction.delegate = self;
+	if (NSClassFromString(@"UIPreviewInteraction")) {
+
+		self.previewInteraction = [[NSClassFromString(@"UIPreviewInteraction") alloc] initWithView:self.view];
+		self.previewInteraction.delegate = self;
+	}
+
 	_tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleTapGestureRecognizer:)];
 	_tapRecognizer.delegate = self;
 	[_backgroundView addGestureRecognizer:_tapRecognizer];
@@ -490,7 +496,9 @@
 			if (self.bubblingAnimator) {
 				[self.bubblingAnimator stopAnimation:YES];
 			}
-	    	[self.previewInteraction cancelInteraction];
+			if (self.previewInteraction) {
+				[self.previewInteraction cancelInteraction];
+			}
 	    	_canBubble = YES;
 	    	[UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 				self.view.transform = CGAffineTransformIdentity;
@@ -512,13 +520,16 @@
 						self.view.transform = CGAffineTransformMakeScale(1.05,1.05);
 					} completion:nil];
 	        	} else {
-	        		self.bubblingAnimator = [[UIViewPropertyAnimator alloc] initWithDuration:0.5 curve:UIViewAnimationCurveEaseIn animations:^{
-	        			self.view.transform = CGAffineTransformMakeScale(1.25,1.25);
-	        		}];
 
-	        		self.bubblingAnimator.interruptible = YES;
-	        		self.bubblingAnimator.userInteractionEnabled = YES;
-	        		[self.bubblingAnimator startAnimation];
+	        		if (NSClassFromString(@"UIViewPropertyAnimator")) {
+	        			self.bubblingAnimator = [[UIViewPropertyAnimator alloc] initWithDuration:0.5 curve:UIViewAnimationCurveEaseIn animations:^{
+		        			self.view.transform = CGAffineTransformMakeScale(1.25,1.25);
+		        		}];
+
+		        		self.bubblingAnimator.interruptible = YES;
+		        		self.bubblingAnimator.userInteractionEnabled = YES;
+		        		[self.bubblingAnimator startAnimation];
+	        		}
 	        	}
 	            break;
 	        }
@@ -531,7 +542,9 @@
 	        		if (self.bubblingAnimator) {
 	        			[self.bubblingAnimator stopAnimation:YES];
 	        		}
-		        	[self.previewInteraction cancelInteraction];
+	        		if (self.previewInteraction) {
+	        			[self.previewInteraction cancelInteraction];
+	        		}
 		        	_canBubble = YES;
 		        	[UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 						self.view.transform = CGAffineTransformIdentity;
@@ -584,6 +597,9 @@
 
 
 - (BOOL)forceTouchSupported {
+	if (!NSClassFromString(@"UIPreviewInteraction")) {
+		return NO;
+	}
 	return [[self.view traitCollection] forceTouchCapability] == UIForceTouchCapabilityAvailable;
 	// static dispatch_once_t onceToken;
  //    dispatch_once(&onceToken, ^{

@@ -39,114 +39,153 @@ typedef struct CAColorMatrix CAColorMatrix;
 
 static BOOL hasCalled = NO;
 
+static BOOL isIOS9 = NO;
+
+static CGPoint initialTransitionPoint;
+
+static MZEModularControlCenterOverlayViewController *sharedController;
+
+
+@interface SBControlCenterController : UIViewController
+@property (assign,getter=isPresented,nonatomic) BOOL presented;
+@end
 
 %hook SBControlCenterController
 
 - (void)updateTransitionWithTouchLocation:(CGPoint)location velocity:(CGPoint)velocity {
-    MSHookIvar<BOOL>(self, "_dismissalPanHasGoneBelowCCTopEdge") = YES;
+    if (NSClassFromString(@"CCUIControlCenterViewController")) {
+      MSHookIvar<BOOL>(self, "_dismissalPanHasGoneBelowCCTopEdge") = YES;
+    }
     %orig;
+}
+
+- (CGFloat)_yValueForOpen {
+  if (isIOS9 && sharedController) {
+    if (!self.presented) {
+      return CGRectGetHeight(sharedController.view.bounds) - [sharedController _targetPresentationFrame].origin.y;
+    }
+    return [sharedController _targetPresentationFrame].origin.y/2;
+  } else return %orig;
+}
+
+- (CGFloat)_controlCenterHeightForTouchLocation:(CGPoint)touchLocation {
+  if (isIOS9 && sharedController && self.presented) {
+    if (initialTransitionPoint.x != 0) {
+       return (CGRectGetHeight(sharedController.view.bounds) - [sharedController _targetPresentationFrame].origin.y) - (touchLocation.y - initialTransitionPoint.y);
+     // [sharedController _targetPresentationFrame].origin.y
+      //return initialTransitionPoint.y - touchLocation.y
+    }
+  }
+
+  return %orig;
+}
+
+- (void)_beginTransitionWithTouchLocation:(CGPoint)touchLocation {
+  initialTransitionPoint = touchLocation;
+  %orig;
 }
 
 %end
 
-%hook CCUIControlCenterViewController
+%hook CCUIControlCenterViewControllerRootClass
 %property (nonatomic, retain) MZEModularControlCenterViewController *mze_viewController;
 
 -(CGFloat)_scrollviewContentMaxHeight {
-  if (self.mze_viewController) {
-    return CGRectGetHeight(self.view.bounds) - [self.mze_viewController _targetPresentationFrame].origin.y;
+  if (((CCUIControlCenterViewController *)self).mze_viewController) {
+    return CGRectGetHeight(((CCUIControlCenterViewController *)self).view.bounds) - [((CCUIControlCenterViewController *)self).mze_viewController _targetPresentationFrame].origin.y;
   }
   return %orig;
 }
 
 - (CGRect)_frameForChildViewController:(CCUIControlCenterPageContainerViewController *)viewController {
-  if (self.mze_viewController) {
-    return [self.mze_viewController _targetPresentationFrame];
+  if (((CCUIControlCenterViewController *)self).mze_viewController) {
+    return [((CCUIControlCenterViewController *)self).mze_viewController _targetPresentationFrame];
   } else return %orig;
 }
 
 // -(CGFloat)_scrollviewContentMaxHeight {
-//   if (self.mze_viewController) {
-//    // if (!self.presented) {
-//       return [self.mze_viewController _targetPresentationFrame].size.height;
+//   if (((CCUIControlCenterViewController *)self).mze_viewController) {
+//    // if (!((CCUIControlCenterViewController *)self).presented) {
+//       return [((CCUIControlCenterViewController *)self).mze_viewController _targetPresentationFrame].size.height;
 //    // } else {
-//     //  return [self.mze_viewController _targetPresentationFrame].size.height;
+//     //  return [((CCUIControlCenterViewController *)self).mze_viewController _targetPresentationFrame].size.height;
 //     //}
 //   }
 //   return %orig;
 // }
 
 // - (CGRect)_frameForChildViewController:(CCUIControlCenterPageContainerViewController *)viewController {
-//   if (self.mze_viewController) {
-//    // return self.view.bounds;
-//     if (self.presented) {
-//       return self.view.bounds;
+//   if (((CCUIControlCenterViewController *)self).mze_viewController) {
+//    // return ((CCUIControlCenterViewController *)self).view.bounds;
+//     if (((CCUIControlCenterViewController *)self).presented) {
+//       return ((CCUIControlCenterViewController *)self).view.bounds;
 //     }
-//     return [self.mze_viewController _targetPresentationFrame];
+//     return [((CCUIControlCenterViewController *)self).mze_viewController _targetPresentationFrame];
 //   } else return %orig;
 // }
 
 - (void)_loadPages {
   return;
 }
-//    if (!self.mze_viewController) {
-//     self.mze_viewController = [[MZEModularControlCenterOverlayViewController alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
-//     [self.view addSubview:self.mze_viewController.view];
-//     [self addChildViewController:self.mze_viewController];
-//     [self.mze_viewController didMoveToParentViewController:self];
+//    if (!((CCUIControlCenterViewController *)self).mze_viewController) {
+//     ((CCUIControlCenterViewController *)self).mze_viewController = [[MZEModularControlCenterOverlayViewController alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];
+//     [((CCUIControlCenterViewController *)self).view addSubview:((CCUIControlCenterViewController *)self).mze_viewController.view];
+//     [self addChildViewController:((CCUIControlCenterViewController *)self).mze_viewController];
+//     [((CCUIControlCenterViewController *)self).mze_viewController didMoveToParentViewController:self];
 
-//     // [self.mze_viewController loadView];
-//     // [self.mze_viewController viewDidLoad];
-//     // [self.mze_viewController viewWillLayoutSubviews];
-//    // self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-//     // [self.view addSubview:self.mze_viewController.view];
-//     //self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+//     // [((CCUIControlCenterViewController *)self).mze_viewController loadView];
+//     // [((CCUIControlCenterViewController *)self).mze_viewController viewDidLoad];
+//     // [((CCUIControlCenterViewController *)self).mze_viewController viewWillLayoutSubviews];
+//    // ((CCUIControlCenterViewController *)self).mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+//     // [((CCUIControlCenterViewController *)self).view addSubview:((CCUIControlCenterViewController *)self).mze_viewController.view];
+//     //((CCUIControlCenterViewController *)self).mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 //   }
 // }
 
 -(void)setRevealPercentage:(CGFloat)revealPercentage {
 
-  if (!self.mze_viewController) {
-    self.mze_viewController = [[MZEModularControlCenterOverlayViewController alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
-    [self.view addSubview:self.mze_viewController.view];
-    [self addChildViewController:self.mze_viewController];
-    [self.mze_viewController didMoveToParentViewController:self];
+  if (!((CCUIControlCenterViewController *)self).mze_viewController) {
+    ((CCUIControlCenterViewController *)self).mze_viewController = [[MZEModularControlCenterOverlayViewController alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];
+    sharedController = ((CCUIControlCenterViewController *)self).mze_viewController;
+    [((CCUIControlCenterViewController *)self).view addSubview:((CCUIControlCenterViewController *)self).mze_viewController.view];
+    [self addChildViewController:((CCUIControlCenterViewController *)self).mze_viewController];
+    [((CCUIControlCenterViewController *)self).mze_viewController didMoveToParentViewController:self];
 
-    // [self.mze_viewController loadView];
-    // [self.mze_viewController viewDidLoad];
-    // [self.mze_viewController viewWillLayoutSubviews];
-   // self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-    // [self.view addSubview:self.mze_viewController.view];
-    //self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    // [((CCUIControlCenterViewController *)self).mze_viewController loadView];
+    // [((CCUIControlCenterViewController *)self).mze_viewController viewDidLoad];
+    // [((CCUIControlCenterViewController *)self).mze_viewController viewWillLayoutSubviews];
+   // ((CCUIControlCenterViewController *)self).mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    // [((CCUIControlCenterViewController *)self).view addSubview:((CCUIControlCenterViewController *)self).mze_viewController.view];
+    //((CCUIControlCenterViewController *)self).mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
   }
 
-  // if (self.mze_viewController && self.presented) {
-  //   revealPercentage = revealPercentage * (self.view.bounds.size.height/(CGRectGetHeight(self.view.bounds) - [self.mze_viewController _targetPresentationFrame].origin.y));
+  // if (((CCUIControlCenterViewController *)self).mze_viewController && ((CCUIControlCenterViewController *)self).presented) {
+  //   revealPercentage = revealPercentage * (((CCUIControlCenterViewController *)self).view.bounds.size.height/(CGRectGetHeight(((CCUIControlCenterViewController *)self).view.bounds) - [((CCUIControlCenterViewController *)self).mze_viewController _targetPresentationFrame].origin.y));
   //   //revealPercentage = fmaxf(fminf(revealPercentage, 1.0), 0.0);
   // }
   %orig(revealPercentage);
 
-  if (!self.presented && !hasCalled) {
-    [self.mze_viewController willBecomeActive];
+  if (!((CCUIControlCenterViewController *)self).presented && !hasCalled) {
+    [((CCUIControlCenterViewController *)self).mze_viewController willBecomeActive];
   }
 
-  self.mze_viewController.view.userInteractionEnabled = YES;
+  ((CCUIControlCenterViewController *)self).mze_viewController.view.userInteractionEnabled = YES;
   hasCalled = YES;
 
- // self.mze_viewController.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height);
+ // ((CCUIControlCenterViewController *)self).mze_viewController.frame = CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height);
 
-  // [self.mze_viewController ]
+  // [((CCUIControlCenterViewController *)self).mze_viewController ]
   // if (!self.mze_animatedBlurView) {
 
-  //   self.luminanceViewHolder = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
+  //   self.luminanceViewHolder = [[UIView alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];
   //   self.luminanceViewHolder.layer.allowsGroupBlending = NO;
-  //   [self.view addSubview:self.luminanceViewHolder];
+  //   [((CCUIControlCenterViewController *)self).view addSubview:self.luminanceViewHolder];
   // 	self.mze_lumnianceView = [[_MZEBackdropView alloc] init];
-  // 	self.mze_lumnianceView.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height);
+  // 	self.mze_lumnianceView.frame = CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height);
   // 	self.mze_lumnianceView.luminanceAlpha = 1.0f;
   //   //self.mze_lumnianceView.alpha = 0.45;
   // 	[self.luminanceViewHolder addSubview:self.mze_lumnianceView];
-  // 	self.mze_animatedBlurView = [[MZEAnimatedBlurView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width,self.view.frame.size.height)];
+  // 	self.mze_animatedBlurView = [[MZEAnimatedBlurView alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width,((CCUIControlCenterViewController *)self).view.frame.size.height)];
   // 	self.mze_animatedBlurView.backdropSettings = [NSClassFromString(@"_UIBackdropViewSettings") settingsForStyle:-2];
   // 	self.mze_animatedBlurView.backdropSettings.blurRadius = 30.0f;
   // 	self.mze_animatedBlurView.backdropSettings.saturationDeltaFactor = 1.9f;
@@ -156,14 +195,14 @@ static BOOL hasCalled = NO;
   //   self.mze_animatedBlurView.backdropSettings.usesGrayscaleTintView = NO;
   //   self.mze_animatedBlurView.backdropSettings.usesColorTintView = NO;
 
-  // 	[self.view addSubview:self.mze_animatedBlurView];
-  // 	[self.view bringSubviewToFront:self.mze_animatedBlurView];
+  // 	[((CCUIControlCenterViewController *)self).view addSubview:self.mze_animatedBlurView];
+  // 	[((CCUIControlCenterViewController *)self).view bringSubviewToFront:self.mze_animatedBlurView];
   // }
 
   // if (!self.moduleViewHolder) {
-  //   self.moduleViewHolder = [[MZEModuleCollectionViewController alloc] initWithFrame:self.view.frame];
-  //   [self.view addSubview:self.moduleViewHolder.view];
-  //   //[self.view bringSubviewToFront:self.mod]
+  //   self.moduleViewHolder = [[MZEModuleCollectionViewController alloc] initWithFrame:((CCUIControlCenterViewController *)self).view.frame];
+  //   [((CCUIControlCenterViewController *)self).view addSubview:self.moduleViewHolder.view];
+  //   //[((CCUIControlCenterViewController *)self).view bringSubviewToFront:self.mod]
   // }
 
   // if (!self.animator && self.moduleViewHolder && self.moduleViewHolder.view) {
@@ -181,8 +220,8 @@ static BOOL hasCalled = NO;
 
 
   // if (!self.moduleViewHolder) {
-  //   self.moduleViewHolder = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
-  //   [self.view addSubview:self.moduleViewHolder];
+  //   self.moduleViewHolder = [[UIView alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];
+  //   [((CCUIControlCenterViewController *)self).view addSubview:self.moduleViewHolder];
   //   CGFloat moduleSize = [MZELayoutOptions edgeSize];
   //   CGFloat moduleSpacing = [MZELayoutOptions itemSpacingSize];
   //   CGFloat edgeInset = [MZELayoutOptions edgeInsetSize];
@@ -315,8 +354,8 @@ static BOOL hasCalled = NO;
     // }
   // }
 
-  for (UIView *subview in self.view.subviews) {
-  	if (subview != self.mze_viewController.view) {
+  for (UIView *subview in ((CCUIControlCenterViewController *)self).view.subviews) {
+  	if (subview != ((CCUIControlCenterViewController *)self).mze_viewController.view) {
   		subview.alpha = 0;
   		subview.hidden = YES;
   	}
@@ -324,7 +363,7 @@ static BOOL hasCalled = NO;
 
 
 
-  [self.mze_viewController revealWithProgress:revealPercentage];
+  [((CCUIControlCenterViewController *)self).mze_viewController revealWithProgress:revealPercentage];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)recognizer shouldReceiveTouch:(UITouch *)touch {
@@ -337,43 +376,60 @@ static BOOL hasCalled = NO;
 
 -(void)controlCenterWillPresent {
   %orig;
-  if (self.mze_viewController && !hasCalled) {
-    [self.mze_viewController willBecomeActive];
+  if (((CCUIControlCenterViewController *)self).mze_viewController && !hasCalled) {
+    [((CCUIControlCenterViewController *)self).mze_viewController willBecomeActive];
     hasCalled = YES;
   }
 }
 
+-(void)_noteControlCenterControlDidActivate:(id)arg1 {
+  %orig;
+  if (((CCUIControlCenterViewController *)self).mze_viewController && !hasCalled) {
+    [((CCUIControlCenterViewController *)self).mze_viewController willBecomeActive];
+    hasCalled = YES;
+  }
+}
+
+-(void)_noteControlCenterControlDidDeactivate:(id)arg1 {
+  %orig;
+  if (((CCUIControlCenterViewController *)self).mze_viewController && hasCalled) {
+      hasCalled = NO;
+      [((CCUIControlCenterViewController *)self).mze_viewController willResignActive];
+      [((CCUIControlCenterViewController *)self).mze_viewController viewWillLayoutSubviews];
+    }
+}
+
 // -(void)controlCenterDidDismiss {
 //   %orig;
-//   if (self.mze_viewController) {
-//     [self.mze_viewController willResignActive];
+//   if (((CCUIControlCenterViewController *)self).mze_viewController) {
+//     [((CCUIControlCenterViewController *)self).mze_viewController willResignActive];
 //   }
 // }
 
 -(void)controlCenterWillBeginTransition {
   %orig;
-  if (self.mze_viewController) {
-      [self.mze_viewController viewWillLayoutSubviews];
+  if (((CCUIControlCenterViewController *)self).mze_viewController) {
+      [((CCUIControlCenterViewController *)self).mze_viewController viewWillLayoutSubviews];
     }
 }
 -(void)controlCenterDidFinishTransition {
   %orig;
-    if (self.mze_viewController) {
-      [self.mze_viewController viewWillLayoutSubviews];
+    if (((CCUIControlCenterViewController *)self).mze_viewController) {
+      [((CCUIControlCenterViewController *)self).mze_viewController viewWillLayoutSubviews];
     }
 }
 
 // -(void)_handlePan:(UIPanGestureRecognizer *)recognizer {
 //   if (recognizer.state == UIGestureRecognizerStateBegan) {
-//     if (!self.mze_viewController) {
-//       self.mze_viewController = [[MZEModularControlCenterViewController alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height)];
-//       [self.mze_viewController loadView];
-//       self.mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-//       [self.view addSubview:self.mze_viewController.view];
+//     if (!((CCUIControlCenterViewController *)self).mze_viewController) {
+//       ((CCUIControlCenterViewController *)self).mze_viewController = [[MZEModularControlCenterViewController alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];
+//       [((CCUIControlCenterViewController *)self).mze_viewController loadView];
+//       ((CCUIControlCenterViewController *)self).mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+//       [((CCUIControlCenterViewController *)self).view addSubview:((CCUIControlCenterViewController *)self).mze_viewController.view];
 //     }
 
-//     if (!self.presented) {
-//       [self.mze_viewController willBecomeActive];
+//     if (!((CCUIControlCenterViewController *)self).presented) {
+//       [((CCUIControlCenterViewController *)self).mze_viewController willBecomeActive];
 //     }
 //   }
 
@@ -382,38 +438,38 @@ static BOOL hasCalled = NO;
 // }
 
 - (void)setPresented:(BOOL)presented {
-  if (!presented && self.mze_viewController && self.presented && hasCalled) {
-    [self.mze_viewController willResignActive];
-    [self.mze_viewController viewWillLayoutSubviews];
-    self.mze_viewController.view.userInteractionEnabled = YES;
+  if (!presented && ((CCUIControlCenterViewController *)self).mze_viewController && ((CCUIControlCenterViewController *)self).presented && hasCalled) {
+    [((CCUIControlCenterViewController *)self).mze_viewController willResignActive];
+    [((CCUIControlCenterViewController *)self).mze_viewController viewWillLayoutSubviews];
+    ((CCUIControlCenterViewController *)self).mze_viewController.view.userInteractionEnabled = YES;
     hasCalled = NO;
   } else if (!hasCalled && presented) {
-    [self.mze_viewController willBecomeActive];
+    [((CCUIControlCenterViewController *)self).mze_viewController willBecomeActive];
     hasCalled = YES;
   }
   %orig;
 }
 -(void)controlCenterWillFinishTransitionOpen:(BOOL)arg1 withDuration:(NSTimeInterval)arg2 {
   if (!arg1) {
-    if (self.mze_viewController && hasCalled) {
+    if (((CCUIControlCenterViewController *)self).mze_viewController && hasCalled) {
       hasCalled = NO;
-      [self.mze_viewController willResignActive];
-      [self.mze_viewController viewWillLayoutSubviews];
-      self.mze_viewController.view.userInteractionEnabled = YES;
+      [((CCUIControlCenterViewController *)self).mze_viewController willResignActive];
+      [((CCUIControlCenterViewController *)self).mze_viewController viewWillLayoutSubviews];
+      ((CCUIControlCenterViewController *)self).mze_viewController.view.userInteractionEnabled = YES;
     }
   }
-  if (self.mze_viewController) {
-    self.mze_viewController.view.userInteractionEnabled = YES;
+  if (((CCUIControlCenterViewController *)self).mze_viewController) {
+    ((CCUIControlCenterViewController *)self).mze_viewController.view.userInteractionEnabled = YES;
   }
   %orig;
 }
 
 -(void)controlCenterDidDismiss {
   %orig;
-  if (self.mze_viewController && hasCalled) {
+  if (((CCUIControlCenterViewController *)self).mze_viewController && hasCalled) {
       hasCalled = NO;
-      [self.mze_viewController willResignActive];
-      [self.mze_viewController viewWillLayoutSubviews];
+      [((CCUIControlCenterViewController *)self).mze_viewController willResignActive];
+      [((CCUIControlCenterViewController *)self).mze_viewController viewWillLayoutSubviews];
     }
 }
 %end
@@ -469,4 +525,17 @@ static BOOL hasCalled = NO;
     
 }
 %end
+
+
+%ctor {
+  NSString *controlCenterControllerClass;
+  if (NSClassFromString(@"CCUIControlCenterViewController")) {
+    controlCenterControllerClass = @"CCUIControlCenterViewController";
+  } else {
+    controlCenterControllerClass = @"SBControlCenterViewController";
+    isIOS9 = YES;
+  }
+
+  %init(CCUIControlCenterViewControllerRootClass=NSClassFromString(controlCenterControllerClass));
+}
 

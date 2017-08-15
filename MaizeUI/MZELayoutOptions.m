@@ -75,148 +75,151 @@ static CGFloat cachedDeviceHeight = 0;
 	static dispatch_once_t onceToken3;
     dispatch_once(&onceToken3, ^{
 
-		CGFloat deviceWidth = [MZELayoutOptions deviceWidth];
-		CGFloat deviceHeight = [MZELayoutOptions deviceHeight];
-		if (!spacingInterpolator) {
-			spacingInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[spacingInterpolator addValue:8 forReferenceMetric:320];
-			[spacingInterpolator addValue:15 forReferenceMetric:375];
-			[spacingInterpolator addValue:14 forReferenceMetric:414];
-			[spacingInterpolator addValue:10 forReferenceMetric:768];
-			cachedSpacingSize = [spacingInterpolator valueForReferenceMetric:deviceWidth];
+    	if (NSClassFromString(@"MPULayoutInterpolator")) {
+
+			CGFloat deviceWidth = [MZELayoutOptions deviceWidth];
+			CGFloat deviceHeight = [MZELayoutOptions deviceHeight];
+			if (!spacingInterpolator) {
+				spacingInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[spacingInterpolator addValue:8 forReferenceMetric:320];
+				[spacingInterpolator addValue:15 forReferenceMetric:375];
+				[spacingInterpolator addValue:14 forReferenceMetric:414];
+				[spacingInterpolator addValue:10 forReferenceMetric:768];
+				cachedSpacingSize = [spacingInterpolator valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!edgeInterpolator) {
+				edgeInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[edgeInterpolator addValue:66 forReferenceMetric:320];
+				[edgeInterpolator addValue:69 forReferenceMetric:375];
+				[edgeInterpolator addValue:76 forReferenceMetric:414];
+				[edgeInterpolator addValue:66 forReferenceMetric:768];
+				cachedEdgeSize = [edgeInterpolator valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!insetInterpolator) {
+				insetInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[insetInterpolator addValue:16 forReferenceMetric:320];
+				[insetInterpolator addValue:27 forReferenceMetric:375];
+				[insetInterpolator addValue:34 forReferenceMetric:414];
+				[insetInterpolator addValue:140 forReferenceMetric:568];
+				[insetInterpolator addValue:173 forReferenceMetric:667];
+				[insetInterpolator addValue:60 forReferenceMetric:736];
+				[insetInterpolator addValue:30 forReferenceMetric:768];
+				cachedInsetSize = [insetInterpolator valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!roundButtonInterpolator) {
+				roundButtonInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[roundButtonInterpolator addValue:52 forReferenceMetric:320];
+				[roundButtonInterpolator addValue:54 forReferenceMetric:375];
+				[roundButtonInterpolator addValue:60 forReferenceMetric:414];
+				[roundButtonInterpolator addValue:52 forReferenceMetric:768];
+				cachedRoundButtonSize = [roundButtonInterpolator valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!roundButtonExpandedSideInsetInterpolator) {
+				roundButtonExpandedSideInsetInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[roundButtonExpandedSideInsetInterpolator addValue:12 forReferenceMetric:320];
+				[roundButtonExpandedSideInsetInterpolator addValue:16 forReferenceMetric:375];
+				[roundButtonExpandedSideInsetInterpolator addValue:16 forReferenceMetric:414];
+				[roundButtonExpandedSideInsetInterpolator addValue:14 forReferenceMetric:768];
+				cachedRoundButtonExpandedSizeInsetSize = [roundButtonExpandedSideInsetInterpolator valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!roundButtonContainerExpandedSizeHeight) {
+				roundButtonContainerExpandedSizeHeight = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[roundButtonContainerExpandedSizeHeight addValue:84.5 forReferenceMetric:320];
+				[roundButtonContainerExpandedSizeHeight addValue:86.5 forReferenceMetric:375];
+				[roundButtonContainerExpandedSizeHeight addValue:92.3333 forReferenceMetric:414];
+				cachedRoundButtonExpandedContainerHeight = [roundButtonContainerExpandedSizeHeight valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!roundButtonContainerExpandedSizeWidth) {
+				roundButtonContainerExpandedSizeWidth = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[roundButtonContainerExpandedSizeWidth addValue:126 forReferenceMetric:320];
+				[roundButtonContainerExpandedSizeWidth addValue:136.5 forReferenceMetric:375];
+				[roundButtonContainerExpandedSizeWidth addValue:149 forReferenceMetric:414];
+				cachedRoundButtonExpandedContainerWidth = [roundButtonContainerExpandedSizeWidth valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!sliderExpandedHeightInterpolator) {
+				sliderExpandedHeightInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[sliderExpandedHeightInterpolator addValue:254 forReferenceMetric:568];
+				[sliderExpandedHeightInterpolator addValue:315 forReferenceMetric:667];
+				[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:736];
+				[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:1024];
+				[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:768];
+
+				cachedExpandedSliderHeight = [sliderExpandedHeightInterpolator valueForReferenceMetric:deviceHeight];
+			}
+
+			if (!sliderExpandedWidthInterpolator) {
+				sliderExpandedWidthInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[sliderExpandedWidthInterpolator addValue:106 forReferenceMetric:320];
+				[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:375];
+				[sliderExpandedWidthInterpolator addValue:132 forReferenceMetric:414];
+				[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:768];
+				[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:1024];
+
+				cachedExpandedSliderWidth = [sliderExpandedWidthInterpolator valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!defaultExpandedWidthInterpolator) {
+				defaultExpandedWidthInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[defaultExpandedWidthInterpolator addValue:288 forReferenceMetric:320];
+				[defaultExpandedWidthInterpolator addValue:321 forReferenceMetric:375];
+				[defaultExpandedWidthInterpolator addValue:346 forReferenceMetric:414];
+				[defaultExpandedWidthInterpolator addValue:321 forReferenceMetric:768];
+				[defaultExpandedWidthInterpolator addValue:321 forReferenceMetric:1024];
+
+				cachedDefaultExpandedModuleWidth = [defaultExpandedWidthInterpolator valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!defaultMenuItemHeightInterpolator) {
+				defaultMenuItemHeightInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[defaultMenuItemHeightInterpolator addValue:50.5 forReferenceMetric:320];
+				[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:375];
+				[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:414];
+				[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:768];
+				[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:1024];
+
+				cachedDefaultMenuItemHeight = [defaultMenuItemHeightInterpolator valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!regularCornerRadiusInterpolator) {
+				regularCornerRadiusInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[regularCornerRadiusInterpolator addValue:17 forReferenceMetric:320];
+				[regularCornerRadiusInterpolator addValue:19 forReferenceMetric:375];
+				[regularCornerRadiusInterpolator addValue:21 forReferenceMetric:414];
+				[regularCornerRadiusInterpolator addValue:19 forReferenceMetric:768];
+				[regularCornerRadiusInterpolator addValue:19 forReferenceMetric:1024];
+
+				cachedRegularCornerRadius = [regularCornerRadiusInterpolator valueForReferenceMetric:deviceWidth];
+			}
+
+			if (!expandedCornerRadiusInterpolator) {
+				expandedCornerRadiusInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+				[expandedCornerRadiusInterpolator addValue:34 forReferenceMetric:320];
+				[expandedCornerRadiusInterpolator addValue:39 forReferenceMetric:375];
+				[expandedCornerRadiusInterpolator addValue:41 forReferenceMetric:414];
+				[expandedCornerRadiusInterpolator addValue:39 forReferenceMetric:768];
+				[expandedCornerRadiusInterpolator addValue:39 forReferenceMetric:1024];
+
+				cachedExpandedCornerRadius = [expandedCornerRadiusInterpolator valueForReferenceMetric:deviceWidth];
+			}
+
+			UIView *psuedoCornerCalculator = [[UIView alloc] initWithFrame:CGRectMake(0,0,cachedEdgeSize*2,cachedEdgeSize*2)];
+			psuedoCornerCalculator._continuousCornerRadius = cachedRegularCornerRadius;
+
+			regularContinuousCornerRadius = psuedoCornerCalculator.layer.cornerRadius;
+			regularCornerCenter = psuedoCornerCalculator.layer.cornerContentsCenter;
+
+			psuedoCornerCalculator._continuousCornerRadius = cachedExpandedCornerRadius;
+
+			expandedCornerCenter = psuedoCornerCalculator.layer.cornerContentsCenter;
+			expandedContinuousCornerRadius = psuedoCornerCalculator.layer.cornerRadius;
 		}
-
-		if (!edgeInterpolator) {
-			edgeInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[edgeInterpolator addValue:66 forReferenceMetric:320];
-			[edgeInterpolator addValue:69 forReferenceMetric:375];
-			[edgeInterpolator addValue:76 forReferenceMetric:414];
-			[edgeInterpolator addValue:66 forReferenceMetric:768];
-			cachedEdgeSize = [edgeInterpolator valueForReferenceMetric:deviceWidth];
-		}
-
-		if (!insetInterpolator) {
-			insetInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[insetInterpolator addValue:16 forReferenceMetric:320];
-			[insetInterpolator addValue:27 forReferenceMetric:375];
-			[insetInterpolator addValue:34 forReferenceMetric:414];
-			[insetInterpolator addValue:140 forReferenceMetric:568];
-			[insetInterpolator addValue:173 forReferenceMetric:667];
-			[insetInterpolator addValue:60 forReferenceMetric:736];
-			[insetInterpolator addValue:30 forReferenceMetric:768];
-			cachedInsetSize = [insetInterpolator valueForReferenceMetric:deviceWidth];
-		}
-
-		if (!roundButtonInterpolator) {
-			roundButtonInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[roundButtonInterpolator addValue:52 forReferenceMetric:320];
-			[roundButtonInterpolator addValue:54 forReferenceMetric:375];
-			[roundButtonInterpolator addValue:60 forReferenceMetric:414];
-			[roundButtonInterpolator addValue:52 forReferenceMetric:768];
-			cachedRoundButtonSize = [roundButtonInterpolator valueForReferenceMetric:deviceWidth];
-		}
-
-		if (!roundButtonExpandedSideInsetInterpolator) {
-			roundButtonExpandedSideInsetInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[roundButtonExpandedSideInsetInterpolator addValue:12 forReferenceMetric:320];
-			[roundButtonExpandedSideInsetInterpolator addValue:16 forReferenceMetric:375];
-			[roundButtonExpandedSideInsetInterpolator addValue:16 forReferenceMetric:414];
-			[roundButtonExpandedSideInsetInterpolator addValue:14 forReferenceMetric:768];
-			cachedRoundButtonExpandedSizeInsetSize = [roundButtonExpandedSideInsetInterpolator valueForReferenceMetric:deviceWidth];
-		}
-
-		if (!roundButtonContainerExpandedSizeHeight) {
-			roundButtonContainerExpandedSizeHeight = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[roundButtonContainerExpandedSizeHeight addValue:84.5 forReferenceMetric:320];
-			[roundButtonContainerExpandedSizeHeight addValue:86.5 forReferenceMetric:375];
-			[roundButtonContainerExpandedSizeHeight addValue:92.3333 forReferenceMetric:414];
-			cachedRoundButtonExpandedContainerHeight = [roundButtonContainerExpandedSizeHeight valueForReferenceMetric:deviceWidth];
-		}
-
-		if (!roundButtonContainerExpandedSizeWidth) {
-			roundButtonContainerExpandedSizeWidth = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[roundButtonContainerExpandedSizeWidth addValue:126 forReferenceMetric:320];
-			[roundButtonContainerExpandedSizeWidth addValue:136.5 forReferenceMetric:375];
-			[roundButtonContainerExpandedSizeWidth addValue:149 forReferenceMetric:414];
-			cachedRoundButtonExpandedContainerWidth = [roundButtonContainerExpandedSizeWidth valueForReferenceMetric:deviceWidth];
-		}
-
-		if (!sliderExpandedHeightInterpolator) {
-			sliderExpandedHeightInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[sliderExpandedHeightInterpolator addValue:254 forReferenceMetric:568];
-			[sliderExpandedHeightInterpolator addValue:315 forReferenceMetric:667];
-			[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:736];
-			[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:1024];
-			[sliderExpandedHeightInterpolator addValue:340 forReferenceMetric:768];
-
-			cachedExpandedSliderHeight = [sliderExpandedHeightInterpolator valueForReferenceMetric:deviceHeight];
-		}
-
-		if (!sliderExpandedWidthInterpolator) {
-			sliderExpandedWidthInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[sliderExpandedWidthInterpolator addValue:106 forReferenceMetric:320];
-			[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:375];
-			[sliderExpandedWidthInterpolator addValue:132 forReferenceMetric:414];
-			[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:768];
-			[sliderExpandedWidthInterpolator addValue:123 forReferenceMetric:1024];
-
-			cachedExpandedSliderWidth = [sliderExpandedWidthInterpolator valueForReferenceMetric:deviceWidth];
-		}
-
-		if (!defaultExpandedWidthInterpolator) {
-			defaultExpandedWidthInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[defaultExpandedWidthInterpolator addValue:288 forReferenceMetric:320];
-			[defaultExpandedWidthInterpolator addValue:321 forReferenceMetric:375];
-			[defaultExpandedWidthInterpolator addValue:346 forReferenceMetric:414];
-			[defaultExpandedWidthInterpolator addValue:321 forReferenceMetric:768];
-			[defaultExpandedWidthInterpolator addValue:321 forReferenceMetric:1024];
-
-			cachedDefaultExpandedModuleWidth = [defaultExpandedWidthInterpolator valueForReferenceMetric:deviceWidth];
-		}
-
-		if (!defaultMenuItemHeightInterpolator) {
-			defaultMenuItemHeightInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[defaultMenuItemHeightInterpolator addValue:50.5 forReferenceMetric:320];
-			[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:375];
-			[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:414];
-			[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:768];
-			[defaultMenuItemHeightInterpolator addValue:56 forReferenceMetric:1024];
-
-			cachedDefaultMenuItemHeight = [defaultMenuItemHeightInterpolator valueForReferenceMetric:deviceWidth];
-		}
-
-		if (!regularCornerRadiusInterpolator) {
-			regularCornerRadiusInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[regularCornerRadiusInterpolator addValue:17 forReferenceMetric:320];
-			[regularCornerRadiusInterpolator addValue:19 forReferenceMetric:375];
-			[regularCornerRadiusInterpolator addValue:21 forReferenceMetric:414];
-			[regularCornerRadiusInterpolator addValue:19 forReferenceMetric:768];
-			[regularCornerRadiusInterpolator addValue:19 forReferenceMetric:1024];
-
-			cachedRegularCornerRadius = [regularCornerRadiusInterpolator valueForReferenceMetric:deviceWidth];
-		}
-
-		if (!expandedCornerRadiusInterpolator) {
-			expandedCornerRadiusInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-			[expandedCornerRadiusInterpolator addValue:34 forReferenceMetric:320];
-			[expandedCornerRadiusInterpolator addValue:39 forReferenceMetric:375];
-			[expandedCornerRadiusInterpolator addValue:41 forReferenceMetric:414];
-			[expandedCornerRadiusInterpolator addValue:39 forReferenceMetric:768];
-			[expandedCornerRadiusInterpolator addValue:39 forReferenceMetric:1024];
-
-			cachedExpandedCornerRadius = [expandedCornerRadiusInterpolator valueForReferenceMetric:deviceWidth];
-		}
-
-		UIView *psuedoCornerCalculator = [[UIView alloc] initWithFrame:CGRectMake(0,0,cachedEdgeSize*2,cachedEdgeSize*2)];
-		psuedoCornerCalculator._continuousCornerRadius = cachedRegularCornerRadius;
-
-		regularContinuousCornerRadius = psuedoCornerCalculator.layer.cornerRadius;
-		regularCornerCenter = psuedoCornerCalculator.layer.cornerContentsCenter;
-
-		psuedoCornerCalculator._continuousCornerRadius = cachedExpandedCornerRadius;
-
-		expandedCornerCenter = psuedoCornerCalculator.layer.cornerContentsCenter;
-		expandedContinuousCornerRadius = psuedoCornerCalculator.layer.cornerRadius;
 
 
 		// 123 - 340

@@ -232,6 +232,13 @@ static CGFloat separatorHeight = 0;
 //     }
 // }
 
+
+- (void)throttleTimerFired:(NSTimer *)timer {
+    if (_previousValue != _value) {
+        [self sendActionsForControlEvents:UIControlEventValueChanged];
+        _previousValue = _value;
+    }
+}
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     CGPoint touchPoint = [touch locationInView:self];
     _startingLocation = touchPoint;
@@ -240,12 +247,7 @@ static CGFloat separatorHeight = 0;
 
     if (_throttleUpdates && !_updatesCommitTimer) {
         _previousValue = _value;
-        _updatesCommitTimer = [NSTimer scheduledTimerWithTimeInterval:.1 repeats:YES block:^(NSTimer *timer) {
-            if (_previousValue != _value) {
-                [self sendActionsForControlEvents:UIControlEventValueChanged];
-                _previousValue = _value;
-            }
-        }];
+        _updatesCommitTimer = [NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(throttleTimerFired:) userInfo:nil repeats:YES];
     }
 
     if ([self isStepped]) {
@@ -290,7 +292,7 @@ static CGFloat separatorHeight = 0;
     return _glyphPackage ? YES : NO;
 }
 
-- (void)_layoutValueViews {
+- (void)_layoutValueViews { 
     if ([self isStepped]) {
         for (NSUInteger x = 0; x < _numberOfSteps; x++) {
             UIView *stepBackgroundView = [_stepBackgroundViews objectAtIndex:x];

@@ -11,15 +11,15 @@ include $(THEOS)/makefiles/common.mk
 export ADDITIONAL_CFLAGS = -I./../../headers -I./../../
 
 # SUBPROJECTS += ConnectivityModule
-SUBPROJECTS += DoNotDisturbModule
-SUBPROJECTS += LowPowerModule
+# SUBPROJECTS += DoNotDisturbModule
+# SUBPROJECTS += LowPowerModule
 SUBPROJECTS += ScreenRecordingModule
 SUBPROJECTS += OrientationLockModule
-# SUBPROJECTS += LocationModule
+SUBPROJECTS += LocationModule
 SUBPROJECTS += RingerModule
 # SUBPROJECTS += VPNModule
 SUBPROJECTS += AudioModule
-# SUBPROJECTS += DisplayModule
+# # SUBPROJECTS += DisplayModule
 SUBPROJECTS += FlashlightModule
-# SUBPROJECTS += MediaModule
+# # SUBPROJECTS += MediaModule
 include $(THEOS_MAKE_PATH)/aggregate.mk
