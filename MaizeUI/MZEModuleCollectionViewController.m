@@ -240,13 +240,15 @@
 	[_delegate moduleCollectionViewController:self willCloseExpandedModule:module];
 
 	if (YES != NO) {
-		for (UIViewController *viewController in [self childViewControllers]) {
-			if (viewController != containerViewController) {
-				if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
-					viewController.view.alpha = 1;
+		[UIView performWithoutAnimation:^{
+			for (UIViewController *viewController in [self childViewControllers]) {
+				if (viewController != containerViewController) {
+					if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+						viewController.view.alpha = 1;
+					}
 				}
 			}
-		}
+		}];
 	}
 }
 
@@ -262,13 +264,15 @@
 	[_currentModules addObject:containerViewController];
 
 	if (YES != NO) {
-		for (UIViewController *viewController in [self childViewControllers]) {
-			if (viewController != containerViewController) {
-				if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
-					viewController.view.alpha = 0;
+		[UIView performWithoutAnimation:^{
+			for (UIViewController *viewController in [self childViewControllers]) {
+				if (viewController != containerViewController) {
+					if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+						viewController.view.alpha = 0;
+					}
 				}
 			}
-		}
+		}];
 	}
 }
 
