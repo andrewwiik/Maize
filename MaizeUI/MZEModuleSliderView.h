@@ -1,7 +1,9 @@
 
 #import "MZECAPackageView.h"
 #import "MZEMaterialView.h"
+#import "_MZEBackdropView.h"
 #import <QuartzCore/CAPackage+Private.h>
+#import <QuartzCore/CABackdropLayer.h>
 
 @interface MZEModuleSliderView : UIControl <CALayerDelegate>
 {
@@ -21,7 +23,6 @@
     float _value;
     UIImage *_glyphImage;
     CAPackage *_glyphPackage;
-    CAPackage *_otherGlyphPackage;
     NSString *_glyphState;
     NSUInteger _numberOfSteps;
     NSUInteger _step;
@@ -36,6 +37,8 @@
     CFAbsoluteTime _startTime;
     BOOL _displayLinkActive;
     BOOL _changingValue;
+    BOOL _separatorsHidden;
+    _MZEBackdropView *_punchThroughContainer;
 }
 
 @property (nonatomic, assign) CFAbsoluteTime startTime;
@@ -50,9 +53,9 @@
 @property(nonatomic) float value;
 @property(nonatomic) BOOL throttleUpdates;
 @property(nonatomic, getter=isGlyphVisible) BOOL glyphVisible;
+@property (nonatomic) BOOL separatorsHidden;
 @property(retain, nonatomic, readwrite) NSString *glyphState;
 @property(retain, nonatomic, readwrite) CAPackage *glyphPackage;
-@property (retain, nonatomic, readwrite) CAPackage *otherGlyphPackage;
 @property(retain, nonatomic, readwrite) UIImage *glyphImage;
 @property(retain, nonatomic, readwrite) UIView *glyphMaskView;
 @property(nonatomic, readonly) CALayer *punchOutRootLayer;

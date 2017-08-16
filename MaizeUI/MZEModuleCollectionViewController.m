@@ -240,15 +240,42 @@
 	[_delegate moduleCollectionViewController:self willCloseExpandedModule:module];
 
 	if (YES != NO) {
+
 		[UIView performWithoutAnimation:^{
-			for (UIViewController *viewController in [self childViewControllers]) {
-				if (viewController != containerViewController) {
-					if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
-						viewController.view.alpha = 1;
+    		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0265 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+			    [UIView animateWithDuration:0.08 animations:^{
+					for (UIViewController *viewController in [self childViewControllers]) {
+						if (viewController != containerViewController) {
+							if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+								viewController.view.alpha = 1;
+							}
+						}
 					}
-				}
-			}
-		}];
+				}];
+			});
+    	}];
+		// [UIView animateWithDuration:0.0f delay:0.275 options:0 animations:^{
+		// 	 [UIView performWithoutAnimation:^{
+		// 		for (UIViewController *viewController in [self childViewControllers]) {
+		// 			if (viewController != containerViewController) {
+		// 				if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+		// 					viewController.view.alpha = 1;
+		// 				}
+		// 			}
+		// 		}
+		// 	 }];
+		// 	// self.view.alpha = 1.0;
+		// } completion:^(BOOL complete) {
+		// 	// [UIView performWithoutAnimation:^{
+		// 	// 	for (UIViewController *viewController in [self childViewControllers]) {
+		// 	// 		if (viewController != containerViewController) {
+		// 	// 			if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+		// 	// 				viewController.view.alpha = 1;
+		// 	// 			}
+		// 	// 		}
+		// 	// 	}
+		// 	// }];
+		// }];
 	}
 }
 

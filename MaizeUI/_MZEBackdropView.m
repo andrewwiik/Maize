@@ -17,7 +17,11 @@ typedef struct CAColorMatrix CAColorMatrix;
 - (CAColorMatrix)CAColorMatrixValue;
 @end
 
+
+static BOOL isIOS9 = YES;
 @implementation _MZEBackdropView
+	@dynamic layer;
+	
 + (Class)layerClass {
 	return NSClassFromString(@"CABackdropLayer");
 }
@@ -25,6 +29,9 @@ typedef struct CAColorMatrix CAColorMatrix;
 - (id)init {
 	self = [super init];
 	if (self) {
+		if (!NSClassFromString(@"CCUIControlCenterViewController")) {
+			isIOS9 = YES;
+		}
 		_saturation = 1.0f;
 		_brightness = 0.0f;
 		// if (self.layer) {
@@ -203,19 +210,24 @@ typedef struct CAColorMatrix CAColorMatrix;
 	}
 
 	if (_colorAddColor && !_forcedColorMatrix) {
-		CGFloat red, green, blue, alpha;
-		if ([_colorAddColor getRed:&red green:&green blue:&blue alpha:&alpha]) {
-			CAColorMatrix colorMatrix = {
-	            1.0f, 0, 0, 0, red*alpha,
-	            0, 1.0f, 0, 0, green*alpha,
-	            0, 0, 1.0f, 0, blue*alpha,
-	            0, 0, 0, 1.0f, 0
-	        };
 
-	        CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
-	        [filter setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"inputColorMatrix"];
-	        [filters addObject:filter];
+		if (!isIOS9) {
+			CGFloat red, green, blue, alpha;
+			if ([_colorAddColor getRed:&red green:&green blue:&blue alpha:&alpha]) {
+				CAColorMatrix colorMatrix = {
+		            1.0f, 0, 0, 0, red*alpha,
+		            0, 1.0f, 0, 0, green*alpha,
+		            0, 0, 1.0f, 0, blue*alpha,
+		            0, 0, 0, 1.0f, 0
+		        };
 
+		        CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+		        [filter setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"inputColorMatrix"];
+		        [filters addObject:filter];
+
+			}
+		} else {
+			self.backgroundColor = _colorAddColor;
 		}
 	}
 

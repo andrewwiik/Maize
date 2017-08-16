@@ -14,6 +14,8 @@ static CGFloat separatorHeight = 0;
     @synthesize value=_value;
     @synthesize throttleUpdates=_throttleUpdates;
     @synthesize glyphVisible=_glyphVisible;
+    @synthesize separatorsHidden = _separatorsHidden;
+
 
 
 
@@ -38,6 +40,16 @@ static CGFloat separatorHeight = 0;
             _numberOfSteps = 1;
             _firstStepIsDisabled = NO;
             _changingValue = NO;
+            _separatorsHidden = NO;
+            _glyphMaskView = [[UIView alloc] initWithFrame:self.bounds];
+            _punchThroughContainer = [[_MZEBackdropView alloc] init];
+            _punchThroughContainer.frame = self.bounds;
+            _punchThroughContainer.layer.groupName = @"ModuleDarkBackground";
+            _punchThroughContainer.maskView = _glyphMaskView;
+            _punchThroughContainer.clipsToBounds = YES;
+            _punchThroughContainer.userInteractionEnabled = NO;
+            [self addSubview:_punchThroughContainer];
+            _punchThroughContainer.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
             [self _createStepViewsForNumberOfSteps:_numberOfSteps];
             [self setExclusiveTouch:YES];
     }
@@ -100,11 +112,14 @@ static CGFloat separatorHeight = 0;
             _glyphImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
             [_glyphImageView setContentMode:4];
             [_glyphImageView setUserInteractionEnabled:NO];
-            [self addSubview:_glyphImageView];
+            [_glyphMaskView addSubview:_glyphImageView];
+            _glyphImageView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
+            //[self addSubview:_glyphImageView];
         }
 
         [_glyphImageView setImage:_glyphImage];
         [_glyphImageView sizeToFit];
+       // _glyphImageView.center = _glyphMaskView.center;
 
         if ([_glyphImage renderingMode] == UIImageRenderingModeAlwaysTemplate) {
             // Apply Styling of the primary type MTVibrantStylingProvider controlCenterPrimaryVibrantStyling
@@ -113,25 +128,25 @@ static CGFloat separatorHeight = 0;
         }
 
 
-        _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
+      //  _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
 
     }
 }
 
-- (void)setOtherGlyphPackage:(CAPackage *)otherGlyphPackage {
-     if (_otherGlyphPackage != otherGlyphPackage) {
-        _otherGlyphPackage = otherGlyphPackage;
+// - (void)setOtherGlyphPackage:(CAPackage *)otherGlyphPackage {
+//      if (_otherGlyphPackage != otherGlyphPackage) {
+//         _otherGlyphPackage = otherGlyphPackage;
 
-        if (!_otherGlyphPackageView) {
-            _otherGlyphPackageView = [[MZECAPackageView alloc] init];
-            [_otherGlyphPackageView setStateName:[self glyphState]];
-            [_otherGlyphPackageView setAutoresizingMask:0];
-            _otherGlyphPackageView.layer.compositingFilter = @"destOut";
-        }
+//         if (!_otherGlyphPackageView) {
+//             _otherGlyphPackageView = [[MZECAPackageView alloc] init];
+//             [_otherGlyphPackageView setStateName:[self glyphState]];
+//             [_otherGlyphPackageView setAutoresizingMask:0];
+//             _otherGlyphPackageView.layer.compositingFilter = @"destOut";
+//         }
 
-        [_otherGlyphPackageView setPackage:_otherGlyphPackage];
-    }
-}
+//         [_otherGlyphPackageView setPackage:_otherGlyphPackage];
+//     }
+// }
 
 - (void)setGlyphPackage:(CAPackage *)glyphPackage {
     if (_glyphPackage != glyphPackage) {
@@ -140,19 +155,22 @@ static CGFloat separatorHeight = 0;
             _glyphPackageView = [[MZECAPackageView alloc] init];
             [_glyphPackageView setStateName:[self glyphState]];
             [_glyphPackageView setAutoresizingMask:0];
-            _glyphPackageView.layer.compositingFilter = @"destOut";
+            [_glyphMaskView addSubview:_glyphPackageView];
+            //_glyphPackageView.center = _glyphMaskView.center;
+            _glyphPackageView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
+            // _glyphPackageView.layer.compositingFilter = @"destOut";
 
-            _glyphMaskView = [[UIView alloc] initWithFrame:self.bounds];
-            [_glyphMaskView setAutoresizingMask:0];
-            _glyphMaskView.autoresizesSubviews = YES;
-            _glyphMaskView.backgroundColor = [UIColor clearColor];
+            // _glyphMaskView = [[UIView alloc] initWithFrame:self.bounds];
+            // [_glyphMaskView setAutoresizingMask:0];
+            // _glyphMaskView.autoresizesSubviews = YES;
+            // _glyphMaskView.backgroundColor = [UIColor clearColor];
 
-            UIView *cutoutView = [[UIView alloc] initWithFrame:self.bounds];
-            cutoutView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                           UIViewAutoresizingFlexibleHeight);
-            cutoutView.backgroundColor = [UIColor blackColor];
-            [_glyphMaskView addSubview:cutoutView];
-            [cutoutView.layer addSublayer:_glyphPackageView.layer];
+            // UIView *cutoutView = [[UIView alloc] initWithFrame:self.bounds];
+            // cutoutView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+            //                                UIViewAutoresizingFlexibleHeight);
+            // cutoutView.backgroundColor = [UIColor blackColor];
+            // [_glyphMaskView addSubview:cutoutView];
+            // [cutoutView.layer addSublayer:_glyphPackageView.layer];
             //[self addSubview:_glyphPackageView];
         }
 
@@ -164,18 +182,18 @@ static CGFloat separatorHeight = 0;
     if (glyphState != _glyphState) {
         _glyphState = glyphState;
         [_glyphPackageView setStateName:_glyphState];
-        [_otherGlyphPackageView setStateName:_glyphState];
+       // [_otherGlyphPackageView setStateName:_glyphState];
     }
 
-        _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
-        _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+        // _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+        //__otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
 }
 
 - (void)setAlpha:(CGFloat)alpha {
     [super setAlpha:alpha];
-    if (_glyphMaskView) {
-        _glyphMaskView.alpha = alpha;
-    }
+    // if (_glyphMaskView) {
+    //     _glyphMaskView.alpha = alpha;
+    // }
 }
 
 - (void)layoutSubviews {
@@ -188,19 +206,28 @@ static CGFloat separatorHeight = 0;
 
    [self _layoutValueViews];
 
+   [self bringSubviewToFront:_punchThroughContainer];
+
     CGFloat x = bounds.width*0.5;
     CGFloat y = bounds.height - x;
     CGPoint center = UIPointRoundToViewScale(CGPointMake(x,y), self);
+
+    _glyphMaskView.frame = self.bounds;
+
+
+    // _punchThroughContainer.center = center;
+    _punchThroughContainer.alpha = _glyphVisible ? 1.0 : 0.0;
+
     if (_glyphImageView) {
         _glyphImageView.center = center;
-        _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.01;
+        //_glyphImageView.alpha = _glyphVisible ? 1.0 : 0.01;
     }
 
     if (_glyphPackage) {
         _glyphPackageView.center = center;
-        _otherGlyphPackageView.center = center;
-        _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.01;
-        _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.01;
+       // _otherGlyphPackageView.center = center;
+       // _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.01;
+        //_otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.01;
     }
 }
 
@@ -336,13 +363,13 @@ static CGFloat separatorHeight = 0;
         CGFloat sliderHeight = UICeilToViewScale([self _sliderHeight], self);
         CGRect sliderFrame = CGRectMake(0,CGRectGetHeight(bounds) - sliderHeight, CGRectGetWidth(bounds), sliderHeight);
         [(UIView *)[_stepBackgroundViews objectAtIndex:0] setFrame:sliderFrame];
-        if (_glyphMaskView) {
-            if ([(MZEMaterialView *)[_stepBackgroundViews objectAtIndex:0] backdropView].maskView == nil) {
-                [(MZEMaterialView *)[_stepBackgroundViews objectAtIndex:0] backdropView].maskView = _glyphMaskView;
-            }
+        // if (_glyphMaskView) {
+        //     if (_glyphVisible && [(MZEMaterialView *)[_stepBackgroundViews objectAtIndex:0] backdropView].maskView == nil) {
+        //         [(MZEMaterialView *)[_stepBackgroundViews objectAtIndex:0] backdropView].maskView = _glyphMaskView;
+        //     }
 
-            _glyphMaskView.frame = CGRectMake(0,0 - (CGRectGetHeight(bounds) - sliderHeight), CGRectGetWidth(bounds), CGRectGetHeight(bounds));
-        }
+        //     _glyphMaskView.frame = CGRectMake(0,0 - (CGRectGetHeight(bounds) - sliderHeight), CGRectGetWidth(bounds), CGRectGetHeight(bounds));
+        // }
     }
 }
 
@@ -367,9 +394,9 @@ static CGFloat separatorHeight = 0;
 
     _stepBackgroundViews = stepsArray;
 
-    if (![self isStepped] && numberOfSteps > 0 && _glyphMaskView) {
-        ((MZEMaterialView *)_stepBackgroundViews[0]).backdropView.maskView = _glyphMaskView;
-    }
+    // if (_glyphVisible && ![self isStepped] && numberOfSteps > 0 && _glyphMaskView) {
+    //     ((MZEMaterialView *)_stepBackgroundViews[0]).backdropView.maskView = _glyphMaskView;
+    // }
 }
 
 - (void)_createSeparatorViewsForNumberOfSteps:(NSUInteger)numberOfSteps {
@@ -520,16 +547,34 @@ static CGFloat separatorHeight = 0;
 - (void)setGlyphVisible:(BOOL)visible {
     _glyphVisible = visible;
     //[UIView performWithoutAnimation:^{
-        _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
-        _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
-        _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
-    //}];
+        _punchThroughContainer.alpha = _glyphVisible ? 1.0 : 0.0;
+        // if (![self isStepped] && [_stepBackgroundViews count] > 0 && _glyphMaskView) {
+        //     ((MZEMaterialView *)_stepBackgroundViews[0]).backdropView.maskView = _glyphVisible ? _glyphMaskView : nil;
+        // }
+        // _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
+        // _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+       // _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+   // }];
 
 }
 
-- (CALayer *)punchOutRootLayer {
-    return [_otherGlyphPackageView layer];
+- (void)setSeparatorsHidden:(BOOL)hidden {
+    if (_separatorViews) {
+        _separatorsHidden = hidden;
+        [UIView performWithoutAnimation:^{
+            for (UIView *separator in _separatorViews) {
+                separator.hidden = hidden;
+            }
+            // _glyphImageView.alpha = _glyphVisible ? 1.0 : 0.0;
+            // _glyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+            // _otherGlyphPackageView.alpha = _glyphVisible ? 1.0 : 0.0;
+        }];
+    }
 }
+
+// - (CALayer *)punchOutRootLayer {
+//     return [_otherGlyphPackageView layer];
+// }
 
 - (CGFloat)layerCornerRadius {
     return self._continuousCornerRadius;

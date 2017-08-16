@@ -14,6 +14,7 @@
 	self = [super initWithFrame:CGRectZero];
 	if (self) {
 		self.userInteractionEnabled = NO;
+		self.layer.drawsAsynchronously = YES;
 	}
 	return self;
 }
@@ -35,6 +36,7 @@
 		// self.frame = CGRectMake(self.frame.origin.x,self.frame.origin.y,package.rootLayer.bounds.size.width,package.rootLayer.bounds.size.height);
 
 		_packageLayer = package.rootLayer;
+		_packageLayer.drawsAsynchronously = YES;
 		_package = package;
 	}
 

@@ -1,5 +1,6 @@
 #import "MZEFlashlightModuleViewController.h"
 #import <MaizeUI/MZELayoutOptions.h>
+#import <QuartzCore/CALayer+Private.h>
 
 NSString *const FlashlightLevelKey = @"mze_flashlightlevel";
 
@@ -151,6 +152,13 @@ static AVFlashlight *flashlight;
 
 - (void)willTransitionToExpandedContentMode:(BOOL)willTransition {
 	_expanded = willTransition;
+
+	if (!_expanded) {
+		[UIView performWithoutAnimation:^{
+			[_sliderView setSeparatorsHidden:YES];
+			//_sliderView.layer.frozen = YES;
+		}];
+	}
 	if (!flashlight) {
 		[self newFlashlightMade:nil];
 	}
@@ -186,18 +194,42 @@ static AVFlashlight *flashlight;
 	// 		self.buttonView.alpha = 0;
 	// 	}];
 	// }
+	[_sliderView setSeparatorsHidden:YES];
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-    	if (!_expanded) {
-    		[UIView animateWithDuration:0.1f delay:_expanded ? 0.1 : 0.0 options:0 animations:^{
-    		//	self.buttonView.alpha = _expanded ? 0.0 : 1.0;
-    		} completion:nil];
+    	if (_expanded) {
+
+    		[UIView performWithoutAnimation:^{
+	    		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.245 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+				    [UIView performWithoutAnimation:^{
+						[_sliderView setSeparatorsHidden:NO];
+					}];
+				});
+	    	}];
+    		// [UIView animateWithDuration:0.0f delay:0.265 options:0 animations:^{
+    		// //	self.buttonView.alpha = _expanded ? 0.0 : 1.0;
+    		// 	[_sliderView setSeparatorsHidden:NO];
+    		// } completion:nil];
     	}
-    	self.buttonView.alpha = _expanded ? 0.0 : 1.0;
-    	[_sliderView setAlpha:_expanded ? 1.0 : 0.0];
+
+    	if (_expanded) {
+    		[UIView performWithoutAnimation:^{
+    			self.buttonView.alpha = 0.0;
+    		}];
+    		[_sliderView setAlpha:_expanded ? 1.0 : 0.0];
+    	} else {
+    		[UIView performWithoutAnimation:^{
+    			self.sliderView.alpha = 0;
+    			self.buttonView.alpha = 1;
+    		}];
+    		//self.buttonView.alpha = 1.0;
+    	}
+    	//self.buttonView.alpha = _expanded ? 0.0 : 1.0;
+    	//[_sliderView setAlpha:_expanded ? 1.0 : 0.0];
         [_sliderView setNeedsLayout];
 		[_sliderView layoutIfNeeded];
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-
+    	_sliderView.layer.frozen = NO;
+    	[_sliderView setSeparatorsHidden:NO];
     }];
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }

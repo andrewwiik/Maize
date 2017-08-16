@@ -76,6 +76,7 @@ MPULayoutInterpolator *interpolator;
 		[self addSubview:_moduleMaterialView];
 		[_moduleMaterialView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[self sendSubviewToBack:_moduleMaterialView];
+		_moduleMaterialView.backdropView.layer.groupName = @"ModuleDarkBackground";
 		[self setNeedsLayout];
 	}
 }
@@ -114,7 +115,7 @@ MPULayoutInterpolator *interpolator;
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
-		[self setBackgroundColor:[UIColor clearColor]];
+		[self setBackgroundColor:nil];
 		[self setOpaque:NO];
 		[self _transitionToExpandedMode:NO force:YES];
 	}

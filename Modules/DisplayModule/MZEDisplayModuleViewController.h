@@ -27,7 +27,7 @@
 - (void)willTransitionToExpandedContentMode:(BOOL)willTransition;
 - (void)setGlyphState:(NSString *)glyphState;
 - (void)setGlyphPackage:(CAPackage *)glyphPackage;
-- (void)setOtherGlyphPackage:(CAPackage *)otherGlyphPackage;
+//- (void)setOtherGlyphPackage:(CAPackage *)otherGlyphPackage;
 //- (void)viewWillTransitionToSize:(struct CGSize)arg1 withTransitionCoordinator:(id)arg2;
 - (void)viewDidLoad;
 - (void)loadView;

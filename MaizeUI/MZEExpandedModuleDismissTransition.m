@@ -7,7 +7,7 @@
 
 @implementation MZEExpandedModuleDismissTransition
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    return 0.375;
+    return 0.3;
 }
 
 
@@ -44,7 +44,7 @@
 		// //[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
 		
 
-		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:1 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
+		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:1 initialSpringVelocity:1 options:UIViewAnimationOptionAllowUserInteraction animations:^{
 			toViewController.backgroundView.alpha = 0.0;
 			[toViewController.contentContainerView transitionToExpandedMode:NO];
 			toViewController.contentContainerView.frame = relativeFrame;

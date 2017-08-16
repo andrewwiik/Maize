@@ -12,7 +12,7 @@
 - (UIViewController<MZEContentModuleContentViewController> *)contentViewController {
 	 _moduleViewController = [[MZEAudioModuleViewController alloc] initWithNibName:nil bundle:nil];
     [_moduleViewController setGlyphPackage:[self _audioGlyphPackage]];
-    [_moduleViewController setOtherGlyphPackage:[self _audioGlyphPackage]];
+   // [_moduleViewController setOtherGlyphPackage:[self _audioGlyphPackage]];
     [_moduleViewController setGlyphState:[self _audioGlyphStateForVolumeLevel:[_moduleViewController currentVolume]]];
     [_moduleViewController setDelegate:self];
     return _moduleViewController;
@@ -43,7 +43,7 @@
 		return @"full";
 	} else if (volumeLevel >= 0.5) {
 		return @"half";
-	} else if (volumeLevel > 0.0625) {
+	} else if (volumeLevel > 0.0) {
 		return @"min";
 	} else {
 		return @"mute";

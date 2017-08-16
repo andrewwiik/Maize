@@ -27,11 +27,11 @@
 }
 
 + (NSString *)enabledKey {
-	return @"EnabledIdentifiers16";
+	return @"EnabledIdentifiers18";
 }
 
 + (NSString *)disabledKey {
-	return @"DisabledIdentifiers16";
+	return @"DisabledIdentifiers18";
 }
 
 + (NSArray *)defaultEnabledIdentifiers {
