@@ -1,3 +1,6 @@
+
+typedef BOOL (^MZEMenuItemBlock)(void);
+
 @interface MZEMenuModuleItemView : UIControl
 {
     UILabel *_titleLabel;
@@ -6,20 +9,19 @@
     UIImageView *_glyphImageView;
     UIView *_highlightedBackgroundView;
     BOOL _separatorVisible;
-    CDUnknownBlockType _handler;
+    MZEMenuItemBlock _handler;
 }
 
-@property(readonly, copy, nonatomic) CDUnknownBlockType handler;
+@property(readonly, copy, nonatomic) MZEMenuItemBlock handler;
 @property(nonatomic) BOOL separatorVisible;
 
-- (id)initWithTitle:(NSString *)title glyphImage:(UIImage *)glyphImage handler:(CDUnknownBlockType)arg3;
+- (id)initWithTitle:(NSString *)title glyphImage:(UIImage *)glyphImage handler:(MZEMenuItemBlock)handler;
 - (CGSize)sizeThatFits:(CGSize)arg1;
 - (CGSize)intrinsicContentSize;
 - (void)layoutSubviews;
 - (void)setHighlighted:(BOOL)arg1;
 - (void)setSelected:(BOOL)arg1;
 - (void)setEnabled:(BOOL)arg1;
-- (void)_setContinuousCornerRadius:(CGFloat)arg1;
 - (void)_touchDown:(UIControl *)control;
 - (void)_touchUpInside:(UIControl *)control;
 - (void)_touchUpOutside:(UIControl *)control;

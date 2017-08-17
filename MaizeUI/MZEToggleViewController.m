@@ -35,7 +35,7 @@
 }
 
 - (void)buttonTapped:(UIControl *)button forEvent:(id)event {
-	HBLogInfo(@"THE BUTTON WAS TAPPED");
+	//HBLogInfo(@"THE BUTTON WAS TAPPED");
 	BOOL isSelected = [_module isSelected] ? NO : YES;
 	if ([_module shouldSelfSelect])
 		[self setSelected:isSelected];

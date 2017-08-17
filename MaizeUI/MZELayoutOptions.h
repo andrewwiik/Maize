@@ -2,6 +2,8 @@
 + (CGFloat)deviceWidth;
 + (CGFloat)deviceHeight;
 
++ (BOOL)isRTL;
+
 + (CGFloat)itemSpacingSize;
 + (CGFloat)edgeSize;
 + (CGFloat)edgeInsetSize;

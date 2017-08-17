@@ -4,6 +4,8 @@
 #import <UIKit/UIView+Private.h>
 #import <QuartzCore/CALayer+Private.h>
 
+
+static int isRTL = -1;
 static CGFloat cachedEdgeSize = 0;
 static CGFloat cachedSpacingSize = 0;
 static CGFloat cachedInsetSize = 0;
@@ -68,6 +70,18 @@ static CGFloat cachedDeviceHeight = 0;
 		}
     });
 	return cachedDeviceHeight;
+}
+
++ (BOOL)isRTL {
+	if (isRTL == -1) {
+        if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+            isRTL = 1;
+        }
+        else {
+            isRTL = 0;
+        }
+    }
+    return (BOOL)isRTL;
 }
 
 + (void)setupInterpolators {

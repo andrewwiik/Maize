@@ -1,3 +1,6 @@
+
+#import <MaizeUI/MZELayoutOptions.h>
+
 #define NSCLeft        NSLayoutAttributeLeft
 #define NSCRight       NSLayoutAttributeRight
 #define NSCTop         NSLayoutAttributeTop
@@ -23,6 +26,8 @@
 
 #define horizontallyFillSuperview ^(UIView *view, NSUInteger idx, BOOL *stop) {[view.superview addConstraints:VisualConstraints(@"|[view]|", view)];}
 
+
+#define IS_RTL ([MZELayoutOptions isRTL])
 #if __cplusplus
     extern "C" {
 #endif
