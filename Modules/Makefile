@@ -10,7 +10,7 @@ include $(THEOS)/makefiles/common.mk
 
 export ADDITIONAL_CFLAGS = -I./../../headers -I./../../
 
-# SUBPROJECTS += ConnectivityModule
+SUBPROJECTS += ConnectivityModule
 SUBPROJECTS += DoNotDisturbModule
 SUBPROJECTS += LowPowerModule
 SUBPROJECTS += ScreenRecordingModule

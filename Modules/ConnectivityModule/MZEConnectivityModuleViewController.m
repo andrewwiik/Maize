@@ -90,7 +90,7 @@
 
 		UIEdgeInsets edgeInsets = [MZEConnectivityLayoutHelper compactLayoutInsets];
 		CGSize buttonSize = [self _buttonSize];
-		CGFloat spacing = self.view.bounds.size.width - (edgeInsets.left * 2) - (buttonSize.width * visibleColCount - 1)/(visibleColCount - 1);
+		CGFloat spacing = roundf(self.view.bounds.size.width - (edgeInsets.left * (float)2.0) - (buttonSize.width * (float)visibleColCount - 1)/((float)visibleColCount - 1));
 		for (NSUInteger x = 0; x < [_buttonViewControllers count]; x++) {
 			NSUInteger row = (x / colCount) + 1;
 			NSUInteger col = (x % colCount) + 1;
@@ -235,6 +235,7 @@
 	[buttonClasses addObject:@"MZEConnectivityCellularDataViewController"];
 	[buttonClasses addObject:@"MZEConnectivityWiFiViewController"];
 	[buttonClasses addObject:@"MZEConnectivityBluetoothViewController"];
+	[buttonClasses addObject:@"MZEConnectivityAirDropViewController"];
 	return [buttonClasses copy];
 }
 @end

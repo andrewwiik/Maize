@@ -46,7 +46,7 @@
 
 - (void)buttonTapped:(id)arg1 {
 	if (_toggleStateOnTap) {
-		[_button setSelected:[_button isSelected] == 0];
+		[_button setSelected:[_button isSelected] == NO];
 	}
 }
 

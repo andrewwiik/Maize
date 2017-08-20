@@ -13,6 +13,8 @@ static CGFloat separatorHeight = 0;
 	self = [super init];
 	if (self) {
 
+		_shouldProvideOwnPlatter = NO;
+
 		if (separatorHeight == 0) {
 			separatorHeight = 1.0f/[UIScreen mainScreen].scale;
 		}
@@ -23,11 +25,21 @@ static CGFloat separatorHeight = 0;
 }
 
 - (BOOL)providesOwnPlatter {
-	return NO;
+	return _shouldProvideOwnPlatter;
 }
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+
+
+	_platterBackground = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];
+	_platterBackground.frame = self.view.bounds;
+	_platterBackground.hidden = _shouldProvideOwnPlatter ? NO : YES;
+	[self.view addSubview:_platterBackground];
+	_platterBackground.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+	//_platterBackground.hidden = _shouldProvideOwnPlatter ? NO : YES;
+
+
 	_titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 	_titleLabel.font = [self _titleFont];
 	_titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -71,6 +83,7 @@ static CGFloat separatorHeight = 0;
 
 - (void)viewWillLayoutSubviews {
 	CGSize size = self.view.bounds.size;
+	_platterBackground.hidden = _shouldProvideOwnPlatter ? NO : YES;
 
 	[self _layoutSeparatorForSize:size];
 	[self _layoutMenuItemsForSize:size];

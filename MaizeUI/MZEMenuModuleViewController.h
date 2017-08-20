@@ -7,8 +7,10 @@
 	UILabel *_titleLabel;
     MZEMaterialView *_headerSeparatorView;
     MZEMaterialView *_darkBackground;
+    MZEMaterialView *_platterBackground;
     UIStackView *_containerView;
     NSString *_title;
+    BOOL _shouldProvideOwnPlatter;
 }
 
 @property (nonatomic, retain, readwrite) NSMutableArray<MZEMenuModuleItemView *> *menuItemsViews;
@@ -20,6 +22,7 @@
 @property (nonatomic, retain, readwrite) MZEMaterialView *darkBackground;
 @property (nonatomic, retain, readwrite) UIStackView *containerView;
 @property (nonatomic, retain, readwrite) MZEMaterialView *headerSeparatorView;
+@property (nonatomic, assign, readwrite) BOOL shouldProvideOwnPlatter;
 //@property(readonly, nonatomic) _Bool shouldHidePlatterWhenExpanded;
 
 - (void)viewDidLoad;

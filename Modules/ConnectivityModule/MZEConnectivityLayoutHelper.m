@@ -13,9 +13,14 @@ static BOOL loadedInterpolators = NO;
 + (void)setupInterpolators {
 	if (!compactInsetInterpolator) {
 		compactInsetInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-		[compactInsetInterpolator addValue:15 forReferenceMetric:166];
-		[compactInsetInterpolator addValue:15 forReferenceMetric:153];
-		[compactInsetInterpolator addValue:12 forReferenceMetric:140];
+		// [compactInsetInterpolator addValue:15 forReferenceMetric:166];
+		// [compactInsetInterpolator addValue:15 forReferenceMetric:153];
+		// [compactInsetInterpolator addValue:12 forReferenceMetric:140];
+		[compactInsetInterpolator addValue:12 forReferenceMetric:320];
+		[compactInsetInterpolator addValue:15 forReferenceMetric:375];
+		[compactInsetInterpolator addValue:15 forReferenceMetric:414];
+		[compactInsetInterpolator addValue:14 forReferenceMetric:768];
+		[compactInsetInterpolator addValue:14 forReferenceMetric:1024];
 	}
 
 	if (!expandedSideInsetInterpolator) {
