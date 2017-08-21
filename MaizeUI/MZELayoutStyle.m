@@ -1,6 +1,8 @@
 #import "MZELayoutStyle.h"
 #import "MZELayoutOptions.h"
 
+static BOOL isDebug = NO;
+
 @implementation MZELayoutStyle
 - (id)initWithSize:(CGSize)size isLandscape:(BOOL)isLandscape {
 	self = [super init];
@@ -8,18 +10,30 @@
 		_isLandscape = isLandscape;
 		if (isLandscape) {
 			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-				_isLandscape = YES;
-				self.rows = 2;
-				self.columns = -1;
+				if (isDebug) {
+					_isLandscape = NO;
+					self.rows = -1;
+					self.columns = 13;
+				} else {
+					_isLandscape = YES;
+					self.rows = 2;
+					self.columns = -1;
+				}
 			} else {
 				self.rows = 3;
 				self.columns = -1;
 			}
 		} else {
 			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-				_isLandscape = YES;
-				self.rows = 2;
-				self.columns = -1;
+				if (isDebug) {
+					_isLandscape = NO;
+					self.rows = -1;
+					self.columns = 13;
+				} else {
+					_isLandscape = YES;
+					self.rows = 2;
+					self.columns = -1;
+				}
 			} else {
 				self.columns = 4;
 				self.rows = -1;

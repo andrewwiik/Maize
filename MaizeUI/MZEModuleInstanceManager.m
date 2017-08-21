@@ -42,33 +42,11 @@
 
 - (MZEModuleInstance *)_instantiateModuleWithMetadata:(MZEModuleMetadata *)metadata {
 	if (metadata) {
-		NSBundle *moduleBundle = [NSBundle bundleWithURL:metadata.bundlePath];
-		if (moduleBundle) {
-			BOOL isLoaded = [moduleBundle isLoaded];
-			if (isLoaded) {
-				Class principalClass = [moduleBundle principalClass];
-				if ([principalClass conformsToProtocol:@protocol(MZEContentModule)]) {
-					if ([principalClass respondsToSelector:@selector(isSupported)]) {
-						if (![(Class<MZEContentModule>)principalClass isSupported]) {
-							[moduleBundle unload];
-							return nil;
-						}
-					}
-
-					id<MZEContentModule> module = [[principalClass alloc] init];
-					MZEModuleInstance *moduleInstance = [[MZEModuleInstance alloc] initWithMetadata:metadata module:module];
-					
-					return moduleInstance;
-				} else {
-					[moduleBundle unload];
-				}
-			} else {
-
-				NSError *error = nil;
-				BOOL didLoad = [moduleBundle loadAndReturnError:&error];
-
-				if (didLoad) {
-
+		if (![metadata isProvider]) {
+			NSBundle *moduleBundle = [NSBundle bundleWithURL:metadata.bundlePath];
+			if (moduleBundle) {
+				BOOL isLoaded = [moduleBundle isLoaded];
+				if (isLoaded) {
 					Class principalClass = [moduleBundle principalClass];
 					if ([principalClass conformsToProtocol:@protocol(MZEContentModule)]) {
 						if ([principalClass respondsToSelector:@selector(isSupported)]) {
@@ -86,12 +64,76 @@
 						[moduleBundle unload];
 					}
 				} else {
-					HBLogError(@"LOADING MAIZE MODULE ERROR: %@", error);
+
+					NSError *error = nil;
+					BOOL didLoad = [moduleBundle loadAndReturnError:&error];
+
+					if (didLoad) {
+
+						Class principalClass = [moduleBundle principalClass];
+						if ([principalClass conformsToProtocol:@protocol(MZEContentModule)]) {
+							if ([principalClass respondsToSelector:@selector(isSupported)]) {
+								if (![(Class<MZEContentModule>)principalClass isSupported]) {
+									[moduleBundle unload];
+									return nil;
+								}
+							}
+
+							id<MZEContentModule> module = [[principalClass alloc] init];
+							MZEModuleInstance *moduleInstance = [[MZEModuleInstance alloc] initWithMetadata:metadata module:module];
+							
+							return moduleInstance;
+						} else {
+							[moduleBundle unload];
+						}
+					} else {
+						HBLogError(@"LOADING MAIZE MODULE ERROR: %@", error);
+					}
+				}
+			}
+		} else {
+			NSBundle *moduleBundle = [NSBundle bundleWithURL:metadata.bundlePath];
+			if (moduleBundle) {
+				BOOL isLoaded = [moduleBundle isLoaded];
+				if (isLoaded) {
+
+					id<MZEContentModule> module = [[metadata providerClass] moduleForIdentifier:metadata.identifier];
+					MZEModuleInstance *moduleInstance = [[MZEModuleInstance alloc] initWithMetadata:metadata module:module];
+					return moduleInstance;
+					// Class principalClass = [moduleBundle principalClass];
+					// if ([principalClass conformsToProtocol:@protocol(MZEContentModule)]) {
+					// 	// if ([principalClass respondsToSelector:@selector(isSupported)]) {
+					// 	// 	if (![(Class<MZEContentModule>)principalClass isSupported]) {
+					// 	// 		[moduleBundle unload];
+					// 	// 		return nil;
+					// 	// 	}
+					// 	// }
+
+					// 	id<MZEContentModule> module = [[principalClass alloc] init];
+					// 	MZEModuleInstance *moduleInstance = [[MZEModuleInstance alloc] initWithMetadata:metadata module:module];
+						
+					// 	return moduleInstance;
+					// } else {
+					// 	[moduleBundle unload];
+					// }
+				} else {
+
+					NSError *error = nil;
+					BOOL didLoad = [moduleBundle loadAndReturnError:&error];
+
+					if (didLoad) {
+
+						id<MZEContentModule> module = [[metadata providerClass] moduleForIdentifier:metadata.identifier];
+						MZEModuleInstance *moduleInstance = [[MZEModuleInstance alloc] initWithMetadata:metadata module:module];
+						return moduleInstance;
+					
+					} else {
+						HBLogError(@"LOADING MAIZE MODULE ERROR: %@", error);
+					}
 				}
 			}
 		}
 	}
-
 	return nil;
 }
 

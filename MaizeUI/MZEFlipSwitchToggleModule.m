@@ -1,4 +1,5 @@
 #import "MZEFlipSwitchToggleModule.h"
+#import <UIKit/UIColor+Private.h>
 #import <Flipswitch/FSSwitchPanel.h>
 #import <FlipSwitch/FSSwitchPanel+Private.h>
 
@@ -35,7 +36,12 @@
 }
 
 - (UIColor *)selectedColor {
-	return [[NSClassFromString(@"FSSwitchPanel") sharedPanel] primaryColorForSwitchIdentifier:_switchIdentifier];
+	UIColor *color = [[NSClassFromString(@"FSSwitchPanel") sharedPanel] primaryColorForSwitchIdentifier:_switchIdentifier];
+	if (color == nil || color == [UIColor whiteColor]) {
+		color = [UIColor systemBlueColor];
+	}
+	return color;
+	//return [[NSClassFromString(@"FSSwitchPanel") sharedPanel] primaryColorForSwitchIdentifier:_switchIdentifier];
 }
 
 - (UIImage *)iconGlyph {

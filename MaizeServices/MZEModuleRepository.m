@@ -5,7 +5,7 @@
 	static MZEModuleRepository *_sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedInstance = [[MZEModuleRepository alloc] _initWithDirectoryURLs:[MZEModuleRepository _defaultModuleDirectories]];
+        _sharedInstance = [[MZEModuleRepository alloc] _initWithDirectoryURLs:[MZEModuleRepository _defaultModuleDirectories] providerURLs:[MZEModuleRepository _defaultProviderDirectories]];
     });
     return _sharedInstance;
 }
@@ -16,6 +16,10 @@
 
 + (NSArray *)_defaultModuleDirectories {
 	return [NSArray arrayWithObjects:[NSURL fileURLWithPath:@"/Library/Maize/Bundles/"], nil];
+}
+
++ (NSArray *)_defaultProviderDirectories {
+	return [NSArray arrayWithObjects:[NSURL fileURLWithPath:@"/Library/Maize/Providers/"], nil];
 }
 
 + (NSString *)settingsFilePath {
@@ -54,11 +58,12 @@
 	return [defaultDisabledIdentifiers copy];
 }
 
-- (id)_initWithDirectoryURLs:(NSArray *)directoryURLs {
+- (id)_initWithDirectoryURLs:(NSArray *)directoryURLs providerURLs:(NSArray *)providerURLs {
 	self = [super init];
 	if (self) {
 		_moduleMetadataByIdentifier = [NSMutableDictionary new];
 		_directoryURLs = directoryURLs;
+		_providerURLs = providerURLs;
 		_settingsIdentifier = [MZEModuleRepository settingsIdentifier];
 		_settingsFilePath = [MZEModuleRepository settingsFilePath];
 		_enabledKey = [MZEModuleRepository enabledKey];
@@ -89,12 +94,77 @@
 		}
 	}
 
+	for (NSURL *repositoryURL in _providerURLs) {
+		NSError *error = nil;
+		NSArray *bundleURLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:repositoryURL
+															includingPropertiesForKeys:nil
+                   															   options:(NSDirectoryEnumerationSkipsHiddenFiles)
+                   																 error:&error];
+
+		if (bundleURLs) {
+			for (NSURL *bundleURL in bundleURLs) {
+				if ([[bundleURL pathExtension] caseInsensitiveCompare:@"bundle"] == NSOrderedSame) {
+					MZEModuleProvider *provider = [[MZEModuleProvider alloc] initWithBundlePath:bundleURL];
+					if (provider) {
+						for (NSString *identifier in provider.possibleIdentifiers) {
+							NSDictionary *info = [provider infoDictionaryForIdentifier:identifier];
+							if (info) {
+								MZEModuleMetadata *metadata = [[MZEModuleMetadata alloc] initWithInfoDictionary:info andBundlePath:bundleURL];
+								if (metadata) {
+									_moduleMetadataByIdentifier[metadata.identifier] = metadata;
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			HBLogError(@"%@", error);
+		}
+	}
+
 	if (!_enabledIdentifiers | !_disabledIdentifiers) {
 		[self loadSettings];
 	} else {
 		[self _saveSettings];
 		[self loadSettings];
 	}
+}
+
+- (id)testStuff {
+
+	for (NSURL *repositoryURL in _providerURLs) {
+		NSError *error = nil;
+		NSArray *bundleURLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:repositoryURL
+															includingPropertiesForKeys:nil
+                   															   options:(NSDirectoryEnumerationSkipsHiddenFiles)
+                   																 error:&error];
+
+		if (bundleURLs) {
+			for (NSURL *bundleURL in bundleURLs) {
+				if ([[bundleURL pathExtension] caseInsensitiveCompare:@"bundle"] == NSOrderedSame) {
+					MZEModuleProvider *provider = [[MZEModuleProvider alloc] initWithBundlePath:bundleURL];
+					//return provider;
+					if (provider) {
+						for (NSString *identifier in provider.possibleIdentifiers) {
+							NSDictionary *info = [provider infoDictionaryForIdentifier:identifier];
+							//return info;
+							if (info) {
+								MZEModuleMetadata *metadata = [[MZEModuleMetadata alloc] initWithInfoDictionary:info andBundlePath:bundleURL];
+								return metadata;
+								if (metadata) {
+									_moduleMetadataByIdentifier[metadata.identifier] = metadata;
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			HBLogError(@"%@", error);
+		}
+	}
+	return nil;
 }
 
 - (void)loadSettings {
