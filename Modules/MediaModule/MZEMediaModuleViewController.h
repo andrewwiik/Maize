@@ -6,6 +6,7 @@
 #import <UIKit/UIScreen+Private.h>
 #import "MZEMediaMetaDataView.h"
 #import "MZEMediaMetaDataView.h"
+#import "MZEMediaControlsViewController.h"
 
 @interface MPUControlCenterMediaControlsViewController : UIViewController
 @end
@@ -16,7 +17,7 @@
 
 }
 @property (nonatomic, retain, readwrite) MZEMediaMetaDataView *metadataView;
-@property (nonatomic, retain, readwrite) MPUControlCenterMediaControlsViewController *controlsView;
+@property (nonatomic, retain, readwrite) MZEMediaControlsViewController *controlsView;
 @property (nonatomic, readwrite) BOOL isExpanded;
 - (id)initWithNibName:(id)arg1 bundle:(id)arg2;
 - (CGFloat)preferredExpandedContentWidth;
