@@ -1,13 +1,10 @@
 #import "MZEMediaMetaDataView.h"
+#import <QuartzCore/CALayer+Private.h>
+#import <QuartzCore/CAFilter+Private.h>
 
 @implementation MZEMediaMetaDataView
 -(id)initWithFrame:(CGRect)arg1 {
   self = [super initWithFrame:arg1];
-
-  [[NSNotificationCenter defaultCenter] addObserver:self
-    selector:@selector(updateMedia)
-    name:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDidChangeNotification
-    object:nil];
 
   self.titleLabel = [[MZEMediaMarqueeLabel alloc] init];
   self.titleLabel.frame = self.bounds;
@@ -25,11 +22,14 @@
   self.subtitleLabel.frame = self.bounds;
   [self addSubview:self.subtitleLabel];
 
+  self.outputButton = [[MZEMediaOutputToggleButton alloc] init];
+  [self addSubview:self.outputButton];
+
   self.artworkView = [[MZEMediaArtworkView alloc] init];
   self.artworkView.alpha = 0;
   [self addSubview:self.artworkView];
 
-  [self updateMedia];
+  [self updateMediaForChangeOfMediaControlsStatus];
 
   return self;
 }
@@ -55,6 +55,9 @@
 
   if(self.expanded){
 
+    self.outputButton.alpha = 1;
+    self.outputButton.frame = CGRectMake(self.frame.size.width - self.frame.size.width/13 - self.frame.size.height/3, self.frame.size.height/3, self.frame.size.height/3, self.frame.size.height/3);
+
     float artwork = self.frame.size.height - self.frame.size.width/7;
 
     self.titleLabel.frame = CGRectMake(artwork + self.frame.size.width/10, self.frame.size.height/4, self.frame.size.width/2, self.frame.size.height/4);
@@ -69,7 +72,7 @@
     [self.subtitleLabel setContentSize:CGSizeMake(self.subtitleLabel.label.frame.size.width, self.subtitleLabel.label.frame.size.height)];
     [self.subtitleLabel setBounds:self.subtitleLabel.bounds];
 
-    self.artworkView.frame = CGRectMake(self.frame.size.width/14, self.frame.size.width/14, artwork, artwork);
+    self.artworkView.frame = CGRectMake(self.frame.size.width/13, self.frame.size.width/14, artwork, artwork);
     self.headerDivider.frame = CGRectMake(0,self.frame.size.height - 0.5, self.frame.size.width, 0.5);
 
     self.artworkView.alpha = 1;
@@ -91,6 +94,7 @@
 
   } else {
 
+    self.outputButton.alpha = 0;
 
     self.artworkView.alpha = 0;
     self.headerDivider.alpha = 0;
@@ -124,7 +128,7 @@
     }
   }
 }
--(void)updateMedia {
+-(void)updateMediaForChangeOfMediaControlsStatus {
   MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef information) {
       NSDictionary *dict=(__bridge NSDictionary *)(information);
 

@@ -4,6 +4,7 @@
 #import "MZEMediaEffectLabel.h"
 #import "MZEMediaArtworkView.h"
 #import "MZEMediaMarqueeLabel.h"
+#import "MZEMediaOutputToggleButton.h"
 
 // My SDK and Headers are stuffed so this hack need be done
 @interface UIImage (Image)
@@ -26,8 +27,10 @@
 @property (nonatomic, retain, readwrite) MZEMediaMarqueeLabel *subtitleLabel;
 @property (nonatomic, retain, readwrite) MZEMediaEffectLabel *sourceLabel;
 @property (nonatomic, retain, readwrite) MZEMediaArtworkView *artworkView;
+@property (nonatomic, retain, readwrite) MZEMediaOutputToggleButton *outputButton;
 @property (nonatomic, retain, readwrite) UIView *headerDivider;
 @property (nonatomic, readwrite) BOOL expanded;
 -(id)initWithFrame:(CGRect)arg1;
 -(void)updateFrame;
+-(void)updateMediaForChangeOfMediaControlsStatus;
 @end

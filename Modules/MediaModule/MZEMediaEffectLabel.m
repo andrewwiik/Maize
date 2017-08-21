@@ -1,4 +1,6 @@
 #import "MZEMediaEffectLabel.h"
+#import <QuartzCore/CALayer+Private.h>
+#import <QuartzCore/CAFilter+Private.h>
 
 @implementation MZEMediaEffectLabel
 -(void)setEffects:(int)style {
