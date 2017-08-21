@@ -1,0 +1,2 @@
+@interface SBCCButtonModule : NSObject
+@end

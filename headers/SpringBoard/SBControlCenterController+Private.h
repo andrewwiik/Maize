@@ -1,10 +1,13 @@
+#import <SpringBoard/SBControlCenterController.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
 
-@interface SBControlCenterController : UIViewController
+@interface SBControlCenterController (Private)
 + (instancetype)sharedInstance;
 + (instancetype)sharedInstanceIfExists;
 + (instancetype)_sharedInstanceCreatingIfNeeded:(BOOL)ifNeeded;
 - (CCUIControlCenterViewController *)_controlCenterViewController;
-- (void)dismissAnimated:(BOOL)arg1 completion:(/*^block*/id)arg2 ;
-- (void)presentAnimated:(BOOL)arg1 completion:(/*^block*/id)arg2 ;
+- (void)dismissAnimated:(BOOL)animated completion:(/*^block*/id)completion;
+- (void)presentAnimated:(BOOL)animated completion:(/*^block*/id)completion;
+- (void)dismissAnimated:(BOOL)animated;
+- (BOOL)isVisible;
 @end

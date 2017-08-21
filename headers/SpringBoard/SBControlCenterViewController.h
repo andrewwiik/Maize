@@ -1,0 +1,2 @@
+@interface SBControlCenterViewController : UIViewController
+@end

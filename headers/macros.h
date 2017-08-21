@@ -1,5 +1,19 @@
 
 #import <MaizeUI/MZELayoutOptions.h>
+#import <ControlCenterUI/CCUIShortcutModule.h>
+#import <SpringBoard/SBUnlockActionContext.h>
+#import <SpringBoard/SBCCShortcutModule.h>
+#import <SpringBoard/SBLockScreenActionContext+Private.h>
+#import <SpringBoard/SBApplicationController.h>
+#import <SpringBoard/SBDeviceLockController.h>
+#import <SpringBoard/SBApplication.h>
+#import <SpringBoard/SBUIController+Private.h>
+#import <SpringBoard/SBLockScreenManager+Private.h>
+#import <SpringBoard/SBControlCenterController+Private.h>
+// #import <SpringBoard/SBCCTimerShortcut.h>
+// #import <SpringBoard/SBCCCalculatorShortcut.h>
+// #import <SpringBoard/SBCCCameraShortcut.h>
+
 
 #define NSCLeft        NSLayoutAttributeLeft
 #define NSCRight       NSLayoutAttributeRight
@@ -40,3 +54,94 @@
 #endif
 
 #define UIPointRoundToViewScale(point, view) CGPointMake(UIRoundToViewScale(point.x, view), UIRoundToViewScale(point.y,view))
+
+
+#pragma mark Launching Applications
+
+static inline void launchAppDirect(SBApplication *application)
+{
+	if (application != nil)
+	{
+		SBUIController *controller = (SBUIController *)[NSClassFromString(@"SBUIController") sharedInstance];
+
+		if (NSClassFromString(@"SBCCShortcutModule") != nil)
+		{
+			SBCCShortcutModule *module = [[NSClassFromString(@"SBCCShortcutModule") alloc] init];
+			[module activateAppWithDisplayID:application.bundleIdentifier url:nil];
+			return;
+		} else if (NSClassFromString(@"CCUIShortcutModule") != nil) {
+			CCUIShortcutModule *module = [[NSClassFromString(@"CCUIShortcutModule") alloc] init];
+			[module activateAppWithDisplayID:application.bundleIdentifier url:nil unlockIfNecessary:YES];
+			return;
+		}
+
+		if ([controller respondsToSelector:@selector(activateApplicationAnimated:)]) {
+			[controller activateApplicationAnimated:application];
+		} else if ([controller respondsToSelector:@selector(activateApplication:)]) {
+			[controller activateApplication:application];
+		}
+	}
+}
+
+static inline void launchApplication(SBApplication *launchApp)
+{
+	if (launchApp == nil) return;
+
+	NSArray *standardIDs = @[@"com.apple.mobiletimer", @"com.apple.calculator", @"com.apple.camera"];
+	if ([standardIDs containsObject:launchApp.bundleIdentifier] && NSClassFromString(@"SBCCShortcutModule") != nil)
+	{
+		SBCCShortcutModule *module = nil;
+		if (NSClassFromString(@"SBCCShortcutModule")) {
+			if ([launchApp.bundleIdentifier isEqualToString:@"com.apple.mobiletimer"]) module = [[NSClassFromString(@"SBCCTimerShortcut") alloc] init];
+			else if ([launchApp.bundleIdentifier isEqualToString:@"com.apple.calculator"]) module = [[NSClassFromString(@"SBCCCalculatorShortcut") alloc] init];
+			else if ([launchApp.bundleIdentifier isEqualToString:@"com.apple.camera"]) module = [[NSClassFromString(@"SBCCCameraShortcut") alloc] init];
+		} else {
+			if ([launchApp.bundleIdentifier isEqualToString:@"com.apple.mobiletimer"]) module = [[NSClassFromString(@"CCUITimerShortcut") alloc] init];
+			else if ([launchApp.bundleIdentifier isEqualToString:@"com.apple.calculator"]) module = [[NSClassFromString(@"CCUICalculatorShortcut") alloc] init];
+			else if ([launchApp.bundleIdentifier isEqualToString:@"com.apple.camera"]) module = [[NSClassFromString(@"CCUICameraShortcut") alloc] init];
+		}
+		 if (module != nil) [module activateApp];
+
+		 return;
+	}
+
+	if ([[NSClassFromString(@"SBDeviceLockController") sharedController] isPasscodeLocked]) {
+    	SBLockScreenManager *manager = (SBLockScreenManager *)[NSClassFromString(@"SBLockScreenManager") sharedInstance];
+     	if ([manager isUILocked])
+     	{
+     		//Hotfix for switches displayed in CC as default, they dont dismiss Control Center when applying an action
+	       	if ([NSClassFromString(@"SBControlCenterController") sharedInstance]) [(SBControlCenterController *)[NSClassFromString(@"SBControlCenterController") sharedInstance] dismissAnimated:YES];
+
+	       	void (^action)() = ^() {
+         		launchAppDirect(launchApp);
+	        };
+	        SBLockScreenViewControllerBase *controller = (SBLockScreenViewControllerBase *)[manager lockScreenViewController];
+
+	        if (NSClassFromString(@"SBUnlockActionContext") != nil)
+	        {
+	        	SBUnlockActionContext *context = [[NSClassFromString(@"SBUnlockActionContext") alloc] initWithLockLabel:nil shortLockLabel:nil unlockAction:action identifier:nil];
+	        	[context setDeactivateAwayController:YES];
+	        	[controller setCustomUnlockActionContext:context]; 
+	        }
+	        else if (NSClassFromString(@"SBLockScreenActionContext") != nil) //8.0+
+	        {
+	        	SBLockScreenActionContext *context = [[NSClassFromString(@"SBLockScreenActionContext") alloc] initWithLockLabel:nil shortLockLabel:nil action:action identifier:nil];
+	        	[context setDeactivateAwayController:YES];
+	        	[controller setCustomLockScreenActionContext:context];
+	        }
+
+	        [controller setPasscodeLockVisible:YES animated:YES completion:nil];
+	       	return;
+    	}
+	}
+	launchAppDirect(launchApp);
+}
+
+static inline SBApplication *applicationForID(NSString *applicationID)
+{
+	SBApplicationController *controller = (SBApplicationController *)[NSClassFromString(@"SBApplicationController") sharedInstance];
+
+	if ([[controller class] instancesRespondToSelector:@selector(applicationWithDisplayIdentifier:)]) return [controller applicationWithDisplayIdentifier:applicationID];
+
+	return [controller applicationWithBundleIdentifier:applicationID];
+}
