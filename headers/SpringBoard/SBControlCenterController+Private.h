@@ -1,7 +1,7 @@
-#import <SpringBoard/SBControlCenterController.h>
+//#import <SpringBoard/SBControlCenterController.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
 
-@interface SBControlCenterController (Private)
+@interface SBControlCenterController : UIViewController
 + (instancetype)sharedInstance;
 + (instancetype)sharedInstanceIfExists;
 + (instancetype)_sharedInstanceCreatingIfNeeded:(BOOL)ifNeeded;
