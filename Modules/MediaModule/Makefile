@@ -13,8 +13,4 @@ MediaModule_LDFLAGS = $(THEOS)/vendor/lib/libsubstrate.tbd ./AppSupport.tbd ./Me
 MediaModule_INSTALL_PATH = /Library/Maize/Bundles/
 MediaModule_LDFLAGS += -F../../.theos/$(THEOS_OBJ_DIR_NAME)
 
-SUBPROJECTS += MediaPatch
-
-include $(THEOS_MAKE_PATH)/aggregate.mk
-
 include $(THEOS_MAKE_PATH)/bundle.mk

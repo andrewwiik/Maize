@@ -8,27 +8,13 @@
 		self.metadataView = [[NSClassFromString(@"MZEMediaMetaDataView") alloc] initWithFrame:self.view.bounds];
 		[self.view addSubview:self.metadataView];
 
-		self.controlsView = [[NSClassFromString(@"MPUControlCenterMediaControlsViewController") alloc] init];
-
-		for(UIView *subview in self.controlsView.view.subviews){
-			if([subview isKindOfClass:[NSClassFromString(@"MPUNowPlayingArtworkView") class]]){
-					[subview removeFromSuperview];
-			} else if([subview isKindOfClass:[NSClassFromString(@"MPUEmptyNowPlayingView") class]]){
-					[subview removeFromSuperview];
-			} else if([subview isKindOfClass:[NSClassFromString(@"MPUAVRouteHeaderView") class]]){
-					[subview removeFromSuperview];
-			} else if([subview isKindOfClass:[NSClassFromString(@"MPUControlCenterMetadataView") class]]){
-					[subview removeFromSuperview];
-			} else {
-				[subview removeConstraints:subview.constraints];
-			}
-		}
-
-		[[self.controlsView.view valueForKey:@"_timeView"] setAlpha:0];
-		[[self.controlsView.view valueForKey:@"_volumeView"] setAlpha:0];
-
-		self.controlsView.view.tag = 4123723;
+		self.controlsView = [[NSClassFromString(@"MZEMediaControlsViewController") alloc] init];
 		[self.view addSubview:self.controlsView.view];
+
+	  [[NSNotificationCenter defaultCenter] addObserver:self
+	    selector:@selector(updateMedia)
+	    name:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDidChangeNotification
+	    object:nil];
 
 		_isExpanded = NO;
 	}
@@ -41,6 +27,7 @@
 }
 
 - (void)willBecomeActive {
+	[self updateMedia];
 }
 
 - (void)willResignActive {
@@ -50,14 +37,15 @@
 	if(_isExpanded){
 		self.controlsView.view.frame = CGRectMake(0,self.view.frame.size.height/3.5, self.view.frame.size.width, self.view.frame.size.height - self.view.frame.size.height/3.5);
 		self.metadataView.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height/3.5);
-		[[self.controlsView.view valueForKey:@"_timeView"] setAlpha:1];
-		[[self.controlsView.view valueForKey:@"_volumeView"] setAlpha:1];
+
+		self.controlsView.expanded = TRUE;
 	} else {
-		[[self.controlsView.view valueForKey:@"_timeView"] setAlpha:0];
-		[[self.controlsView.view valueForKey:@"_volumeView"] setAlpha:0];
 		self.metadataView.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height/2);
 		self.controlsView.view.frame = CGRectMake(0,self.view.frame.size.height/2, self.view.frame.size.width, self.view.frame.size.height/2);
+
+		self.controlsView.expanded = FALSE;
 	}
+
 }
 
 - (CGFloat)preferredExpandedContentWidth {
@@ -100,5 +88,19 @@
 
 - (BOOL)shouldAutomaticallyForwardAppearanceMethods {
 	return NO;
+}
+-(void)updateMedia {
+	[self.controlsView updateMediaForChangeOfMediaControlsStatus];
+	[self.metadataView updateMediaForChangeOfMediaControlsStatus];
+
+	if([self.metadataView.titleLabel.label.text isEqualToString:@"IPHONE"]){
+			self.controlsView.controlsView.skipButton.alpha = 0.16;
+			self.controlsView.controlsView.rewindButton.alpha = 0.16;
+			self.controlsView.hasTitles = FALSE;
+	} else {
+			self.controlsView.controlsView.skipButton.alpha = 0.8;
+			self.controlsView.controlsView.rewindButton.alpha = 0.8;
+			self.controlsView.hasTitles = TRUE;
+	}
 }
 @end
