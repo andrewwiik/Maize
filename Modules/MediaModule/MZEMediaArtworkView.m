@@ -7,7 +7,7 @@
   if (self) {
 
     self.layer.cornerRadius = 14.0; // this will need to be changed to continousCornerRadius
-    self.layer.clipsToBounds = YES;
+    self.clipsToBounds = YES;
 
     self.artworkBackground = [[UIView alloc] initWithFrame:self.bounds];
     self.artworkBackground.backgroundColor = [UIColor whiteColor];

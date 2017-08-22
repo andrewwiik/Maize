@@ -4,10 +4,6 @@
 #import <QuartzCore/CAFilter+Private.h>
 #import <UIKit/UIImage+Private.h>
 
-@interface UIImage (Image)
--(id)_flatImageWithColor:(UIColor *)arg1;
-@end
-
 @interface SBMediaController : NSObject
 + (id)sharedInstance;
 - (_Bool)isPlaying;
