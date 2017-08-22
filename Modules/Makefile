@@ -19,7 +19,8 @@ SUBPROJECTS += OrientationLockModule
 SUBPROJECTS += RingerModule
 # SUBPROJECTS += VPNModule
 SUBPROJECTS += AudioModule
-# SUBPROJECTS += DisplayModule
+SUBPROJECTS += DisplayModule
 SUBPROJECTS += FlashlightModule
-# SUBPROJECTS += MediaModule
+SUBPROJECTS += MediaModule
+SUBPROJECTS += CameraModule
 include $(THEOS_MAKE_PATH)/aggregate.mk

@@ -44,9 +44,9 @@
 	[_sliderView setGlyphPackage:glyphPackage];
 }
 
-- (void)setOtherGlyphPackage:(CAPackage *)otherGlyphPackage {
-	[_sliderView setOtherGlyphPackage:otherGlyphPackage];
-}
+// - (void)setOtherGlyphPackage:(CAPackage *)otherGlyphPackage {
+// 	[_sliderView setOtherGlyphPackage:otherGlyphPackage];
+// }
 
 - (CGFloat)preferredExpandedContentHeight {
 	return [MZELayoutOptions defaultExpandedSliderHeight];

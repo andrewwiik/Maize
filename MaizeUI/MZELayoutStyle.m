@@ -1,5 +1,6 @@
 #import "MZELayoutStyle.h"
 #import "MZELayoutOptions.h"
+#import <MaizeServices/MZEModuleRepository.h>
 
 static BOOL isDebug = NO;
 
@@ -7,6 +8,7 @@ static BOOL isDebug = NO;
 - (id)initWithSize:(CGSize)size isLandscape:(BOOL)isLandscape {
 	self = [super init];
 	if (self) {
+		isDebug = [MZEModuleRepository isDebug];
 		_isLandscape = isLandscape;
 		if (isLandscape) {
 			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

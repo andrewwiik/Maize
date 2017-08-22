@@ -16,4 +16,5 @@
 @property(readonly, nonatomic) BOOL enabled;
 @property(nonatomic, readwrite) BOOL supportsApplicationShortcuts;
 - (NSString *)applicationIdentifier;
+- (BOOL)isEnabled;
 @end

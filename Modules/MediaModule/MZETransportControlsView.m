@@ -2,6 +2,7 @@
 
 #import <QuartzCore/CALayer+Private.h>
 #import <QuartzCore/CAFilter+Private.h>
+#import <UIKit/UIImage+Private.h>
 
 @interface UIImage (Image)
 -(id)_flatImageWithColor:(UIColor *)arg1;
@@ -22,49 +23,50 @@
 @implementation MZETransportControlsView
 -(id)init {
   self = [super init];
+  if (self) {
+    self.skipButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.skipButton addTarget:self action:@selector(skip) forControlEvents:UIControlEventTouchUpInside];
+    UIImage *skipButtonImage = [[UIImage imageNamed:@"Next" inBundle:[NSBundle bundleForClass:[self class]]] _flatImageWithColor:[UIColor whiteColor]];
+    [self.skipButton setImage:skipButtonImage forState:UIControlStateNormal];
+    self.skipButton.alpha = 0.16;
+    [self addSubview:self.skipButton];
 
-  self.skipButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  [self.skipButton addTarget:self action:@selector(skip) forControlEvents:UIControlEventTouchUpInside];
-  UIImage *skipButtonImage = [[UIImage imageWithContentsOfFile:@"/Library/Application Support/Maize/MediaModule/skip.png"] _flatImageWithColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:1]];
-  [self.skipButton setImage:skipButtonImage forState:UIControlStateNormal];
-  self.skipButton.alpha = 0.16;
-  [self addSubview:self.skipButton];
+    self.playButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.playButton addTarget:self action:@selector(playPause) forControlEvents:UIControlEventTouchUpInside];
+    UIImage *playButtonImage = [[UIImage imageNamed:@"Play" inBundle:[NSBundle bundleForClass:[self class]]] _flatImageWithColor:[UIColor whiteColor]];
+    [self.playButton setImage:playButtonImage forState:UIControlStateNormal];
+    self.playButton.alpha = 0.8;
+    [self addSubview:self.playButton];
 
-  self.playButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  [self.playButton addTarget:self action:@selector(playPause) forControlEvents:UIControlEventTouchUpInside];
-  UIImage *playButtonImage = [[UIImage imageWithContentsOfFile:@"/Library/Application Support/Maize/MediaModule/play.png"] _flatImageWithColor:[UIColor whiteColor]];
-  [self.playButton setImage:playButtonImage forState:UIControlStateNormal];
-  self.playButton.alpha = 0.8;
-  [self addSubview:self.playButton];
+    self.pauseButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.pauseButton addTarget:self action:@selector(playPause) forControlEvents:UIControlEventTouchUpInside];
+    UIImage *pauseButtonImage = [[UIImage imageNamed:@"Pause" inBundle:[NSBundle bundleForClass:[self class]]] _flatImageWithColor:[UIColor whiteColor]];
+    [self.pauseButton setImage:pauseButtonImage forState:UIControlStateNormal];
+    self.pauseButton.alpha = 0.8;
+    [self addSubview:self.pauseButton];
 
-  self.pauseButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  [self.pauseButton addTarget:self action:@selector(playPause) forControlEvents:UIControlEventTouchUpInside];
-  UIImage *pauseButtonImage = [[UIImage imageWithContentsOfFile:@"/Library/Application Support/Maize/MediaModule/pause.png"] _flatImageWithColor:[UIColor whiteColor]];
-  [self.pauseButton setImage:pauseButtonImage forState:UIControlStateNormal];
-  self.pauseButton.alpha = 0.8;
-  [self addSubview:self.pauseButton];
+    self.rewindButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.rewindButton addTarget:self action:@selector(playPause) forControlEvents:UIControlEventTouchUpInside];
+    UIImage *rewindButtonImage = [[UIImage imageNamed:@"Previous" inBundle:[NSBundle bundleForClass:[self class]]] _flatImageWithColor:[UIColor whiteColor]];
+    [self.rewindButton setImage:rewindButtonImage forState:UIControlStateNormal];
+    self.rewindButton.alpha = 0.16;
+    [self addSubview:self.rewindButton];
 
-  self.rewindButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  [self.rewindButton addTarget:self action:@selector(playPause) forControlEvents:UIControlEventTouchUpInside];
-  UIImage *rewindButtonImage = [[UIImage imageWithContentsOfFile:@"/Library/Application Support/Maize/MediaModule/rewind.png"] _flatImageWithColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:1]];
-  [self.rewindButton setImage:rewindButtonImage forState:UIControlStateNormal];
-  self.rewindButton.alpha = 0.16;
-  [self addSubview:self.rewindButton];
+    self.rewindButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.skipButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.playButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.pauseButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 
-  self.rewindButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-  self.skipButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-  self.playButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-  self.pauseButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.pauseButton.hidden = TRUE;
 
-  self.pauseButton.hidden = TRUE;
+    self.skipButton.layer.compositingFilter = @"plusL";
 
-  self.skipButton.layer.compositingFilter = [NSClassFromString(@"CAFilter") filterWithType:@"plusL"];
+    self.playButton.layer.compositingFilter = @"plusL";
 
-  self.playButton.layer.compositingFilter = [NSClassFromString(@"CAFilter") filterWithType:@"plusL"];
+    self.pauseButton.layer.compositingFilter = @"plusL";
 
-  self.pauseButton.layer.compositingFilter = [NSClassFromString(@"CAFilter") filterWithType:@"plusL"];
-
-  self.rewindButton.layer.compositingFilter = [NSClassFromString(@"CAFilter") filterWithType:@"plusL"];
+    self.rewindButton.layer.compositingFilter = @"plusL";
+  }
 
   return self;
 }

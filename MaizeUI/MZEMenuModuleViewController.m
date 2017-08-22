@@ -82,6 +82,7 @@ static CGFloat separatorHeight = 0;
 
 
 - (void)viewWillLayoutSubviews {
+	[super viewWillLayoutSubviews];
 	CGSize size = self.view.bounds.size;
 	_platterBackground.hidden = _shouldProvideOwnPlatter ? NO : YES;
 

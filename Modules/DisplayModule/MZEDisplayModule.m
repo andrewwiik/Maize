@@ -12,7 +12,7 @@
 - (UIViewController<MZEContentModuleContentViewController> *)contentViewController {
 	 _moduleViewController = [[MZEDisplayModuleViewController alloc] initWithNibName:nil bundle:nil];
     [_moduleViewController setGlyphPackage:[self _brightnessGlyphPackage]];
-    [_moduleViewController setOtherGlyphPackage:[self _brightnessGlyphPackage]];
+   //[_moduleViewController setOtherGlyphPackage:[self _brightnessGlyphPackage]];
     [_moduleViewController setGlyphState:[self _brightnessGlyphStateForBrightnessLevel:[_moduleViewController currentBrightness]]];
     [_moduleViewController setDelegate:self];
     return _moduleViewController;
