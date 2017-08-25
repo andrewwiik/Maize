@@ -8,6 +8,10 @@
 #import <ControlCenterUI/CCUIControlCenterPageContentProviding-Protocol.h>
 #import <MediaPlayerUI/MPAVRoutingController.h>
 #import <MediaPlayerUI/MPWeakTimer.h>
+#import <MediaPlayerUI/MPAVRoute.h>
+#import <MediaPlayerUI/MPUTransportControlsView.h>
+#import <MediaPlayerUI/MPAVRouteHeaderView.h>
+#import <MediaPlayerUI/MPUMediaRemoteControlsView.h>
 
 @interface MPUControlCenterMediaControlsViewController : MPUMediaRemoteViewController <MPAVRoutingControllerDelegate, MPAVRoutingViewControllerDelegate, MPUControlCenterMediaControlsViewDelegate, CCUIControlCenterPageContentProviding> {
 
@@ -20,41 +24,36 @@
 
 }
 
-@property (readonly) NSUInteger hash; 
-@property (readonly) Class superclass; 
-@property (copy,readonly) NSString * description; 
-@property (copy,readonly) NSString * debugDescription; 
 @property (nonatomic, retain) id<CCUIControlCenterPageContentViewControllerDelegate> delegate; 
 @property (nonatomic,readonly) UIEdgeInsets contentInsets; 
 @property (nonatomic,readonly) BOOL wantsVisible; 
 +(Class)controlsViewClass;
 +(Class)transportControlButtonClass;
--(id)initWithCoder:(id)arg1 ;
--(void)setDelegate:(id<CCUIControlCenterPageContentViewControllerDelegate>)arg1 ;
+-(void)setDelegate:(id<CCUIControlCenterPageContentViewControllerDelegate>)delegate;
 // -(void)dealloc;
 -(id<CCUIControlCenterPageContentViewControllerDelegate>)delegate;
--(id)initWithNibName:(id)arg1 bundle:(id)arg2 ;
--(void)viewWillAppear:(BOOL)arg1 ;
--(void)viewDidAppear:(BOOL)arg1 ;
--(void)viewDidDisappear:(BOOL)arg1 ;
+-(id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)bundle;
+-(void)viewWillAppear:(BOOL)willAppear;
+-(void)viewDidAppear:(BOOL)didAppear;
+-(void)viewDidDisappear:(BOOL)didDisappear;
 -(void)viewDidLoad;
--(void)routingControllerAvailableRoutesDidChange:(id)arg1 ;
--(void)routingViewController:(id)arg1 didPickRoute:(id)arg2 ;
+-(void)routingControllerAvailableRoutesDidChange:(MPAVRoutingController *)routingController;
+-(void)routingViewController:(MPAVRoutingViewController *)routingViewController didPickRoute:(MPAVRoute *)route;
 -(id)_mediaControlsView;
--(void)nowPlayingController:(id)arg1 playbackStateDidChange:(BOOL)arg2 ;
--(id)remoteControlInterfaceIdentifier;
--(id)transportControlsView:(id)arg1 buttonForControlType:(NSInteger)arg2 ;
--(CGSize)transportControlsView:(id)arg1 defaultTransportButtonSizeWithProposedSize:(CGSize)arg2 ;
--(id)allowedTransportControlTypes;
+-(void)nowPlayingController:(MPUNowPlayingController *)nowPlayingController playbackStateDidChange:(BOOL)didChange;
+-(NSString *)remoteControlInterfaceIdentifier;
+-(UIButton *)transportControlsView:(MPUTransportControlsView *)transportControlsView buttonForControlType:(NSInteger)controlType;
+-(CGSize)transportControlsView:(MPUTransportControlsView *)transportControlsView defaultTransportButtonSizeWithProposedSize:(CGSize)size;
+-(NSArray *)allowedTransportControlTypes;
 -(void)_initControlCenterMediaControlsViewController;
--(void)_setRoutingViewControllerVisible:(BOOL)arg1 animated:(BOOL)arg2 ;
--(void)_pickedRouteHeaderViewTapped:(id)arg1 ;
+-(void)_setRoutingViewControllerVisible:(BOOL)visible animated:(BOOL)animated;
+-(void)_pickedRouteHeaderViewTapped:(MPAVRouteHeaderView *)headerView;
 -(void)_setupControlCenterPageVisibilityUpdateTimer;
 -(void)_reloadRoutingControllerDiscoveryMode;
 -(void)_reloadCurrentLayoutStyle;
 -(NSUInteger)_currentLayoutStyle;
--(void)mediaControlsView:(id)arg1 willTransitionToCompactView:(BOOL)arg2 ;
--(void)mediaControlsViewPrimaryActionTriggered:(id)arg1 ;
+-(void)mediaControlsView:(MPUMediaRemoteControlsView *)mediaControlsView willTransitionToCompactView:(BOOL)willTransition;
+-(void)mediaControlsViewPrimaryActionTriggered:(UIButton *)buttonTriggered;
 -(void)controlCenterWillPresent;
 -(void)controlCenterDidDismiss;
 -(void)controlCenterWillBeginTransition;

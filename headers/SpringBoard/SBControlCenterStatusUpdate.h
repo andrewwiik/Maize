@@ -1,3 +1,3 @@
 @interface SBControlCenterStatusUpdate : NSObject
-+ (id)statusUpdateWithString:(id)arg1 reason:(id)arg2;
++ (instancetype)statusUpdateWithString:(NSString *)string reason:(NSString *)reason;
 @end

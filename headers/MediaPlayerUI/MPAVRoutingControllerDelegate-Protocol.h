@@ -10,10 +10,10 @@
 @protocol MPAVRoutingControllerDelegate
 
 @optional
-- (void)routingControllerDidPauseFromActiveRouteChange:(MPAVRoutingController *)arg1;
-- (void)routingController:(MPAVRoutingController *)arg1 didFailToPickRouteWithError:(NSError *)arg2;
-- (void)routingControllerExternalScreenTypeDidChange:(MPAVRoutingController *)arg1;
-- (void)routingController:(MPAVRoutingController *)arg1 pickedRouteDidChange:(MPAVRoute *)arg2;
-- (void)routingControllerAvailableRoutesDidChange:(MPAVRoutingController *)arg1;
+- (void)routingControllerDidPauseFromActiveRouteChange:(MPAVRoutingController *)routingController;
+- (void)routingController:(MPAVRoutingController *)routingController didFailToPickRouteWithError:(NSError *)error;
+- (void)routingControllerExternalScreenTypeDidChange:(MPAVRoutingController *)routingController;
+- (void)routingController:(MPAVRoutingController *)routingController pickedRouteDidChange:(MPAVRoute *)route;
+- (void)routingControllerAvailableRoutesDidChange:(MPAVRoutingController *)routingController;
 @end
 

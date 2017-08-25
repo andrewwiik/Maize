@@ -1,5 +1,5 @@
 @interface SBCCRecordScreenShortcut : NSObject
-+(BOOL)isSupported:(int)arg1;
++(BOOL)isSupported:(int)capability;
 +(BOOL)enabledByDefault;
 -(void)_startRecording;
 -(void)deactivate;

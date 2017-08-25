@@ -1,6 +1,8 @@
+#import <MediaPlayerUI/MPUMediaRemoteControlsView.h>
+
 @protocol MPUControlCenterMediaControlsViewDelegate
 @optional
--(void)mediaControlsView:(id)arg1 willTransitionToCompactView:(BOOL)arg2;
--(void)mediaControlsViewPrimaryActionTriggered:(id)arg1;
+-(void)mediaControlsView:(MPUMediaRemoteControlsView *)mediaControlsView willTransitionToCompactView:(BOOL)willTransition;
+-(void)mediaControlsViewPrimaryActionTriggered:(UIButton *)buttonTriggered;
 
 @end

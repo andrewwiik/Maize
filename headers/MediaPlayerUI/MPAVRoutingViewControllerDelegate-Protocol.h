@@ -1,7 +1,10 @@
+#import "MPAVRoutingViewController.h"
+#import "MPAVRoute.h"
+
 @protocol MPAVRoutingViewControllerDelegate
 @optional
--(void)routingViewController:(id)arg1 didPickRoute:(id)arg2;
--(void)routingViewControllerDidUpdateContents:(id)arg1;
--(void)routingViewControllerDidShowAirPlayDebugScreen:(id)arg1;
+-(void)routingViewController:(MPAVRoutingViewController *)routingController didPickRoute:(MPAVRoute *)route;
+-(void)routingViewControllerDidUpdateContents:(MPAVRoutingViewController *)routingController;
+-(void)routingViewControllerDidShowAirPlayDebugScreen:(MPAVRoutingViewController *)routingController;
 
 @end

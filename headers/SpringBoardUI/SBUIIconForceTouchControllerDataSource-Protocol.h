@@ -3,18 +3,18 @@
 
 @protocol SBUIIconForceTouchControllerDataSource <NSObject>
 @required
-- (CGRect)iconForceTouchController:(SBUIIconForceTouchController *)arg1 iconViewFrameForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
-- (NSInteger)iconForceTouchController:(SBUIIconForceTouchController *)arg1 layoutStyleForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
-- (UIView *)iconForceTouchController:(SBUIIconForceTouchController *)arg1 newIconViewCopyForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
-- (UIViewController *)iconForceTouchController:(SBUIIconForceTouchController *)arg1 primaryViewControllerForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
-- (UIViewController *)iconForceTouchController:(SBUIIconForceTouchController *)arg1 secondaryViewControllerForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
+- (CGRect)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController iconViewFrameForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
+- (NSInteger)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController layoutStyleForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
+- (UIView *)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController newIconViewCopyForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
+- (UIViewController *)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController primaryViewControllerForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
+- (UIViewController *)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController secondaryViewControllerForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
 
 @optional
-- (CGFloat)iconForceTouchController:(SBUIIconForceTouchController *)arg1 iconImageCornerRadiusForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
-- (UIEdgeInsets)iconForceTouchController:(SBUIIconForceTouchController *)arg1 iconImageInsetsForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
-- (id)iconForceTouchController:(SBUIIconForceTouchController *)arg1 parallaxSettingsForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
-- (CGFloat)iconForceTouchController:(SBUIIconForceTouchController *)arg1 wrapperViewCornerRadiusForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
-- (CGPoint)iconForceTouchController:(SBUIIconForceTouchController *)arg1 zoomDownCenterForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
-- (UIView *)iconForceTouchController:(SBUIIconForceTouchController *)arg1 zoomDownViewForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)arg2;
+- (CGFloat)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController iconImageCornerRadiusForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
+- (UIEdgeInsets)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController iconImageInsetsForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
+- (id)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController parallaxSettingsForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
+- (CGFloat)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController wrapperViewCornerRadiusForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
+- (CGPoint)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController zoomDownCenterForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
+- (UIView *)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController zoomDownViewForGestureRecognizer:(SBUIForceTouchGestureRecognizer *)gestureRecognizer;
 @end
 

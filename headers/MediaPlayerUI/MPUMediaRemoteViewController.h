@@ -20,6 +20,9 @@
 #import <MediaPlayerUI/MPUVolumeHUDController.h>
 #import <MediaPlayerUI/MPUNowPlayingController.h>
 #import <MediaPlayerUI/MPUSupportedRemoteControls.h>
+#import <MediaPlayerUI/MPAVRoute.h>
+#import <MediaPlayerUI/MPUTransportControlsView.h>
+#import <MediaPlayerUI/MPUChronologicalProgressView.h>
 
 @interface MPUMediaRemoteViewController : UIViewController <MPUChronologicalProgressViewDelegate, MPUTransportControlMediaRemoteControllerDelegate, MPAVRoutingControllerDelegate, MPUNowPlayingDelegate, MPUTransportControlsViewDataSource, MPUTransportControlsViewDelegate, MPUTransportControlsViewLayoutDelegate> {
 
@@ -43,47 +46,40 @@
 @property (nonatomic,readonly) MPUNowPlayingController * nowPlayingController;                    //@synthesize nowPlayingController=_nowPlayingController - In the implementation block
 @property (nonatomic,readonly) MPUSupportedRemoteControls * supportedRemoteControls;              //@synthesize supportedRemoteControls=_supportedRemoteControls - In the implementation block
 @property (nonatomic,readonly) NSArray * allowedTransportControlTypes; 
-@property (readonly) NSUInteger hash; 
-@property (readonly) Class superclass; 
-@property (copy,readonly) NSString * description; 
-@property (copy,readonly) NSString * debugDescription; 
 +(Class)controlsViewClass;
 +(Class)transportControlButtonClass;
--(id)initWithCoder:(id)arg1 ;
-// -(void)dealloc;
 -(void)loadView;
--(id)initWithNibName:(id)arg1 bundle:(id)arg2 ;
--(void)viewWillAppear:(BOOL)arg1 ;
--(void)viewWillDisappear:(BOOL)arg1 ;
--(void)viewDidDisappear:(BOOL)arg1 ;
+-(void)viewWillAppear:(BOOL)willAppear;
+-(void)viewWillDisappear:(BOOL)willDisappear;
+-(void)viewDidDisappear:(BOOL)didDisappear;
 -(void)viewDidLoad;
--(void)routingControllerAvailableRoutesDidChange:(id)arg1 ;
+-(void)routingControllerAvailableRoutesDidChange:(NSArray<MPAVRoute *> *)availableRoutes;
 -(void)_setupNotifications;
 -(void)_tearDownNotifications;
 -(void)supportedRemoteControlsDidChange;
--(void)nowPlayingController:(id)arg1 nowPlayingInfoDidChange:(id)arg2 ;
--(void)nowPlayingController:(id)arg1 playbackStateDidChange:(BOOL)arg2 ;
--(void)nowPlayingController:(id)arg1 nowPlayingApplicationDidChange:(id)arg2 ;
--(void)transportControlsView:(id)arg1 tapOnControlType:(NSInteger)arg2 ;
--(void)transportControlsView:(id)arg1 longPressBeginOnControlType:(NSInteger)arg2 ;
--(void)transportControlsView:(id)arg1 longPressEndOnControlType:(NSInteger)arg2 ;
+-(void)nowPlayingController:(MPUNowPlayingController *)nowPlayingController nowPlayingInfoDidChange:(NSDictionary *)info;
+-(void)nowPlayingController:(MPUNowPlayingController *)nowPlayingController playbackStateDidChange:(BOOL)didChange;
+-(void)nowPlayingController:(MPUNowPlayingController *)nowPlayingController nowPlayingApplicationDidChange:(NSString *)applicationBundleID;
+-(void)transportControlsView:(MPUTransportControlsView *)transportControlsView tapOnControlType:(NSInteger)controlType;
+-(void)transportControlsView:(MPUTransportControlsView *)transportControlsView longPressBeginOnControlType:(NSInteger)controlType;
+-(void)transportControlsView:(MPUTransportControlsView *)transportControlsView longPressEndOnControlType:(NSInteger)controlType;
 -(MPUSupportedRemoteControls *)supportedRemoteControls;
 -(MPUNowPlayingController *)nowPlayingController;
--(id)remoteControlInterfaceIdentifier;
--(id)transportControlsView:(id)arg1 buttonForControlType:(NSInteger)arg2 ;
--(CGSize)transportControlsView:(id)arg1 defaultTransportButtonSizeWithProposedSize:(CGSize)arg2 ;
--(void)progressViewDidBeginScrubbing:(id)arg1 ;
--(void)progressViewDidEndScrubbing:(id)arg1 ;
+-(NSString *)remoteControlInterfaceIdentifier;
+-(UIButton *)transportControlsView:(MPUTransportControlsView *)transportControlsView buttonForControlType:(NSInteger)controlType;
+-(CGSize)transportControlsView:(MPUTransportControlsView *)transportControlsView defaultTransportButtonSizeWithProposedSize:(CGSize)size;
+-(void)progressViewDidBeginScrubbing:(MPUChronologicalProgressView *)progressView;
+-(void)progressViewDidEndScrubbing:(MPUChronologicalProgressView *)progressView;
 -(void)_initMediaRemoteViewController;
 -(void)_updateSupportedCommands;
 -(void)_stopScrubberCommitTimer;
 -(void)_reloadAllowedTransportControls;
--(id)_imageForTransportButtonWithControlType:(NSInteger)arg1 ;
+-(UIImage *)_imageForTransportButtonWithControlType:(NSInteger)controlType;
 -(void)_beginScrubberCommitTimer;
 -(void)_commitCurrentScrubberValue;
 -(NSArray *)allowedTransportControlTypes;
--(void)_supportedCommandsDidChangeNotification:(id)arg1 ;
--(id)presentingViewControllerForLikeBanActionSheetForTransportControlMediaRemoteController:(id)arg1 ;
--(void)transportControlMediaRemoteController:(id)arg1 requestsPushingMediaRemoteCommand:(unsigned)arg2 withOptions:(id)arg3 shouldLaunchApplication:(BOOL)arg4 ;
--(void)nowPlayingController:(id)arg1 elapsedTimeDidChange:(CGFloat)arg2 ;
+-(void)_supportedCommandsDidChangeNotification:(NSNotification *)notification;
+-(UIViewController *)presentingViewControllerForLikeBanActionSheetForTransportControlMediaRemoteController:(MPUTransportControlMediaRemoteController *)transportControlMediaRemoteController;
+-(void)transportControlMediaRemoteController:(MPUTransportControlMediaRemoteController *)transportControlMediaRemoteController requestsPushingMediaRemoteCommand:(unsigned)remoteCommand withOptions:(NSDictionary *)options shouldLaunchApplication:(BOOL)launchApp;
+-(void)nowPlayingController:(MPUNowPlayingController *)nowPlayingController elapsedTimeDidChange:(CGFloat)elapsedTime;
 @end

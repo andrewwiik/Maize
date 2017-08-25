@@ -18,26 +18,26 @@
 @property (nonatomic,readonly) NSInteger style;                                    //@synthesize style=_style - In the implementation block
 @property (nonatomic,readonly) UISlider * slider;                                  //@synthesize slider=_slider - In the implementation block
 @property (nonatomic,readonly) MPVolumeController * volumeController;              //@synthesize volumeController=_volumeController - In the implementation block
--(id)initWithFrame:(CGRect)arg1 ;
+-(id)initWithFrame:(CGRect)frame;
 -(void)layoutSubviews;
--(CGSize)sizeThatFits:(CGSize)arg1 ;
+-(CGSize)sizeThatFits:(CGSize)size;
 -(NSInteger)style;
--(id)initWithStyle:(NSInteger)arg1 ;
+-(id)initWithStyle:(NSInteger)style;
 -(void)_layoutVolumeWarningView;
 -(void)_beginBlinkingWarningView;
 -(void)_blinkWarningView;
--(void)volumeController:(id)arg1 volumeValueDidChange:(CGFloat)arg2 ;
--(void)volumeController:(id)arg1 volumeWarningStateDidChange:(NSInteger)arg2 ;
--(void)volumeController:(id)arg1 EUVolumeLimitDidChange:(CGFloat)arg2 ;
--(void)volumeController:(id)arg1 EUVolumeLimitEnforcedDidChange:(BOOL)arg2 ;
--(id)_trackImageWithAlternateStyle:(BOOL)arg1 rounded:(BOOL)arg2 ;
+-(void)volumeController:(MPVolumeController *)volumeController volumeValueDidChange:(CGFloat)volume ;
+-(void)volumeController:(MPVolumeController *)volumeController volumeWarningStateDidChange:(NSInteger)warningState;
+-(void)volumeController:(MPVolumeController *)volumeController EUVolumeLimitDidChange:(CGFloat)volumeLimit;
+-(void)volumeController:(MPVolumeController *)volumeController EUVolumeLimitEnforcedDidChange:(BOOL)isEnforced;
+-(UIImage *)_trackImageWithAlternateStyle:(BOOL)alternateStyle rounded:(BOOL)rounded;
 -(void)updateSystemVolumeLevel;
 -(MPVolumeController *)volumeController;
--(id)_createVolumeSliderView;
--(void)_volumeSliderBeganChanging:(id)arg1 ;
--(void)_volumeSliderValueChanged:(id)arg1 ;
--(void)_volumeSliderStoppedChanging:(id)arg1 ;
--(void)_configureVolumeSliderView:(id)arg1 ;
+-(UISlider *)_createVolumeSliderView;
+-(void)_volumeSliderBeganChanging:(UISlider *)slider;
+-(void)_volumeSliderValueChanged:(UISlider *)slider;
+-(void)_volumeSliderStoppedChanging:(UISlider *)slider;
+-(void)_configureVolumeSliderView:(UISlider *)slider;
 -(void)_stopBlinkingWarningView;
 -(void)_stopVolumeCommitTimer;
 -(BOOL)_shouldStartBlinkingVolumeWarningIndicator;
@@ -45,6 +45,6 @@
 -(BOOL)_volumeSliderDynamicsEnabled;
 -(void)_removeVolumeSliderInertia;
 -(void)_commitCurrentVolumeValue;
--(id)_warningTrackImage;
+-(UIImage *)_warningTrackImage;
 -(UISlider *)slider;
 @end

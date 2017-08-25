@@ -3,9 +3,9 @@
 - (BOOL)_drawingAsSelected;
 - (void)_touchUpInside;
 - (void)_updateForStateChange;
-- (void)_updateSelected:(BOOL)arg1 highlighted:(BOOL)arg2;
-- (id)initWithFrame:(CGRect)arg1;
-- (void)setHighlighted:(BOOL)arg1;
-- (void)setSelected:(BOOL)arg1;
+- (void)_updateSelected:(BOOL)selected highlighted:(BOOL)highlighted;
+- (id)initWithFrame:(CGRect)frame;
+- (void)setHighlighted:(BOOL)highlighted;
+- (void)setSelected:(BOOL)selected;
 
 @end

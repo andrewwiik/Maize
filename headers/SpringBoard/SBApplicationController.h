@@ -4,5 +4,5 @@
 + (SBApplicationController *)sharedInstance;
 - (SBApplication *)applicationWithDisplayIdentifier:(NSString *)identifier;
 - (SBApplication *)applicationWithBundleIdentifier:(NSString *)identifier;
-- (NSArray *)allApplications;
+- (NSArray<SBApplication *> *)allApplications;
 @end

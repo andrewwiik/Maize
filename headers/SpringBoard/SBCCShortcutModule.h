@@ -6,17 +6,17 @@
     NSURL *_url;
 }
 
-+ (id)identifier;
++ (NSString *)identifier;
 + (Class)viewControllerClass;
 @property(copy, nonatomic, setter=setURL:) NSURL *url; // @synthesize url=_url;
 @property(copy, nonatomic) NSString *displayID; // @synthesize displayID=_displayID;
-- (void)activateAppWithDisplayID:(id)arg1 url:(id)arg2;
+- (void)activateAppWithDisplayID:(NSString *)displayID url:(NSURL *)url;
 - (void)activateApp;
-- (_Bool)_toggleState;
-- (_Bool)isRestricted;
-- (id)aggdKey;
-- (id)displayName;
-- (id)identifier;
+- (BOOL)_toggleState;
+- (BOOL)isRestricted;
+- (NSString *)aggdKey;
+- (NSString *)displayName;
+- (NSString *)identifier;
 - (void)dealloc;
 
 @end

@@ -23,17 +23,16 @@
 @property (nonatomic,readonly) MPUChronologicalProgressView * timeView;                   //@synthesize timeView=_timeView - In the implementation block
 @property (nonatomic,readonly) MPUTransportControlsView * transportControls;              //@synthesize transportControls=_transportControls - In the implementation block
 @property (nonatomic,readonly) MPUMediaControlsVolumeView * volumeView;                   //@synthesize volumeView=_volumeView - In the implementation block
--(id)initWithFrame:(CGRect)arg1 ;
--(id)initWithCoder:(id)arg1 ;
+-(id)initWithFrame:(CGRect)frame;
 -(MPUMediaControlsVolumeView *)volumeView;
 -(MPUChronologicalProgressView *)timeView;
 -(UIImage *)artworkImage;
 -(MPUTransportControlsView *)transportControls;
--(void)setNowPlayingMetadata:(MPUNowPlayingMetadata *)arg1 ;
--(void)setTimeViewVisible:(BOOL)arg1 ;
--(void)setNowPlayingAppDisplayID:(NSString *)arg1 ;
+-(void)setNowPlayingMetadata:(MPUNowPlayingMetadata *)metadata;
+-(void)setTimeViewVisible:(BOOL)visible;
+-(void)setNowPlayingAppDisplayID:(NSString *)displayID;
 -(NSString *)nowPlayingAppDisplayID;
 -(MPUNowPlayingMetadata *)nowPlayingMetadata;
 -(BOOL)timeViewVisible;
--(void)setArtworkImage:(UIImage *)arg1 ;
+-(void)setArtworkImage:(UIImage *)artworkImage;
 @end

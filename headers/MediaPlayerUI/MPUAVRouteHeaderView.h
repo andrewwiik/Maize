@@ -21,21 +21,21 @@
 @property (nonatomic,retain) UIVisualEffect * secondaryVisualEffect;              //@synthesize secondaryVisualEffect=_secondaryVisualEffect - In the implementation block
 @property (assign,getter=isActivated,nonatomic) BOOL activated;                   //@synthesize activated=_activated - In the implementation block
 @property (nonatomic,readonly) MPUAVRouteHeaderLabel * textLabel;                 //@synthesize textLabel=_textLabel - In the implementation block
--(id)initWithFrame:(CGRect)arg1 ;
+-(id)initWithFrame:(CGRect)frame;
 -(void)layoutSubviews;
--(id)initWithCoder:(id)arg1 ;
+-(id)initWithCoder:(NSCoder *)coder;
 -(void)_init;
--(void)setHighlighted:(BOOL)arg1 ;
+-(void)setHighlighted:(BOOL)highlighted;
 -(MPUAVRouteHeaderLabel *)textLabel;
--(void)setActivated:(BOOL)arg1 ;
+-(void)setActivated:(BOOL)activated;
 -(MPAVRoute *)route;
--(void)setRoute:(MPAVRoute *)arg1 ;
+-(void)setRoute:(MPAVRoute *)route;
 -(UIVisualEffect *)primaryVisualEffect;
 -(UIVisualEffect *)secondaryVisualEffect;
--(void)setPrimaryVisualEffect:(UIVisualEffect *)arg1 ;
--(void)setSecondaryVisualEffect:(UIVisualEffect *)arg1 ;
+-(void)setPrimaryVisualEffect:(UIVisualEffect *)visualEffect;
+-(void)setSecondaryVisualEffect:(UIVisualEffect *)visualEffect;
 -(BOOL)isActivated;
--(void)setActivated:(BOOL)arg1 animated:(BOOL)arg2 ;
--(id)_disclosureIconImageForCurrentState;
+-(void)setActivated:(BOOL)activated animated:(BOOL)animated;
+-(UIImage *)_disclosureIconImageForCurrentState;
 -(void)_updateBottomClippingForAnimatedTransition;
 @end

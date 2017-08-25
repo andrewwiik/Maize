@@ -1,5 +1,8 @@
+#import <MediaPlayerUI/MPUEmptyNowPlayingView.h>
+#import <SpringBoard/SBApplication.h>
+
 @protocol MPUEmptyNowPlayingViewDelegate
 @optional
--(void)emptyNowPlayingView:(id)arg1 couldNotLoadApplication:(id)arg2;
+-(void)emptyNowPlayingView:(MPUEmptyNowPlayingView *)emptyNowPlayingView couldNotLoadApplication:(SBApplication *)application;
 
 @end

@@ -6,9 +6,9 @@
 +(instancetype)sharedBrightnessController;
 -(void)cancelBrightnessEvent;
 -(float)_calcButtonRepeatDelay;
--(void)_setBrightnessLevel:(float)arg1 showHUD:(BOOL)arg2 ;
+-(void)_setBrightnessLevel:(float)brightnessLevel showHUD:(BOOL)showHud;
 -(void)increaseBrightnessAndRepeat;
--(void)adjustBacklightLevel:(BOOL)arg1 ;
+-(void)adjustBacklightLevel:(BOOL)adjustLevel;
 -(void)decreaseBrightnessAndRepeat;
--(void)setBrightnessLevel:(float)arg1 ;
+-(void)setBrightnessLevel:(float)brightnessLevel;
 @end

@@ -1,5 +1,5 @@
 #import <MediaPlayerUI/MPUChronologicalProgressView.h>
 
 @interface MPUControlCenterTimeView : MPUChronologicalProgressView
-+(Class)timeLabelsClass;
++ (Class)timeLabelsClass;
 @end

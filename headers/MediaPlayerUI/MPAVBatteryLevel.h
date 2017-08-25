@@ -15,5 +15,5 @@
 -(NSNumber *)rightPercentage;
 -(NSNumber *)singlePercentage;
 -(NSNumber *)casePercentage;
--(id)initWithRouteDescription:(id)arg1 ;
+-(id)initWithRouteDescription:(NSString *)routeDescription ;
 @end

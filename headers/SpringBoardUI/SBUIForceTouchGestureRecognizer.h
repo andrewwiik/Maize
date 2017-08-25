@@ -1,3 +1,3 @@
 @interface SBUIForceTouchGestureRecognizer : UILongPressGestureRecognizer
-- (id)initWithTarget:(id)arg1 action:(SEL)arg2;
+- (id)initWithTarget:(id)target action:(SEL)selector;
 @end

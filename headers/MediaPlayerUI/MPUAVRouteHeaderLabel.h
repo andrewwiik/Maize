@@ -34,30 +34,30 @@
 @property (assign,nonatomic) BOOL showPendingText;                           //@synthesize showPendingText=_showPendingText - In the implementation block
 @property (nonatomic,retain) UIColor * primaryTextColor;                     //@synthesize primaryTextColor=_primaryTextColor - In the implementation block
 @property (nonatomic,retain) UIColor * secondaryTextColor;                   //@synthesize secondaryTextColor=_secondaryTextColor - In the implementation block
--(id)initWithFrame:(CGRect)arg1 ;
+-(id)initWithFrame:(CGRect)frame;
 -(void)layoutSubviews;
--(id)initWithCoder:(id)arg1 ;
--(CGSize)sizeThatFits:(CGSize)arg1 ;
+-(id)initWithCoder:(NSCoder *)coder;
+-(CGSize)sizeThatFits:(CGSize)size;
 -(void)_init;
 -(CGFloat)baselineOffsetFromBottom;
 -(UILabel *)secondaryLabel;
 -(MPAVRoute *)route;
--(void)setRoute:(MPAVRoute *)arg1 ;
+-(void)setRoute:(MPAVRoute *)route;
 -(UIColor *)primaryTextColor;
--(void)setPrimaryTextColor:(UIColor *)arg1 ;
+-(void)setPrimaryTextColor:(UIColor *)color;
 -(UIColor *)secondaryTextColor;
--(void)setSecondaryTextColor:(UIColor *)arg1 ;
--(void)_setNeedsAttributedTextReloadAnimated:(BOOL)arg1 ;
--(void)setShowNowPlayingText:(BOOL)arg1 animated:(BOOL)arg2 ;
--(void)setShowPendingText:(BOOL)arg1 animated:(BOOL)arg2 ;
--(id)_labelAttributesUsingSecondaryStyle:(BOOL)arg1 ;
+-(void)setSecondaryTextColor:(UIColor *)color;
+-(void)_setNeedsAttributedTextReloadAnimated:(BOOL)needsReloadAnimated;
+-(void)setShowNowPlayingText:(BOOL)showText animated:(BOOL)animated;
+-(void)setShowPendingText:(BOOL)showText animated:(BOOL)animated;
+-(id)_labelAttributesUsingSecondaryStyle:(BOOL)useSecondaryStyle;
 -(id)_currentDeviceConnectingText;
 -(id)_currentDeviceLocalRoutingNowPlayingText;
--(void)_reloadAttributedTextAnimated:(BOOL)arg1 ;
--(id)_stateAwareAttributedTextForRoute:(id)arg1 usingSecondaryStyleForRouteName:(BOOL)arg2 orForNowPlayingText:(BOOL)arg3 ;
--(void)_getAttributedTextForPrimaryLabel:(id*)arg1 secondaryLabel:(id*)arg2 ;
--(void)setShowNowPlayingText:(BOOL)arg1 ;
--(void)setShowPendingText:(BOOL)arg1 ;
+-(void)_reloadAttributedTextAnimated:(BOOL)reloadTextAnimated;
+-(id)_stateAwareAttributedTextForRoute:(MPAVRoute *)route usingSecondaryStyleForRouteName:(BOOL)useSecondaryStyle orForNowPlayingText:(BOOL)forNowPlayingText;
+-(void)_getAttributedTextForPrimaryLabel:(UILabel *)primaryLabel secondaryLabel:(UILabel *)secondaryLabel;
+-(void)setShowNowPlayingText:(BOOL)showText;
+-(void)setShowPendingText:(BOOL)showText;
 -(UILabel *)primaryLabel;
 -(BOOL)showNowPlayingText;
 -(BOOL)showPendingText;
