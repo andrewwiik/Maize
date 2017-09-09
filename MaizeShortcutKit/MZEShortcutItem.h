@@ -1,7 +1,7 @@
 typedef void (^MZEShortcutItemBlock)(void);
 
 
-@interface MZEShortcutItem {
+@interface MZEShortcutItem : NSObject {
 	UIImage *_image;
 	NSString *_title;
 	NSString *_subtitle;

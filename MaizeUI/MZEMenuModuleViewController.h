@@ -1,12 +1,13 @@
 #import "MZEButtonModuleViewController.h"
 #import "MZEMenuModuleItemView.h"
 #import "MZEMaterialView.h"
+#import "_MZEBackdropView.h"
 
 @interface MZEMenuModuleViewController : MZEButtonModuleViewController {
 	NSMutableArray<MZEMenuModuleItemView *> *_menuItemsViews;
 	UILabel *_titleLabel;
     MZEMaterialView *_headerSeparatorView;
-    MZEMaterialView *_darkBackground;
+    _MZEBackdropView *_darkBackground;
     MZEMaterialView *_platterBackground;
     UIStackView *_containerView;
     NSString *_title;
@@ -19,7 +20,7 @@
 @property(readonly, nonatomic) CGFloat preferredExpandedContentWidth;
 @property(readonly, nonatomic) CGFloat preferredExpandedContentHeight;
 @property(readonly, nonatomic) BOOL providesOwnPlatter;
-@property (nonatomic, retain, readwrite) MZEMaterialView *darkBackground;
+@property (nonatomic, retain, readwrite) _MZEBackdropView *darkBackground;
 @property (nonatomic, retain, readwrite) UIStackView *containerView;
 @property (nonatomic, retain, readwrite) MZEMaterialView *headerSeparatorView;
 @property (nonatomic, assign, readwrite) BOOL shouldProvideOwnPlatter;

@@ -1,11 +1,15 @@
 
 typedef BOOL (^MZEMenuItemBlock)(void);
 
+
+#import "MZEMaterialView.h"
+
+
 @interface MZEMenuModuleItemView : UIControl
 {
     UILabel *_titleLabel;
     UIImage *_glyphImage;
-    UIView *_separatorView;
+    MZEMaterialView *_separatorView;
     UIImageView *_glyphImageView;
     UIView *_highlightedBackgroundView;
     BOOL _separatorVisible;

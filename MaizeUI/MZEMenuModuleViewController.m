@@ -2,6 +2,7 @@
 #import "macros.h"
 #import <UIKit/UIFont+Private.h>
 #import <UIKit/UIFontDescriptor+Private.h>
+#import <QuartzCore/CALayer+Private.h>
 
 static CGFloat separatorHeight = 0;
 
@@ -57,7 +58,10 @@ static CGFloat separatorHeight = 0;
 											 UIViewAutoresizingFlexibleWidth);
 
 
-	_darkBackground = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];
+	_darkBackground = [[_MZEBackdropView alloc] init];
+	_darkBackground.alpha = 0.05;
+	_darkBackground.backgroundColor = [UIColor blackColor];
+	//_darkBackground.layer.compositingFilter = @"plusD";
 	_darkBackground.frame = CGRectMake(0, [self headerHeight], CGRectGetWidth(self.view.bounds), [self _menuItemsHeight]);
 	[self.view addSubview:_darkBackground];
 
@@ -66,6 +70,10 @@ static CGFloat separatorHeight = 0;
 	_containerView.axis = UILayoutConstraintAxisVertical;
 	_containerView.distribution = UIStackViewDistributionFillEqually;
 	[self.view addSubview:_containerView];
+
+	for (UIView *menuItemView in _menuItemsViews) {
+		[_containerView addArrangedSubview:menuItemView];
+	}
 
 	[self _fadeViewsForExpandedState:NO];
 }
@@ -102,6 +110,7 @@ static CGFloat separatorHeight = 0;
 
 - (void)willTransitionToExpandedContentMode:(BOOL)expanded {
 	[super willTransitionToExpandedContentMode:expanded];
+	[self _fadeViewsForExpandedState:expanded];
 	[[self buttonView] setHighlighted:NO];
 }
 
@@ -123,7 +132,7 @@ static CGFloat separatorHeight = 0;
 	MZEMenuModuleItemView *itemView = [[MZEMenuModuleItemView alloc] initWithTitle:title glyphImage:glyph handler:handler];
 	[itemView addTarget:self action:@selector(_handleActionTapped:) forControlEvents:UIControlEventTouchUpInside];
 	[_menuItemsViews addObject:itemView];
-	[_containerView addArrangedSubview:itemView];
+	//[_containerView addArrangedSubview:itemView];
 }
 
 - (CGFloat)headerHeight {
@@ -181,7 +190,7 @@ static CGFloat separatorHeight = 0;
 	if (expandedState) {
 		_containerView.alpha = 1.0;
 		_titleLabel.alpha = 1.0;
-		_darkBackground.alpha = 1.0;
+		_darkBackground.alpha = 0.05;
 	} else {
 		_containerView.alpha = 0.0;
 		_titleLabel.alpha = 0.0;

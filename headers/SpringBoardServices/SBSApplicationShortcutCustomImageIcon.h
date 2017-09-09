@@ -20,3 +20,4 @@
 -(id)initWithImagePNGData:(NSData *)data;
 -(NSData *)imageData;
 -(NSInteger)dataType;
+@end

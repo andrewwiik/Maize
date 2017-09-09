@@ -1,20 +1,23 @@
 #import <SpringBoardUI/SBUIIconForceTouchController.h>
+#import <SpringBoardUI/SBUIAppIconForceTouchControllerDataSource-Protocol.h>
+#import <SpringBoardUI/SBUIAppIconForceTouchControllerDelegate-Protocol.h>
+#import <SpringBoardUI/SBUIIconForceTouchControllerDelegate-Protocol.h>
+#import <SpringBoardUI/SBUIIconForceTouchControllerDataSource-Protocol.h>
+#import <SpringBoardUI/SBUIAppIconForceTouchShortcutViewControllerDelegate-Protocol.h>
 
 @interface SBUIAppIconForceTouchController : NSObject <SBUIAppIconForceTouchShortcutViewControllerDelegate, SBUIIconForceTouchControllerDataSource, SBUIIconForceTouchControllerDelegate> {
 
 	SBUIIconForceTouchController* _iconForceTouchController;
-	SBUIAppIconForceTouchControllerDataProvider* _dataProvider;
 	UIViewController* _primaryViewController;
 	UIViewController* _secondaryViewController;
-	FBSOpenApplicationService* _openApplicationService;
 	id<SBUIAppIconForceTouchControllerDataSource> _dataSource;
 	id<SBUIAppIconForceTouchControllerDelegate> _delegate;
 
 }
 
 @property (nonatomic,readonly) NSInteger state; 
-@property (assign,nonatomic,__weak) id<SBUIAppIconForceTouchControllerDataSource> dataSource;              //@synthesize dataSource=_dataSource - In the implementation block
-@property (assign,nonatomic,__weak) id<SBUIAppIconForceTouchControllerDelegate> delegate;                  //@synthesize delegate=_delegate - In the implementation block
+@property (assign,nonatomic) id<SBUIAppIconForceTouchControllerDataSource> dataSource;              //@synthesize dataSource=_dataSource - In the implementation block
+@property (assign,nonatomic) id<SBUIAppIconForceTouchControllerDelegate> delegate;                  //@synthesize delegate=_delegate - In the implementation block
 +(id)filteredApplicationShortcutItemsWithStaticApplicationShortcutItems:(NSArray *)staticShortcutItems dynamicApplicationShortcutItems:(NSArray *)dynamicShortcutItems;
 -(id)init;
 -(void)setDataSource:(id<SBUIAppIconForceTouchControllerDataSource>)dataSource;
@@ -40,7 +43,7 @@
 -(void)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController willDismissForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 -(void)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController didDismissForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 -(NSInteger)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController layoutStyleForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
--(id)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController newIconViewCopyForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
+-(UIView *)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController newIconViewCopyForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 -(CGRect)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController iconViewFrameForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 -(id)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController primaryViewControllerForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 -(id)iconForceTouchController:(SBUIIconForceTouchController *)iconForceTouchController secondaryViewControllerForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;

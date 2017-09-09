@@ -1,6 +1,8 @@
 #import "MZEShortcutItem.h"
 
-@interface MZEShortcutProvider {
+@class SBIconController;
+
+@interface MZEShortcutProvider : NSObject {
 	SBIconController *_iconController;
 }
 @property (nonatomic, retain, readwrite) SBIconController *iconController;

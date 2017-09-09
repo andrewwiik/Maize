@@ -1,6 +1,7 @@
 #import "MZEMenuModuleItemView.h"
 #import "MZELayoutOptions.h"
 #import <QuartzCore/CALayer+Private.h>
+#import <QuartzCore/CAFilter+Private.h>
 #import <UIKit/UIFontDescriptor+Private.h>
 #import "macros.h"
 
@@ -35,9 +36,12 @@ static CGFloat separatorHeight = 0;
 		// [stackView setAlignment:3];
 		// [stackView setDistribution:2];
 		// [stackView setUserInteractionEnabled:NO];
-
+		if (_glyphImage) {
+			_glyphImage = [_glyphImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+		}
 		_glyphImageView = [[UIImageView alloc] initWithImage:_glyphImage];
 		_glyphImageView.contentMode = UIViewContentModeCenter;
+		_glyphImageView.tintColor = [UIColor whiteColor];
 		[_glyphImageView setUserInteractionEnabled:NO];
 		[self addSubview:_glyphImageView];
 		_glyphImageView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
@@ -52,12 +56,16 @@ static CGFloat separatorHeight = 0;
 		_titleLabel.font = [UIFont fontWithDescriptor:labelFontDescriptor size:[labelFontDescriptor pointSize]];
 		_titleLabel.numberOfLines = 0;
 		_titleLabel.text = title;
+		_titleLabel.textColor = [UIColor whiteColor];
 
 		[self addSubview:_titleLabel];
 
-		_separatorView = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetHeight(self.bounds) - separatorHeight, CGRectGetWidth(self.bounds) - (glyphImage != nil ? CGRectGetHeight(self.bounds) : 0), separatorHeight)];
-		_separatorView.backgroundColor = [UIColor whiteColor];
-		_separatorView.layer.compositingFilter = @"vibrantDark";
+		_separatorView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
+		_separatorView.frame = CGRectMake(0,CGRectGetHeight(self.bounds) - separatorHeight, CGRectGetWidth(self.bounds) - (glyphImage != nil ? CGRectGetHeight(self.bounds) : 0), separatorHeight);
+		//_separatorView.backgroundColor = [UIColor whiteColor];
+		// NSMutableArray *sepFilters = [NSMutableArray new];
+		// [sepFilters addObject:[NSClassFromString(@"CAFilter") filterWithType:@"vibrantDark"]];
+		// _separatorView.layer.filters = [sepFilters copy];
 		[self addSubview:_separatorView];
 
 		if (glyphImage) {
@@ -87,19 +95,19 @@ static CGFloat separatorHeight = 0;
 
 	_titleLabel.textAlignment = _glyphImage != nil ? NSTextAlignmentNatural : NSTextAlignmentCenter;
 
-	_separatorView.hidden = _separatorVisible;
+	_separatorView.hidden = !_separatorVisible;
 
 	if (_glyphImage) {
 		_titleLabel.textAlignment = NSTextAlignmentNatural;
 		if (IS_RTL) {
-			_glyphImageView.frame = CGRectMake(CGRectGetWidth(self.bounds) - CGRectGetHeight(self.bounds),0,CGRectGetHeight(self.bounds), CGRectGetHeight(self.bounds));
+			_glyphImageView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (CGRectGetHeight(self.bounds) + 8),0,(CGRectGetHeight(self.bounds) + 8), CGRectGetHeight(self.bounds));
 			_titleLabel.frame = CGRectMake(0,0, CGRectGetWidth(self.bounds) - CGRectGetWidth(_glyphImageView.bounds), CGRectGetHeight(self.bounds));
 			
 			if (_separatorVisible) {
 				_separatorView.frame = CGRectMake(0, CGRectGetHeight(self.bounds) - separatorHeight, CGRectGetWidth(self.bounds) - CGRectGetWidth(_glyphImageView.bounds), separatorHeight);
 			}
 		} else {
-			_glyphImageView.frame = CGRectMake(0,0,CGRectGetHeight(self.bounds), CGRectGetHeight(self.bounds));
+			_glyphImageView.frame = CGRectMake(0,0,(CGRectGetHeight(self.bounds) + 8), CGRectGetHeight(self.bounds));
 			_titleLabel.frame = CGRectMake(CGRectGetWidth(_glyphImageView.bounds), 0, CGRectGetWidth(self.bounds) - CGRectGetWidth(_glyphImageView.bounds), CGRectGetHeight(self.bounds));
 		
 			if (_separatorVisible) {

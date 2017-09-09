@@ -1,4 +1,6 @@
 #import "MZEAppLauncherModule.h"
+#import <MaizeShortcutKit/MZEShortcutItem.h>
+#import <MaizeShortcutKit/MZEShortcutProvider.h>
 
 @implementation MZEAppLauncherModule
 	@dynamic iconGlyph;
@@ -8,6 +10,12 @@
 	if (!_viewController) {
 		_viewController = [[MZEAppLauncherViewController alloc] init];
 		[_viewController setModule:self];
+		NSArray<MZEShortcutItem *> *shortcutItems = [[MZEShortcutProvider sharedInstance] shortcutsForBundleIdentifier:[self applicationIdentifier]];
+
+		for (MZEShortcutItem *shortcutItem in shortcutItems) {
+			[_viewController addActionWithTitle:shortcutItem.title glyph:shortcutItem.image handler:(MZEMenuItemBlock)shortcutItem.block];
+		}
+
 	}
 	return _viewController;
 }
