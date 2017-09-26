@@ -280,7 +280,7 @@
 }
 
 - (id)allIdentifiers {
-	if ([self isDebug]) {
+	if ([[self class] isDebug]) {
 		return [[_moduleMetadataByIdentifier allKeys] mutableCopy];
 	} else return [[self class] defaultEnabledIdentifiers];
 }
