@@ -8,7 +8,7 @@ else
 	export ARCHS = armv7 arm64
 endif
 
-MaizeServices_CFLAGS = -fobjc-arc -I../headers
+MaizeServices_CFLAGS = -fobjc-arc -I../headers -I../
 
 FRAMEWORK_NAME = MaizeServices
 MaizeServices_FILES = $(wildcard *.m)

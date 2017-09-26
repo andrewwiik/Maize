@@ -8,6 +8,8 @@
 	<string>DisplayModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.DisplayModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>Brightness</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -32,6 +34,8 @@
 		<key>height</key>
 		<string>2</string>
 	</dict>
+	<key>MZEGlyphBackgroundColor</key>
+	<string>#FFCC00</string>
 	<key>NSPrincipalClass</key>
 	<string>MZEDisplayModule</string>
 	<key>CFBundleSupportedPlatforms</key>

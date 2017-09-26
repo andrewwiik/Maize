@@ -55,6 +55,36 @@
 
 #define UIPointRoundToViewScale(point, view) CGPointMake(UIRoundToViewScale(point.x, view), UIRoundToViewScale(point.y,view))
 
+//#define UIColorFromRGB(rgbValue)  [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0];
+
+
+static inline unsigned int intFromHexString(NSString *hexString) {
+	unsigned int hexInt = 0;
+
+  // Create scanner
+  NSScanner *scanner = [NSScanner scannerWithString:hexString];
+
+  // Tell scanner to skip the # character
+  [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
+
+  // Scan hex value
+  [scanner scanHexInt:&hexInt];
+
+  return hexInt;
+}
+
+static inline UIColor *colorFromHexString(NSString *hexString) {
+	unsigned int hexint = intFromHexString(hexString);
+
+  // Create color object, specifying alpha as well
+  UIColor *color =
+    [UIColor colorWithRed:((CGFloat) ((hexint & 0xFF0000) >> 16))/255
+    green:((CGFloat) ((hexint & 0xFF00) >> 8))/255
+    blue:((CGFloat) (hexint & 0xFF))/255
+    alpha:1.0];
+
+  return color;
+}
 
 #pragma mark Launching Applications
 
@@ -145,3 +175,14 @@ static inline SBApplication *applicationForID(NSString *applicationID)
 
 	return [controller applicationWithBundleIdentifier:applicationID];
 }
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
+
+#ifdef __cplusplus
+}
+#endif

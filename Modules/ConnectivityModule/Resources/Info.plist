@@ -8,6 +8,8 @@
 	<string>ConnectivityModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.ConnectivityModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>Connectivity</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -34,6 +36,8 @@
 		<key>height</key>
 		<string>2</string>
 	</dict>
+	<key>MZEGlyphBackgroundColor</key>
+	<string>#007AFF</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>iPhoneOS</string>

@@ -8,6 +8,8 @@
 	<string>LowPowerModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.LowPowerModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>Low Power Mode</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -25,6 +27,8 @@
 		<integer>1</integer>
 		<integer>2</integer>
 	</array>
+	<key>MZEGlyphBackgroundColor</key>
+	<string>#FF9500</string>
 	<key>NSPrincipalClass</key>
 	<string>MZELowPowerModule</string>
 	<key>CFBundleSupportedPlatforms</key>

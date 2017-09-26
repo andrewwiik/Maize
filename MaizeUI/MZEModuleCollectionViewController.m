@@ -6,6 +6,14 @@
 #import <UIKit/UIView+Private.h>
 #import "macros.h"
 
+
+
+static void settingsChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	[[NSNotificationCenter defaultCenter] postNotificationName:[MZEModuleRepository settingsChangedNotificationName]
+                                                    object:nil
+                                                  userInfo:nil];
+}
+
 @implementation MZEModuleCollectionViewController
 	@synthesize delegate=_delegate;
 
@@ -35,6 +43,18 @@
 	
 		_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
 		_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+
+		CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(),
+                                    NULL,
+                                    settingsChanged,
+                                    (__bridge CFStringRef)[MZEModuleRepository settingsChangedNotificationName],
+                                    NULL,  
+                                    CFNotificationSuspensionBehaviorDeliverImmediately);
+
+		[[NSNotificationCenter defaultCenter] addObserver:self
+	                                             selector:@selector(reloadSettings)
+	                                             	 name:[MZEModuleRepository settingsChangedNotificationName]
+	                                           	   object:nil];
 	}
 	return self;
 }
@@ -181,7 +201,11 @@
 		if (viewController) {
 			[moduleViewControllerByIdentifier setObject:viewController forKey:moduleIdentifier];
 			//viewController.view.frame = [positionProvider  positionForIdentifier:viewController.moduleIdentifier];
+
+			viewController.view.hidden = [[[MZEModuleRepository repositoryWithDefaults] enabledIdentifiers] containsObject:moduleIdentifier] ? NO : YES;
 			[self _setupAndAddModuleViewControllerToHierarchy:viewController];
+
+
 		}
 	}
 
@@ -340,5 +364,31 @@
 	frame.origin.x += xOriginOffset;
 
 	return frame;
+}
+
+- (void)reloadSettings {
+	[[MZEModuleRepository repositoryWithDefaults] loadSettings];
+	NSArray *enabledIdentifiers = [[MZEModuleRepository repositoryWithDefaults] enabledIdentifiers];
+	NSMutableArray *orderedSizes = [NSMutableArray new];
+	NSMutableArray *orderedIdentifiers = [NSMutableArray new];
+	for (NSString *identifier in enabledIdentifiers) {
+		if ([_moduleInstanceManager.moduleInstanceByIdentifier objectForKey:identifier]) {
+			MZEModuleInstance *moduleInstance = [_moduleInstanceManager.moduleInstanceByIdentifier objectForKey:identifier];
+			MZEModuleMetadata *moduleMetadata = moduleInstance.metadata;
+			[orderedIdentifiers addObject:moduleMetadata.identifier];
+			[orderedSizes addObject:[NSValue valueWithCGSize:CGSizeMake([moduleMetadata.moduleWidth floatValue],[moduleMetadata.moduleHeight floatValue])]];			
+		}
+	}
+
+	_portraitLayoutStyle = [[MZELayoutStyle alloc] initWithSize:[MZELayoutOptions orientationRelativeScreenBounds].size isLandscape:NO];
+	_landscapeLayoutStyle = [[MZELayoutStyle alloc] initWithSize:[MZELayoutOptions orientationRelativeScreenBounds].size isLandscape:YES];
+
+	_portraitPositionProvider = [[MZEControlCenterPositionProvider alloc] initWithLayoutStyle:_portraitLayoutStyle orderedIdentifiers:[orderedIdentifiers copy] orderedSizes:[orderedSizes copy]];
+	_landscapePositionProvider = [[MZEControlCenterPositionProvider alloc] initWithLayoutStyle:_landscapeLayoutStyle orderedIdentifiers:[orderedIdentifiers copy] orderedSizes:[orderedSizes copy]];
+
+	_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+
+	[self _populateModuleViewControllers];
 }
 @end

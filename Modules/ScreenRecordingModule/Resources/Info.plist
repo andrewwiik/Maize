@@ -8,6 +8,8 @@
 	<string>ScreenRecordingModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.ScreenRecordingModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>Screen Recording</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -25,6 +27,8 @@
 		<integer>1</integer>
 		<integer>2</integer>
 	</array>
+	<key>MZEGlyphBackgroundColor</key>
+	<string>#FF3B30</string>
 	<key>NSPrincipalClass</key>
 	<string>MZEScreenRecordingModule</string>
 	<key>CFBundleSupportedPlatforms</key>

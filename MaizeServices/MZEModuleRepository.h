@@ -7,6 +7,7 @@
 	NSArray *_providerURLs;
 	NSMutableArray *_enabledIdentifiers;
 	NSMutableArray *_disabledIdentifiers;
+	//NSMutableArray *_allIdentifiers;
 	NSMutableDictionary<NSString *, MZEModuleMetadata *> *_moduleMetadataByIdentifier;
 	NSString *_enabledKey;
 	NSString *_disabledKey;
@@ -17,6 +18,7 @@
 @property (nonatomic, retain, readwrite) NSArray *providerURLs;
 @property (nonatomic, retain, readwrite) NSMutableArray *enabledIdentifiers;
 @property (nonatomic, retain, readwrite) NSMutableArray *disabledIdentifiers;
+@property (nonatomic, readonly) NSMutableArray *allIdentifiers;
 @property (nonatomic, retain, readwrite) NSMutableDictionary<NSString *, MZEModuleMetadata *> *moduleMetadataByIdentifier;
 + (instancetype)repositoryWithDefaults;
 + (BOOL)isDebug;
@@ -26,10 +28,13 @@
 + (NSString *)settingsIdentifier;
 + (NSString *)enabledKey;
 + (NSString *)disabledKey;
++ (NSString *)settingsChangedNotificationName;
 + (NSArray *)defaultEnabledIdentifiers;
 + (NSArray *)defaultDisabledIdentifiers;
 - (id)_initWithDirectoryURLs:(NSArray *)directoryURLs providerURLs:(NSArray *)providerURLs;
 - (void)updateAllModuleMetadata;
 - (void)loadSettings;
 - (void)_saveSettings;
+- (id)allIdentifiers;
+- (MZEModuleMetadata *)metadataForIdentifier:(NSString *)identifier;
 @end
