@@ -11,7 +11,7 @@
 }
 
 + (BOOL)isDebug {
-	return NO;
+	return YES;
 }
 
 + (NSArray *)_defaultModuleDirectories {
@@ -23,19 +23,19 @@
 }
 
 + (NSString *)settingsFilePath {
-	return @"/var/mobile/Library/Preferences/com.ioscreatix.Maize2.plist";
+	return @"/var/mobile/Library/Preferences/com.ioscreatix.Maize3.plist";
 }
 
 + (NSString *)settingsIdentifier {
-	return @"com.ioscreatix.Maize2";
+	return @"com.ioscreatix.Maize3";
 }
 
 + (NSString *)enabledKey {
-	return @"EnabledIdentifiers20";
+	return @"EnabledIdentifiers21";
 }
 
 + (NSString *)disabledKey {
-	return @"DisabledIdentifiers20";
+	return @"DisabledIdentifiers21";
 }
 
 + (NSString *)settingsChangedNotificationName {
@@ -44,15 +44,29 @@
 
 + (NSArray *)defaultEnabledIdentifiers {
 	NSMutableArray *defaultEnabledIdentifiers = [NSMutableArray new];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AudioModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.LowPowerModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DoNotDisturbModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.OrientationLockModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.RingerModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ScreenRecordingModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AudioModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.LowPowerModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DoNotDisturbModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.OrientationLockModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.RingerModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ScreenRecordingModule"];
 
-	//[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ConnectivityModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ConnectivityModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.MediaModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.OrientationLockModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DoNotDisturbModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DisplayModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AudioModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ScreenRecordingModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.RingerModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.CalculatorModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.CameraModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.LowPowerModule"];
+
+
+
 	return [defaultEnabledIdentifiers copy];
 }
 

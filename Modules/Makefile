@@ -23,4 +23,5 @@ SUBPROJECTS += DisplayModule
 SUBPROJECTS += FlashlightModule
 SUBPROJECTS += MediaModule
 SUBPROJECTS += CameraModule
+SUBPROJECTS += CalculatorModule
 include $(THEOS_MAKE_PATH)/aggregate.mk
