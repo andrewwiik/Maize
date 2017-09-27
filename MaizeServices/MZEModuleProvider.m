@@ -33,16 +33,33 @@
 	if ([_possibleIdentifiers containsObject:identifier]) {
 		NSInteger moduleWidth = [_provider columnsForIdentifier:identifier];
 		NSInteger moduleHeight = [_provider rowsForIdentifier:identifier];
+		NSString *displayName = [_provider displayNameForIdentifier:identifier];
+		if (!displayName) {
+			displayName = @"FAILED_TO_LOAD_DISPAY_NAME";
+		}
+		UIColor *settingsIconBackgroundColor = [_provider glyphBackgroundColorForIdentifier:identifier];
+		UIImage *settingsIconImage = [_provider glyphForIdentifier:identifier];
+		if (settingsIconImage) {
+			settingsIconImage = [settingsIconImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+		}
 
 
 		NSDictionary *info = @{
 			@"BundleIdentifier": identifier,
 			@"ProviderClass": NSStringFromClass(_provider),
 			@"Width": @(moduleWidth),
-			@"Height": @(moduleHeight)
+			@"Height": @(moduleHeight),
+			@"DisplayName": displayName,
+			@"GlyphBackgroundColor": settingsIconBackgroundColor
 		};
 
-		return info;
+		NSMutableDictionary *mutableInfo = [info mutableCopy];
+
+		if (settingsIconImage) {
+			[mutableInfo setObject:settingsIconImage forKey:@"GlyphImage"];
+		}
+
+		return [mutableInfo copy];
 	}
 
 	return nil;

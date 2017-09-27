@@ -45,6 +45,7 @@ static CGFloat separatorHeight = 0;
 	_titleLabel.font = [self _titleFont];
 	_titleLabel.textAlignment = NSTextAlignmentCenter;
 	_titleLabel.text = _title;
+	_titleLabel.textColor = [UIColor whiteColor];
 	[_titleLabel sizeToFit];
 	[self.view addSubview:_titleLabel];
 	_titleLabel.autoresizingMask = (UIViewAutoresizingFlexibleRightMargin |
@@ -83,6 +84,7 @@ static CGFloat separatorHeight = 0;
 	if (_titleLabel) {
 		_titleLabel.text = title;
 		[_titleLabel sizeToFit];
+		_titleLabel.textColor = [UIColor whiteColor];
 		[self.view setNeedsLayout];
 		[self.view layoutIfNeeded];
 	}

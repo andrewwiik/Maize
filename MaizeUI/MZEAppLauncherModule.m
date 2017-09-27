@@ -2,6 +2,8 @@
 #import <MaizeShortcutKit/MZEShortcutItem.h>
 #import <MaizeShortcutKit/MZEShortcutProvider.h>
 
+extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *identifier);
+
 @implementation MZEAppLauncherModule
 	@dynamic iconGlyph;
 	@dynamic enabled;
@@ -15,6 +17,8 @@
 		for (MZEShortcutItem *shortcutItem in shortcutItems) {
 			[_viewController addActionWithTitle:shortcutItem.title glyph:shortcutItem.image handler:(MZEMenuItemBlock)shortcutItem.block];
 		}
+
+		_viewController.title = SBSCopyLocalizedApplicationNameForDisplayIdentifier([self applicationIdentifier]);
 
 	}
 	return _viewController;

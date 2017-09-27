@@ -27,7 +27,7 @@
 }
 
 - (void)_loadModuleInstances {
-	_enabledModuleIdentifiers = [NSSet setWithArray:_repository.enabledIdentifiers];
+	_enabledModuleIdentifiers = [NSSet setWithArray:_repository.allIdentifiers];
 	for (NSString *identifier in _enabledModuleIdentifiers) {
 		MZEModuleMetadata *metadata = _repository.moduleMetadataByIdentifier[identifier];
 		if (metadata) {
@@ -37,8 +37,20 @@
 			}
 		}
 	}
-
 }
+
+// - (void)_reloadModuleInstances {
+// 	_enabledModuleIdentifiers = [NSSet setWithArray:_repository.enabledIdentifiers];
+// 	for (NSString *identifier in _enabledModuleIdentifiers) {
+// 		MZEModuleMetadata *metadata = _repository.moduleMetadataByIdentifier[identifier];
+// 		if (metadata) {
+// 			MZEModuleInstance *moduleInstance = [self _instantiateModuleWithMetadata:metadata];
+// 			if (moduleInstance) {
+// 				_moduleInstanceByIdentifier[identifier] = moduleInstance;
+// 			}
+// 		}
+// 	}
+// }
 
 - (MZEModuleInstance *)_instantiateModuleWithMetadata:(MZEModuleMetadata *)metadata {
 	if (metadata) {

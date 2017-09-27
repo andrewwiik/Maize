@@ -8,6 +8,8 @@
 	<string>MediaModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.MediaModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>Music</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -34,6 +36,8 @@
 		<key>height</key>
 		<string>2</string>
 	</dict>
+	<key>MZEGlyphBackgroundColor</key>
+	<string>#FF2D55</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>iPhoneOS</string>

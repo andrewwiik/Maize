@@ -11,6 +11,7 @@ INSTALL_TARGET_PROCESSES = SpringBoard
 include $(THEOS)/makefiles/common.mk
 
 # the main bits
-SUBPROJECTS = MaizeServices MaizeShortcutKit MaizeUI SpringBoard Modules Providers
+SUBPROJECTS = MaizeServices MaizeShortcutKit MaizeUI SpringBoard Modules Providers Settings
 
+# SUBPROJECTS += settings
 include $(THEOS_MAKE_PATH)/aggregate.mk

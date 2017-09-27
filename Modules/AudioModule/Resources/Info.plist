@@ -8,6 +8,8 @@
 	<string>AudioModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.AudioModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>Volume</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -32,6 +34,8 @@
 		<key>height</key>
 		<string>2</string>
 	</dict>
+	<key>MZEGlyphBackgroundColor</key>
+	<string>#5856D6</string>
 	<key>NSPrincipalClass</key>
 	<string>MZEAudioModule</string>
 	<key>CFBundleSupportedPlatforms</key>

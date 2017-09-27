@@ -8,6 +8,8 @@
 	<string>OrientationLockModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.OrientationLockModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>Orientation Lock</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -25,6 +27,8 @@
 		<integer>1</integer>
 		<integer>2</integer>
 	</array>
+	<key>MZEGlyphBackgroundColor</key>
+	<string>#FF3B30</string>
 	<key>NSPrincipalClass</key>
 	<string>MZEOrientationLockModule</string>
 	<key>CFBundleSupportedPlatforms</key>

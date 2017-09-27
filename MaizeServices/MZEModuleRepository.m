@@ -11,7 +11,7 @@
 }
 
 + (BOOL)isDebug {
-	return NO;
+	return YES;
 }
 
 + (NSArray *)_defaultModuleDirectories {
@@ -23,32 +23,50 @@
 }
 
 + (NSString *)settingsFilePath {
-	return @"/var/mobile/Library/Preferences/com.ioscreatix.Maize.plist";
+	return @"/var/mobile/Library/Preferences/com.ioscreatix.Maize3.plist";
 }
 
 + (NSString *)settingsIdentifier {
-	return @"com.ioscreatix.Maize";
+	return @"com.ioscreatix.Maize3";
 }
 
 + (NSString *)enabledKey {
-	return @"EnabledIdentifiers18";
+	return @"EnabledIdentifiers21";
 }
 
 + (NSString *)disabledKey {
-	return @"DisabledIdentifiers18";
+	return @"DisabledIdentifiers21";
+}
+
++ (NSString *)settingsChangedNotificationName {
+	return @"com.ioscreatix.maize.settingschanged";
 }
 
 + (NSArray *)defaultEnabledIdentifiers {
 	NSMutableArray *defaultEnabledIdentifiers = [NSMutableArray new];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AudioModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.LowPowerModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DoNotDisturbModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.OrientationLockModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.RingerModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ScreenRecordingModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AudioModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.LowPowerModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DoNotDisturbModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.OrientationLockModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.RingerModule"];
+	// [defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ScreenRecordingModule"];
 
-	//[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ConnectivityModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ConnectivityModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.MediaModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.OrientationLockModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DoNotDisturbModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DisplayModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AudioModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ScreenRecordingModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.RingerModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.CalculatorModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.CameraModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.LowPowerModule"];
+
+
+
 	return [defaultEnabledIdentifiers copy];
 }
 
@@ -178,7 +196,9 @@
 			if (keyList) {
 				settings = (NSDictionary *)CFBridgingRelease(CFPreferencesCopyMultiple(keyList, (__bridge CFStringRef)_settingsIdentifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost));
 			}
-		} else {
+		}
+
+		if (!settings) {
 			settings = [NSDictionary dictionaryWithContentsOfFile:_settingsFilePath];
 		}
 	}
@@ -187,6 +207,7 @@
 	NSArray *originalDisabled = [settings objectForKey:_disabledKey];
 	
 	NSMutableArray *allIdentifiers = [[_moduleMetadataByIdentifier allKeys] mutableCopy];
+	//_allIdentifiers = allIdentifiers;
 
 	if (!originalEnabled || [originalEnabled count] == 0) {
 		originalEnabled = [MZEModuleRepository defaultEnabledIdentifiers];
@@ -197,12 +218,12 @@
 	}
 
 
-	if (!_disabledIdentifiers) {
-		_disabledIdentifiers = [NSMutableArray new];
-	}
-	if (!_enabledIdentifiers) {
+	//if (!_disabledIdentifiers) {
+		_disabledIdentifiers = [[_moduleMetadataByIdentifier allKeys] mutableCopy];
+	//}
+	//if (!_enabledIdentifiers) {
 		_enabledIdentifiers = [NSMutableArray new];
-	}
+	//}
 
 	for  (NSString *identifier in originalEnabled) {
 		if ([allIdentifiers containsObject:identifier]) {
@@ -213,25 +234,25 @@
 			[_enabledIdentifiers removeObject:identifier];
 		}
 	}
-	for (NSString *identifier in originalDisabled) {
-		if ([allIdentifiers containsObject:identifier]) {
-			[allIdentifiers removeObject:identifier];
-			[_disabledIdentifiers addObject:identifier];
-		} else {
-			[_disabledIdentifiers removeObject:identifier];
-		}
-	}
+	// for (NSString *identifier in originalDisabled) {
+	// 	if ([allIdentifiers containsObject:identifier]) {
+	// 		[allIdentifiers removeObject:identifier];
+	// 		[_disabledIdentifiers addObject:identifier];
+	// 	} else {
+	// 		[_disabledIdentifiers removeObject:identifier];
+	// 	}
+	// }
 
-	for (NSString *identifier in allIdentifiers) {
-		[_disabledIdentifiers addObject:identifier];
-	}
+	// for (NSString *identifier in allIdentifiers) {
+	// 	[_disabledIdentifiers addObject:identifier];
+	// }
 
-	if ([[self class] isDebug]) {
-		_enabledIdentifiers = [[_moduleMetadataByIdentifier allKeys] mutableCopy];
-		_disabledIdentifiers = [NSMutableArray new];
-	}
+	// if ([[self class] isDebug]) {
+	// 	_enabledIdentifiers = [[_moduleMetadataByIdentifier allKeys] mutableCopy];
+	// 	_disabledIdentifiers = [NSMutableArray new];
+	// }
 
-	[self _saveSettings];
+	//[self _saveSettings];
 }
 
 - (void)_saveSettings {
@@ -250,7 +271,7 @@
 	if (_settingsFilePath) {
 		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:_settingsFilePath] ?: [NSMutableDictionary dictionary];
 		if (_enabledKey) {
-			[dict setObject:_enabledIdentifiers forKey:_enabledKey];
+			[dict setObject:self.enabledIdentifiers forKey:_enabledKey];
 		}
 		if (_disabledKey) {
 			[dict setObject:self.disabledIdentifiers forKey:_disabledKey];
@@ -266,5 +287,15 @@
  //                                                    object:nil
  //                                                  userInfo:nil];
 	// }
+}
+
+- (MZEModuleMetadata *)metadataForIdentifier:(NSString *)identifier {
+	return (MZEModuleMetadata *)_moduleMetadataByIdentifier[identifier];
+}
+
+- (id)allIdentifiers {
+	if ([[self class] isDebug]) {
+		return [[_moduleMetadataByIdentifier allKeys] mutableCopy];
+	} else return [[self class] defaultEnabledIdentifiers];
 }
 @end

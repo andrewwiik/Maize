@@ -8,6 +8,8 @@
 	<string>DoNotDisturbModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.DoNotDisturbModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>Do Not Disturb</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
