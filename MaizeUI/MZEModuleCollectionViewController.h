@@ -25,6 +25,7 @@
     MZEModuleCollectionView *_containerView;
     MZEControlCenterPositionProvider *_currentPositionProvider;
     MZELayoutStyle *_currentLayoutStyle;
+    UIView *_snapshotView;
 }
 @property(nonatomic) __weak id <MZEModuleCollectionViewControllerDelegate> delegate; // @synthesize delegate=_delegate;
 @property(nonatomic, retain, readwrite) MZEModuleCollectionView *containerView;

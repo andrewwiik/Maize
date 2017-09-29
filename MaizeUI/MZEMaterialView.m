@@ -202,6 +202,17 @@ static NSMutableDictionary *normalStyleDict;
 	[super setUserInteractionEnabled:NO];
 }
 
+- (UIImage *) getScreenShot {
+    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+    CGRect rect = [keyWindow bounds];
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [keyWindow.layer renderInContext:context];   
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return img;
+}
+
 // - (BOOL)shouldForwardSelector:(SEL)aSelector {
 //    // if (aSelector == @selector(setBounds:)) return NO;
 //     if (aSelector == @selector(_setContinuousCornerRadius:)) return YES;

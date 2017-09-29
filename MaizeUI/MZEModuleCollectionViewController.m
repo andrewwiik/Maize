@@ -5,6 +5,7 @@
 #import <UIKit/UIWindow+Orientation.h>
 #import <UIKit/UIView+Private.h>
 #import "macros.h"
+#import <UIKit/UIScreen+Private.h>
 
 
 
@@ -193,23 +194,28 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 
 	NSArray<MZEModuleInstance *> *moduleInstances = [self _moduleInstances];
-	NSMutableDictionary<NSString *, MZEContentModuleContainerViewController *> *moduleViewControllerByIdentifier = [NSMutableDictionary new];
+	if (!_moduleViewControllerByIdentifier) {
+		_moduleViewControllerByIdentifier = [NSMutableDictionary new];
+	}
+	//_moduleViewControllerByIdentifier = [NSMutableDictionary new];
 
 	for (MZEModuleInstance *moduleInstance in moduleInstances) {
 		NSString *moduleIdentifier = moduleInstance.metadata.identifier;
-		MZEContentModuleContainerViewController *viewController = [[MZEContentModuleContainerViewController alloc] initWithModuleIdentifier:moduleIdentifier contentModule:moduleInstance.module];
-		if (viewController) {
-			[moduleViewControllerByIdentifier setObject:viewController forKey:moduleIdentifier];
-			//viewController.view.frame = [positionProvider  positionForIdentifier:viewController.moduleIdentifier];
-
-			viewController.view.hidden = [[[MZEModuleRepository repositoryWithDefaults] enabledIdentifiers] containsObject:moduleIdentifier] ? NO : YES;
+		MZEContentModuleContainerViewController *viewController;
+		BOOL isEnabled = [[[MZEModuleRepository repositoryWithDefaults] enabledIdentifiers] containsObject:moduleIdentifier];
+		if (![_moduleViewControllerByIdentifier objectForKey:moduleIdentifier] && isEnabled) {
+			viewController = [[MZEContentModuleContainerViewController alloc] initWithModuleIdentifier:moduleIdentifier contentModule:moduleInstance.module];
+			[_moduleViewControllerByIdentifier setObject:viewController forKey:moduleIdentifier];
+			viewController.view.hidden = isEnabled ? NO : YES;
 			[self _setupAndAddModuleViewControllerToHierarchy:viewController];
-
+		} else {
+			viewController = [_moduleViewControllerByIdentifier objectForKey:moduleIdentifier];
+			viewController.view.hidden = isEnabled ? NO : YES;
 
 		}
 	}
 
-	_moduleViewControllerByIdentifier = moduleViewControllerByIdentifier;
+	//_moduleViewControllerByIdentifier = moduleViewControllerByIdentifier;
 }
 
 - (NSArray<MZEModuleInstance *> *)_moduleInstances {
@@ -257,6 +263,9 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	// [self.view addSubview:containerViewController.view];
 
 	//self.view.backgroundColor = [UIColor redColor];
+	_snapshotView.hidden = YES;
+	self.view.hidden = NO;
+	//_snapshotView.hidden = YES;
 	[_delegate  moduleCollectionViewController:self didCloseExpandedModule:module];
 }
 
@@ -265,19 +274,19 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 
 	if (YES != NO) {
 
-		[UIView performWithoutAnimation:^{
-    		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0265 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-			    [UIView animateWithDuration:0.08 animations:^{
-					for (UIViewController *viewController in [self childViewControllers]) {
-						if (viewController != containerViewController) {
-							if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
-								viewController.view.alpha = 1;
-							}
-						}
-					}
-				}];
-			});
-    	}];
+		// [UIView performWithoutAnimation:^{
+  //   		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0265 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		// 	    [UIView animateWithDuration:0.08 animations:^{
+		// 			for (UIViewController *viewController in [self childViewControllers]) {
+		// 				if (viewController != containerViewController) {
+		// 					if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+		// 						viewController.view.alpha = 1;
+		// 					}
+		// 				}
+		// 			}
+		// 		}];
+		// 	});
+  //   	}];
 		// [UIView animateWithDuration:0.0f delay:0.275 options:0 animations:^{
 		// 	 [UIView performWithoutAnimation:^{
 		// 		for (UIViewController *viewController in [self childViewControllers]) {
@@ -301,6 +310,11 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 		// 	// }];
 		// }];
 	}
+
+	if (_snapshotView) {
+		_snapshotView.alpha = 1;
+		//self.view.hidden = NO;
+	}
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didOpenExpandedModule:(id <MZEContentModule>)arg2 {
@@ -314,16 +328,22 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 
 	[_currentModules addObject:containerViewController];
 
-	if (YES != NO) {
-		[UIView performWithoutAnimation:^{
-			for (UIViewController *viewController in [self childViewControllers]) {
-				if (viewController != containerViewController) {
-					if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
-						viewController.view.alpha = 0;
-					}
-				}
-			}
-		}];
+	// if (YES != NO) {
+	// 	[UIView performWithoutAnimation:^{
+	// 		for (UIViewController *viewController in [self childViewControllers]) {
+	// 			if (viewController != containerViewController) {
+	// 				if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+	// 					viewController.view.alpha = 0;
+	// 				}
+	// 			}
+	// 		}
+	// 	}];
+	// }
+
+	if (_snapshotView) {
+		_snapshotView.alpha = 0;
+		//_snapshotView.hidden = YES;
+		//self.view.hidden = NO;
 	}
 }
 
@@ -341,7 +361,45 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	// [containerViewController.view removeFromSuperview];
 	[containerViewController willMoveToParentViewController:nil];
 	[containerViewController removeFromParentViewController];
-	[self presentViewController:containerViewController animated:true completion:nil];
+
+
+
+	[UIView animateWithDuration:0.0f animations:^{
+		containerViewController.view.alpha = 0.0;
+		_snapshotView.hidden = YES;
+		if (_snapshotView) {
+			[_snapshotView removeFromSuperview];
+		}
+	} completion:^(BOOL completed) {
+		if ([self.view superview]) {
+			_snapshotView = [[NSClassFromString(@"UIScreen") mainScreen] snapshotView];
+			containerViewController.view.alpha = 1.0;
+			if (![_snapshotView superview] && [self.view superview]) {
+				[[self.view superview] addSubview:_snapshotView];
+				self.view.hidden = YES;
+			}
+		}
+
+		[self presentViewController:containerViewController animated:true completion:nil];
+	}];
+	// if (_snapshotView) {
+	// 	[_snapshotView removeFromSuperview];
+	// }
+
+	// [self.view setNeedsDisplay];
+	// [self.view setNeedsLayout];
+
+	// if ([self.view superview]) {
+	// 	_snapshotView = [[NSClassFromString(@"UIScreen") mainScreen] _snapshotExcludingWindows:nil withRect:[self.view superview].bounds];
+	// 	if (![_snapshotView superview] && [self.view superview]) {
+	// 		[[self.view superview] addSubview:_snapshotView];
+	// 	}
+	// }
+	// // _snapshotView = [[NSClassFromString(@"UIScreen") mainScreen] _snapshotExcludingWindows:nil withRect:[self.view superview].bounds];
+	// // if (![_snapshotView superview] && [self.view superview]) {
+	// // 	[[self.view superview] addSubview:_snapshotView];
+	// // }
+	// [self presentViewController:containerViewController animated:true completion:nil];
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController closeExpandedModule:(id <MZEContentModule>)expandedModule {

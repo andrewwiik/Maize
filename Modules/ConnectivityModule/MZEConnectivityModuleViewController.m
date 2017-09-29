@@ -117,7 +117,7 @@
 - (CGFloat)preferredExpandedContentHeight {
 	if (!_prefferedContentExpandedHeight) {
 		MPULayoutInterpolator *interpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-		[interpolator addValue:306 forReferenceMetric:320];
+		[interpolator addValue:410 forReferenceMetric:320];
 		[interpolator addValue:446 forReferenceMetric:375];
 		[interpolator addValue:468 forReferenceMetric:414];
 		_prefferedContentExpandedHeight = [interpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
