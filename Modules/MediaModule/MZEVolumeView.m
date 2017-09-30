@@ -35,13 +35,19 @@
 
   [self.sliderView.volumeSlider setThumbImage:[UIImage imageNamed:@"thumb" inBundle:[NSBundle bundleForClass:[self class]]] forState:UIControlStateNormal];
 
-  UIView *view = [self.sliderView.volumeSlider valueForKey:@"_maxTrackClipView"];
-  view.layer.cornerRadius = 2;
-  view.clipsToBounds = TRUE;
-
   return self;
 }
 -(void)layoutSubviews {
   self.sliderView.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
+
+
+  UIView *_maxTrackClipView = [self.sliderView.volumeSlider valueForKey:@"_maxTrackClipView"];
+  _maxTrackClipView.layer.cornerRadius = 2;
+  _maxTrackClipView.clipsToBounds = TRUE;
+
+  UIImageView* _minTrackView = [self.sliderView.volumeSlider valueForKey:@"_minTrackView"];
+  _minTrackView.layer.cornerRadius = 2;
+  _minTrackView.clipsToBounds = TRUE;
+
 }
 @end
