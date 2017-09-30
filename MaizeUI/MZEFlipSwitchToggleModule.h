@@ -1,5 +1,5 @@
 #import "MZEToggleModule.h"
-#import <FlipSwitch/FSSwitchState.h>
+#import <Flipswitch/FSSwitchState.h>
 
 @interface MZEFlipSwitchToggleModule : MZEToggleModule {
 	NSString *_switchIdentifier;
