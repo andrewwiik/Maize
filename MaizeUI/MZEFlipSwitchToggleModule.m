@@ -1,6 +1,6 @@
 #import "MZEFlipSwitchToggleModule.h"
 #import <UIKit/UIColor+Private.h>
-#import <Flipswitch/FSSwitchPanel.h>
+#import <FlipSwitch/FSSwitchPanel.h>
 #import <FlipSwitch/FSSwitchPanel+Private.h>
 
 @interface NSBundle (MZE)
