@@ -14,7 +14,9 @@ FRAMEWORK_NAME = MaizeUI
 # MaizeUI_PUBLIC_HEADERS = $(wildcard *.h)
 MaizeUI_FILES = $(wildcard BinPack/*.mm) $(wildcard *.mm) $(wildcard *.m)
 MaizeUI_INSTALL_PATH = /Library/Frameworks
-MaizeUI_PRIVATE_FRAMEWORKS = SpringBoardServices
+
+#MaizeUI_PRIVATE_FRAMEWORKS = SpringBoardServices
+
 MaizeUI_EXTRA_FRAMEWORKS = MaizeServices MaizeShortcutKit
 MaizeUI_LDFLAGS += ./SpringBoardServices.tbd
 MaizeUI_LDFLAGS += -F../.theos/$(THEOS_OBJ_DIR_NAME)
