@@ -1,4 +1,4 @@
-#import <Flipswitch/FSSwitchPanel.h>
+#import <FlipSwitch/FSSwitchPanel.h>
 #import <FlipSwitch/FSSwitchSettingsViewController.h>
 
 @interface FSSwitchPanel (Private)
