@@ -4,5 +4,6 @@
 @interface MZEMediaArtworkView : UIView
 @property (nonatomic, retain, readwrite) UIView *artworkBackground;
 @property (nonatomic, retain, readwrite) UIImageView *imageView;
+@property (nonatomic, retain, readwrite) UIButton *openAppButton;
 -(void)setImage:(UIImage *)arg1 ;
 @end
