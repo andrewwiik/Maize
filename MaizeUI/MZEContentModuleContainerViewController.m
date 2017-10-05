@@ -222,6 +222,22 @@
 		_longPressRecognizer.delegate = self;
 		[self.view addGestureRecognizer:_longPressRecognizer];
 	}
+
+	if (self.traitCollection && [self.traitCollection respondsToSelector:@selector(forceTouchCapability)]) {
+		if (self.view.gestureRecognizers.count > 0 && !_longPressRecognizer) {
+			if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityUnavailable) {
+				_longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
+				_longPressRecognizer.minimumPressDuration = 0.5;
+				_longPressRecognizer.numberOfTouchesRequired = 1;
+				[_longPressRecognizer setCancelsTouchesInView:NO];
+				_longPressRecognizer.delaysTouchesEnded = NO;
+				_longPressRecognizer.allowableMovement = 10.0;
+				_longPressRecognizer.delegate = self;
+				[self.view addGestureRecognizer:_longPressRecognizer];
+			}
+		}
+	}
+
 	_breatheRecognizer.minimumPressDuration = 0;
 	_breatheRecognizer.numberOfTouchesRequired = 1;
 	_breatheRecognizer.allowableMovement = 15.0;
@@ -683,4 +699,23 @@
 // 	}
 // 	_canBubble = YES;
 // }
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+	[super traitCollectionDidChange:previousTraitCollection];
+
+	if (self.traitCollection && [self.traitCollection respondsToSelector:@selector(forceTouchCapability)]) {
+		if (self.view.gestureRecognizers.count > 0 && !_longPressRecognizer) {
+			if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityUnavailable) {
+				_longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
+				_longPressRecognizer.minimumPressDuration = 0.5;
+				_longPressRecognizer.numberOfTouchesRequired = 1;
+				[_longPressRecognizer setCancelsTouchesInView:NO];
+				_longPressRecognizer.delaysTouchesEnded = NO;
+				_longPressRecognizer.allowableMovement = 10.0;
+				_longPressRecognizer.delegate = self;
+				[self.view addGestureRecognizer:_longPressRecognizer];
+			}
+		}
+	}
+}
 @end
