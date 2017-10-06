@@ -1,8 +1,8 @@
 #import "MZEConnectivityModuleViewController.h"
-#import <MPUFoundation/MPULayoutInterpolator.h>
 #import "MZEConnectivityLayoutHelper.h"
 #import <UIKit/UIScreen+Private.h>
 #import "MZEConnectivityModuleView.h"
+#import <SpringBoard/SBControlCenterController+Private.h>
 
 @implementation MZEConnectivityModuleViewController
 
@@ -110,20 +110,42 @@
 }
 
 - (CGFloat)preferredExpandedContentWidth {
-	CGSize containerSize = [[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size;
-	return [MZEConnectivityLayoutHelper widthForExpandedContainerWithContainerSize:containerSize defaultButtonSize:[self _buttonSize]];
+	if (!_widthInterpolator) {
+		_widthInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+		[_widthInterpolator addValue:288 forReferenceMetric:320];
+		[_widthInterpolator addValue:321 forReferenceMetric:375];
+		[_widthInterpolator addValue:346 forReferenceMetric:414];
+		[_widthInterpolator addValue:440 forReferenceMetric:568];
+		[_widthInterpolator addValue:476 forReferenceMetric:667];
+		[_widthInterpolator addValue:516 forReferenceMetric:736];
+	}
+
+	_prefferedContentExpandedWidth = [_widthInterpolator valueForReferenceMetric:[self rootViewFrame].size.width];
+	return _prefferedContentExpandedWidth;
 }
 
 - (CGFloat)preferredExpandedContentHeight {
-	if (!_prefferedContentExpandedHeight) {
-		MPULayoutInterpolator *interpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-		[interpolator addValue:410 forReferenceMetric:320];
-		[interpolator addValue:446 forReferenceMetric:375];
-		[interpolator addValue:468 forReferenceMetric:414];
-		_prefferedContentExpandedHeight = [interpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
+	if (!_heightInterpolator) {
+		_heightInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+		[_heightInterpolator addValue:410 forReferenceMetric:568];
+		[_heightInterpolator addValue:446 forReferenceMetric:667];
+		[_heightInterpolator addValue:468 forReferenceMetric:736];
+		[_heightInterpolator addValue:222 forReferenceMetric:320];
+		[_heightInterpolator addValue:302 forReferenceMetric:375];
+		[_heightInterpolator addValue:335 forReferenceMetric:414];
 	}
 
+	_prefferedContentExpandedHeight = [_heightInterpolator valueForReferenceMetric:[self rootViewFrame].size.height];
+
 	return _prefferedContentExpandedHeight;
+}
+
+- (CGRect)rootViewFrame {
+	SBControlCenterController *mainController = [NSClassFromString(@"SBControlCenterController") _sharedInstanceCreatingIfNeeded:YES];
+	if (mainController && mainController.view) {
+		return [mainController.view window].bounds;
+	}
+	return CGRectZero;
 }
 
 - (void)willTransitionToExpandedContentMode:(BOOL)expanded {
@@ -159,11 +181,11 @@
 }
 
 - (NSUInteger)numberOfColumns {
-	return 2;
+	return 3;
 }
 
 - (NSUInteger)numberOfRows {
-	return 3;
+	return 2;
 }
 
 - (NSUInteger)visibleColumns {
@@ -176,11 +198,11 @@
 }
 - (NSUInteger)visibleRows {
 	if (_isExpanded) {
-		if (self.view.bounds.size.width < self.view.bounds.size.height) {
-			return 3;
+		if (self.view.bounds.size.width > self.view.bounds.size.height) {
+			return 2;
 		}
 	}
-	return 2;
+	return 3;
 }
 
 // - (CGSize)preferredContentSize {

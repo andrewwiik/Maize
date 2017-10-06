@@ -375,6 +375,10 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 			_snapshotView = [[NSClassFromString(@"UIScreen") mainScreen] snapshotView];
 			containerViewController.view.alpha = 1.0;
 			if (![_snapshotView superview] && [self.view superview]) {
+				CGRect frame = _snapshotView.frame;
+				frame.origin.x += ((UIScrollView *)[self.view superview]).contentOffset.x; 
+				frame.origin.y += ((UIScrollView *)[self.view superview]).contentOffset.y;
+				_snapshotView.frame = frame;
 				[[self.view superview] addSubview:_snapshotView];
 				self.view.hidden = YES;
 			}
