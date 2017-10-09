@@ -181,11 +181,21 @@
 }
 
 - (NSUInteger)numberOfColumns {
-	return 3;
+	if (_isExpanded) {
+		if (self.view.bounds.size.width > self.view.bounds.size.height) {
+			return 3;
+		}
+	}
+	return 2;
 }
 
 - (NSUInteger)numberOfRows {
-	return 2;
+	if (_isExpanded) {
+		if (self.view.bounds.size.width > self.view.bounds.size.height) {
+			return 2;
+		}
+	}
+	return 3;
 }
 
 - (NSUInteger)visibleColumns {
