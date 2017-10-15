@@ -1,7 +1,7 @@
 Package: com.ioscreatix.maizepreview
 Name: Maize (Preview)
 Depends: firmware (>= 10.0), mobilesubstrate, com.a3tweaks.flipswitch
-Version: 1.2.4
+Version: 1.2.6
 Architecture: iphoneos-arm
 Description: A preview of Maize, the iOS 11 Control Center on iOS 10
 Maintainer: Creatix
