@@ -613,6 +613,7 @@ static CGFloat cachedBoundsWidth = 0;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	return YES;
 	if (gestureRecognizer) {
 		if (_isInteractingWithModule && [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
 			return NO;
@@ -622,6 +623,7 @@ static CGFloat cachedBoundsWidth = 0;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press {
+	return YES;
 	if (gestureRecognizer) {
 		if (_isInteractingWithModule && [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
 			return NO;
