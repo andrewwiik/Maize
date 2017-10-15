@@ -3,7 +3,9 @@
 #import "MZECAContinuousCornerLayer.h"
 #import <UIKit/UIView+Private.h>
 #import "macros.h"
+#import <QuartzCore/CABackdropLayer.h>
 
+static BOOL isIOS11Mode = YES;
 
 static CGFloat separatorHeight = 0;
 
@@ -44,7 +46,13 @@ static CGFloat separatorHeight = 0;
             _glyphMaskView = [[UIView alloc] initWithFrame:self.bounds];
             _punchThroughContainer = [[_MZEBackdropView alloc] init];
             _punchThroughContainer.frame = self.bounds;
-            _punchThroughContainer.layer.groupName = @"ModuleDarkBackground";
+            if (isIOS11Mode) {
+                _punchThroughContainer.layer.groupName = @"ModuleDarkBackground";
+            } else{
+                _punchThroughContainer.layer.groupName = @"CCUIControlCenterBaseMaterialBlur";
+                ((CABackdropLayer *)_punchThroughContainer.layer).scale = 0.25;
+                _punchThroughContainer.blurRadius = 30;
+            }
             _punchThroughContainer.maskView = _glyphMaskView;
             _punchThroughContainer.clipsToBounds = YES;
             _punchThroughContainer.userInteractionEnabled = NO;
@@ -377,7 +385,7 @@ static CGFloat separatorHeight = 0;
     NSMutableArray *stepsArray = [NSMutableArray arrayWithCapacity:numberOfSteps];
     if (stepsArray) {
         for (NSUInteger x = 0; x < numberOfSteps; x++) {
-            MZEMaterialView *stepView = [self _createBackgroundViewForStep:x+1];
+            UIView *stepView = [self _createBackgroundViewForStep:x+1];
             if (stepView) {
                  [self addSubview:stepView];
                 [stepsArray addObject:stepView];
@@ -389,7 +397,7 @@ static CGFloat separatorHeight = 0;
 
     for (MZEMaterialView *stepView in _stepBackgroundViews) {
         [stepView removeFromSuperview];
-        stepView.backdropView.maskView = nil;
+        //stepView.backdropView.maskView = nil;
     }
 
     _stepBackgroundViews = stepsArray;
@@ -424,17 +432,23 @@ static CGFloat separatorHeight = 0;
     }
 }
 
-- (MZEMaterialView *)_createBackgroundViewForStep:(NSUInteger)step {
-    MZEMaterialView *materialView;
-    if (step == 1 && [self isStepped] && [self firstStepIsDisabled]) {
-        materialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
-    } else {
-        materialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleLight];
-        //materialView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    }
+- (UIView *)_createBackgroundViewForStep:(NSUInteger)step {
+    if (isIOS11Mode) {
+        MZEMaterialView *materialView;
+        if (step == 1 && [self isStepped] && [self firstStepIsDisabled]) {
+            materialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
+        } else {
+            materialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleLight];
+            //materialView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        }
 
-    [materialView setUserInteractionEnabled:NO];
-    return materialView;
+        [materialView setUserInteractionEnabled:NO];
+        return materialView;
+    } else {
+        UIView *materialView = [[UIView alloc] initWithFrame:CGRectZero];
+        materialView.backgroundColor = [UIColor whiteColor];
+        return materialView;
+    }
 }
 
 - (MZEMaterialView *)_createSeparatorView {

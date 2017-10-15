@@ -47,6 +47,7 @@
 		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:1 initialSpringVelocity:1 options:UIViewAnimationOptionAllowUserInteraction animations:^{
 			toViewController.backgroundView.alpha = 0.0;
 			[toViewController.contentContainerView transitionToExpandedMode:NO];
+			[toViewController.backgroundView transitionToExpandedMode:NO];
 			toViewController.contentContainerView.frame = relativeFrame;
 
 			if ([toViewController.contentViewController respondsToSelector:@selector(willTransitionToExpandedContentMode:)]) {
@@ -54,6 +55,7 @@
 			}
 		} completion:^(BOOL finished) {
 			[transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+			[toViewController.contentContainerView didTransitionToExpandedMode:NO];
 		}];
 	} else {
 		UIViewController<MZEExpandedModuleTransition> *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];

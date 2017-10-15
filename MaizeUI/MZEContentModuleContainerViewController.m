@@ -12,6 +12,8 @@
 
 //static BOOL forceTouchIsSupported;
 
+static BOOL isIOS11Mode = YES;
+
 @implementation MZEContentModuleContainerViewController
 	@synthesize delegate=_delegate;
 
@@ -176,6 +178,7 @@
 	// _contentContainerView.expandedFrame = [self _contentFrameForExpandedState];
 	// _contentContainerView.compactFrame = [self _contentFrameForRestState];
 	[_contentContainerView _transitionToExpandedMode:NO force:YES];
+	[_backgroundView _transitionToExpandedMode:NO force:YES];
 
 	[_highlightWrapperView addSubview:_contentContainerView];
 	_contentView = _contentViewController.view;
@@ -417,6 +420,9 @@
 			[UIView animateWithDuration:0.125 delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 				self.view.transform = CGAffineTransformIdentity;
 			} completion:^(BOOL completed) {
+				// if (!isIOS11Mode) {
+	   //      		[_contentContainerView useFakeVibrantView:NO];
+	   //      	}
 				//[UIPanGestureRecognizer _setPanGestureRecognizersEnabled:YES];
 			}];
 
@@ -435,6 +441,9 @@
 			self.view.transform = CGAffineTransformIdentity;
 		} completion:^(BOOL completed) {
 			[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+			if (!isIOS11Mode) {
+        		[_contentContainerView useFakeVibrantView:NO];
+        	}
 
 		}];
 	}
@@ -530,6 +539,9 @@
 		switch (recognizer.state) {
 	        case UIGestureRecognizerStateBegan: {
 	        	_bubbled = YES;
+	        	if (!isIOS11Mode) {
+	        		[_contentContainerView useFakeVibrantView:YES];
+	        	}
 	        	[_delegate contentModuleContainerViewController:self didBeginInteractionWithModule:_contentModule];
 	        	if ([self forceTouchSupported]) {
 	        		[UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
@@ -555,6 +567,9 @@
 	        case UIGestureRecognizerStateEnded: {
 	        	if (_bubbled && _canBubble) {
 	        		_canBubble = NO;
+	        		if (!isIOS11Mode) {
+		        		[_contentContainerView useFakeVibrantView:NO];
+		        	}
 	        		if (self.bubblingAnimator) {
 	        			[self.bubblingAnimator stopAnimation:YES];
 	        		}

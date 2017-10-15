@@ -1,4 +1,4 @@
-#import "MZEModularControlCenterOverlayViewController.h"
+#import "MZEModularControlCenterHybridViewController.h"
 #import <UIKit/UIView+Private.h>
 #import <SpringBoard/SBControlCenterController+Private.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
@@ -9,7 +9,7 @@ static CGRect cachedBounds;
 static CGFloat cachedBoundsHeight = 0;
 static CGFloat cachedBoundsWidth = 0;
 
-@implementation MZEModularControlCenterOverlayViewController
+@implementation MZEModularControlCenterHybridViewController
 
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
@@ -42,21 +42,21 @@ static CGFloat cachedBoundsWidth = 0;
     [_scrollView addSubview:self.collectionViewController.view];
     [self.view addSubview:_scrollView];
 
-    _headerPocketView = [[MZEHeaderPocketView alloc] init];
-    _headerPocketView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:_headerPocketView];
+    // _headerPocketView = [[MZEHeaderPocketView alloc] init];
+    // _headerPocketView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    // [self.view addSubview:_headerPocketView];
 
     [super viewDidLoad];
 
-	_headerPocketViewDismissalPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleControlCenterDismissalPanGesture:)];
-	[_headerPocketViewDismissalPanGesture setDelegate:self];
-	[_headerPocketView addGestureRecognizer:_headerPocketViewDismissalPanGesture];
+	// _headerPocketViewDismissalPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleControlCenterDismissalPanGesture:)];
+	// [_headerPocketViewDismissalPanGesture setDelegate:self];
+	// [_headerPocketView addGestureRecognizer:_headerPocketViewDismissalPanGesture];
 
-	_headerPocketViewDismissalTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleControlCenterDismissalTapGesture:)];
-	_headerPocketViewDismissalTapGesture.cancelsTouchesInView = NO;
-	_headerPocketViewDismissalTapGesture.delaysTouchesEnded = NO;
-	[_headerPocketViewDismissalTapGesture setDelegate:self];
-	[_headerPocketView addGestureRecognizer:_headerPocketViewDismissalTapGesture];
+	// _headerPocketViewDismissalTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleControlCenterDismissalTapGesture:)];
+	// _headerPocketViewDismissalTapGesture.cancelsTouchesInView = NO;
+	// _headerPocketViewDismissalTapGesture.delaysTouchesEnded = NO;
+	// [_headerPocketViewDismissalTapGesture setDelegate:self];
+	// [_headerPocketView addGestureRecognizer:_headerPocketViewDismissalTapGesture];
 
 	_collectionViewDismissalPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleControlCenterDismissalPanGesture:)];
 	[_collectionViewDismissalPanGesture setDelegate:self];
@@ -69,7 +69,7 @@ static CGFloat cachedBoundsWidth = 0;
 	[_scrollView addGestureRecognizer:_collectionViewDismissalTapGesture];
 
 	_collectionViewScrollPanGesture = [_scrollView panGestureRecognizer];
-	//[_collectionViewDismissalPanGesture requireGestureRecognizerToFail:_collectionViewScrollPanGesture];
+	[_collectionViewScrollPanGesture requireGestureRecognizerToFail:_collectionViewDismissalPanGesture];
 }
 
 - (void)_handleControlCenterDismissalTapGesture:(UITapGestureRecognizer *)gesture {
@@ -102,8 +102,8 @@ static CGFloat cachedBoundsWidth = 0;
 	_scrollView.contentSize = CGSizeMake(preferredContentSize.width, maxHeight);
 	[self _setCollectionViewOriginYUpdatingRevealPercentage:collectionViewFrame.origin.y];
 	[self.moduleCollectionViewController.moduleCollectionView setNeedsLayout];
-	[_headerPocketView setNeedsLayout];
-	[self _updateHotPocketAnimated:NO];
+	//[_headerPocketView setNeedsLayout];
+	//[self _updateHotPocketAnimated:NO];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -175,17 +175,17 @@ static CGFloat cachedBoundsWidth = 0;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[self _updateHotPocketAnimated:YES];
+	//[self _updateHotPocketAnimated:YES];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gesture {
-	if (gesture == _headerPocketViewDismissalPanGesture) {
-		return [self _allowDismissalWithPanGesture:(UIPanGestureRecognizer *)gesture];
-	}
+	// if (gesture == _headerPocketViewDismissalPanGesture) {
+	// 	return [self _allowDismissalWithPanGesture:(UIPanGestureRecognizer *)gesture];
+	// }
 	if (gesture == _collectionViewDismissalPanGesture) {
 		return [self _allowDismissalWithCollectionPanGesture:(UIPanGestureRecognizer *)gesture];
 	}
-	if (gesture == _headerPocketViewDismissalTapGesture || gesture == _collectionViewDismissalTapGesture) {
+	if (gesture == _collectionViewDismissalTapGesture) {
 		return [self _allowDismissalWithTapGesture:(UITapGestureRecognizer *)gesture];
 	}
 	return YES;
@@ -196,7 +196,6 @@ static CGFloat cachedBoundsWidth = 0;
 	if (gestureRecognizer != _collectionViewScrollPanGesture) {
 		return YES;
 	} else {
-		return YES;
 		return [self _allowScrollWithPanGesture:(UIPanGestureRecognizer *)gestureRecognizer];
 	}
 }
@@ -211,20 +210,6 @@ static CGFloat cachedBoundsWidth = 0;
 		return YES;
 	}
 	return NO;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-    return YES;
-}
-
--(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-	_blockDismiss = YES;
-	//_collectionViewDismissalPanGesture.enabled = NO;
-}
-
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-   _blockDismiss = NO;
 }
 
 #pragma mark Dismissal Gesture
@@ -380,7 +365,6 @@ static CGFloat cachedBoundsWidth = 0;
 // }
 
 - (void)_handleControlCenterDismissalPanGesture:(UIPanGestureRecognizer *)recognizer {
-	if (_blockDismiss) return;
 	// if (_isInteractingWithModule) {
 	// 	return;
 	// }
@@ -400,10 +384,6 @@ static CGFloat cachedBoundsWidth = 0;
 	if ([NSClassFromString(@"SBControlCenterController") sharedInstance]) {
 		SBControlCenterController *controller = [NSClassFromString(@"SBControlCenterController") sharedInstance];
 		if ([controller valueForKey:@"_viewController"]) {
-			if ([recognizer translationInView:self.view].y > 15 || [recognizer translationInView:self.view].y < 15) {
-				_collectionViewScrollPanGesture.enabled = NO;
-				_collectionViewScrollPanGesture.enabled = YES;
-			}
 			[(CCUIControlCenterViewController *)[controller valueForKey:@"_viewController"] _handlePan:recognizer];
 			return;
 		}
@@ -490,21 +470,21 @@ static CGFloat cachedBoundsWidth = 0;
 	}
 }
 
-- (void)_updateHotPocketAnimated:(BOOL)animated {
-	CGFloat alpha = 0;
-	if (_scrollView.contentOffset.y > 0)
-		alpha = 1;
+// - (void)_updateHotPocketAnimated:(BOOL)animated {
+// 	CGFloat alpha = 0;
+// 	if (_scrollView.contentOffset.y > 0)
+// 		alpha = 1;
 
-	if (animated) {
-		[UIView animateWithDuration:0.4f animations:^{
-			_headerPocketView.backgroundAlpha = alpha;
-		} completion:nil];
-	} else {
-		[UIView performWithoutAnimation:^{
-			_headerPocketView.backgroundAlpha = alpha;
-		}];
-	}
-}
+// 	if (animated) {
+// 		[UIView animateWithDuration:0.4f animations:^{
+// 			_headerPocketView.backgroundAlpha = alpha;
+// 		} completion:nil];
+// 	} else {
+// 		[UIView performWithoutAnimation:^{
+// 			_headerPocketView.backgroundAlpha = alpha;
+// 		}];
+// 	}
+// }
 
 - (UIView *)_moduleCollectionViewContainerView {
 	return _scrollView;
@@ -516,8 +496,6 @@ static CGFloat cachedBoundsWidth = 0;
 	cachedBoundsHeight = CGRectGetHeight(cachedBounds);
 	_cachedSourcePresentationFrame = CGRectNull;
 	_cachedTargetPresentationFrame = CGRectNull;
-	_blockDismiss = NO;
-	_collectionViewScrollPanGesture.enabled = YES;
 }
 
 - (void)_animateSetCollectionViewOriginYUpdatingRevealPercentage:(CGFloat)percentage {
@@ -539,23 +517,23 @@ static CGFloat cachedBoundsWidth = 0;
 	CGRect targetFrame = [self _targetPresentationFrame];
 	CGFloat xOrigin = CGRectGetMinX(targetFrame);
 	[self _setCollectionViewOriginAccountingForContentInset:CGPointMake(xOrigin, yOrigin)];
-	[self _setPocketViewOriginFromCollectionOriginY:yOrigin revealPercentage:percentage];
+	//[self _setPocketViewOriginFromCollectionOriginY:yOrigin revealPercentage:percentage];
 	_backgroundView.effectProgress = fmaxf(fminf(percentage, 1.0), 0.0);
 	// Not gonna implement a delegate method we aren't going to actually use;
 }
 
-- (void)_setPocketViewOriginFromCollectionOriginY:(CGFloat)yOrigin revealPercentage:(CGFloat)revealPercentage {
+// - (void)_setPocketViewOriginFromCollectionOriginY:(CGFloat)yOrigin revealPercentage:(CGFloat)revealPercentage {
 
-	CGRect targetFrame = [self _targetPresentationFrame];
+// 	CGRect targetFrame = [self _targetPresentationFrame];
 
-	CGSize headerPocketSize = CGSizeMake(cachedBoundsWidth,64.0f);
-	CGFloat headerPocketBetween = cachedBoundsHeight - (cachedBoundsHeight - targetFrame.origin.y);
-	CGPoint headerPocketOrigin = CGPointMake(0,yOrigin - headerPocketBetween);
-	_headerPocketView.frame = CGRectMake(headerPocketOrigin.x,headerPocketOrigin.y,headerPocketSize.width,headerPocketSize.height);
-	CGFloat alpha = fminf(fmaxf((revealPercentage + -0.88) / 0.07, 0.0), 1.0);
-	_headerPocketView.alpha = alpha;
-	[_headerPocketView setChevronPointingDown: alpha > 0.95];
-}
+// 	CGSize headerPocketSize = CGSizeMake(cachedBoundsWidth,64.0f);
+// 	CGFloat headerPocketBetween = cachedBoundsHeight - (cachedBoundsHeight - targetFrame.origin.y);
+// 	CGPoint headerPocketOrigin = CGPointMake(0,yOrigin - headerPocketBetween);
+// 	_headerPocketView.frame = CGRectMake(headerPocketOrigin.x,headerPocketOrigin.y,headerPocketSize.width,headerPocketSize.height);
+// 	CGFloat alpha = fminf(fmaxf((revealPercentage + -0.88) / 0.07, 0.0), 1.0);
+// 	_headerPocketView.alpha = alpha;
+// 	[_headerPocketView setChevronPointingDown: alpha > 0.95];
+// }
 
 - (void)_setCollectionViewOriginAccountingForContentInset:(CGPoint)origin {
 	[_scrollView setContentOffset:_scrollView.contentOffset animated:NO];
@@ -594,11 +572,11 @@ static CGFloat cachedBoundsWidth = 0;
 
 		if (![self isLandscape]) {
 			CGFloat boundsHeight = CGRectGetHeight(bounds);
-			CGFloat pocketViewHeight = [_headerPocketView intrinsicContentSize].height;
-			CGFloat maxHeight = boundsHeight - pocketViewHeight;
+			//CGFloat pocketViewHeight = [_headerPocketView intrinsicContentSize].height;
+			CGFloat maxHeight = boundsHeight;
 			CGFloat yOrigin = boundsHeight - collectionViewHeight;
 			if (collectionViewHeight > maxHeight) {
-				yOrigin = pocketViewHeight;
+				yOrigin = 0;
 			}
 			cachedFrame = CGRectMake(0,yOrigin, collectionViewHeight, CGRectGetWidth(bounds));
 		} else {
@@ -635,7 +613,7 @@ static CGFloat cachedBoundsWidth = 0;
 	// _collectionViewScrollPanGesture.enabled = YES;
 	_collectionViewDismissalTapGesture.enabled = YES;
 	// _collectionViewDismissalPanGesture.enabled = YES;
-	_headerPocketViewDismissalTapGesture.enabled = YES;
+	//_headerPocketViewDismissalTapGesture.enabled = YES;
 	// _headerPocketViewDismissalPanGesture.enabled = YES;
 }
 
@@ -644,31 +622,31 @@ static CGFloat cachedBoundsWidth = 0;
 	// _collectionViewScrollPanGesture.enabled = NO;
 	_collectionViewDismissalTapGesture.enabled = NO;
 	// _collectionViewDismissalPanGesture.enabled = NO;
-	_headerPocketViewDismissalTapGesture.enabled = NO;
+	//_headerPocketViewDismissalTapGesture.enabled = NO;
 	// _headerPocketViewDismissalPanGesture.enabled = NO;
 }
 
 
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willOpenExpandedModule:(id <MZEContentModule>)module {
-	_headerPocketView.alpha = 0;
+	//_headerPocketView.alpha = 0;
 	_collectionViewScrollPanGesture.enabled = NO;
 	_collectionViewDismissalTapGesture.enabled = NO;
 	_collectionViewDismissalPanGesture.enabled = NO;
-	_headerPocketViewDismissalTapGesture.enabled = NO;
-	_headerPocketViewDismissalPanGesture.enabled = NO;
+	//_headerPocketViewDismissalTapGesture.enabled = NO;
+	//_headerPocketViewDismissalPanGesture.enabled = NO;
 	_isInteractingWithModule = YES;
 	[super moduleCollectionViewController:collectionViewController willOpenExpandedModule:module];
 }
 
 - (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willCloseExpandedModule:(id <MZEContentModule>)module {
-	_headerPocketView.alpha = 1.0;
-	[self _updateHotPocketAnimated:YES];
+	//_headerPocketView.alpha = 1.0;
+	//[self _updateHotPocketAnimated:YES];
 	_isInteractingWithModule = NO;
 	_collectionViewScrollPanGesture.enabled = YES;
 	_collectionViewDismissalTapGesture.enabled = YES;
 	_collectionViewDismissalPanGesture.enabled = YES;
-	_headerPocketViewDismissalTapGesture.enabled = YES;
-	_headerPocketViewDismissalPanGesture.enabled = YES;
+	//_headerPocketViewDismissalTapGesture.enabled = YES;
+	//_headerPocketViewDismissalPanGesture.enabled = YES;
 	[super moduleCollectionViewController:collectionViewController willCloseExpandedModule:module];
 }
 // CGRectIsNull

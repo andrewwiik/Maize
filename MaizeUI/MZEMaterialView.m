@@ -3,6 +3,8 @@
 #import <QuartzCore/CALayer+Private.h>
 #import <UIKit/UIView+Private.h>
 
+static BOOL isIOS11Mode = YES;
+
 struct CAColorMatrix
 {
     float m11, m12, m13, m14, m15;
@@ -39,17 +41,24 @@ static NSMutableDictionary *normalStyleDict;
 
 		if (!darkStyleDict) {
 			darkStyleDict = [NSMutableDictionary new];
-			darkStyleDict[@"brightness"] = [NSNumber numberWithFloat:-0.12];
-			darkStyleDict[@"saturation"] = [NSNumber numberWithFloat:1.8];
 
-	    	CAColorMatrix darkColorMatrix = {
-		        0.5f, 0, 0, 0, 0.125f,
-		        0, 0.5f, 0, 0, 0.125f,
-		        0, 0, 0.5f, 0, 0.125f,
-		        0, 0, 0, 1.0f, 0
-	      	};
+			if (isIOS11Mode) {
+				darkStyleDict[@"brightness"] = [NSNumber numberWithFloat:-0.12];
+				darkStyleDict[@"saturation"] = [NSNumber numberWithFloat:1.8];
 
-	      	darkStyleDict[@"forcedColorMatrix"] = [NSValue valueWithCAColorMatrix:darkColorMatrix];
+		    	CAColorMatrix darkColorMatrix = {
+			        0.5f, 0, 0, 0, 0.125f,
+			        0, 0.5f, 0, 0, 0.125f,
+			        0, 0, 0.5f, 0, 0.125f,
+			        0, 0, 0, 1.0f, 0
+		      	};
+
+		      	darkStyleDict[@"forcedColorMatrix"] = [NSValue valueWithCAColorMatrix:darkColorMatrix];
+
+			} else {
+				lightStyleDict[@"colorAddColor"] = [UIColor colorWithWhite:0.0 alpha:1.0];
+			}
+		
 		}
 
       	[materialView.backdropView setStyleDictionary:[darkStyleDict copy]];
@@ -59,7 +68,7 @@ static NSMutableDictionary *normalStyleDict;
 
 			lightStyleDict[@"brightness"] = [NSNumber numberWithFloat:0.52];
 			lightStyleDict[@"saturation"] = [NSNumber numberWithFloat:1.6];
-			lightStyleDict[@"colorAddColor"] = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+			lightStyleDict[@"colorAddColor"] = [UIColor colorWithWhite:1.0 alpha:0.25];
 		}
 
 		[materialView.backdropView setStyleDictionary:[lightStyleDict copy]];

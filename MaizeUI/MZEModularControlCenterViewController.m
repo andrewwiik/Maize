@@ -183,6 +183,6 @@
 	if (orientation == 0)
 		orientation = 1;
 
-	return orientation; 
+	return orientation;
 }
 @end

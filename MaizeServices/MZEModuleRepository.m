@@ -31,11 +31,11 @@
 }
 
 + (NSString *)enabledKey {
-	return @"EnabledIdentifiers21";
+	return @"EnabledIdentifiers23";
 }
 
 + (NSString *)disabledKey {
-	return @"DisabledIdentifiers21";
+	return @"DisabledIdentifiers23";
 }
 
 + (NSString *)settingsChangedNotificationName {
@@ -60,7 +60,7 @@
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AudioModule"];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ScreenRecordingModule"];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.RingerModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
+	//[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.CalculatorModule"];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.CameraModule"];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.LowPowerModule"];

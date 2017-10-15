@@ -7,7 +7,7 @@
 #import "macros.h"
 #import <UIKit/UIView+Private.h>
 
-
+// static BOOL isIOS11Mode = YES;
 
 @implementation MZEExpandedModulePresentationTransition
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
@@ -42,6 +42,7 @@
 		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:1 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 			toViewController.backgroundView.alpha = 1.0;
 			[toViewController.contentContainerView transitionToExpandedMode:YES];
+			[toViewController.backgroundView transitionToExpandedMode:YES];
 			toViewController.contentContainerView.frame = [toViewController _contentFrameForExpandedState];
 
 			if ([toViewController.contentViewController respondsToSelector:@selector(willTransitionToExpandedContentMode:)]) {
@@ -49,6 +50,7 @@
 			}
 		} completion:^(BOOL finished) {
 			[transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+			[toViewController.contentContainerView didTransitionToExpandedMode:YES];
 		}];
 	} else {
 		UIViewController<MZEExpandedModuleTransition> *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];

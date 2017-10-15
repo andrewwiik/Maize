@@ -26,6 +26,8 @@ static CGRect regularCornerCenter;
 static CGFloat expandedContinuousCornerRadius = 0;
 static CGRect expandedCornerCenter;
 
+static BOOL isIOS11Mode = YES;
+
 MPULayoutInterpolator *spacingInterpolator;
 MPULayoutInterpolator *edgeInterpolator;
 MPULayoutInterpolator *insetInterpolator;
@@ -114,7 +116,10 @@ static CGFloat cachedDeviceHeight = 0;
 			if (!insetInterpolator) {
 				insetInterpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
 				[insetInterpolator addValue:16 forReferenceMetric:320];
-				[insetInterpolator addValue:27 forReferenceMetric:375];
+				if (isIOS11Mode)
+					[insetInterpolator addValue:27 forReferenceMetric:375];
+				else
+					[insetInterpolator addValue:19 forReferenceMetric:375];
 				[insetInterpolator addValue:34 forReferenceMetric:414];
 				[insetInterpolator addValue:140 forReferenceMetric:568];
 				[insetInterpolator addValue:173 forReferenceMetric:667];

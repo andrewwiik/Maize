@@ -10,4 +10,5 @@
 @property (assign,nonatomic) BOOL usesDarkeningTintView;                                 //@synthesize usesDarkeningTintView=_usesDarkeningTintView - In the implementation block
 @property (assign,nonatomic) BOOL usesColorOffset;
 + (instancetype)settingsForStyle:(NSInteger)arg1 ;
+@property (assign,nonatomic) CGFloat scale;
 @end

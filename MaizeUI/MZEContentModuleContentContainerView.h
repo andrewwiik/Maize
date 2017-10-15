@@ -1,4 +1,6 @@
 #import "MZEMaterialView.h"
+#import <QuartzCore/CAFilter+Private.h>
+#import <UIKit/_UIBackdropView+Private2.h>
 
 @interface MZEContentModuleContentContainerView : UIView
 {
@@ -6,6 +8,11 @@
     BOOL _moduleProvidesOwnPlatter;
     BOOL _clipsContentInCompactMode;
     MZEMaterialView *_moduleMaterialView;
+    UIView *_moduleVibrantBackground;
+    UIView *_moduleVibrantExpandedBackground;
+    CAFilter *_expandedBackgroundFilter;
+    CAFilter *_compactBackgroundFilter;
+    _UIBackdropView *_fakeVibrantView;
     // UIView *_psuedoCompactView;
     // UIView *_psuedoExpandedView;
     // CGRect _compactFrame;
@@ -20,8 +27,10 @@
 - (void)_configureModuleMaterialViewIfNecessary;
 - (void)transitionToExpandedMode:(BOOL)arg1;
 - (void)_transitionToExpandedMode:(BOOL)arg1 force:(BOOL)arg2;
+- (void)didTransitionToExpandedMode:(BOOL)arg1;
 - (id)initWithFrame:(CGRect)arg1;
 - (id)init;
+- (void)useFakeVibrantView:(BOOL)useView;
 
 
 #pragma mark stupid corners

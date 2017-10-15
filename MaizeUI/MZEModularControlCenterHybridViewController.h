@@ -3,30 +3,27 @@
 #import "MZEScrollViewDelegate-Protocol.h"
 #import "MZEPresentationState.h"
 #import "MZEBackgroundView.h"
-#import "MZEHeaderPocketView.h"
+//#import "MZEHeaderPocketView.h"
 
-@interface MZEModularControlCenterOverlayViewController : MZEModularControlCenterViewController <MZEScrollViewDelegate, UIGestureRecognizerDelegate> {
+@interface MZEModularControlCenterHybridViewController : MZEModularControlCenterViewController <MZEScrollViewDelegate, UIGestureRecognizerDelegate> {
 	CGRect _cachedTargetPresentationFrame;
 	CGRect _cachedSourcePresentationFrame;
-	CGRect _cachedHeaderPocketViewSize;
+	//CGRect _cachedHeaderPocketViewSize;
 	CGFloat _currentBasedWidth;
 	MZEPresentationState _presentationState;
 
 	MZEScrollView *_scrollView;
-	MZEHeaderPocketView *_headerPocketView;
+	//MZEHeaderPocketView *_headerPocketView;
 
 	MZEBackgroundView *_backgroundView;
 
-	UIPanGestureRecognizer *_headerPocketViewDismissalPanGesture;
-	UITapGestureRecognizer *_headerPocketViewDismissalTapGesture;
+	//UIPanGestureRecognizer *_headerPocketViewDismissalPanGesture;
+	//UITapGestureRecognizer *_headerPocketViewDismissalTapGesture;
 	UIPanGestureRecognizer *_collectionViewDismissalPanGesture;
 	UITapGestureRecognizer *_collectionViewDismissalTapGesture;
 	UIPanGestureRecognizer *_collectionViewScrollPanGesture;
 	CGFloat _dismissalGestureYOffset;
 	BOOL _isInteractingWithModule;
-	BOOL _blockDismiss;
-	CGFloat _staryY;
-	CGFloat _endY;
 }
 
 @property (nonatomic, retain, readwrite) MZEBackgroundView *backgroundView;
@@ -80,10 +77,10 @@
 - (void)_setCollectionViewOriginAccountingForContentInset:(CGPoint)origin;
 - (void)_animateSetCollectionViewOriginYUpdatingRevealPercentage:(CGFloat)percentage;
 
-#pragma mark Header Pocket View
+// #pragma mark Header Pocket View
 
-- (void)_updateHotPocketAnimated:(BOOL)animated;
-- (void)_setPocketViewOriginFromCollectionOriginY:(CGFloat)yOrigin revealPercentage:(CGFloat)revealPercentage;
+// - (void)_updateHotPocketAnimated:(BOOL)animated;
+// - (void)_setPocketViewOriginFromCollectionOriginY:(CGFloat)yOrigin revealPercentage:(CGFloat)revealPercentage;
 
 
 @end

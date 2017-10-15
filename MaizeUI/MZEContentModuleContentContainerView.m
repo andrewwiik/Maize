@@ -3,10 +3,15 @@
 #import <UIKit/UIView+Private.h>
 #import <MPUFoundation/MPULayoutInterpolator.h>
 #import <QuartzCore/CALayer+Private.h>
+#import <QuartzCore/CAFilter+Private.h>
 #import "macros.h"
+#import <UIKit/_UIBackdropViewSettings+Private.h>
+#import <QuartzCore/CABackdropLayer.h>
 
 
 MPULayoutInterpolator *interpolator;
+
+static BOOL isIOS11Mode = YES;
 
 // static NSMutableDictionary *storedCornerRadiusExpanded;
 // static NSMutableDictionary *storedCornerRadiusRegular;
@@ -51,6 +56,9 @@ MPULayoutInterpolator *interpolator;
 
 - (void)addSubview:(UIView *)subview {
 	[super addSubview:subview];
+	if (!isIOS11Mode && subview == _fakeVibrantView) {
+		return;
+	}
 	[self _transitionToExpandedMode:_expanded force:YES];
 }
 
@@ -61,7 +69,7 @@ MPULayoutInterpolator *interpolator;
 
 - (void)setModuleProvidesOwnPlatter:(BOOL)providesOwnPlatter {
 	_moduleProvidesOwnPlatter = providesOwnPlatter;
-	if (providesOwnPlatter) {
+	if (providesOwnPlatter && _moduleMaterialView) {
 		[_moduleMaterialView removeFromSuperview];
 		_moduleMaterialView = nil;
 	} else {
@@ -70,7 +78,74 @@ MPULayoutInterpolator *interpolator;
 }
 
 - (void)_configureModuleMaterialViewIfNecessary {
-	if (!_moduleMaterialView && !_moduleProvidesOwnPlatter) {
+
+	if (!isIOS11Mode && !_moduleVibrantBackground) {
+		_moduleVibrantBackground = [[UIView alloc] initWithFrame:CGRectZero];
+		_moduleVibrantBackground.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.4];
+
+		// _moduleVibrantExpandedBackground = [[UIView alloc] initWithFrame:CGRectZero];
+		// _moduleVibrantExpandedBackground.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.4];
+		// _moduleVibrantExpandedBackground.alpha = 0.0;
+		// _moduleVibrantExpandedBackground.hidden = YES;
+
+		_compactBackgroundFilter = [NSClassFromString(@"CAFilter") filterWithType:@"vibrantLight"];
+		[_compactBackgroundFilter setValue:(id)[[UIColor colorWithWhite:0.11 alpha:0.3] CGColor] forKey:@"inputColor0"];
+		[_compactBackgroundFilter setValue:(id)[[UIColor colorWithWhite:0.0 alpha:0.05] CGColor] forKey:@"inputColor1"];
+		[_compactBackgroundFilter setValue:[NSNumber numberWithBool:YES] forKey:@"inputReversed"];
+
+		// _compactBackgroundFilter = [NSClassFromString(@"CAFilter") filterWithType:@"vibrantLight"];
+		// [_compactBackgroundFilter setValue:(id)[[UIColor colorWithWhite:0.4 alpha:1.0] CGColor] forKey:@"inputColor0"];
+		// [_compactBackgroundFilter setValue:(id)[[UIColor colorWithWhite:0.0 alpha:0.3] CGColor] forKey:@"inputColor1"];
+		// [_compactBackgroundFilter setValue:[NSNumber numberWithBool:YES] forKey:@"inputReversed"];
+
+		_moduleVibrantBackground.layer.filters = [NSArray arrayWithObjects:_compactBackgroundFilter, nil];
+
+		//_expandedBackgroundFilter = [NSClassFromString(@"CAFilter") filterWithType:@"lightenBlendMode"];
+	//	_moduleVibrantExpandedBackground.layer.compositingFilter = _expandedBackgroundFilter;
+		//_moduleVibrantBackground.layer.compositingFilter = nil;
+		[self addSubview:_moduleVibrantBackground];
+		//[self addSubview:_moduleVibrantExpandedBackground];
+
+		_UIBackdropViewSettings *backdropSettings = [NSClassFromString(@"_UIBackdropViewSettings") settingsForStyle:-2];
+	  	backdropSettings.blurRadius = 30.0f;
+	  	//backdropSettings.darkeningTintSaturation = 0.2;
+	  	backdropSettings.saturationDeltaFactor = 2.04;
+	    backdropSettings.grayscaleTintAlpha = 0;
+	    backdropSettings.colorTint = [UIColor colorWithWhite:0.7 alpha:1.0];
+	    backdropSettings.colorTintAlpha = 0.56;
+	    backdropSettings.grayscaleTintLevel = 0;
+	 //   backdropSettings.usesGrayscaleTintView = NO;
+	    backdropSettings.scale = 0.25;
+
+		_fakeVibrantView = [[NSClassFromString(@"_UIBackdropView") alloc] initWithFrame:self.bounds autosizesToFitSuperview:YES settings:backdropSettings];
+		_fakeVibrantView.groupName = @"CCUIControlCenterBaseMaterialBlur";
+	
+		//_fakeVibrantView.hidden = YES;
+		//_fakeVibrantView.alpha = 1.0;
+		//_moduleVibrantBackground.hidden = NO;
+		((CABackdropLayer *)_fakeVibrantView.effectView.layer).scale = 0.25;
+		// [self addSubview:_fakeVibrantView];
+		// [_fakeVibrantView removeFromSuperview];
+		// _fakeVibrantView.hidden = NO;
+		// [self sendSubviewToBack:_fakeVibrantView];
+
+		//UIView *otherView = [[UIView alloc] initWithFrame:self.bounds];
+		//[self addSubview:otherView];
+		//otherView.backgroundColor = [UIColor colorWithWhite:0.61 alpha:0.15];
+		[_fakeVibrantView transitionIncrementallyToSettings:backdropSettings weighting:1.0];
+		((CABackdropLayer *)_fakeVibrantView.effectView.layer).scale = 0.25;
+		//[self sendSubviewToBack:_moduleVibrantExpandedBackground];
+		[self sendSubviewToBack:_moduleVibrantBackground];
+		//[self sendSubviewToBack:otherView];
+		//[self sendSubviewToBack:_fakeVibrantView];
+
+		_moduleVibrantBackground.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+		//_moduleVibrantExpandedBackground.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+		//otherView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+		//_fakeVibrantView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+		[self setNeedsLayout];
+	}
+	if (!_moduleMaterialView && !_moduleProvidesOwnPlatter && isIOS11Mode) {
 		_moduleMaterialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];
 		[_moduleMaterialView setFrame:[self bounds]];
 		[self addSubview:_moduleMaterialView];
@@ -78,6 +153,19 @@ MPULayoutInterpolator *interpolator;
 		[self sendSubviewToBack:_moduleMaterialView];
 		_moduleMaterialView.backdropView.layer.groupName = @"ModuleDarkBackground";
 		[self setNeedsLayout];
+	}
+}
+
+- (void)useFakeVibrantView:(BOOL)useView {
+	((CABackdropLayer *)_fakeVibrantView.effectView.layer).scale = 0.25;
+	if (useView) {
+		[self addSubview:_fakeVibrantView];
+		[self sendSubviewToBack:_fakeVibrantView];
+		//_fakeVibrantView.hidden = NO;
+		_moduleVibrantBackground.hidden = YES;
+	} else {
+		_moduleVibrantBackground.hidden = NO;
+		[_fakeVibrantView removeFromSuperview];
 	}
 }
 
@@ -107,8 +195,45 @@ MPULayoutInterpolator *interpolator;
 			cornerCenter = [MZELayoutOptions regularCornerCenter];
 		}
 
+		if (!isIOS11Mode && _moduleVibrantBackground) {
+			((CABackdropLayer *)_fakeVibrantView.effectView.layer).scale = 0.25;
+			if (expanded) {
+				[self addSubview:_fakeVibrantView];
+				[self sendSubviewToBack:_fakeVibrantView];
+				_moduleVibrantBackground.hidden = YES;
+				//_fakeVibrantView.alpha = 1.0;
+				//_moduleVibrantExpandedBackground.alpha = 0.0;
+				//_moduleVibrantBackground.alpha = 0.0;
+				// _moduleVibrantBackground.layer.filters = nil;
+				// _moduleVibrantBackground.layer.compositingFilter = _expandedBackgroundFilter;
+			} else {
+				//_fakeVibrantView.alpha = 1.0;
+				//_moduleVibrantExpandedBackground.alpha = 0.0;
+				//_moduleVibrantBackground.alpha = 1.0;
+				//_moduleVibrantBackground.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.4];
+				// CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"vibrantLight"];
+				// [filter setValue:(id)[[UIColor colorWithWhite:0.11 alpha:0.3] CGColor] forKey:@"inputColor0"];
+				// [filter setValue:(id)[[UIColor colorWithWhite:0.0 alpha:0.05] CGColor] forKey:@"inputColor1"];
+				// [filter setValue:[NSNumber numberWithBool:YES] forKey:@"inputReversed"];
+				// _moduleVibrantBackground.layer.compositingFilter = nil;
+				// _moduleVibrantBackground.layer.filters = [NSArray arrayWithObjects:_compactBackgroundFilter, nil];
+			}
+		}
+
 		self.layer.cornerRadius = cornerRadius;
 		self.layer.cornerContentsCenter = cornerCenter;
+	}
+}
+
+- (void)didTransitionToExpandedMode:(BOOL)arg1 {
+	if (!isIOS11Mode && _moduleVibrantBackground) {
+		if (!arg1) {
+			//_fakeVibrantView.hidden = YES;
+			[_fakeVibrantView removeFromSuperview];
+			_moduleVibrantBackground.hidden = NO;
+			// _moduleVibrantBackground.layer.compositingFilter = nil;
+			// _moduleVibrantBackground.layer.filters = [NSArray arrayWithObjects:_compactBackgroundFilter, nil];
+		}
 	}
 }
 

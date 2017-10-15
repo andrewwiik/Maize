@@ -7,7 +7,7 @@
 #import "macros.h"
 #import <UIKit/UIScreen+Private.h>
 
-
+static BOOL isIOS11Mode = YES;
 
 static void settingsChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	[[NSNotificationCenter defaultCenter] postNotificationName:[MZEModuleRepository settingsChangedNotificationName]
@@ -266,11 +266,15 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	_snapshotView.hidden = YES;
 	self.view.hidden = NO;
 	//_snapshotView.hidden = YES;
-	[_delegate  moduleCollectionViewController:self didCloseExpandedModule:module];
+	if (_delegate) {
+		[_delegate  moduleCollectionViewController:self didCloseExpandedModule:module];
+	}
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController willCloseExpandedModule:(id <MZEContentModule>)module {
-	[_delegate moduleCollectionViewController:self willCloseExpandedModule:module];
+	if (_delegate) {
+		[_delegate moduleCollectionViewController:self willCloseExpandedModule:module];
+	}
 
 	if (YES != NO) {
 
@@ -322,7 +326,9 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController willOpenExpandedModule:(id <MZEContentModule>)module {
-	[_delegate moduleCollectionViewController:self willOpenExpandedModule:module];
+	if (_delegate) {
+		[_delegate moduleCollectionViewController:self willOpenExpandedModule:module];
+	}
 
 	//[self.view bringSubviewToFront:[containerViewController moduleContainerView]];
 
@@ -348,11 +354,15 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didFinishInteractionWithModule:(id <MZEContentModule>)arg2 {
-	[_delegate moduleCollectionViewController:self didFinishInteractionWithModule:arg2];
+	if (_delegate) {
+		[_delegate moduleCollectionViewController:self didFinishInteractionWithModule:arg2];
+	}
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didBeginInteractionWithModule:(id <MZEContentModule>)arg2 {
-	[_delegate moduleCollectionViewController:self didBeginInteractionWithModule:arg2];
+	if (_delegate) {
+		[_delegate moduleCollectionViewController:self didBeginInteractionWithModule:arg2];
+	}
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController openExpandedModule:(id <MZEContentModule>)expandedModule {
@@ -376,8 +386,16 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 			containerViewController.view.alpha = 1.0;
 			if (![_snapshotView superview] && [self.view superview]) {
 				CGRect frame = _snapshotView.frame;
-				frame.origin.x += ((UIScrollView *)[self.view superview]).contentOffset.x; 
-				frame.origin.y += ((UIScrollView *)[self.view superview]).contentOffset.y;
+
+				if (!isIOS11Mode) {
+					CGRect frameInWindow = [self.view convertRect:self.view.bounds toView:nil];
+					frame.origin.x -= frameInWindow.origin.x;
+					frame.origin.y -= frameInWindow.origin.y;
+				}
+				if ([[self.view superview] isKindOfClass:NSClassFromString(@"UIScrollView")]) {
+					frame.origin.x += ((UIScrollView *)[self.view superview]).contentOffset.x; 
+					frame.origin.y += ((UIScrollView *)[self.view superview]).contentOffset.y;
+				}
 				_snapshotView.frame = frame;
 				[[self.view superview] addSubview:_snapshotView];
 				self.view.hidden = YES;

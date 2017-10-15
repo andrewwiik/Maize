@@ -2,6 +2,14 @@
 #import "MZELayoutOptions.h"
 #import "MZEMaterialView.h"
 #import <UIKit/UIView+Private.h>
+#import <UIKit/UIImage+Private.h>
+#import <QuartzCore/CAFilter+Private.h>
+
+static BOOL isIOS11Mode = YES;
+
+@interface UIImage (CCUIMask)
+- (UIImage *)ccuiAlphaOnlyImageForMaskImage;
+@end
 
 @implementation MZEButtonModuleView
 
@@ -109,12 +117,21 @@
 				if (!_selectedGlyphColor) {
 						glyphColor = _glyphColor;
 				}
+
 		}
 		else {
 				glyphColor = _glyphColor;
 		}
-
-		[self _setGlyphImage:glyphImage];
+		if (isIOS11Mode) {
+			[self _setGlyphImage:glyphImage];
+		} else {
+	 		// if (![self isSelected] && ![self isHighlighted] && glyphImage) {
+	 		// 	[self _setGlyphImage:[[glyphImage imageWithRenderingMode:0] ccuiAlphaOnlyImageForMaskImage]];
+	 		// } else {
+	 			[self _setGlyphImage:glyphImage];
+	 		//}
+		}
+		// [self _setGlyphImage:glyphImage];
 
 		CGFloat alpha;
 		if ([self isHighlighted] && ![self isSelected]) {
@@ -143,6 +160,56 @@
 
 	 	if (_glyphPackageView) {
 	 		_glyphPackageView.alpha = alpha;
+	 	}
+
+	 	if (!isIOS11Mode) {
+	 		if (![self isSelected] && ![self isHighlighted]) {
+	 			if (_glyphImageView) {
+	 				CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"vibrantDark"];
+	 				// // [filter setValue:(id)[[UIColor colorWithWhite:0.3 alpha:0.6] CGColor] forKey:@"inputColor0"];
+	 				// // [filter setValue:(id)[[UIColor colorWithWhite:0.0 alpha:0.15] CGColor] forKey:@"inputColor1"];
+	 				// // [filter setValue:(id)[[UIColor colorWithWhite:0.45 alpha:0.7] CGColor] forKey:@"inputColor0"];
+	 				// // [filter setValue:(id)[[UIColor colorWithWhite:0.65 alpha:0.3] CGColor] forKey:@"inputColor1"];
+	 				// [filter setValue:(id)[[UIColor colorWithWhite:0.4 alpha:0.6] CGColor] forKey:@"inputColor0"];
+	 				// [filter setValue:(id)[[UIColor colorWithWhite:0.0 alpha:0.0] CGColor] forKey:@"inputColor1"];
+	 				// [filter setValue:[NSNumber numberWithBool:YES] forKey:@"inputReversed"];
+	 				[filter setValue:(id)[[UIColor colorWithWhite:0.4 alpha:0.6] CGColor] forKey:@"inputColor0"];
+	 				[filter setValue:(id)[[UIColor colorWithWhite:0.0 alpha:0.0] CGColor] forKey:@"inputColor1"];
+	 				[filter setValue:[NSNumber numberWithBool:YES] forKey:@"inputReversed"];
+	 				CAFilter *filter2 = [NSClassFromString(@"CAFilter") filterWithType:@"colorBrightness"];
+					[filter2 setValue:[NSNumber numberWithFloat:0.8] forKey:@"inputAmount"];
+	 				_glyphImageView.layer.filters = [NSArray arrayWithObjects:filter2, nil];
+	 				//_glyphImageView.alpha 
+	 			}
+	 			if (_glyphPackageView) {
+	 				CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"vibrantDark"];
+	 				// [filter setValue:(id)[[UIColor colorWithWhite:0.5 alpha:1.0] CGColor] forKey:@"inputColor0"];
+	 				// [filter setValue:(id)[[UIColor colorWithWhite:0.3 alpha:0.3] CGColor] forKey:@"inputColor1"];
+	 				// [filter setValue:(id)[[UIColor colorWithWhite:0.4 alpha:1.0] CGColor] forKey:@"inputColor0"];
+	 				// [filter setValue:(id)[[UIColor colorWithWhite:0.0 alpha:0.3] CGColor] forKey:@"inputColor1"];
+	 				// [filter setValue:(id)[[UIColor colorWithWhite:0.3 alpha:0.6] CGColor] forKey:@"inputColor0"];
+	 				// [filter setValue:(id)[[UIColor colorWithWhite:0.0 alpha:0.15] CGColor] forKey:@"inputColor1"];
+	 				[filter setValue:(id)[[UIColor colorWithWhite:0.4 alpha:0.6] CGColor] forKey:@"inputColor0"];
+	 				[filter setValue:(id)[[UIColor colorWithWhite:0.0 alpha:0.0] CGColor] forKey:@"inputColor1"];
+	 				[filter setValue:[NSNumber numberWithBool:YES] forKey:@"inputReversed"];
+	 				CAFilter *filter2 = [NSClassFromString(@"CAFilter") filterWithType:@"colorBrightness"];
+					[filter2 setValue:[NSNumber numberWithFloat:0.8] forKey:@"inputAmount"];
+	 				_glyphPackageView.layer.filters = [NSArray arrayWithObjects:filter2, nil];
+	 			}
+		 	} else {
+	 			if (_glyphImageView) {
+	 				_glyphImageView.layer.filters = nil;
+	 			}
+	 			if (_glyphPackageView) {
+	 				_glyphPackageView.layer.filters = nil;
+	 			}
+		 	} 
+	 	}
+
+	 	if (!glyphImage && _glyphImageView) {
+	 		_glyphImageView.hidden = YES;
+	 	} else if (_glyphImageView) {
+	 		_glyphImageView.hidden = NO;
 	 	}
 	}];
 }

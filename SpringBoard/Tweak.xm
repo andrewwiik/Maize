@@ -3,6 +3,7 @@
 #import <MaizeUI/MZELayoutOptions.h>
 // #import "BinPackingFactory2D.h"
 #import <MaizeUI/MZEModularControlCenterOverlayViewController.h>
+#import <MaizeUI/MZEHybridPageViewController.h>
 #import <MaizeUI/MZECurrentActions.h>
 #import <QuartzCore/CAFilter+Private.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
@@ -43,6 +44,8 @@ static BOOL isIOS9 = NO;
 
 static CGPoint initialTransitionPoint;
 
+static BOOL isIOS11Mode = YES;
+
 static MZEModularControlCenterOverlayViewController *sharedController;
 
 
@@ -53,7 +56,7 @@ static MZEModularControlCenterOverlayViewController *sharedController;
 %hook SBControlCenterController
 
 - (void)updateTransitionWithTouchLocation:(CGPoint)location velocity:(CGPoint)velocity {
-    if (NSClassFromString(@"CCUIControlCenterViewController")) {
+    if (NSClassFromString(@"CCUIControlCenterViewController") && sharedController) {
       MSHookIvar<BOOL>(self, "_dismissalPanHasGoneBelowCCTopEdge") = YES;
     }
     %orig;
@@ -87,12 +90,20 @@ static MZEModularControlCenterOverlayViewController *sharedController;
 
 %end
 
+
+MZEHybridPageViewController *hybridPageController;
+
 %hook CCUIControlCenterViewControllerRootClass
 %property (nonatomic, retain) MZEModularControlCenterViewController *mze_viewController;
 
 -(CGFloat)_scrollviewContentMaxHeight {
   if (((CCUIControlCenterViewController *)self).mze_viewController) {
     return CGRectGetHeight(((CCUIControlCenterViewController *)self).view.bounds) - [((CCUIControlCenterViewController *)self).mze_viewController _targetPresentationFrame].origin.y;
+  }
+  // 54
+  // 16.5
+  if (!isIOS11Mode && hybridPageController) {
+    return [hybridPageController.collectionViewController preferredContentSize].height + 19;
   }
   return %orig;
 }
@@ -125,253 +136,58 @@ static MZEModularControlCenterOverlayViewController *sharedController;
 // }
 
 - (void)_loadPages {
-  return;
+  if (isIOS11Mode) return;
+  %orig;
+  // MZEHybridPageViewController *hybridPage = [[MZEHybridPageViewController alloc] initWithFrame:CGRectZero];
+  // [self _addContentViewController:hybridPage];
 }
-//    if (!((CCUIControlCenterViewController *)self).mze_viewController) {
-//     ((CCUIControlCenterViewController *)self).mze_viewController = [[MZEModularControlCenterOverlayViewController alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];
-//     [((CCUIControlCenterViewController *)self).view addSubview:((CCUIControlCenterViewController *)self).mze_viewController.view];
-//     [self addChildViewController:((CCUIControlCenterViewController *)self).mze_viewController];
-//     [((CCUIControlCenterViewController *)self).mze_viewController didMoveToParentViewController:self];
-
-//     // [((CCUIControlCenterViewController *)self).mze_viewController loadView];
-//     // [((CCUIControlCenterViewController *)self).mze_viewController viewDidLoad];
-//     // [((CCUIControlCenterViewController *)self).mze_viewController viewWillLayoutSubviews];
-//    // ((CCUIControlCenterViewController *)self).mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-//     // [((CCUIControlCenterViewController *)self).view addSubview:((CCUIControlCenterViewController *)self).mze_viewController.view];
-//     //((CCUIControlCenterViewController *)self).mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-//   }
-// }
 
 -(void)setRevealPercentage:(CGFloat)revealPercentage {
 
-  if (!((CCUIControlCenterViewController *)self).mze_viewController) {
+  if (!((CCUIControlCenterViewController *)self).mze_viewController && isIOS11Mode) {
     ((CCUIControlCenterViewController *)self).mze_viewController = [[MZEModularControlCenterOverlayViewController alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];
     sharedController = ((CCUIControlCenterViewController *)self).mze_viewController;
     [((CCUIControlCenterViewController *)self).view addSubview:((CCUIControlCenterViewController *)self).mze_viewController.view];
     [self addChildViewController:((CCUIControlCenterViewController *)self).mze_viewController];
     [((CCUIControlCenterViewController *)self).mze_viewController didMoveToParentViewController:self];
 
-    // [((CCUIControlCenterViewController *)self).mze_viewController loadView];
-    // [((CCUIControlCenterViewController *)self).mze_viewController viewDidLoad];
-    // [((CCUIControlCenterViewController *)self).mze_viewController viewWillLayoutSubviews];
-   // ((CCUIControlCenterViewController *)self).mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-    // [((CCUIControlCenterViewController *)self).view addSubview:((CCUIControlCenterViewController *)self).mze_viewController.view];
-    //((CCUIControlCenterViewController *)self).mze_viewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
   }
 
-  // if (((CCUIControlCenterViewController *)self).mze_viewController && ((CCUIControlCenterViewController *)self).presented) {
-  //   revealPercentage = revealPercentage * (((CCUIControlCenterViewController *)self).view.bounds.size.height/(CGRectGetHeight(((CCUIControlCenterViewController *)self).view.bounds) - [((CCUIControlCenterViewController *)self).mze_viewController _targetPresentationFrame].origin.y));
-  //   //revealPercentage = fmaxf(fminf(revealPercentage, 1.0), 0.0);
-  // }
+  if (!isIOS11Mode && !hybridPageController) {
+    hybridPageController = [[MZEHybridPageViewController alloc] initWithFrame:CGRectZero];
+    [self _addContentViewController:hybridPageController];
+  }
+
   %orig(revealPercentage);
 
-  if (!((CCUIControlCenterViewController *)self).presented && !hasCalled) {
-    [((CCUIControlCenterViewController *)self).mze_viewController willBecomeActive];
+  if (isIOS11Mode)  {
+    if (!((CCUIControlCenterViewController *)self).presented && !hasCalled) {
+      [((CCUIControlCenterViewController *)self).mze_viewController willBecomeActive];
+    }
+
+    ((CCUIControlCenterViewController *)self).mze_viewController.view.userInteractionEnabled = YES;
+    hasCalled = YES;
+
+
+    for (UIView *subview in ((CCUIControlCenterViewController *)self).view.subviews) {
+      if (subview != ((CCUIControlCenterViewController *)self).mze_viewController.view) {
+        subview.alpha = 0;
+        subview.hidden = YES;
+      }
+    }
+
+    [((CCUIControlCenterViewController *)self).mze_viewController revealWithProgress:revealPercentage];
   }
-
-  ((CCUIControlCenterViewController *)self).mze_viewController.view.userInteractionEnabled = YES;
-  hasCalled = YES;
-
- // ((CCUIControlCenterViewController *)self).mze_viewController.frame = CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height);
-
-  // [((CCUIControlCenterViewController *)self).mze_viewController ]
-  // if (!self.mze_animatedBlurView) {
-
-  //   self.luminanceViewHolder = [[UIView alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];
-  //   self.luminanceViewHolder.layer.allowsGroupBlending = NO;
-  //   [((CCUIControlCenterViewController *)self).view addSubview:self.luminanceViewHolder];
-  // 	self.mze_lumnianceView = [[_MZEBackdropView alloc] init];
-  // 	self.mze_lumnianceView.frame = CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height);
-  // 	self.mze_lumnianceView.luminanceAlpha = 1.0f;
-  //   //self.mze_lumnianceView.alpha = 0.45;
-  // 	[self.luminanceViewHolder addSubview:self.mze_lumnianceView];
-  // 	self.mze_animatedBlurView = [[MZEAnimatedBlurView alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width,((CCUIControlCenterViewController *)self).view.frame.size.height)];
-  // 	self.mze_animatedBlurView.backdropSettings = [NSClassFromString(@"_UIBackdropViewSettings") settingsForStyle:-2];
-  // 	self.mze_animatedBlurView.backdropSettings.blurRadius = 30.0f;
-  // 	self.mze_animatedBlurView.backdropSettings.saturationDeltaFactor = 1.9f;
-  //   self.mze_animatedBlurView.backdropSettings.grayscaleTintAlpha = 0;
-  //   self.mze_animatedBlurView.backdropSettings.colorTintAlpha = 0;
-  //   self.mze_animatedBlurView.backdropSettings.grayscaleTintLevel = 0;
-  //   self.mze_animatedBlurView.backdropSettings.usesGrayscaleTintView = NO;
-  //   self.mze_animatedBlurView.backdropSettings.usesColorTintView = NO;
-
-  // 	[((CCUIControlCenterViewController *)self).view addSubview:self.mze_animatedBlurView];
-  // 	[((CCUIControlCenterViewController *)self).view bringSubviewToFront:self.mze_animatedBlurView];
-  // }
-
-  // if (!self.moduleViewHolder) {
-  //   self.moduleViewHolder = [[MZEModuleCollectionViewController alloc] initWithFrame:((CCUIControlCenterViewController *)self).view.frame];
-  //   [((CCUIControlCenterViewController *)self).view addSubview:self.moduleViewHolder.view];
-  //   //[((CCUIControlCenterViewController *)self).view bringSubviewToFront:self.mod]
-  // }
-
-  // if (!self.animator && self.moduleViewHolder && self.moduleViewHolder.view) {
-
-
-  //   self.animator = [[UIViewPropertyAnimator alloc] initWithDuration:0 curve:UIViewAnimationCurveLinear animations:^{
-  //     self.moduleViewHolder.view.frame = self.moduleViewHolder.openFrame;
-  //   }];
-  // }
-
-  // if (self.animator) {
-  //   self.animator.fractionComplete = revealPercentage;
-  // }
-
-
-
-  // if (!self.moduleViewHolder) {
-  //   self.moduleViewHolder = [[UIView alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];
-  //   [((CCUIControlCenterViewController *)self).view addSubview:self.moduleViewHolder];
-  //   CGFloat moduleSize = [MZELayoutOptions edgeSize];
-  //   CGFloat moduleSpacing = [MZELayoutOptions itemSpacingSize];
-  //   CGFloat edgeInset = [MZELayoutOptions edgeInsetSize];
-  //   CGFloat cornerRadius = 19.0f;
-
-  //   NSMutableArray *inputRectangles = [NSMutableArray new];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,0,2,2)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(2,0,2,2)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,2,1,1)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(1,2,1,1)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(2,2,1,2)]]; //
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(3,2,1,1)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,3,2,1)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(3,3,1,1)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,4,1,1)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(1,4,1,1)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(2,4,1,1)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(3,4,1,1)]];
-  //   [inputRectangles addObject:[NSValue valueWithCGRect:CGRectMake(0,5,1,1)]];
-
-  //   for (NSValue *placement in inputRectangles) {
-  //     CGRect placementRect = [placement CGRectValue];
-  //     int x = placementRect.origin.x+1;
-  //     int y = placementRect.origin.y+1;
-  //     int w = placementRect.size.width;
-  //     int h = placementRect.size.height;
-
-  //     CGFloat xOrigin = edgeInset+((x-1)*moduleSize)+((x-1)*moduleSpacing);
-  //     CGFloat yOrigin = 0 + (moduleSize*(y-1)) + (moduleSpacing*(y-1));
-
-  //     CGFloat height = (moduleSize*h)+(moduleSpacing*(h-1));
-  //     CGFloat width = (moduleSize*w)+(moduleSpacing*(w-1));
-
-  //     UIView *firstView = [[UIView alloc] initWithFrame:CGRectMake(xOrigin,yOrigin,width,height)];
-  //     [self.moduleViewHolder addSubview:firstView];
-  //     // firstView.cornerRadius = cornerRadius;
-  //     // firstView.clipsToBounds = YES;
-
-  //     UIView *secondView = [[UIView alloc] initWithFrame:CGRectMake(0,0,width,height)];
-  //     secondView.layer.allowsGroupBlending = NO;
-  //     [firstView addSubview:secondView];
-
-  //     _MZEBackdropView *dark = [[_MZEBackdropView alloc] initWithFrame:CGRectMake(0,0,width,height)];
-  //     dark.layer.cornerRadius = cornerRadius;
-  //     dark.clipsToBounds = YES;
-
-  //     dark.saturation = 1.8;
-
-  //     CAColorMatrix darkColorMatrix = {
-  //       0.5f, 0, 0, 0, 0.058f,
-  //       0, 0.5f, 0, 0, 0.058f,
-  //       0, 0, 0.5f, 0, 0.058f,
-  //       0, 0, 0, 1.0f, 0
-  //     };
-
-  //     dark.forcedColorMatrix = [NSValue valueWithCAColorMatrix:darkColorMatrix];
-  //     dark.brightness = -0.12;
-
-  //     [secondView addSubview:dark];
-
-
-  //   }
-    // for (int x = 1; x < 5; x++) {
-    //   for (int y = 1; y < 7; y++) {
-    //     CGFloat xOrigin = edgeInset+((x-1)*moduleSize)+((x-1)*moduleSpacing);
-    //     CGFloat yOrigin = 0 + (moduleSize*(y-1)) + (moduleSpacing*(y-1));
-
-    //     UIView *firstView = [[UIView alloc] initWithFrame:CGRectMake(xOrigin,yOrigin,moduleSize,moduleSize)];
-    //     [self.moduleViewHolder addSubview:firstView];
-    //     // firstView.cornerRadius = cornerRadius;
-    //     // firstView.clipsToBounds = YES;
-
-    //     UIView *secondView = [[UIView alloc] initWithFrame:CGRectMake(0,0,moduleSize,moduleSize)];
-    //     secondView.layer.allowsGroupBlending = NO;
-    //     [firstView addSubview:secondView];
-
-    //     _MZEBackdropView *dark = [[_MZEBackdropView alloc] initWithFrame:CGRectMake(0,0,moduleSize,moduleSize)];
-    //     dark.layer.cornerRadius = cornerRadius;
-    //     dark.clipsToBounds = YES;
-
-    //     dark.saturation = 1.7;
-
-    //     CAColorMatrix darkColorMatrix = {
-    //       0.5f, 0, 0, 0, 0.098f,
-    //       0, 0.5f, 0, 0, 0.098f,
-    //       0, 0, 0.5f, 0, 0.098f,
-    //       0, 0, 0, 1.0f, 0
-    //     };
-
-    //     dark.forcedColorMatrix = [NSValue valueWithCAColorMatrix:darkColorMatrix];
-    //     dark.brightness = -0.12;
-
-    //     [secondView addSubview:dark];
-
-    //     BOOL makeHighlighted = NO;
-    //     if (!(y % 2)) {
-    //       if (!(x % 2)) {
-    //         makeHighlighted = YES;
-    //       }
-    //     } else if (y % 2) {
-    //       if (x % 2) {
-    //         makeHighlighted = YES;
-    //       }
-    //     }
-
-    //     if (makeHighlighted) {
-
-    //       UIView *thirdView =  [[UIView alloc] initWithFrame:CGRectMake(0,0,moduleSize,moduleSize)];
-    //       [firstView addSubview:thirdView];
-
-    //       UIView *fourthView = [[UIView alloc] initWithFrame:CGRectMake(0,0,moduleSize,moduleSize)];
-    //       [thirdView addSubview:fourthView];
-
-    //       UIView *fifthView = [[UIView alloc] initWithFrame:CGRectMake(0,0,moduleSize,moduleSize)];
-    //       fifthView.layer.allowsGroupBlending = NO;
-    //       [fourthView addSubview:fifthView];
-
-    //       _MZEBackdropView *light = [[_MZEBackdropView alloc] initWithFrame:CGRectMake(0,0,moduleSize,moduleSize)];
-    //       light.layer.cornerRadius = cornerRadius;
-    //       light.clipsToBounds = YES;
-
-    //       light.saturation = 1.6;
-    //       light.brightness = 0.52;
-    //       light.colorAddColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
-
-    //       [fifthView addSubview:light];
-
-    //     }
-    //   }
-    // }
-  // }
-
-  for (UIView *subview in ((CCUIControlCenterViewController *)self).view.subviews) {
-  	if (subview != ((CCUIControlCenterViewController *)self).mze_viewController.view) {
-  		subview.alpha = 0;
-  		subview.hidden = YES;
-  	}
-  }
-
-
-
-  [((CCUIControlCenterViewController *)self).mze_viewController revealWithProgress:revealPercentage];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)recognizer shouldReceiveTouch:(UITouch *)touch {
-  return NO;
+  if (((CCUIControlCenterViewController *)self).mze_viewController) return NO;
+  else return %orig;
 }
 
 -(BOOL)gestureRecognizerShouldBegin:(id)arg1 {
-  return NO;
+  if (((CCUIControlCenterViewController *)self).mze_viewController) return NO;
+  else return %orig;
 }
 
 -(void)controlCenterWillPresent {

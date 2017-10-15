@@ -72,7 +72,7 @@
 - (CGFloat)_fullStepHeight;
 - (CGFloat)_heightForStep:(NSUInteger)arg1;
 - (MZEMaterialView *)_createSeparatorView;
-- (MZEMaterialView *)_createBackgroundViewForStep:(NSUInteger)arg1;
+- (UIView *)_createBackgroundViewForStep:(NSUInteger)arg1;
 - (void)_createSeparatorViewsForNumberOfSteps:(NSUInteger)arg1;
 - (void)_createStepViewsForNumberOfSteps:(NSUInteger)arg1;
 - (void)_layoutValueViews;

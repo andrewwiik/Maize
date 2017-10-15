@@ -9,4 +9,5 @@
 + (instancetype)settingsForPrivateStyle:(NSInteger)arg1 graphicsQuality:(NSInteger)arg2;
 - (void)transitionToSettings:(id)arg1;
 - (void)computeAndApplySettings:(id)settings;
+@property (nonatomic,copy) NSString * groupName;
 @end

@@ -3,6 +3,7 @@
 #import <MaizeServices/MZEModuleRepository.h>
 
 static BOOL isDebug = NO;
+static BOOL isIOS11Mode = YES;
 
 @implementation MZELayoutStyle
 - (id)initWithSize:(CGSize)size isLandscape:(BOOL)isLandscape {
@@ -15,7 +16,10 @@ static BOOL isDebug = NO;
 				if (isDebug) {
 					_isLandscape = NO;
 					self.rows = -1;
-					self.columns = 13;
+					if (isIOS11Mode)
+						self.columns = 13;
+					else
+						self.columns = 9;
 				} else {
 					_isLandscape = YES;
 					self.rows = 2;
@@ -30,7 +34,10 @@ static BOOL isDebug = NO;
 				if (isDebug) {
 					_isLandscape = NO;
 					self.rows = -1;
-					self.columns = 13;
+					if (isIOS11Mode)
+						self.columns = 13;
+					else
+						self.columns = 9;
 				} else {
 					_isLandscape = YES;
 					self.rows = 2;
