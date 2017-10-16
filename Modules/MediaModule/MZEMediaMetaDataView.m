@@ -49,16 +49,22 @@
   [self updateFrame];
 }
 -(void)updateFrame {
-
   [self.titleLabel.label sizeToFit];
   [self.subtitleLabel.label sizeToFit];
 
+  self.titleLabel.label.frame = CGRectMake(0,0,self.titleLabel.label.frame.size.width, self.frame.size.height/4);
+  self.subtitleLabel.label.frame = CGRectMake(0,0,self.subtitleLabel.label.frame.size.width, self.frame.size.height/4);
+
+  float artwork = self.frame.size.height - self.frame.size.width/7;
+
   if(self.expanded){
-
     self.outputButton.alpha = 1;
-    self.outputButton.frame = CGRectMake(self.frame.size.width - self.frame.size.width/13 - self.frame.size.height/3, self.frame.size.height/3, self.frame.size.height/3, self.frame.size.height/3);
+    self.artworkView.alpha = 1;
+    self.headerDivider.alpha = 0.16f;
 
-    float artwork = self.frame.size.height - self.frame.size.width/7;
+    self.outputButton.frame = CGRectMake(self.frame.size.width - self.frame.size.width/13 - self.frame.size.height/3, self.frame.size.height/3, self.frame.size.height/3, self.frame.size.height/3);
+    self.artworkView.frame = CGRectMake(self.frame.size.width/13, self.frame.size.width/14, artwork, artwork);
+    self.headerDivider.frame = CGRectMake(0,self.frame.size.height - 0.5, self.frame.size.width, 0.5);
 
     self.titleLabel.frame = CGRectMake(artwork + self.frame.size.width/10, self.frame.size.height/4, self.frame.size.width/2, self.frame.size.height/4);
     self.subtitleLabel.frame = CGRectMake(artwork + self.frame.size.width/10, self.frame.size.height/2, self.frame.size.width/2, self.frame.size.height/4);
@@ -72,14 +78,9 @@
     [self.subtitleLabel setContentSize:CGSizeMake(self.subtitleLabel.label.frame.size.width, self.subtitleLabel.label.frame.size.height)];
     [self.subtitleLabel setBounds:self.subtitleLabel.bounds];
 
-    self.artworkView.frame = CGRectMake(self.frame.size.width/13, self.frame.size.width/14, artwork, artwork);
-    self.headerDivider.frame = CGRectMake(0,self.frame.size.height - 0.5, self.frame.size.width, 0.5);
-
-    self.artworkView.alpha = 1;
-    self.headerDivider.alpha = 0.16f;
-
     if([self.titleLabel.label.text length] > 16){
       [self.titleLabel setMarqueeEnabled:TRUE];
+      self.titleLabel.label.center = CGPointMake(self.titleLabel.label.frame.size.width  / 2, self.titleLabel.frame.size.height / 2);
     } else {
       [self.titleLabel setMarqueeEnabled:FALSE];
     }
@@ -93,14 +94,12 @@
     self.subtitleLabel.label.center = CGPointMake(self.subtitleLabel.label.frame.size.width/2, self.subtitleLabel.frame.size.height/2);
 
   } else {
-
     self.outputButton.alpha = 0;
-
     self.artworkView.alpha = 0;
     self.headerDivider.alpha = 0;
 
-    self.titleLabel.frame = CGRectMake(self.frame.size.width/12, self.frame.size.width/12, self.frame.size.width - self.frame.size.width/6, self.frame.size.height/2 - self.frame.size.width/12);
-    self.subtitleLabel.frame = CGRectMake(0, self.frame.size.height/2, self.frame.size.width, self.frame.size.height/2);
+    self.titleLabel.frame = CGRectMake(self.frame.size.width/20, self.frame.size.height/4, self.frame.size.width - self.frame.size.width/10, self.frame.size.height/4);
+    self.subtitleLabel.frame = CGRectMake(self.frame.size.width/20, self.frame.size.height/2 + 5, self.frame.size.width - self.frame.size.width/10, self.frame.size.height/4);
 
     [self.titleLabel contentView].frame = self.titleLabel.label.bounds;
     [self.subtitleLabel contentView].frame = self.subtitleLabel.label.bounds;
@@ -111,20 +110,21 @@
     [self.subtitleLabel setContentSize:CGSizeMake(self.subtitleLabel.label.frame.size.width, self.subtitleLabel.label.frame.size.height)];
     [self.subtitleLabel setBounds:self.subtitleLabel.bounds];
 
-    if([self.titleLabel.label.text length] > 16){
+
+    if([self.titleLabel.label.text length] >= 16){
       [self.titleLabel setMarqueeEnabled:TRUE];
-      self.titleLabel.label.center = CGPointMake(self.titleLabel.label.frame.size.width/2, self.titleLabel.frame.size.height/2);
+      self.titleLabel.label.center = CGPointMake(self.titleLabel.label.frame.size.width  / 2, self.titleLabel.frame.size.height / 2);
     } else {
       [self.titleLabel setMarqueeEnabled:FALSE];
       self.titleLabel.label.center = CGPointMake(self.titleLabel.frame.size.width  / 2, self.titleLabel.frame.size.height / 2);
     }
 
-    if([self.subtitleLabel.label.text length] > 16){
+    if([self.subtitleLabel.label.text length] >= 16){
       [self.subtitleLabel setMarqueeEnabled:TRUE];
       self.subtitleLabel.label.center = CGPointMake(self.subtitleLabel.label.frame.size.width/2, self.subtitleLabel.frame.size.height/2);
     } else {
       [self.subtitleLabel setMarqueeEnabled:FALSE];
-      self.subtitleLabel.label.center = CGPointMake(self.subtitleLabel.frame.size.width  / 2, self.subtitleLabel.frame.size.height / 2);
+      self.subtitleLabel.label.center = CGPointMake(self.subtitleLabel.frame.size.width/2, self.subtitleLabel.frame.size.height/2);
     }
   }
 }
