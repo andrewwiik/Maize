@@ -42,7 +42,7 @@
     [self addSubview:self.pauseButton];
 
     self.rewindButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.rewindButton addTarget:self action:@selector(playPause) forControlEvents:UIControlEventTouchUpInside];
+    [self.rewindButton addTarget:self action:@selector(rewind) forControlEvents:UIControlEventTouchUpInside];
     UIImage *rewindButtonImage = [[UIImage imageNamed:@"Previous" inBundle:[NSBundle bundleForClass:[self class]]] _flatImageWithColor:[UIColor whiteColor]];
     [self.rewindButton setImage:rewindButtonImage forState:UIControlStateNormal];
     self.rewindButton.alpha = 0.16;
@@ -62,6 +62,10 @@
     self.pauseButton.layer.compositingFilter = @"plusL";
 
     self.rewindButton.layer.compositingFilter = @"plusL";
+
+    self.transitioningPlayPause = FALSE;
+
+    [self updateMediaForChangeOfMediaControlsStatus];
   }
 
   return self;
@@ -78,40 +82,39 @@
     self.pauseButton.frame = CGRectMake(self.frame.size.width/2 - self.frame.size.width/10, 0, self.frame.size.width/5, self.frame.size.height);
     self.skipButton.frame = CGRectMake(self.frame.size.width - self.frame.size.width/5 - self.frame.size.width/16, 0, self.frame.size.width/5, self.frame.size.height);
   }
-
-
-  if(![[NSClassFromString(@"SBMediaController") sharedInstance] isPlaying]){
-    self.playButton.hidden = FALSE;
-    self.pauseButton.hidden = TRUE;
-  } else {
-    self.pauseButton.hidden = FALSE;
-    self.playButton.hidden = TRUE;
-  }
 }
 -(void)skip {
   MRMediaRemoteSendCommand(kMRNextTrack, 0);
 }
 -(void)playPause {
-  if([[NSClassFromString(@"SBMediaController") sharedInstance] isPlaying]){
-    MRMediaRemoteSendCommand(kMRPause, 0);
-    self.pauseButton.hidden = TRUE;
-    self.playButton.hidden = FALSE;
-  } else {
-    MRMediaRemoteSendCommand(kMRPlay, 0);
-    self.pauseButton.hidden = FALSE;
-    self.playButton.hidden = TRUE;
+  if(!self.transitioningPlayPause){
+    if([[NSClassFromString(@"SBMediaController") sharedInstance] isPlaying]){
+      MRMediaRemoteSendCommand(kMRPause,0);
+    } else {
+      MRMediaRemoteSendCommand(kMRPlay, 0);
+    }
+
+    // Added a delay to prevent all this other rubbish being called a crap ton if someone decides to spam the button.
+    self.transitioningPlayPause = TRUE;
+
+    double delayInSeconds = 0.75;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+      self.transitioningPlayPause = FALSE;
+      [self updateMediaForChangeOfMediaControlsStatus];
+    });
   }
 }
 -(void)rewind {
   MRMediaRemoteSendCommand(kMRPreviousTrack, 0);
 }
 -(void)updateMediaForChangeOfMediaControlsStatus {
-  if(![[NSClassFromString(@"SBMediaController") sharedInstance] isPlaying]){
+  if([[NSClassFromString(@"SBMediaController") sharedInstance] isPlaying]){
+    self.playButton.hidden = TRUE;
+    self.pauseButton.hidden = FALSE;
+  } else {
     self.playButton.hidden = FALSE;
     self.pauseButton.hidden = TRUE;
-  } else {
-    self.pauseButton.hidden = FALSE;
-    self.playButton.hidden = TRUE;
   }
 }
 @end

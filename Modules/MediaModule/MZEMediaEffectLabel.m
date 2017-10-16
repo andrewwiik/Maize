@@ -26,6 +26,12 @@
     self.layer.compositingFilter = @"plusL";
     self.font = [UIFont systemFontOfSize:17];
     self.style = 2;
+  } else if(style == 3){
+    self.textColor = [UIColor whiteColor];
+    self.alpha = 0.8;
+    self.layer.compositingFilter = @"plusL";
+    self.font = [UIFont boldSystemFontOfSize:12];
+    self.style = 1;
   }
 }
 @end
