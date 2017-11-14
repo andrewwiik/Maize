@@ -3,7 +3,7 @@
 @implementation MZEDisplayModule
 
 - (UIViewController *)backgroundViewController {
-	_backgroundViewController = [[MZESliderModuleBackgroundViewController alloc] initWithNibName:nil bundle:nil];
+	_backgroundViewController = [[MZEDisplayModuleBackgroundViewController alloc] initWithNibName:nil bundle:nil];
     [_backgroundViewController setGlyphPackage:[self _brightnessGlyphPackage]];
     [_backgroundViewController setGlyphState:[self _brightnessGlyphStateForBrightnessLevel:[_moduleViewController currentBrightness]]];
     return _backgroundViewController;

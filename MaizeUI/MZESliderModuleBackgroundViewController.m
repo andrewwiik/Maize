@@ -36,18 +36,18 @@
 	}
 
 	if (bounds.size.width > bounds.size.height && !(isPad)) {
-		CGFloat boundsWidth = CGRectGetHeight(bounds);
+		CGFloat boundsWidth = CGRectGetWidth(bounds);
 		CGFloat expandedWidth = [MZELayoutOptions defaultExpandedSliderWidth];
-		CGFloat centerSpaceLeft = (boundsWidth - expandedWidth) * 0.5;
+		CGFloat centerSpaceLeft = (boundsWidth - expandedWidth) * 0.25;
 		CGFloat midY = CGRectGetMidY(bounds);
 		centerPoint.y = midY;
 		centerPoint.x = centerSpaceLeft;
 	} else {
 		CGFloat boundsHeight = CGRectGetHeight(bounds);
 		CGFloat expandedHeight = [MZELayoutOptions defaultExpandedSliderHeight];
-		CGFloat centerSpaceLeft = (boundsHeight - expandedHeight) * 0.5;
+		CGFloat centerSpaceLeft = (boundsHeight - expandedHeight) * 0.25;
 		CGFloat midX = CGRectGetMidX(bounds);
-		centerPoint.y = centerSpaceLeft * 0.5;
+		centerPoint.y = centerSpaceLeft;
 		centerPoint.x = midX;
 	}
 

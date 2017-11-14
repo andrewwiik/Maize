@@ -5,11 +5,12 @@
 #import <MaizeUI/MZEContentModuleContentViewController-Protocol.h>
 #import <QuartzCore/CAPackage+Private.h>
 #import "MZEDisplayModuleViewController.h"
+#import "MZEDisplayModuleBackgroundViewController.h"
 
 @interface MZEDisplayModule : NSObject <MZEContentModule, MZEDisplayModuleViewControllerDelegate>
 {
     MZEDisplayModuleViewController *_moduleViewController;
-    MZESliderModuleBackgroundViewController *_backgroundViewController;
+    MZEDisplayModuleBackgroundViewController *_backgroundViewController;
 }
 
 @property(readonly, nonatomic) UIViewController *backgroundViewController;
