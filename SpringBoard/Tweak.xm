@@ -161,6 +161,7 @@ MZEHybridPageViewController *hybridPageController;
   %orig(revealPercentage);
 
   if (isIOS11Mode)  {
+
     if (!((CCUIControlCenterViewController *)self).presented && !hasCalled) {
       [((CCUIControlCenterViewController *)self).mze_viewController willBecomeActive];
     }
@@ -175,7 +176,7 @@ MZEHybridPageViewController *hybridPageController;
         subview.hidden = YES;
       }
     }
-
+    ((CCUIControlCenterViewController *)self).mze_viewController.view.frame = ((CCUIControlCenterViewController *)self).view.bounds;
     [((CCUIControlCenterViewController *)self).mze_viewController revealWithProgress:revealPercentage];
   }
 }
