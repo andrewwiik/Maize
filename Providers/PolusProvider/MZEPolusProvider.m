@@ -4,6 +4,7 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <AppList/ALApplicationList.h>
+#import "MZEPolusAppLauncherModule.h"
 // #import <Polus/PLPrefsHelper.h>
 // #import <Polus/PLAppsController.h>
 
@@ -80,11 +81,14 @@ static BOOL hasAttemptedToLoadPolus = NO;
 }
 
 + (id<MZEContentModule>)moduleForIdentifier:(NSString *)identifier {
+	if (![identifier hasPrefix:ACTION_PREFIX]) {
+		return [[MZEPolusAppLauncherModule alloc] initWithIdentifier:identifier];
+	}
 	return nil;
 }
 
 + (UIImage *)glyphForIdentifier:(NSString *)identifier {
-	return [[[NSClassFromString(@"PLAppsController") sharedInstance] glyphOfSize:PLGlyphSizeNormal forAppIdentifier:identifier withViewMode:PLViewModeTopShelf] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+	return [[[NSClassFromString(@"PLAppsController") sharedInstance] glyphOfSize:PLGlyphSizeSmall forAppIdentifier:identifier withViewMode:PLViewModeTopShelf] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 }
 
 + (UIColor *)glyphBackgroundColorForIdentifier:(NSString *)identifier {
