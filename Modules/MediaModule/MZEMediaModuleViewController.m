@@ -1,4 +1,5 @@
 #import "MZEMediaModuleViewController.h"
+#import <UIKit/UIImage+Private.h>
 
 @implementation MZEMediaModuleViewController
 
@@ -7,6 +8,8 @@
 	if (self) {
 		self.metadataView = [[NSClassFromString(@"MZEMediaMetaDataView") alloc] initWithFrame:self.view.bounds];
 		[self.view addSubview:self.metadataView];
+
+		[self.metadataView.outputButton.toggleButton addTarget:self action:@selector(outputButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 
 		self.controlsView = [[NSClassFromString(@"MZEMediaControlsViewController") alloc] init];
 		[self.view addSubview:self.controlsView.view];
@@ -19,6 +22,39 @@
 		_isExpanded = NO;
 	}
 	return self;
+}
+
+- (void)outputButtonPressed:(UIButton *)outputButton {
+	if (self.controlsView.showRouting) {
+		self.controlsView.showRouting = NO;
+		[UIView animateWithDuration:0.3 animations:^{
+			[self.view setNeedsLayout];
+			[self.view layoutIfNeeded];
+			[self.controlsView viewWillLayoutSubviews];
+			UIImage *btnImage = [[UIImage imageNamed:@"AirPlay" inBundle:[NSBundle bundleForClass:[self class]]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+  			[outputButton setImage:btnImage forState:UIControlStateNormal];
+		} completion:^(BOOL completed) {
+			[self.controlsView.routingView.routingViewController _endRouteDiscovery];
+		}];
+
+		// UIImage *btnImage = [[UIImage imageNamed:@"AirPlay" inBundle:[NSBundle bundleForClass:[self class]]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+  // 		[outputButton setImage:btnImage forState:UIControlStateNormal];
+		//[self.controlsView.routingView.routingViewController _endRouteDiscovery];
+	} else {
+		self.controlsView.showRouting = YES;
+		[self.controlsView.routingView.routingViewController _beginRouteDiscovery];
+		[UIView animateWithDuration:0.3 animations:^{
+			[self.view setNeedsLayout];
+			[self.view layoutIfNeeded];
+			[self.controlsView viewWillLayoutSubviews];
+			UIImage *btnImage = [[UIImage imageNamed:@"Play-Pause" inBundle:[NSBundle bundleForClass:[self class]]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+  			[outputButton setImage:btnImage forState:UIControlStateNormal];
+		} completion:^(BOOL completed) {
+
+		}];
+		// [self.view setNeedsLayout];
+		// [self.view layoutIfNeeded];
+	}
 }
 
 - (void)viewDidLoad {
@@ -68,6 +104,9 @@
 - (void)willTransitionToExpandedContentMode:(BOOL)expanded {
 	_isExpanded = expanded;
 	self.metadataView.expanded = expanded;
+	self.controlsView.showRouting = NO;
+	UIImage *btnImage = [[UIImage imageNamed:@"AirPlay" inBundle:[NSBundle bundleForClass:[self class]]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+  	[self.metadataView.outputButton.toggleButton setImage:btnImage forState:UIControlStateNormal];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
