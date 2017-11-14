@@ -10,5 +10,5 @@ include $(THEOS)/makefiles/common.mk
 
 export ADDITIONAL_CFLAGS = -I./../../headers -I./../../
 
-SUBPROJECTS += FlipSwitchProvider
+SUBPROJECTS += FlipSwitchProvider PolusProvider
 include $(THEOS_MAKE_PATH)/aggregate.mk

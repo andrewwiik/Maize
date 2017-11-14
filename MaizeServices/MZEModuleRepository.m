@@ -23,19 +23,19 @@
 }
 
 + (NSString *)settingsFilePath {
-	return @"/var/mobile/Library/Preferences/com.ioscreatix.Maize3.plist";
+	return @"/var/mobile/Library/Preferences/com.ioscreatix.Maize4.plist";
 }
 
 + (NSString *)settingsIdentifier {
-	return @"com.ioscreatix.Maize3";
+	return @"com.ioscreatix.Maize4";
 }
 
 + (NSString *)enabledKey {
-	return @"EnabledIdentifiers21";
+	return @"EnabledIdentifiers22";
 }
 
 + (NSString *)disabledKey {
-	return @"DisabledIdentifiers21";
+	return @"DisabledIdentifiers22";
 }
 
 + (NSString *)settingsChangedNotificationName {
