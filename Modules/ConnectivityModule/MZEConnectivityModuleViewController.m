@@ -268,6 +268,7 @@
 	[buttonClasses addObject:@"MZEConnectivityWiFiViewController"];
 	[buttonClasses addObject:@"MZEConnectivityBluetoothViewController"];
 	[buttonClasses addObject:@"MZEConnectivityAirDropViewController"];
+	[buttonClasses addObject:@"MZEConnectivityHotspotViewController"];
 	return [buttonClasses copy];
 }
 @end

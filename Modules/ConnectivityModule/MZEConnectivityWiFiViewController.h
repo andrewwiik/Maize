@@ -5,7 +5,10 @@
 @interface MZEConnectivityWiFiViewController : MZEConnectivityButtonViewController {
     NSBundle *_bundle;
     BOOL _isWAPI;
+    UILongPressGestureRecognizer *_longPressRecognizer;
 }
+
+@property (nonatomic, retain, readwrite) UILongPressGestureRecognizer *longPressRecognizer;
 
 + (BOOL)isSupported;
 
@@ -24,4 +27,5 @@
 - (void)willBecomeActive;
 - (void)willResignActive;
 + (BOOL)isSupported;
+- (void)_pressed:(UILongPressGestureRecognizer *)sender;
 @end

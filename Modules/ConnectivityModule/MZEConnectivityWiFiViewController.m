@@ -132,6 +132,11 @@ static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 	[super viewDidLoad];
 	[self _updateState];
 	[self _beginObservingStateChanges];
+
+	self.longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_pressed:)];
+    self.longPressRecognizer.minimumPressDuration = 0.5;
+    [self.buttonContainer.buttonView addGestureRecognizer:self.longPressRecognizer];
+   // [self.buttonContainer.buttonView addGestureRecognizer:self.longPressRecognizer];
 }
 
 - (void)willBecomeActive {
@@ -224,6 +229,17 @@ static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 	
 }
 
+
+- (void)_pressed:(UILongPressGestureRecognizer *)sender {
+	if ([self.buttonDelegate isExpanded]) {
+		if (sender.state == UIGestureRecognizerStateBegan) {
+			MZEConnectivityWiFiNetworksViewController *wifiController = [[MZEConnectivityWiFiNetworksViewController alloc] init];
+			wifiController.buttonController = self;
+			[self.buttonDelegate buttonViewController:self willPresentSecondaryViewController:wifiController];
+			[self presentViewController:wifiController animated:true completion:nil];
+		}
+	}
+}
 @end
 
 
