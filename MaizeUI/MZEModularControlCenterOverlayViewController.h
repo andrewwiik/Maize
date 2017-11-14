@@ -27,6 +27,8 @@
 	BOOL _blockDismiss;
 	CGFloat _staryY;
 	CGFloat _endY;
+	CGFloat _moduleWidth;
+	CGFloat _moduleSpacing;
 }
 
 @property (nonatomic, retain, readwrite) MZEBackgroundView *backgroundView;

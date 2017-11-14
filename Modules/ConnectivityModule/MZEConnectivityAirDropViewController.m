@@ -38,6 +38,29 @@ Discovery Mode:
 }
 
 
+- (MZEConnectivityAirDropPopupViewController *)airdropPopupController {
+	MZEConnectivityAirDropPopupViewController *controller = [[MZEConnectivityAirDropPopupViewController alloc] initWithDiscoveryController:_airDropDiscoveryController];
+	// controller.title = [self displayName];
+
+	// [controller addActionWithTitle:[_bundle localizedStringForKey:@"CONTROL_CENTER_AIRDROP_EVERYONE_ONE_LINE" value:@"" table:nil] glyph:nil handler:(MZEMenuItemBlock)^{
+	// 	[_airDropDiscoveryController setDiscoverableMode:2];
+	// 	return YES;
+	// }];
+
+	// [controller addActionWithTitle:[_bundle localizedStringForKey:@"CONTROL_CENTER_AIRDROP_CONTACTS_ONE_LINE" value:@"" table:nil] glyph:nil handler:(MZEMenuItemBlock)^{
+	// 	[_airDropDiscoveryController setDiscoverableMode:1];
+	// 	return YES;
+	// }];
+
+	// [controller addActionWithTitle:[_bundle localizedStringForKey:@"CONTROL_CENTER_AIRDROP_RECEIVING_OFF_ONE_LINE" value:@"" table:nil] glyph:nil handler:(MZEMenuItemBlock)^{
+	// 	[_airDropDiscoveryController setDiscoverableMode:0];
+	// 	return YES;
+	// }];
+
+	return controller;
+}
+
+
 - (NSInteger)_currentState {
 	return [_airDropDiscoveryController discoverableMode];
 }
@@ -77,6 +100,17 @@ Discovery Mode:
 
 -(void)discoveryControllerSettingsDidChange:(id)arg1 {
 	[self _updateState];
+}
+
+- (void)buttonTapped:(UIControl *)button {
+	// [self _toggleState];
+	// [super buttonTapped:button];
+
+	
+	MZEConnectivityAirDropPopupViewController *popupController = [[MZEConnectivityAirDropPopupViewController alloc] initWithDiscoveryController:_airDropDiscoveryController];
+	popupController.buttonController = self;
+	[self.buttonDelegate buttonViewController:self willPresentSecondaryViewController:popupController];
+	[self presentViewController:popupController animated:true completion:nil];
 }
 
 

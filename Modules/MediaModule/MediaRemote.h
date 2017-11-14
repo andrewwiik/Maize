@@ -21,6 +21,10 @@ extern "C" {
     extern CFStringRef kMRMediaRemoteNowPlayingApplicationDidChangeNotification;
     extern CFStringRef kMRMediaRemoteNowPlayingApplicationIsPlayingDidChangeNotification;
     extern CFStringRef kMRMediaRemoteRouteStatusDidChangeNotification;
+    extern CFStringRef kMRMediaRemoteSupportedCommandsDidChangeNotification;
+
+#pragma mark - Command information
+    extern CFStringRef kMRMediaRemoteCommandInfoCanBeControlledByScrubbingKey;
 #pragma mark - Keys
     extern CFStringRef kMRMediaRemoteNowPlayingApplicationPIDUserInfoKey;
     extern CFStringRef kMRMediaRemoteNowPlayingApplicationIsPlayingUserInfoKey;
@@ -67,7 +71,7 @@ extern "C" {
     extern CFStringRef kMRMediaRemoteRouteDescriptionUserInfoKey;
     extern CFStringRef kMRMediaRemoteRouteStatusUserInfoKey;
 #pragma mark - API
-    typedef enum {
+    typedef NS_ENUM(NSInteger, MRCommand) {
         kMRPlay = 0,
         kMRPause = 1,
         kMRTogglePlayPause = 2,
@@ -80,13 +84,19 @@ extern "C" {
         kMREndForwardSeek = 9,
         kMRStartBackwardSeek = 10,
         kMREndBackwardSeek = 11,
-        kMRGoBackFifteenSeconds = 12,
+        kMRGoBackFifteenSeconds1 = 12,
         kMRSkipFifteenSeconds = 13,
-        kMRLikeTrack = 0x6A,
-        kMRBanTrack = 0x6B,
-        kMRAddTrackToWishList = 0x6C,
-        kMRRemoveTrackFromWishList = 0x6D
-    } MRCommand;
+        kMRGoBackThirtySeconds = 14,
+        kMRSkipThirtySeconds1 = 15,
+        kMRSkipFifteenSeconds2 = 16,
+        kMRGoBackFifteenSeconds = 18,
+        kMRChangePlaybackRate = 19,
+        kMRRateTrack = 20,
+        kMRLikeTrack = 21,
+        kMRBanTrack = 22,
+        kMRBookmarkTrack = 23,
+        kMRSeekToPlaybackPosition = 24
+    };
     Boolean MRMediaRemoteSendCommand(MRCommand command, id userInfo);
     void MRMediaRemoteSetPlaybackSpeed(int speed);
     void MRMediaRemoteSetElapsedTime(double elapsedTime);
@@ -112,8 +122,25 @@ extern "C" {
     Boolean MRMediaRemotePickedRouteHasVolumeControl();
     void MRMediaRemoteSetCanBeNowPlayingApplication(Boolean can);
     void MRMediaRemoteSetNowPlayingInfo(CFDictionaryRef information);
+    Boolean MRMediaRemoteCommandInfoGetBooleanValueForKey(id commandInfo, CFStringRef key);
+    MRCommand MRMediaRemoteCommandInfoGetCommand(id commandInfo);
+    Boolean MRMediaRemoteCommandInfoGetEnabled(id commandInfo);
+    void MRMediaRemoteCopySupportedCommands(dispatch_queue_t queue, void(^block)(NSArray *));
 #if __cplusplus
 }
 #endif
 
 #endif
+
+// MRMediaRemoteCopySupportedCommands(dispatch_get_main_queue(), ^(NSArray *commands){
+//     for (id command in commands) {
+//         if (MRMediaRemoteCommandInfoGetCommand(command) == kMRSeekToPlaybackPosition) {
+//             if (MRMediaRemoteCommandInfoGetEnabled(command)) {
+//                 if (MRMediaRemoteCommandInfoGetBooleanValueForKey(command, kMRMediaRemoteCommandInfoCanBeControlledByScrubbingKey) != 0) {
+//                     // Scrubbing is possible
+//                 }
+//             }
+//         }
+//     }
+// });
+

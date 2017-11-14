@@ -1,6 +1,7 @@
 #import "MZEConnectivityButtonViewController.h"
 #import <Sharing/SFAirDropDiscoveryController.h>
 #import <Sharing/SFAirDropDiscoveryControllerDelegate-Protocol.h>
+#import "MZEConnectivityAirDropPopupViewController.h"
 
 @interface MZEConnectivityAirDropViewController : MZEConnectivityButtonViewController <SFAirDropDiscoveryControllerDelegate> {
 	SFAirDropDiscoveryController *_airDropDiscoveryController;
@@ -15,4 +16,5 @@
 - (NSString *)displayName;
 - (void)discoveryControllerVisibilityDidChange:(id)arg1;
 - (void)discoveryControllerSettingsDidChange:(id)arg1;
+- (MZEConnectivityAirDropPopupViewController *)airdropPopupController;
 @end

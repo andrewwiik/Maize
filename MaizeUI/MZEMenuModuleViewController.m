@@ -35,7 +35,7 @@ static CGFloat separatorHeight = 0;
 
 	_platterBackground = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];
 	_platterBackground.frame = self.view.bounds;
-	_platterBackground.hidden = _shouldProvideOwnPlatter ? NO : YES;
+	_platterBackground.hidden = [self providesOwnPlatter] ? NO : YES;
 	[self.view addSubview:_platterBackground];
 	_platterBackground.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 	//_platterBackground.hidden = _shouldProvideOwnPlatter ? NO : YES;
@@ -77,6 +77,7 @@ static CGFloat separatorHeight = 0;
 	}
 
 	[self _fadeViewsForExpandedState:NO];
+	[self.view sendSubviewToBack:_platterBackground];
 }
 
 - (void)setTitle:(NSString *)title {
@@ -94,7 +95,7 @@ static CGFloat separatorHeight = 0;
 - (void)viewWillLayoutSubviews {
 	[super viewWillLayoutSubviews];
 	CGSize size = self.view.bounds.size;
-	_platterBackground.hidden = _shouldProvideOwnPlatter ? NO : YES;
+	_platterBackground.hidden = [self providesOwnPlatter] ? NO : YES;
 
 	[self _layoutSeparatorForSize:size];
 	[self _layoutMenuItemsForSize:size];

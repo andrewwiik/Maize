@@ -21,6 +21,7 @@
     _packageView.layer.shadowOffset = CGSizeZero;
     _packageView.layer.shadowColor = [UIColor blackColor].CGColor;
     _packageView.layer.shadowRadius = 10.0f;
+    _packageView.transform = CGAffineTransformMakeScale(1.5, 1.5);
 
    // [self.view addSubview:_packageView];
 }

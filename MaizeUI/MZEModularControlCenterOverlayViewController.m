@@ -533,6 +533,17 @@ static CGFloat cachedBoundsWidth = 0;
 	CGFloat sourceMinY = CGRectGetMinY(sourceFrame);
 
 	[self _setCollectionViewOriginY:yOrigin revealPercentage:(yOrigin - sourceMinY)/(CGRectGetMinY(targetFrame) - sourceMinY)];
+	if (_moduleWidth == 0) {
+		_moduleWidth = [MZELayoutOptions edgeSize] * 3 + [MZELayoutOptions itemSpacingSize] * 2;
+		//_moduleSpacing = [MZELayoutOptions itemSpacingSize];
+	}
+
+	CGFloat blurPercentage = (yOrigin - sourceMinY)/((sourceMinY - _moduleWidth) - sourceMinY);
+	blurPercentage = fmaxf(fminf(blurPercentage, 1.0), 0.0);
+	if (_backgroundView.effectProgress != blurPercentage) {
+		_backgroundView.effectProgress = fmaxf(fminf(blurPercentage, 1.0), 0.0);
+	}
+	//_backgroundView.effectProgress = fmaxf(fminf(blurPercentage, 1.0), 0.0);
 }
 
 - (void)_setCollectionViewOriginY:(CGFloat)yOrigin revealPercentage:(CGFloat)percentage {
@@ -540,7 +551,14 @@ static CGFloat cachedBoundsWidth = 0;
 	CGFloat xOrigin = CGRectGetMinX(targetFrame);
 	[self _setCollectionViewOriginAccountingForContentInset:CGPointMake(xOrigin, yOrigin)];
 	[self _setPocketViewOriginFromCollectionOriginY:yOrigin revealPercentage:percentage];
-	_backgroundView.effectProgress = fmaxf(fminf(percentage, 1.0), 0.0);
+
+	if (_moduleWidth == 0) {
+		_moduleWidth = [MZELayoutOptions edgeSize] * 3 + [MZELayoutOptions itemSpacingSize] * 2;
+		//_moduleSpacing = [MZELayoutOptions itemSpacingSize];
+	}
+
+	// CGFloat percentageBlur = (targetFrame)
+	// _backgroundView.effectProgress = fmaxf(fminf(percentage, 1.0), 0.0);
 	// Not gonna implement a delegate method we aren't going to actually use;
 }
 

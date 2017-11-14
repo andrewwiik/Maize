@@ -23,10 +23,10 @@
 
   // Slider styling
   self.progressView.minimumTrackTintColor = [UIColor whiteColor];
-  self.progressView.maximumTrackTintColor = [UIColor blackColor];
+  self.progressView.maximumTrackTintColor = [UIColor colorWithWhite:1 alpha:0.16];
 
-  UIImage *trackImage = [[UIImage imageNamed:@"track" inBundle:[NSBundle bundleForClass:[self class]]] _flatImageWithColor:[UIColor whiteColor]];
-  UIImage *darkTrackImage = [[UIImage imageNamed:@"track" inBundle:[NSBundle bundleForClass:[self class]]] _flatImageWithColor:[UIColor blackColor]];
+  UIImage *trackImage = [[[UIImage imageNamed:@"track" inBundle:[NSBundle bundleForClass:[self class]]] _flatImageWithColor:[UIColor whiteColor]] resizableImageWithCapInsets:UIEdgeInsetsMake(0,0,0,0)];
+  UIImage *darkTrackImage = [[[UIImage imageNamed:@"track" inBundle:[NSBundle bundleForClass:[self class]]] _flatImageWithColor:[UIColor colorWithWhite:1 alpha:0.16]] resizableImageWithCapInsets:UIEdgeInsetsMake(0,0,0,0)];
 
   [self.progressView setMinimumTrackImage: trackImage forState: UIControlStateNormal];
   [self.progressView setMaximumTrackImage: darkTrackImage forState: UIControlStateNormal];
@@ -54,11 +54,11 @@
   self.rightLabel.frame = CGRectMake(self.bounds.size.width - self.bounds.size.width/4, self.bounds.size.height/2, self.bounds.size.width/4, self.bounds.size.height/2);
 
   UIView *_maxTrackClipView = [self.progressView valueForKey:@"_maxTrackClipView"];
-  _maxTrackClipView.layer.cornerRadius = 2;
+  _maxTrackClipView.layer.cornerRadius = 1.5;
   _maxTrackClipView.clipsToBounds = TRUE;
 
   UIImageView* _minTrackView = [self.progressView valueForKey:@"_minTrackView"];
-  _minTrackView.layer.cornerRadius = 2;
+  _minTrackView.layer.cornerRadius = 1.5;
   _minTrackView.clipsToBounds = TRUE;
 }
 -(void)updateTime{
@@ -80,7 +80,12 @@
           if(hours > 0){
             self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d",hours, minutes, seconds];
           } else {
-            self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+            if (minutes < 10) {
+              self.leftLabel.text = [NSString stringWithFormat:@"%01d:%02d", minutes, seconds];
+            } else {
+               self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+            }
+           // self.leftLabel.text = [NSString stringWithFormat:@"%01d:%02d", minutes, seconds];
           }
 
           int remainingTime = (duration - realCurrentPlayback);
@@ -92,7 +97,12 @@
           if(remaininghours > 0){
             self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d:%02d",remaininghours, remainingminutes, remainingseconds];
           } else {
-            self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
+            if (remainingminutes < 10) {
+              self.rightLabel.text = [NSString stringWithFormat:@"-%01d:%02d", remainingminutes, remainingseconds];
+            } else {
+              self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
+            }
+           // self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
           }
         if(!self.isScrubbing)
           [self.progressView setValue:realCurrentPlayback/duration];
