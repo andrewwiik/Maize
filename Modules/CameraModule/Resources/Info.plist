@@ -8,6 +8,8 @@
 	<string>CameraModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.CameraModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>Camera</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>

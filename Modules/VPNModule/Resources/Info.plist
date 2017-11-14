@@ -8,6 +8,8 @@
 	<string>VPNModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.VPNModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>VPN</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>

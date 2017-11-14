@@ -20,17 +20,22 @@
 			}
 
 			NSString *iconBackgroundColorString = (__bridge NSString *)CFBundleGetValueForInfoDictionaryKey(bundle, (__bridge CFStringRef)@"MZEGlyphBackgroundColor");
+			BOOL shouldTemplate = NO;
 			if (iconBackgroundColorString) {
 				_settingsIconBackgroundColor = colorFromHexString(iconBackgroundColorString);
+				shouldTemplate = YES;
 			} else {
 				_settingsIconBackgroundColor = [UIColor grayColor];
 			}
 
 			_settingsIconGlyph = [UIImage imageNamed:@"SettingsIcon" inBundle:[NSBundle bundleWithURL:bundlePath]];
 
-			if (_settingsIconGlyph) {
+			if (_settingsIconGlyph && shouldTemplate) {
 				_settingsIconGlyph = [_settingsIconGlyph imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+			} else {
+				_settingsIconGlyph = [UIImage imageNamed:@"SettingsIconFull" inBundle:[NSBundle bundleWithURL:bundlePath]];
 			}
+
 		}
 
 		if (installedBundleInfo) {

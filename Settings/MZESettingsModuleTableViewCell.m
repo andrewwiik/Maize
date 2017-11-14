@@ -34,6 +34,8 @@
     	if (self.imageView) {
     		self.imageView.center = CGPointMake(34.5, 21.5);
     		self.backgroundGlyphView.center = CGPointMake(34.5, 21.5);
+    		self.imageView.layer.cornerRadius = 29.0*0.2237;
+    		self.imageView.clipsToBounds = YES;
 
 		    if (self.contentView && self.imageView && [self.backgroundGlyphView superview]) {
 		    	
@@ -103,6 +105,8 @@
     	if (self.imageView) {
     		self.imageView.tintColor = [UIColor whiteColor];
     		self.backgroundGlyphView.center = CGPointMake(34.5, 21.5);
+    		self.imageView.layer.cornerRadius = 29.0*0.2237;
+    		self.imageView.clipsToBounds = YES;
 
 		    if (self.contentView && self.imageView && [self.backgroundGlyphView superview]) {
 		    	

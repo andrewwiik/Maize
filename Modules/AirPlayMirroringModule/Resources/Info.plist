@@ -8,6 +8,8 @@
 	<string>AirPlayMirroringModule</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ioscreatix.maize.AirPlayMirroringModule</string>
+	<key>CFBundleDisplayName</key>
+	<string>Screen Mirroring</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -27,6 +29,8 @@
 	</array>
 	<key>NSPrincipalClass</key>
 	<string>MZEAirPlayMirroringModule</string>
+	<key>MZEGlyphBackgroundColor</key>
+	<string>#007AFF</string>
 	<key>MZEModuleSize</key>
 	<dict>
 		<key>width</key>

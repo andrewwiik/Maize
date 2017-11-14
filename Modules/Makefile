@@ -24,5 +24,6 @@ SUBPROJECTS += FlashlightModule
 SUBPROJECTS += MediaModule
 SUBPROJECTS += CameraModule
 SUBPROJECTS += CalculatorModule
+SUBPROJECTS += ClockModule
 SUBPROJECTS += AirPlayMirroringModule
 include $(THEOS_MAKE_PATH)/aggregate.mk

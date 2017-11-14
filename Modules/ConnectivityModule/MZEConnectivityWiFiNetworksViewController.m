@@ -55,17 +55,18 @@
 
 
 		CGFloat separatorHeight = 1.0f/[UIScreen mainScreen].scale;
-		_topDividerView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
-		_topDividerView.frame = CGRectMake(0,_headerView.bounds.size.height - separatorHeight,CGRectGetWidth(_containerView.bounds), separatorHeight);
-		[_headerView addSubview:_topDividerView];
-		_topDividerView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | 
-										UIViewAutoresizingFlexibleBottomMargin | 
-										UIViewAutoresizingFlexibleRightMargin |
-										UIViewAutoresizingFlexibleLeftMargin);
+		// _topDividerView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
+		// _topDividerView.frame = CGRectMake(0,_headerView.bounds.size.height - separatorHeight,CGRectGetWidth(_containerView.bounds), separatorHeight);
+		// [_headerView addSubview:_topDividerView];
+		// _topDividerView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | 
+		// 								UIViewAutoresizingFlexibleBottomMargin | 
+		// 								UIViewAutoresizingFlexibleRightMargin |
+		// 								UIViewAutoresizingFlexibleLeftMargin);
 
 		CGRect navBounds = _containerView.bounds;
-		navBounds.origin.y = _headerView.bounds.size.height;
-		navBounds.size.height -= _headerView.bounds.size.height * 2;
+		//navBounds.origin.y = _headerView.bounds.size.height;
+		navBounds.origin.y = 0;
+		//navBounds.size.height -= _headerView.bounds.size.height * 2;
 		_navigationController.view.frame = navBounds;
 
 		[_containerView addSubview:_navigationController.view];
@@ -116,7 +117,8 @@
 - (CGRect)_contentFrame {
 	CGRect frame = self.view.bounds;
 	frame.size.width = [MZELayoutOptions defaultExpandedModuleWidth];
-	frame.size.height = [MZELayoutOptions defaultExpandedSliderHeight] + ([MZELayoutOptions defaultMenuItemHeight] * 2);
+	//frame.size.height = [MZELayoutOptions defaultExpandedSliderHeight] + ([MZELayoutOptions defaultMenuItemHeight] * 2);
+	frame.size.height = [MZELayoutOptions defaultExpandedSliderHeight];
 	frame.origin.x = self.view.bounds.size.width/2 - frame.size.width/2;
 	frame.origin.y = self.view.bounds.size.height/2 - frame.size.height/2;
 	return frame;

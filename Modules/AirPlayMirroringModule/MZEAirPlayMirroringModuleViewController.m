@@ -73,12 +73,12 @@
 	}
 }
 
-- (CGFloat)preferredExpandedContentHeight {
-	return [self headerHeight] + 300;
-}
+// - (CGFloat)preferredExpandedContentHeight {
+// 	return [self headerHeight] + [self _menuItemsHeight];
+// }
 
 - (CGFloat)_menuItemsHeight {
-	return 300;
+	return 208;
 }
 
 - (void)viewWillLayoutSubviews {
