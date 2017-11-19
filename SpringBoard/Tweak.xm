@@ -306,43 +306,43 @@ MZEHybridPageViewController *hybridPageController;
 %end
 
 
-%hook UIView
-%new
-- (void)addDarkThing {
-	_MZEBackdropView *thing = [[_MZEBackdropView alloc] init];
-	thing.frame = CGRectMake(0,0,self.frame.size.width, self.frame.size.height);
-	thing.saturation = 1.7;
-	thing.brightness = -0.12;
-	thing.colorMatrixColor = [UIColor colorWithRed:0.196 green:0.196 blue:0.196 alpha:0.5];
-	[self addSubview:thing];
+// %hook UIView
+// %new
+// - (void)addDarkThing {
+// 	_MZEBackdropView *thing = [[_MZEBackdropView alloc] init];
+// 	thing.frame = CGRectMake(0,0,self.frame.size.width, self.frame.size.height);
+// 	thing.saturation = 1.7;
+// 	thing.brightness = -0.12;
+// 	thing.colorMatrixColor = [UIColor colorWithRed:0.196 green:0.196 blue:0.196 alpha:0.5];
+// 	[self addSubview:thing];
 
-}
+// }
 
-%new
-- (void)addDankFilter {
+// %new
+// - (void)addDankFilter {
 
-  NSMutableArray *filters = [NSMutableArray new];
-  CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"luminanceToAlpha"];
-    [filter setValue:[NSNumber numberWithFloat:0.6] forKey:@"inputAmount"];
-    [filters addObject:filter];
+//   NSMutableArray *filters = [NSMutableArray new];
+//   CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"luminanceToAlpha"];
+//     [filter setValue:[NSNumber numberWithFloat:0.6] forKey:@"inputAmount"];
+//     [filters addObject:filter];
 
-    [self.layer setFilters:[filters copy]];
-}
-%end
+//     [self.layer setFilters:[filters copy]];
+// }
+// %end
 
-%hook NSObject
-%new
-- (NSString *)inputColorMatrixValue {
+// %hook NSObject
+// %new
+// - (NSString *)inputColorMatrixValue {
 
-  if ([self valueForKey:@"inputColorMatrix"]) {
-    CAColorMatrix colorMatrix = [(NSValue *)[self valueForKey:@"inputColorMatrix"] CAColorMatrixValue];
-    return [NSString stringWithFormat:@"CAColorMatrix: {{%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}}", colorMatrix.m11, colorMatrix.m12, colorMatrix.m13, colorMatrix.m14, colorMatrix.m15, colorMatrix.m21, colorMatrix.m22, colorMatrix.m23, colorMatrix.m24, colorMatrix.m25, colorMatrix.m31, colorMatrix.m32, colorMatrix.m33, colorMatrix.m34, colorMatrix.m35, colorMatrix.m41, colorMatrix.m42, colorMatrix.m43, colorMatrix.m44, colorMatrix.m45];
-  }
-  return @"";
-  //return [NSString stringWithFormat:@"CAColorMatrix: {{%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}}", colorMatrix.m11, colorMatrix.m12, colorMatrix.m13, colorMatrix.m14, colorMatrix.m15, colorMatrix.m21, colorMatrix.m22, colorMatrix.m23, colorMatrix.m24, colorMatrix.m25, colorMatrix.m31, colorMatrix.m32, colorMatrix.m33, colorMatrix.m34, colorMatrix.m35, colorMatrix.m41, colorMatrix.m42, colorMatrix.m43, colorMatrix.m44, colorMatrix.m45];
+//   if ([self valueForKey:@"inputColorMatrix"]) {
+//     CAColorMatrix colorMatrix = [(NSValue *)[self valueForKey:@"inputColorMatrix"] CAColorMatrixValue];
+//     return [NSString stringWithFormat:@"CAColorMatrix: {{%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}}", colorMatrix.m11, colorMatrix.m12, colorMatrix.m13, colorMatrix.m14, colorMatrix.m15, colorMatrix.m21, colorMatrix.m22, colorMatrix.m23, colorMatrix.m24, colorMatrix.m25, colorMatrix.m31, colorMatrix.m32, colorMatrix.m33, colorMatrix.m34, colorMatrix.m35, colorMatrix.m41, colorMatrix.m42, colorMatrix.m43, colorMatrix.m44, colorMatrix.m45];
+//   }
+//   return @"";
+//   //return [NSString stringWithFormat:@"CAColorMatrix: {{%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}}", colorMatrix.m11, colorMatrix.m12, colorMatrix.m13, colorMatrix.m14, colorMatrix.m15, colorMatrix.m21, colorMatrix.m22, colorMatrix.m23, colorMatrix.m24, colorMatrix.m25, colorMatrix.m31, colorMatrix.m32, colorMatrix.m33, colorMatrix.m34, colorMatrix.m35, colorMatrix.m41, colorMatrix.m42, colorMatrix.m43, colorMatrix.m44, colorMatrix.m45];
     
-}
-%end
+// }
+// %end
 
 %hook CCUIButtonModule
 - (id)controlCenterSystemAgent {
