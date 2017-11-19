@@ -8,6 +8,7 @@
 #import <QuartzCore/CAFilter+Private.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
 #import <UIKit/_UIBackdropViewSettings+Private.h>
+#import <SpringBoard/SBControlCenterController+Private.h>
 
 //%config(generator=internal)
 
@@ -49,7 +50,7 @@ static BOOL isIOS11Mode = YES;
 static MZEModularControlCenterOverlayViewController *sharedController;
 
 
-@interface SBControlCenterController : UIViewController
+@interface SBControlCenterController (MZE)
 @property (assign,getter=isPresented,nonatomic) BOOL presented;
 @end
 
@@ -340,6 +341,14 @@ MZEHybridPageViewController *hybridPageController;
   return @"";
   //return [NSString stringWithFormat:@"CAColorMatrix: {{%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}, {%lf, %lf, %lf, %lf, %lf}}", colorMatrix.m11, colorMatrix.m12, colorMatrix.m13, colorMatrix.m14, colorMatrix.m15, colorMatrix.m21, colorMatrix.m22, colorMatrix.m23, colorMatrix.m24, colorMatrix.m25, colorMatrix.m31, colorMatrix.m32, colorMatrix.m33, colorMatrix.m34, colorMatrix.m35, colorMatrix.m41, colorMatrix.m42, colorMatrix.m43, colorMatrix.m44, colorMatrix.m45];
     
+}
+%end
+
+%hook CCUIButtonModule
+- (id)controlCenterSystemAgent {
+  id orig = %orig;
+  if (orig) return orig;
+  else return [[NSClassFromString(@"SBControlCenterController") sharedInstance] valueForKey:@"_systemAgent"];
 }
 %end
 

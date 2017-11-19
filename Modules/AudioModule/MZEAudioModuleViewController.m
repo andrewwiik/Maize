@@ -175,4 +175,8 @@
 	return [_sliderView punchOutRootLayer];
 }
 
+- (BOOL)shouldMaskToBounds {
+	return YES;
+}
+
 @end

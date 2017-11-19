@@ -204,6 +204,10 @@
 	CFRelease(transaction);
 }
 
+- (BOOL)shouldMaskToBounds {
+	return YES;
+}
+
 
 
 @end

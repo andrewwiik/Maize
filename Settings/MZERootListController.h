@@ -3,6 +3,7 @@
 
 @interface MZERootListController : UITableViewController {
 	MZEModuleRepository *_moduleRepository;
+	NSBundle *_bundle;
 }
 
 @property (nonatomic, retain, readwrite) MZEModuleRepository *moduleRepository;

@@ -17,7 +17,11 @@
   self = [super init];
 
   self.progressView = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/2)];
-  self.progressView.userInteractionEnabled = FALSE;
+  [self.progressView addTarget:self action:@selector(progressSliderSlidIntoThoseDMs:) forControlEvents:UIControlEventValueChanged];
+    
+  [self.progressView addTarget:self action:@selector(setNewTimeFromSlider:) forControlEvents:UIControlEventTouchUpInside];
+  [self.progressView addTarget:self action:@selector(setNewTimeFromSlider:) forControlEvents:UIControlEventTouchUpOutside];
+  [self.progressView addTarget:self action:@selector(setNewTimeFromSlider:) forControlEvents:UIControlEventTouchCancel];
   //[self.progressView addTarget:self action:@selector(progressSliderSlidIntoThoseDMs:) forControlEvents:UIControlEventValueChanged];
   [self addSubview:self.progressView];
 
@@ -44,8 +48,6 @@
 
   [self updateTime];
 
-  self.isScrubbing = FALSE;
-
   return self;
 }
 -(void)layoutSubviews {
@@ -62,6 +64,11 @@
   _minTrackView.clipsToBounds = TRUE;
 }
 -(void)updateTime{
+
+  if (self.progressView.highlighted) {
+    return;
+  }
+
   SBMediaController *controller = [NSClassFromString(@"SBMediaController") sharedInstance];
 
   if([controller isPlaying]){
@@ -104,11 +111,49 @@
             }
            // self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
           }
-        if(!self.isScrubbing)
           [self.progressView setValue:realCurrentPlayback/duration];
     });
   }
 
   [self performSelector:@selector(updateTime) withObject:nil afterDelay:1];
+}
+
+-(void)progressSliderSlidIntoThoseDMs:(UISlider *)slider {
+    MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef result) {
+        NSTimeInterval duration = (NSTimeInterval)[[(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDuration] doubleValue];
+        
+        int remainingTime = duration - (duration * slider.value);
+        
+        int remainingseconds = (int)remainingTime % 60;
+        int remainingminutes = ((int)remainingTime / 60) % 60;
+        int remaininghours = (int)remainingTime / 3600;
+        
+        if(remaininghours > 0){
+            self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d:%02d",remaininghours, remainingminutes, remainingseconds];
+        } else {
+            self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
+        }
+        
+        double newDuration = duration - remainingTime;
+        int seconds = (int)newDuration % 60;
+        int minutes = ((int)newDuration / 60) % 60;
+        int hours = (int)newDuration / 3600;
+        if(hours > 0){
+            self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d",hours, minutes, seconds];
+        } else {
+            self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+        }
+    });
+}
+
+-(void)setNewTimeFromSlider:(UISlider *)slider {
+    MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef result) {
+        NSTimeInterval duration = (NSTimeInterval)[[(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDuration] doubleValue];
+        
+        double timeToScrub = duration * (double)slider.value;
+        MRMediaRemoteSetElapsedTime(timeToScrub);
+        
+        [self performSelector:@selector(updateTime) withObject:nil afterDelay:0.25];
+    });
 }
 @end

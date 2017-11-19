@@ -25,4 +25,5 @@ extern NSString *const FlashlightLevelKey;
 - (void)buttonTapped:(UIControl *)button forEvent:(id)event;
 - (void)newFlashlightMade:(NSNotification *)notification;
 - (BOOL)shouldBeginTransitionToExpandedContentModule;
+- (BOOL)shouldMaskToBounds;
 @end

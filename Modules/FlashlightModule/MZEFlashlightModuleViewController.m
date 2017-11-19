@@ -234,6 +234,10 @@ static AVFlashlight *flashlight;
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
+- (BOOL)shouldMaskToBounds {
+	return YES;
+}
+
 - (void)dealloc {
 	_sliderView = nil;
 	_userDefaults = nil;

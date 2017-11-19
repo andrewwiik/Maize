@@ -3,6 +3,7 @@
 #import <SpringBoard/SBControlCenterController+Private.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
 #import <UIKit/UIPanGestureRecognizer+Private.h>
+
 #import "macros.h"
 
 static CGRect cachedBounds;
@@ -521,9 +522,23 @@ static CGFloat cachedBoundsWidth = 0;
 }
 
 - (void)_animateSetCollectionViewOriginYUpdatingRevealPercentage:(CGFloat)percentage {
-	[UIView animateWithDuration:0.00 animations:^{
+	//[UIView animateWithDuration:0.00 animations:^{
+		// if (percentage < 1 || percentage > 1) {
+		// 	if (!_snapshotView) {
+		// 		_snapshotView = [self.moduleCollectionViewController.view snapshotView];
+		// 		[self.moduleCollectionViewController.view addSubview:_snapshotView];
+		// 		[self.moduleCollectionViewController hideSnapshottedModules:YES];
+
+		// 	}
+		// } else {
+		// 	if (_snapshotView) {
+		// 		[_snapshotView removeFromSuperview];
+		// 		_snapshotView = nil;
+		// 	}
+		// 	[self.moduleCollectionViewController.view hideSnapshottedModules:NO];
+		// }
 		[self _setCollectionViewOriginYUpdatingRevealPercentage:percentage];
-	} completion:nil];
+	//} completion:nil];
 }
 
 - (void)_setCollectionViewOriginYUpdatingRevealPercentage:(CGFloat)yOrigin {
@@ -531,7 +546,6 @@ static CGFloat cachedBoundsWidth = 0;
 	CGRect targetFrame = [self _targetPresentationFrame];
 
 	CGFloat sourceMinY = CGRectGetMinY(sourceFrame);
-
 	[self _setCollectionViewOriginY:yOrigin revealPercentage:(yOrigin - sourceMinY)/(CGRectGetMinY(targetFrame) - sourceMinY)];
 	if (_moduleWidth == 0) {
 		_moduleWidth = [MZELayoutOptions edgeSize] * 3 + [MZELayoutOptions itemSpacingSize] * 2;
@@ -555,6 +569,22 @@ static CGFloat cachedBoundsWidth = 0;
 	if (_moduleWidth == 0) {
 		_moduleWidth = [MZELayoutOptions edgeSize] * 3 + [MZELayoutOptions itemSpacingSize] * 2;
 		//_moduleSpacing = [MZELayoutOptions itemSpacingSize];
+	}
+
+	if (percentage < 1 || percentage > 1) {
+		if (!_snapshotView) {
+			//_snapshotView = [self.moduleCollectionViewController.view snapshotView];
+			//[self.moduleCollectionViewController.view addSubview:_snapshotView];
+			[self.moduleCollectionViewController hideSnapshottedModules:YES];
+		} else {
+			//[self.moduleCollectionViewController.view bringSubviewToFront:_snapshotView];
+		}
+	} else {
+		if (_snapshotView) {
+			//[_snapshotView removeFromSuperview];
+			//_snapshotView = nil;
+		}
+		[self.moduleCollectionViewController hideSnapshottedModules:NO];
 	}
 
 	// CGFloat percentageBlur = (targetFrame)

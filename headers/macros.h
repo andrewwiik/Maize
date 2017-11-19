@@ -118,7 +118,7 @@ static inline void launchApplication(SBApplication *launchApp)
 	if (launchApp == nil) return;
 
 	NSArray *standardIDs = @[@"com.apple.mobiletimer", @"com.apple.calculator", @"com.apple.camera"];
-	if ([standardIDs containsObject:launchApp.bundleIdentifier] && NSClassFromString(@"SBCCShortcutModule") != nil)
+	if ([standardIDs containsObject:launchApp.bundleIdentifier] && (NSClassFromString(@"SBCCShortcutModule") != nil || NSClassFromString(@"CCUIShortcutModule") != nil))
 	{
 		SBCCShortcutModule *module = nil;
 		if (NSClassFromString(@"SBCCShortcutModule")) {
@@ -130,7 +130,13 @@ static inline void launchApplication(SBApplication *launchApp)
 			else if ([launchApp.bundleIdentifier isEqualToString:@"com.apple.calculator"]) module = [[NSClassFromString(@"CCUICalculatorShortcut") alloc] init];
 			else if ([launchApp.bundleIdentifier isEqualToString:@"com.apple.camera"]) module = [[NSClassFromString(@"CCUICameraShortcut") alloc] init];
 		}
-		 if (module != nil) [module activateApp];
+		 if (module != nil) {
+			// if ([NSClassFromString(@"SBControlCenterController") sharedInstanceIfExists]) {
+			// 	SBControlCenterController *controller = [NSClassFromString(@"SBControlCenterController") sharedInstanceIfExists];
+			// 	id agent = [controller valueForKey:@"_systemAgent"];
+			// }
+		 	[module activateApp];
+		 }
 
 		 return;
 	}

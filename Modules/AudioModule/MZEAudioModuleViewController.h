@@ -35,6 +35,7 @@
 - (void)viewDidLoad;
 - (void)loadView;
 - (id)initWithNibName:(id)arg1 bundle:(id)arg2;
+- (BOOL)shouldMaskToBounds;
 
 @end
 

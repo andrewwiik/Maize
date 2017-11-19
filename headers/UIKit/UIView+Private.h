@@ -13,6 +13,7 @@
 - (UIScreen *)_screen;
 - (void)setSize:(CGSize)size;
 - (void)_setDrawsAsBackdropOverlayWithBlendMode:(NSInteger)blendMode;
+- (UIView *)snapshotView;
 
 + (void)_animateWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewAnimationOptions)options factory:(id)factory animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
 @end

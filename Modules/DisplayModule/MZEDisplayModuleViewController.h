@@ -36,6 +36,7 @@
 - (void)_setBacklightLevel:(float)backlightLevel;
 - (void)_noteScreenBrightnessDidChange:(id)changed;
 - (void)_updateWithCurrentBrightnessAnimated:(BOOL)animated;
+- (BOOL)shouldMaskToBounds;
 
 @end
 

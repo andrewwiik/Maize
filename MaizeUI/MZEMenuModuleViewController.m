@@ -53,6 +53,7 @@ static CGFloat separatorHeight = 0;
 
 	_headerSeparatorView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
 	_headerSeparatorView.frame = CGRectMake(0,[self headerHeight] - separatorHeight, CGRectGetWidth(self.view.bounds), separatorHeight);
+	_headerSeparatorView.hidden = YES;
 	[self.view addSubview:_headerSeparatorView];
 	_headerSeparatorView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
 											 UIViewAutoresizingFlexibleRightMargin |
@@ -115,6 +116,9 @@ static CGFloat separatorHeight = 0;
 	[super willTransitionToExpandedContentMode:expanded];
 	[self _fadeViewsForExpandedState:expanded];
 	[[self buttonView] setHighlighted:NO];
+	_headerSeparatorView.hidden = !expanded;
+	_containerView.hidden = !expanded;
+	_darkBackground.hidden = !expanded;
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -205,5 +209,11 @@ static CGFloat separatorHeight = 0;
 	if (menuItemView.handler()) {
 		[self dismissViewControllerAnimated:YES completion:nil];
 	}
+}
+
+- (BOOL)shouldBeginTransitionToExpandedContentModule {
+	if ([self _menuItemsHeight] > 0) {
+		return YES;
+	} else return NO;
 }
 @end

@@ -23,19 +23,19 @@
 }
 
 + (NSString *)settingsFilePath {
-	return @"/var/mobile/Library/Preferences/com.ioscreatix.Maize4.plist";
+	return @"/var/mobile/Library/Preferences/com.ioscreatix.Maize19.plist";
 }
 
 + (NSString *)settingsIdentifier {
-	return @"com.ioscreatix.Maize4";
+	return @"com.ioscreatix.Maize19";
 }
 
 + (NSString *)enabledKey {
-	return @"EnabledIdentifiers22";
+	return @"EnabledIdentifiers77";
 }
 
 + (NSString *)disabledKey {
-	return @"DisabledIdentifiers22";
+	return @"DisabledIdentifiers77";
 }
 
 + (NSString *)settingsChangedNotificationName {
@@ -58,14 +58,11 @@
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DoNotDisturbModule"];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.DisplayModule"];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AudioModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ScreenRecordingModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.RingerModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.AirPlayMirroringModule"];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.FlashlightModule"];
+	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.ClockModule"];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.CalculatorModule"];
 	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.CameraModule"];
-	[defaultEnabledIdentifiers addObject:@"com.ioscreatix.maize.LowPowerModule"];
-
-
 
 	return [defaultEnabledIdentifiers copy];
 }

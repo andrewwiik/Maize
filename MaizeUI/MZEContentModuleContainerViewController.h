@@ -6,6 +6,7 @@
 #import "MZEContentModuleContentViewController-Protocol.h"
 #import "MZEBreatheGestureRecognizer.h"
 #import "MZEExpandedModuleTransition-Protocol.h"
+#import "MZEPsuedoModuleView.h"
 
 @interface MZEContentModuleContainerViewController : UIViewController <UIGestureRecognizerDelegate, UIPreviewInteractionDelegate, UIViewControllerTransitioningDelegate, MZEExpandedModuleTransition>
 {
@@ -33,6 +34,7 @@
     MZEBreatheGestureRecognizer *_breatheRecognizer;
     UILongPressGestureRecognizer *_longPressRecognizer;
     CALayer *_maskLayer;
+    MZEPsuedoModuleView *_psuedoView;
 }
 
 @property(retain, nonatomic, readwrite) UIViewController *originalParentViewController;
@@ -58,6 +60,8 @@
 @property(retain, nonatomic, readwrite) UILongPressGestureRecognizer *longPressRecognizer;
 @property (retain, nonatomic) UIViewPropertyAnimator *bubblingAnimator;
 @property (nonatomic, retain, readwrite) CALayer *maskLayer;
+@property (nonatomic, retain, readwrite) MZEPsuedoModuleView *psuedoView;
+@property (nonatomic, readonly) BOOL shouldMaskToBounds;
 - (id)initWithModuleIdentifier:(NSString *)identifier contentModule:(id<MZEContentModule>)contentModule;
 - (id)init;
 - (id)initWithCoder:(id)arg1;

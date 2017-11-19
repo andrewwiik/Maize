@@ -55,13 +55,13 @@
 
     self.pauseButton.hidden = TRUE;
 
-    self.skipButton.layer.compositingFilter = @"plusL";
+    // self.skipButton.layer.compositingFilter = @"plusL";
 
-    self.playButton.layer.compositingFilter = @"plusL";
+    // self.playButton.layer.compositingFilter = @"plusL";
 
-    self.pauseButton.layer.compositingFilter = @"plusL";
+    // self.pauseButton.layer.compositingFilter = @"plusL";
 
-    self.rewindButton.layer.compositingFilter = @"plusL";
+    // self.rewindButton.layer.compositingFilter = @"plusL";
 
     self.transitioningPlayPause = FALSE;
 

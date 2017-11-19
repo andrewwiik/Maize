@@ -219,15 +219,28 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-	return 0.01f;
+	return -1;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
 	return [[UIView alloc] initWithFrame:CGRectZero];
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+	if (!_bundle) {
+		_bundle = [NSBundle bundleForClass:[self class]];
+	}
+
+	if (section == 0) {
+		return [_bundle localizedStringForKey:@"ENABLED_MODULES_SECTION_TITLE" value:@"" table:@"ControlCenterSettings"]; // ENABLED_MODULES_SECTION_TITLE
+	} else if (section == 1) {
+		return [_bundle localizedStringForKey:@"DISABLED_MODULES_SECTION_TITLE" value:@"" table:@"ControlCenterSettings"]; // DISABLED_MODULES_SECTION_TITLE
+	} else return nil;
+}
+
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	return [[UIView alloc] initWithFrame:CGRectZero];
+	return nil;
  //    CCXPunchOutView *view = [[NSClassFromString(@"CCXPunchOutView") alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 28)];
  //    /* Create custom view to display section header... */
  //    view.cornerRadius = 13;

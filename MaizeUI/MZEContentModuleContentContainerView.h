@@ -2,6 +2,8 @@
 #import <QuartzCore/CAFilter+Private.h>
 #import <UIKit/_UIBackdropView+Private2.h>
 
+@class MZEContentModuleContainerViewController;
+
 @interface MZEContentModuleContentContainerView : UIView
 {
     BOOL _expanded;
@@ -13,6 +15,7 @@
     CAFilter *_expandedBackgroundFilter;
     CAFilter *_compactBackgroundFilter;
     _UIBackdropView *_fakeVibrantView;
+    MZEContentModuleContainerViewController *_delegateController;
     // UIView *_psuedoCompactView;
     // UIView *_psuedoExpandedView;
     // CGRect _compactFrame;
@@ -24,6 +27,7 @@
 - (void)layoutSubviews;
 - (void)addSubview:(id)arg1;
 @property(readonly, nonatomic) MZEMaterialView *moduleMaterialView; // @synthesize moduleMaterialView=_moduleMaterialView;
+@property(nonatomic, retain, readwrite) MZEContentModuleContainerViewController *delegateController;
 - (void)_configureModuleMaterialViewIfNecessary;
 - (void)transitionToExpandedMode:(BOOL)arg1;
 - (void)_transitionToExpandedMode:(BOOL)arg1 force:(BOOL)arg2;

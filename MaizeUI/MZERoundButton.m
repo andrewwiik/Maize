@@ -100,10 +100,12 @@
 
 	 	if (![self isHighlighted] && ![self isSelected]) {
 	 		_highlightStateBackgroundView.alpha = 0;
+	 		_normalStateBackgroundView.alpha = 1.0;
 	 		_highlightedGlyphView.alpha = 0;
 	 		_glyphImageView.alpha = alpha;
 	 	} else {
 	 		_highlightStateBackgroundView.alpha = 1;
+	 		_normalStateBackgroundView.alpha = 0;
 	 		_highlightedGlyphView.alpha = alpha;
 	 		_glyphImageView.alpha = 0;
 	 	}
@@ -139,6 +141,7 @@
 - (void)_setCornerRadius:(CGFloat)cornerRadius {
 	_highlightStateBackgroundView._cornerRadius = cornerRadius;
 	_normalStateBackgroundView._cornerRadius = cornerRadius;
+	_normalStateBackgroundView.layer.masksToBounds = YES;
 }
 
 - (CGFloat)_cornerRadius {

@@ -7,6 +7,7 @@
 #import "macros.h"
 #import <UIKit/_UIBackdropViewSettings+Private.h>
 #import <QuartzCore/CABackdropLayer.h>
+#import "MZEContentModuleContainerViewController.h"
 
 
 MPULayoutInterpolator *interpolator;
@@ -153,6 +154,9 @@ static BOOL isIOS11Mode = YES;
 		[self sendSubviewToBack:_moduleMaterialView];
 		_moduleMaterialView.backdropView.layer.groupName = @"ModuleDarkBackground";
 		[self setNeedsLayout];
+		_moduleMaterialView.hidden = YES;
+		//self.moduleMaterialView.clipsToBounds = YES;
+		//self.moduleMaterialView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
 	}
 }
 
@@ -174,14 +178,17 @@ static BOOL isIOS11Mode = YES;
 }
 
 - (void)_transitionToExpandedMode:(BOOL)expanded force:(BOOL)force {
-	self.clipsToBounds = YES;
+	// if ()
+	// self.clipsToBounds = YES;
+	// self.moduleMaterialView.clipsToBounds = YES;
+
 	CGFloat cornerRadius = 0;
 
 	//if (![storedCornerRadiusExpanded objectForKey:[NSString stringWithFormat:]])
 
-	if (self._continuousCornerRadius < 1.0f) {
-		self._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
-	}
+	// if (self._continuousCornerRadius < 1.0f) {
+	// 	self._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+	// }
 
 	CGRect cornerCenter = CGRectZero;
 
@@ -220,9 +227,37 @@ static BOOL isIOS11Mode = YES;
 			}
 		}
 
-		self.layer.cornerRadius = cornerRadius;
-		self.layer.cornerContentsCenter = cornerCenter;
+		if (self.moduleMaterialView) {
+			BOOL shouldClipRoot = NO;
+			if (_delegateController && _delegateController.shouldMaskToBounds) {
+				shouldClipRoot = YES;
+			}
+
+			if (shouldClipRoot) {
+				if (self._continuousCornerRadius < 1.0f) {
+					self._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+					self.clipsToBounds = YES;
+				}
+				self.layer.cornerRadius = cornerRadius;
+				self.layer.cornerContentsCenter = cornerCenter;
+			} else {
+				if (self.moduleMaterialView._continuousCornerRadius < 1.0f) {
+					self.moduleMaterialView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+					self.moduleMaterialView.clipsToBounds = YES;
+				}
+				self.moduleMaterialView.layer.cornerRadius = cornerRadius;
+				self.moduleMaterialView.layer.cornerContentsCenter = cornerCenter;
+			}
+			// self.moduleMaterialView.clipsToBounds = YES;
+			// self.moduleMaterialView.layer.cornerRadius = cornerRadius;
+			// self.moduleMaterialView.layer.cornerContentsCenter = cornerCenter;
+		}
+
+		// self.layer.cornerRadius = cornerRadius;
+		// self.layer.cornerContentsCenter = cornerCenter;
 	}
+
+	//_moduleVibrantBackground.hidden = YES;
 }
 
 - (void)didTransitionToExpandedMode:(BOOL)arg1 {

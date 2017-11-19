@@ -29,6 +29,7 @@
 	CGFloat _endY;
 	CGFloat _moduleWidth;
 	CGFloat _moduleSpacing;
+	UIView *_snapshotView;
 }
 
 @property (nonatomic, retain, readwrite) MZEBackgroundView *backgroundView;

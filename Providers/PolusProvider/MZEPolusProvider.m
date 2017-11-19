@@ -5,6 +5,7 @@
 #import <objc/message.h>
 #import <AppList/ALApplicationList.h>
 #import "MZEPolusAppLauncherModule.h"
+#import "MZEPolusActionLauncherModule.h"
 // #import <Polus/PLPrefsHelper.h>
 // #import <Polus/PLAppsController.h>
 
@@ -83,6 +84,8 @@ static BOOL hasAttemptedToLoadPolus = NO;
 + (id<MZEContentModule>)moduleForIdentifier:(NSString *)identifier {
 	if (![identifier hasPrefix:ACTION_PREFIX]) {
 		return [[MZEPolusAppLauncherModule alloc] initWithIdentifier:identifier];
+	} else {
+		return [[MZEPolusActionLauncherModule alloc] initWithIdentifier:identifier];
 	}
 	return nil;
 }

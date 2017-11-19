@@ -21,6 +21,7 @@ static BOOL isIOS11Mode = YES;
 	self = [super initWithNibName:nil bundle:nil];
 	if (self) {
 		_moduleIdentifier = identifier;
+		_psuedoView = [[MZEPsuedoModuleView alloc] initWithIdentifier:_moduleIdentifier];
 		_contentModule = contentModule;
 		_contentViewController = [_contentModule contentViewController];
 
@@ -65,20 +66,28 @@ static BOOL isIOS11Mode = YES;
 	if ([_contentViewController respondsToSelector:@selector(canDismissPresentedContent)] && [self isExpanded]) {
 		if ([_contentViewController canDismissPresentedContent]) {
 			[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
+			// _contentContainerView.moduleMaterialView.hidden = YES;
+			// _psuedoView.hidden = NO;
 			return YES;
 		} else {
 			if ([_contentViewController respondsToSelector:@selector(dismissPresentedContent)]) {
 				[_contentViewController dismissPresentedContent];
 			}
+			_contentContainerView.moduleMaterialView.hidden = YES;
+			_psuedoView.hidden = NO;
 			return YES;
 		}
 	} else {
 		if ([self isExpanded]) {
 			[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
+			// _contentContainerView.moduleMaterialView.hidden = YES;
+			// _psuedoView.hidden = NO;
 			return YES;
 		} else {
 			if (self.previewInteraction) {
 				[self.previewInteraction cancelInteraction];
+				// _contentContainerView.moduleMaterialView.hidden = YES;
+				// _psuedoView.hidden = NO;
 			}
 		}
 
@@ -165,6 +174,7 @@ static BOOL isIOS11Mode = YES;
 	[_highlightWrapperView addSubview:_backgroundView];
 
 	_contentContainerView = [[MZEContentModuleContentContainerView alloc] init];
+	_contentContainerView.delegateController = self;
 	[_contentContainerView setModuleProvidesOwnPlatter:_contentModuleProvidesOwnPlatter];
 
 	frame = CGRectZero;
@@ -259,6 +269,15 @@ static BOOL isIOS11Mode = YES;
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {        
     return YES;
+}
+
+- (BOOL)shouldMaskToBounds {
+	if (_contentViewController) {
+		if ([_contentViewController respondsToSelector:@selector(shouldMaskToBounds)]) {
+			return [_contentViewController shouldMaskToBounds];
+		}
+	}
+	return NO;
 }
 
 - (void)viewWillLayoutSubviews {
@@ -403,6 +422,8 @@ static BOOL isIOS11Mode = YES;
 - (void)previewInteraction:(UIPreviewInteraction *)previewInteraction didUpdatePreviewTransition:(CGFloat)progress ended:(BOOL)ended {
 	if (_bubbled) {
 		if (!ended) {
+			_contentContainerView.moduleMaterialView.hidden = NO;
+			_psuedoView.hidden = YES;
 			[UIView animateWithDuration:0.1 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
 				self.view.transform = CGAffineTransformMakeScale(progress * (0.25 - (_bubbled ? 0.05 : 0)) + 1.0 + (_bubbled ? 0.05 : 0),progress * (0.25 - (_bubbled ? 0.05 : 0)) + 1.0 + (_bubbled ? 0.05 : 0));
 			} completion:nil];
@@ -420,6 +441,7 @@ static BOOL isIOS11Mode = YES;
 			[UIView animateWithDuration:0.125 delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 				self.view.transform = CGAffineTransformIdentity;
 			} completion:^(BOOL completed) {
+
 				// if (!isIOS11Mode) {
 	   //      		[_contentContainerView useFakeVibrantView:NO];
 	   //      	}
@@ -441,6 +463,10 @@ static BOOL isIOS11Mode = YES;
 			self.view.transform = CGAffineTransformIdentity;
 		} completion:^(BOOL completed) {
 			[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+			if (![self isExpanded]) {
+				_contentContainerView.moduleMaterialView.hidden = YES;
+				_psuedoView.hidden = NO;
+			}
 			if (!isIOS11Mode) {
         		[_contentContainerView useFakeVibrantView:NO];
         	}
@@ -529,6 +555,8 @@ static BOOL isIOS11Mode = YES;
 				self.view.transform = CGAffineTransformIdentity;
 			} completion:^(BOOL completed){
 				[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+				// _contentContainerView.moduleMaterialView.hidden = YES;
+				// _psuedoView.hidden = NO;
 			}];
 		}
 	}
@@ -541,6 +569,9 @@ static BOOL isIOS11Mode = YES;
 	        	_bubbled = YES;
 	        	if (!isIOS11Mode) {
 	        		[_contentContainerView useFakeVibrantView:YES];
+	        	} else {
+	        		_contentContainerView.moduleMaterialView.hidden = NO;
+					_psuedoView.hidden = YES;
 	        	}
 	        	[_delegate contentModuleContainerViewController:self didBeginInteractionWithModule:_contentModule];
 	        	if ([self forceTouchSupported]) {
@@ -581,6 +612,10 @@ static BOOL isIOS11Mode = YES;
 						self.view.transform = CGAffineTransformIdentity;
 					} completion:^(BOOL completed){
 						[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+						if (![self isExpanded]) {
+							_contentContainerView.moduleMaterialView.hidden = YES;
+							_psuedoView.hidden = NO;
+						}
 					}];
 				}
 	            // do something

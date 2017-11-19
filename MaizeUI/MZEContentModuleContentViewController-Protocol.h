@@ -3,6 +3,7 @@
 
 @optional
 @property(readonly, nonatomic) BOOL providesOwnPlatter;
+@property(readonly, nonatomic) BOOL shouldMaskToBounds;
 @property(readonly, nonatomic) BOOL shouldHidePlatterWhenExpanded;
 @property(readonly, nonatomic) CGFloat preferredExpandedContentWidth;
 // @property (nonatomic, assign) BOOL expanded;

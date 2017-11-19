@@ -120,12 +120,22 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	CGSize preferredContentSize = [self preferredContentSize];
 	self.containerView = [[MZEModuleCollectionView alloc] initWithLayoutSource:self frame:CGRectMake(0,0,preferredContentSize.width,preferredContentSize.height)];
 	self.containerView.delegate = self;
+
+	self.psuedoCollectionView = [[MZEModuleCollectionView alloc] initWithLayoutSource:self frame:CGRectMake(0,0,preferredContentSize.width,preferredContentSize.height)];
+	self.psuedoCollectionView.delegate = self;
+
+	self.effectView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];
+	self.highlightEffectView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];
+	self.effectView.backdropView.layer.groupName = @"ModuleDarkBackground";
 	self.view = self.containerView;
 }
 
 - (void)viewDidLoad {
 
 	if (self.view) {
+		[self.view addSubview:self.effectView];
+		self.effectView.backdropView.maskView = self.psuedoCollectionView;
+		//[self.view addSubview:self.psuedoCollectionView];
 		// CGRect frame = self.view.frame;
 		// frame.size = [_currentPositionProvider sizeOfLayoutView];
 		// self.view.frame = frame;
@@ -140,11 +150,19 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 
 	if ([self isLandscape]) {
 		self.containerView.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,0,_currentLayoutStyle.inset);
+		self.psuedoCollectionView.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,0,_currentLayoutStyle.inset);
 	} else {
 		self.containerView.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,_currentLayoutStyle.inset,_currentLayoutStyle.inset);
+		self.psuedoCollectionView.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,_currentLayoutStyle.inset,_currentLayoutStyle.inset);
 	}
 
 	[self.view setSize:[self preferredContentSize]];
+	[self.psuedoCollectionView setSize:[self preferredContentSize]];
+
+	if (self.effectView) {
+		self.effectView.frame = self.view.bounds;
+		[self.view sendSubviewToBack:self.effectView];
+	}
 
 	[super viewWillLayoutSubviews];
 }
@@ -179,12 +197,14 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 - (void)_removeAndTearDownModuleViewControllerFromHierarchy:(MZEContentModuleContainerViewController *)viewController {
 	[viewController setDelegate:nil];
 	[viewController.view removeFromSuperview];
+	[viewController.psuedoView removeFromSuperview];
 	[viewController willMoveToParentViewController:nil];
 	[viewController removeFromParentViewController];
 }
 - (void)_setupAndAddModuleViewControllerToHierarchy:(MZEContentModuleContainerViewController *)viewController {
 	[viewController setDelegate:self];
 	[self.view addSubview:viewController.view];
+	[self.psuedoCollectionView addSubview:viewController.psuedoView];
 	[self addChildViewController:viewController];
 	[viewController didMoveToParentViewController:self];
 
@@ -207,15 +227,25 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 			viewController = [[MZEContentModuleContainerViewController alloc] initWithModuleIdentifier:moduleIdentifier contentModule:moduleInstance.module];
 			[_moduleViewControllerByIdentifier setObject:viewController forKey:moduleIdentifier];
 			viewController.view.hidden = isEnabled ? NO : YES;
+			viewController.psuedoView.hidden = isEnabled ? NO : YES;
 			[self _setupAndAddModuleViewControllerToHierarchy:viewController];
 		} else {
 			viewController = [_moduleViewControllerByIdentifier objectForKey:moduleIdentifier];
 			viewController.view.hidden = isEnabled ? NO : YES;
+			viewController.psuedoView.hidden = isEnabled ? NO : YES;
 
 		}
 	}
 
 	//_moduleViewControllerByIdentifier = moduleViewControllerByIdentifier;
+}
+
+- (void)hideSnapshottedModules:(BOOL)shouldHide {
+	// for (UIViewController *viewController in [self childViewControllers]) {
+	// 	if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+	// 		viewController.view.hidden = shouldHide;
+	// 	}
+	// }
 }
 
 - (NSArray<MZEModuleInstance *> *)_moduleInstances {
@@ -229,7 +259,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 #pragma mark MZELayoutViewLayoutSourceDelegate
 
 - (BOOL)layoutView:(MZELayoutView *)layoutView shouldIgnoreSubview:(UIView *)subview {
-	if ([subview isKindOfClass:[MZEContentModuleContainerView class]]) {
+	if ([subview respondsToSelector:@selector(moduleIdentifier)]) {
 		if (CGAffineTransformEqualToTransform(subview.transform,CGAffineTransformIdentity)) {
 			return NO;
 		}
@@ -263,8 +293,12 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	// [self.view addSubview:containerViewController.view];
 
 	//self.view.backgroundColor = [UIColor redColor];
-	_snapshotView.hidden = YES;
+	if (_snapshotView) {
+		_snapshotView.hidden = YES;
+	}
+	//_snapshotView.hidden = YES;
 	self.view.hidden = NO;
+
 	//_snapshotView.hidden = YES;
 	if (_delegate) {
 		[_delegate  moduleCollectionViewController:self didCloseExpandedModule:module];
@@ -425,7 +459,12 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController closeExpandedModule:(id <MZEContentModule>)expandedModule {
-	[self dismissViewControllerAnimated:YES completion:nil];
+	[self dismissViewControllerAnimated:YES completion:^ {
+		if (isIOS11Mode) {
+			containerViewController.contentContainerView.moduleMaterialView.hidden = YES;
+			containerViewController.psuedoView.hidden = NO;
+		}
+	}];
 }
 
 - (BOOL)handleMenuButtonTap {

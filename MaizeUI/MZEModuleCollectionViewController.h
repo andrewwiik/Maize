@@ -26,10 +26,17 @@
     MZEControlCenterPositionProvider *_currentPositionProvider;
     MZELayoutStyle *_currentLayoutStyle;
     UIView *_snapshotView;
+    MZEModuleCollectionView *_psuedoCollectionView;
+    MZEMaterialView *_effectView;
+    MZEMaterialView *_highlightEffectView;
 }
 @property(nonatomic) __weak id <MZEModuleCollectionViewControllerDelegate> delegate; // @synthesize delegate=_delegate;
 @property(nonatomic, retain, readwrite) MZEModuleCollectionView *containerView;
 @property(nonatomic, retain, readonly) MZEModuleCollectionView *moduleCollectionView;
+@property(nonatomic, retain, readwrite) MZEModuleCollectionView *psuedoCollectionView;
+// @property(nonatomic, retain, readwrite) MZE
+@property(nonatomic, retain, readwrite) MZEMaterialView *effectView;
+@property(nonatomic, retain, readwrite) MZEMaterialView *highlightEffectView;
 
 - (instancetype)initWithModuleInstanceManager:(MZEModuleInstanceManager *)moduleInstanceManager;
 - (BOOL)isLandscape;
@@ -45,6 +52,7 @@
 - (NSArray<MZEModuleInstance *> *)_moduleInstances;
 - (void)_removeAndTearDownModuleViewControllerFromHierarchy:(MZEContentModuleContainerViewController *)viewController;
 - (void)_setupAndAddModuleViewControllerToHierarchy:(MZEContentModuleContainerViewController *)viewController;
+- (void)hideSnapshottedModules:(BOOL)shouldHide;
 
 #pragma mark MZELayoutViewLayoutSourceDelegate
 
