@@ -16,7 +16,7 @@
 		//[_routingViewController setAllowMirroring:YES];
 		_routingViewController.mirroringStyle = 2;
 		_routingViewController.mze_customDisplay = YES;
-		//_airStuffController = [NSClassFromString(@"CCUIAirStuffSectionController") new]
+		_airStuffController = [NSClassFromString(@"CCUIAirStuffSectionController") new];
 		//[_airStuffController ]
 
 		// 0.2188 - margin to Airplay button start
