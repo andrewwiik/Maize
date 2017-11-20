@@ -10,4 +10,5 @@
 - (void)presentAnimated:(BOOL)animated completion:(id)completion;
 - (void)dismissAnimated:(BOOL)animated;
 - (BOOL)isVisible;
+- (void)_updateRevealPercentage:(CGFloat)percentage;
 @end

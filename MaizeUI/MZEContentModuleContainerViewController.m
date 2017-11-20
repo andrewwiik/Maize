@@ -73,8 +73,8 @@ static BOOL isIOS11Mode = YES;
 			if ([_contentViewController respondsToSelector:@selector(dismissPresentedContent)]) {
 				[_contentViewController dismissPresentedContent];
 			}
-			_contentContainerView.moduleMaterialView.hidden = YES;
-			_psuedoView.hidden = NO;
+			//_contentContainerView.moduleMaterialView.hidden = YES;
+			//_psuedoView.hidden = NO;
 			return YES;
 		}
 	} else {

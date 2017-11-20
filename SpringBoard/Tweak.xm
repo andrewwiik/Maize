@@ -137,7 +137,12 @@ MZEHybridPageViewController *hybridPageController;
 // }
 
 - (void)_loadPages {
-  if (isIOS11Mode) return;
+  if (isIOS11Mode) {
+    if (!sharedController) {
+     // [self setRevealPercentage:0.0];
+      return;
+    }
+  }
   %orig;
   // MZEHybridPageViewController *hybridPage = [[MZEHybridPageViewController alloc] initWithFrame:CGRectZero];
   // [self _addContentViewController:hybridPage];
@@ -303,6 +308,10 @@ MZEHybridPageViewController *hybridPageController;
 
   return %orig;
 }
+
+- (BOOL)_shouldShowGrabberOnFirstSwipe {
+  return NO;
+}
 %end
 
 
@@ -344,6 +353,7 @@ MZEHybridPageViewController *hybridPageController;
 // }
 // %end
 
+
 %hook CCUIButtonModule
 - (id)controlCenterSystemAgent {
   id orig = %orig;
@@ -351,6 +361,33 @@ MZEHybridPageViewController *hybridPageController;
   else return [[NSClassFromString(@"SBControlCenterController") sharedInstance] valueForKey:@"_systemAgent"];
 }
 %end
+
+%hook SBDashBoardViewController
+- (void)viewDidLoad {
+  %orig;
+  if (!sharedController) {
+    SBControlCenterController *controller = [NSClassFromString(@"SBControlCenterController") _sharedInstanceCreatingIfNeeded:YES];
+    if (controller && [controller valueForKey:@"_viewController"]) {
+      CCUIControlCenterViewController *viewController = [controller valueForKey:@"_viewController"];
+      [viewController setRevealPercentage:0.0];
+    }
+  }
+}
+%end
+
+// Preloading the CC so no lag on first swipe open
+
+// %hook SBLockScreenViewController
+// - (void)_createLockScreenActionManager {
+//   %orig;
+//   if (!sharedController) {
+//     SBControlCenterController *controller = [NSClassFromString(@"SBControlCenterController") _sharedInstanceCreatingIfNeeded:YES];
+//     //UIView *view = controller.view;
+//     [controller _updateRevealPercentage:0.0];
+
+//   }
+// }
+// %end
 
 
 %ctor {
