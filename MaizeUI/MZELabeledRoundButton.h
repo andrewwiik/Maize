@@ -31,6 +31,7 @@
 @property (nonatomic, assign, readwrite) CGSize buttonSize; // @synthesize buttonSize=_buttonSize;
 @property (nonatomic, strong) NSLayoutConstraint *buttonWidthConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *buttonHeightConstraint;
+@property (nonatomic, assign) BOOL useDarkTheme;
 - (void)_layoutLabels;
 - (void)buttonTapped:(id)arg1;
 - (CGSize)intrinsicContentSize;
@@ -39,5 +40,6 @@
 - (id)initWithGlyphPackage:(CAPackage *)arg1 highlightColor:(UIColor *)arg2;
 - (id)initWithGlyphImage:(UIImage *)arg1 highlightColor:(UIColor *)arg2;
 - (id)initWithHighlightColor:(UIColor *)arg1;
+
 
 @end

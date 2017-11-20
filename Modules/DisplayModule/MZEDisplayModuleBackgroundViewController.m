@@ -52,11 +52,13 @@ MZEDisplayModuleBackgroundViewController *displayBackgroundController;
 		UIImage *glyphImage = [[UIImage imageNamed:@"NightShift" inBundle:_bundle] _flatImageWithColor:[UIColor whiteColor]];
 		UIColor *highlightColor = [UIColor systemOrangeColor];
 		_nightShiftButton = [[MZELabeledRoundButtonViewController alloc] initWithGlyphImage:glyphImage highlightColor:highlightColor];
+		// _nightShiftButton.useDarkTheme = YES;
 		[_nightShiftButton setLabelsVisible:YES];
 		[_nightShiftButton setTitle:[_bundle localizedStringForKey:@"CONTROL_CENTER_NIGHT_SHIFT_SETTING_NAME" value:@"" table:nil]];
 		[_nightShiftButton setSubtitle:[_bundle localizedStringForKey:@"CONTROL_CENTER_STATUS_NIGHT_SHIFT_ON_MANUAL" value:@"" table:nil]];
 		[[_nightShiftButton button] addTarget:self action:@selector(_nightShiftButtonPressed:) forControlEvents:0x40];
 		[self.view addSubview:[_nightShiftButton view]];
+		_nightShiftButton.useDarkTheme = YES;
 		//CONTROL_CENTER_NIGHT_SHIFT_SETTING_NAME
 	}
 }
@@ -109,6 +111,7 @@ MZEDisplayModuleBackgroundViewController *displayBackgroundController;
 		if (!_bundle) {
 			_bundle = [NSBundle bundleForClass:[self class]];
 		}
+		_nightShiftButton.useDarkTheme = YES;
 
 		CBBlueLightStatus status;
 		if ([client getBlueLightStatus:&status]) {

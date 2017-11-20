@@ -1,6 +1,7 @@
 #import "MZEAirPlayMirroringModuleViewController.h"
 #import "MZEAirPlayMirroringModule.h"
 #import <MaizeUI/MZELayoutOptions.h>
+#import <MaizeUI/MZEModularControlCenterViewController.h>
 
 #import "macros.h"
 
@@ -15,6 +16,11 @@
 		//[_routingViewController setAllowMirroring:YES];
 		_routingViewController.mirroringStyle = 2;
 		_routingViewController.mze_customDisplay = YES;
+
+		// if ([self _previewInteractionShouldFinishTransitionToPreview:nil]) {
+		// 	[self previewInteraction:nil didUpdatePreviewTransition:1.0f ended:YES];
+		// 	return;
+		// }
 		//[_routingViewController setAllowMirroring:YES];
 		//[_routingViewController setDiscoveryModeOverride:@3];
 
@@ -60,6 +66,11 @@
 	// 	[self setSelected:isSelected];
 	// [_module setSelected:isSelected];
 	[super buttonTapped:button forEvent:event];
+	
+	MZEModuleCollectionViewController *collectionController = [MZEModularControlCenterViewController sharedCollectionViewController];
+	if (collectionController) {
+		[collectionController expandModuleWithIdentifier:@"com.ioscreatix.maize.AirPlayMirroringModule"];
+	}
 }
 
 - (void)willTransitionToExpandedContentMode:(BOOL)expanded {

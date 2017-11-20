@@ -13,6 +13,7 @@
     UIImageView *_glyphImageView;
     UIImageView *_highlightedGlyphView;
     MZECAPackageView *_glyphPackageView;
+    BOOL _useDarkTheme;
 }
 
 @property(retain, nonatomic, readwrite) MZECAPackageView *glyphPackageView; // @synthesize glyphPackageView=_glyphPackageView;
@@ -24,6 +25,7 @@
 @property(copy, nonatomic, readwrite) NSString *glyphState; // @synthesize glyphState=_glyphState;
 @property(retain, nonatomic, readwrite) UIImage *glyphImage; // @synthesize glyphImage=_glyphImage;
 @property(retain, nonatomic, readwrite) CAPackage *glyphPackage; // @synthesize glyphPackage=_glyphPackage;
+@property(nonatomic, assign) BOOL useDarkTheme;
 
 - (id)initWithGlyphPackage:(CAPackage *)arg1 highlightColor:(UIColor *)arg2;
 - (id)initWithGlyphImage:(UIImage *)arg1 highlightColor:(UIColor *)arg2;

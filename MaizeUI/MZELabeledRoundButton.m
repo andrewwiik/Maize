@@ -5,7 +5,6 @@
 #import "macros.h"
 
 @implementation MZELabeledRoundButton
-
 // #pragma mark synthesize 
 
 // @synthesize subtitleLabel=_subtitleLabel;
@@ -90,7 +89,6 @@
 - (id)initWithHighlightColor:(UIColor *)highlightColor {
 	self = [super initWithFrame:CGRectZero];
 	if (self) {
-
 		_highlightColor = highlightColor;
 		_buttonSize = CGSizeMake([MZELayoutOptions roundButtonSize],[MZELayoutOptions roundButtonSize]);
 
@@ -209,5 +207,13 @@
 		[self setNeedsLayout];
 		[self layoutIfNeeded];
 	}
+}
+
+- (BOOL)useDarkTheme {
+	return [_buttonView useDarkTheme];
+}
+
+- (void)setUseDarkTheme:(BOOL)useDarkTheme {
+	[_buttonView setUseDarkTheme:useDarkTheme];
 }
 @end

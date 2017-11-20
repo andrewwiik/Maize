@@ -30,6 +30,7 @@
 @property(copy, nonatomic,readwrite) NSString *subtitle; // @synthesize subtitle=_subtitle;
 - (void)loadView;
 @property(copy, nonatomic,readwrite) NSString *title; // @dynamic title;
+@property (nonatomic, assign) BOOL useDarkTheme;
 - (void)buttonTapped:(id)arg1;
 - (id)initWithGlyphPackage:(CAPackage *)arg1 highlightColor:(UIColor *)arg2;
 - (id)initWithGlyphImage:(UIImage *)arg1 highlightColor:(UIColor *)arg2;

@@ -75,7 +75,7 @@ static BOOL isIOS11Mode = YES;
 			}
 			//_contentContainerView.moduleMaterialView.hidden = YES;
 			//_psuedoView.hidden = NO;
-			return YES;
+			return NO;
 		}
 	} else {
 		if ([self isExpanded]) {
@@ -95,6 +95,65 @@ static BOOL isIOS11Mode = YES;
 	_canBubble = YES;
 	return YES;
 	//[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
+}
+
+// - (BOOL)closeModuleWithCompletion:(void (^)(void))completionBlock {
+// 	if ([_contentViewController respondsToSelector:@selector(canDismissPresentedContent)] && [self isExpanded]) {
+// 		if ([_contentViewController canDismissPresentedContent]) {
+// 			[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
+// 			// _contentContainerView.moduleMaterialView.hidden = YES;
+// 			// _psuedoView.hidden = NO;
+// 			return YES;
+// 		} else {
+// 			if ([_contentViewController respondsToSelector:@selector(dismissPresentedContent)]) {
+// 				[_contentViewController dismissPresentedContentWithCompletion:completionBlock];
+// 			}
+// 			//_contentContainerView.moduleMaterialView.hidden = YES;
+// 			//_psuedoView.hidden = NO;
+// 			return NO;
+// 		}
+// 	} else {
+// 		if ([self isExpanded]) {
+// 			[_delegate contentModuleContainerViewController:self closeExpandedModule:_contentModule];
+// 			// _contentContainerView.moduleMaterialView.hidden = YES;
+// 			// _psuedoView.hidden = NO;
+// 			return YES;
+// 		} else {
+// 			if (self.previewInteraction) {
+// 				[self.previewInteraction cancelInteraction];
+// 				// _contentContainerView.moduleMaterialView.hidden = YES;
+// 				// _psuedoView.hidden = NO;
+// 			}
+// 		}
+
+// 	}
+// 	_canBubble = YES;
+// 	return YES;
+// }
+
+- (void)expandModule {
+	if (![self isExpanded]) {
+		if ([self _previewInteractionShouldFinishTransitionToPreview:nil]) {
+			[self previewInteraction:nil didUpdatePreviewTransition:1.0f ended:YES];
+			return;
+		}
+
+		_canBubble = NO;
+		if (self.bubblingAnimator) {
+			[self.bubblingAnimator stopAnimation:YES];
+		}
+		if (self.previewInteraction) {
+			[self.previewInteraction cancelInteraction];
+		}
+		_canBubble = YES;
+		[UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+			self.view.transform = CGAffineTransformIdentity;
+		} completion:^(BOOL completed){
+			[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+			// _contentContainerView.moduleMaterialView.hidden = YES;
+			// _psuedoView.hidden = NO;
+		}];
+	}
 }
 
 - (MZEContentModuleContainerView *)moduleContainerView {
@@ -537,28 +596,7 @@ static BOOL isIOS11Mode = YES;
 - (void)handleLongPressGesture:(UILongPressGestureRecognizer *)recognizer {
 
 	if (recognizer.state == UIGestureRecognizerStateBegan) {
-		if (![self isExpanded]) {
-			if ([self _previewInteractionShouldFinishTransitionToPreview:nil]) {
-				[self previewInteraction:nil didUpdatePreviewTransition:1.0f ended:YES];
-				return;
-			}
-
-			_canBubble = NO;
-			if (self.bubblingAnimator) {
-				[self.bubblingAnimator stopAnimation:YES];
-			}
-			if (self.previewInteraction) {
-				[self.previewInteraction cancelInteraction];
-			}
-	    	_canBubble = YES;
-	    	[UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
-				self.view.transform = CGAffineTransformIdentity;
-			} completion:^(BOOL completed){
-				[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
-				// _contentContainerView.moduleMaterialView.hidden = YES;
-				// _psuedoView.hidden = NO;
-			}];
-		}
+		[self expandModule];
 	}
 }
 

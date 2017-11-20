@@ -49,7 +49,7 @@ static BOOL isIOS11Mode = YES;
 
 static MZEModularControlCenterOverlayViewController *sharedController;
 
-
+static BOOL isLoading = NO;
 @interface SBControlCenterController (MZE)
 @property (assign,getter=isPresented,nonatomic) BOOL presented;
 @end
@@ -185,6 +185,8 @@ MZEHybridPageViewController *hybridPageController;
     ((CCUIControlCenterViewController *)self).mze_viewController.view.frame = ((CCUIControlCenterViewController *)self).view.bounds;
     [((CCUIControlCenterViewController *)self).mze_viewController revealWithProgress:revealPercentage];
   }
+
+  isLoading = NO;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)recognizer shouldReceiveTouch:(UITouch *)touch {
@@ -301,13 +303,66 @@ MZEHybridPageViewController *hybridPageController;
 -(BOOL)handleMenuButtonTap {
   MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
   if (collectionViewController) {
-    if ([collectionViewController handleMenuButtonTap]) {
-      return YES;
-    }
+    [collectionViewController handleMenuButtonTap];
+    return YES;
   }
 
   return %orig;
 }
+
+// - (BOOL)dismissModalFullScreenIfNeeded {
+//   // MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
+//   // if (collectionViewController) {
+//   //   return ![collectionViewController handleMenuButtonTap];
+//   //   //return YES;
+//   // }
+
+//   return %orig;
+// }
+
+// - (void)dismissAnimated:(BOOL)animated withAdditionalAnimations:(void(^)(void))arg1 completion:(id)arg2 {
+//     // MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
+//     // if (collectionViewController) {
+//     //   do {
+
+//     //   } while ([collectionViewController handleMenuButtonTap] == NO);
+//     // }
+
+
+//     // arg1 = ^{
+//     //   MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
+//     //   if (collectionViewController) {
+//     //     do {
+
+//     //     } while ([collectionViewController handleMenuButtonTap] == NO);
+//     //   }
+//     // };
+//     // if (!isLoading) {
+//     //   MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
+//     //   if (collectionViewController) {
+//     //     do {
+
+//     //     } while ([collectionViewController handleMenuButtonTap] == NO);
+//     //   }
+//     // }
+//   // MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
+//   // if (collectionViewController) {
+//   //   do {
+
+//   //   } while (![collectionViewController handleMenuButtonTap]);
+//   // }
+  
+
+//   // MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
+//   // if (collectionViewController) {
+//   //   if ([collectionViewController handlDoubleMenuButtonTapWithCompletion:^{
+//   //     %orig;
+//   //   }]) {
+//   //     return;
+//   //   }
+//   // }
+//   %orig;
+// }
 
 - (BOOL)_shouldShowGrabberOnFirstSwipe {
   return NO;
@@ -368,8 +423,10 @@ MZEHybridPageViewController *hybridPageController;
   if (!sharedController) {
     SBControlCenterController *controller = [NSClassFromString(@"SBControlCenterController") _sharedInstanceCreatingIfNeeded:YES];
     if (controller && [controller valueForKey:@"_viewController"]) {
+      isLoading = YES;
       CCUIControlCenterViewController *viewController = [controller valueForKey:@"_viewController"];
       [viewController setRevealPercentage:0.0];
+      //isLoading = NO;
     }
   }
 }
@@ -389,6 +446,17 @@ MZEHybridPageViewController *hybridPageController;
 // }
 // %end
 
+// %hook SBUIController
+// - (BOOL)handleHomeButtonDoublePressDown {
+//   // MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
+//   // if (collectionViewController) {
+//   //   do {
+
+//   //   } while ([collectionViewController handleMenuButtonTap] == NO);
+//   // }
+//   return %orig;
+// }
+// %end
 
 %ctor {
   NSString *controlCenterControllerClass;

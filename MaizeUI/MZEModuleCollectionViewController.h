@@ -47,6 +47,7 @@
 - (void)willResignActive;
 - (void)willBecomeActive;
 - (BOOL)handleMenuButtonTap;
+// - (BOOL)handlDoubleMenuButtonTap;
 
 - (void)_populateModuleViewControllers;
 - (NSArray<MZEModuleInstance *> *)_moduleInstances;
@@ -69,9 +70,13 @@
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1 didBeginInteractionWithModule:(id <MZEContentModule>)arg2;
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController openExpandedModule:(id <MZEContentModule>)expandedModule;
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController closeExpandedModule:(id <MZEContentModule>)expandedModule;
+
 - (CGRect)compactModeFrameForContentModuleContainerViewController:(MZEContentModuleContainerViewController *)arg1;
 
 
 #pragma mark Settings Changed
 - (void)reloadSettings;
+
+#pragma mark API Support for Expanding Module
+- (void)expandModuleWithIdentifier:(NSString *)identifier;
 @end

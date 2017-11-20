@@ -4,11 +4,12 @@
 #import "MZELayoutOptions.h"
 
 @implementation MZERoundButton
+	@synthesize useDarkTheme=_useDarkTheme;
 
 - (id)initWithHighlightColor:(UIColor *)highlightColor {
 	self = [super initWithFrame:CGRectZero];
 	if (self) {
-
+		_useDarkTheme = NO;
 		_normalStateBackgroundView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
 		[_normalStateBackgroundView setFrame:self.bounds];
 		[_normalStateBackgroundView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
@@ -170,6 +171,20 @@
 
 - (CGSize)intrinsicContentSize {
 	return [self sizeThatFits:CGSizeZero];
+}
+
+- (void)setUseDarkTheme:(BOOL)useDarkTheme {
+	if (useDarkTheme != _useDarkTheme) {
+		_useDarkTheme = useDarkTheme;
+		[_normalStateBackgroundView removeFromSuperview];
+		_normalStateBackgroundView = nil;
+		_normalStateBackgroundView = [MZEMaterialView materialViewWithStyle:useDarkTheme ? MZEMaterialStyleDark : MZEMaterialStyleNormal];
+		[_normalStateBackgroundView setFrame:self.bounds];
+		[_normalStateBackgroundView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+		[_normalStateBackgroundView setUserInteractionEnabled:NO];
+		[self addSubview:_normalStateBackgroundView];
+		[self sendSubviewToBack:_normalStateBackgroundView];
+	}
 }
 
 @end

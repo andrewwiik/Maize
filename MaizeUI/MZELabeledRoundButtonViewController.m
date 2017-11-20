@@ -94,4 +94,12 @@
 	_glyphPackage = glyphPackage;
 	_buttonContainer.glyphPackage = _glyphPackage;
 }
+
+- (BOOL)useDarkTheme {
+	return [_buttonContainer useDarkTheme];
+}
+
+- (void)setUseDarkTheme:(BOOL)useDarkTheme {
+	[_buttonContainer setUseDarkTheme:useDarkTheme];
+}
 @end

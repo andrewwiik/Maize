@@ -15,6 +15,8 @@
 @property (nonatomic, retain) NSString *settingsFilePath;
 @property (nonatomic, retain) NSString *preferencesIdentifier;
 @property (nonatomic, retain) NSString *notificationName;
+@property (nonatomic, retain) NSMutableDictionary *identifiersByName;
+@property (nonatomic, retain) NSMutableDictionary *nameByIdentifier;
 - (NSArray *)arrayForSection:(NSInteger)section;
 - (void)_flushSettings;
 - (void)setRootController:(id)rootController;

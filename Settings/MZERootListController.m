@@ -142,7 +142,35 @@
 	// self.tableView.tableHeaderView = dummyView;
 	// self.tableView.contentInset = UIEdgeInsetsMake(-dummyViewHeight, 0, 0, 0);
 	[self.tableView setSeparatorColor:[UIColor colorWithWhite:0 alpha:0.15]];
-	self.tableView.allowsSelectionDuringEditing = YES;
+	self.tableView.allowsSelectionDuringEditing = NO;
+
+	self.identifiersByName = [NSMutableDictionary new];
+	self.nameByIdentifier = [NSMutableDictionary new];
+	NSMutableArray *nameArray = [NSMutableArray new];
+
+	// for (NSString *identifier in self.enabledIdentifiers) {
+	// 	MZEModuleMetadata *data = [_moduleRepository metadataForIdentifier:identifier];
+	// 	identifiersByName[identifier] = data.displayName;
+	// 	nameByIdentifier[data.displayName] = 
+	// }
+
+	for (NSString *identifier in self.disabledIdentifiers) {
+		MZEModuleMetadata *data = [_moduleRepository metadataForIdentifier:identifier];
+		//identifiersByName[identifier] = [NSString stringWithFormat:@"%@|%@", data.displayName, identifier];
+		[nameArray addObject:[NSString stringWithFormat:@"%@|%@", data.displayName, identifier]];
+	}
+
+	NSArray *sortedNameArray = [nameArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+	NSMutableArray *sortedDisabledIdentifiers = [NSMutableArray new];
+	for (NSString *item in sortedNameArray) {
+		NSArray *splitItem = [item componentsSeparatedByString:@"|"];
+		[sortedDisabledIdentifiers addObject:splitItem[1]];
+	}
+
+
+	self.disabledIdentifiers = sortedDisabledIdentifiers;
+
+	//NSMutableArray *nameArray = [NSMutableArray new]; 
 	//[self.tableView setContentInset:UIEdgeInsetsMake(36,0,0,0)];
 	// CGRect originalFrame = self.tableView.frame;
 	// originalFrame.origin.y = 36;
@@ -333,30 +361,115 @@
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath  {
-	// if (indexPath.section == 0)
-	// 	return UITableViewCellEditingStyleDelete;
-	// else 
-	// 	return UITableViewCellEditingStyleInsert;
-	return UITableViewCellEditingStyleNone;
+	if (indexPath.section == 0)
+		return UITableViewCellEditingStyleDelete;
+	else if (indexPath.section == 1) 
+		return UITableViewCellEditingStyleInsert;
+	else
+		return UITableViewCellEditingStyleNone;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleInsert) {
+        //handle insert...
+
+  //       NSMutableArray *fromArray = fromIndexPath.section ? self.disabledIdentifiers : self.enabledIdentifiers;
+		// NSMutableArray *toArray = toIndexPath.section ? self.disabledIdentifiers : self.enabledIdentifiers;
+		NSString *identifier = [self.disabledIdentifiers objectAtIndex:indexPath.row];
+        [tableView beginUpdates];
+		[self.enabledIdentifiers addObject:identifier];
+    	[tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.enabledIdentifiers indexOfObject:identifier] inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+        
+    	[self.disabledIdentifiers removeObject:identifier];
+	    //NSInteger rowToRemove = indexPath.row;
+	    [tableView deleteRowsAtIndexPaths:[NSMutableArray arrayWithObjects:[NSIndexPath indexPathForRow:indexPath.row inSection:1], nil] withRowAnimation:YES];
+       	
+	    [self _flushSettings];
+       	[tableView endUpdates];
+       // [tableView moveRowAtIndexPath:indexPath toIndexPath:[NSIndexPath indexPathForRow:[self.enabledIdentifiers count] - 1  inSection:0]];
+    } else if (editingStyle == UITableViewCellEditingStyleDelete){
+
+    	NSString *identifier = [self.enabledIdentifiers objectAtIndex:indexPath.row];
+        [tableView beginUpdates];
+
+        NSMutableArray *nameArray = [NSMutableArray new];
+		for (NSString *identifier1 in self.disabledIdentifiers) {
+			MZEModuleMetadata *data = [_moduleRepository metadataForIdentifier:identifier1];
+			//identifiersByName[identifier] = [NSString stringWithFormat:@"%@|%@", data.displayName, identifier1];
+			[nameArray addObject:[NSString stringWithFormat:@"%@|%@", data.displayName, identifier1]];
+		}
+
+		MZEModuleMetadata *data1 = [_moduleRepository metadataForIdentifier:identifier];
+		[nameArray addObject:[NSString stringWithFormat:@"%@|%@", data1.displayName, identifier]];
+
+		NSArray *sortedNameArray = [nameArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+		NSMutableArray *sortedDisabledIdentifiers = [NSMutableArray new];
+		for (NSString *item in sortedNameArray) {
+			NSArray *splitItem = [item componentsSeparatedByString:@"|"];
+			[sortedDisabledIdentifiers addObject:splitItem[1]];
+		}
+
+		self.disabledIdentifiers = sortedDisabledIdentifiers;
+
+        [tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.disabledIdentifiers indexOfObject:identifier] inSection:1]] withRowAnimation:UITableViewRowAnimationFade];
+        [self.enabledIdentifiers removeObject:identifier];
+        [tableView deleteRowsAtIndexPaths:[NSMutableArray arrayWithObjects:[NSIndexPath indexPathForRow:indexPath.row inSection:0], nil] withRowAnimation:YES];
+        [self _flushSettings];
+       	[tableView endUpdates];
+        // self.disabledIdentifiers = sortedDisabledIdentifiers;
+    	
+
+		//self.disabledIdentifiers = sortedDisabledIdentifiers;
+  //   	NSString *identifier = [self.enabledIdentifiers objectAtIndex:indexPath.row];
+  //       [tableView beginUpdates];
+		// [self.disabledIdentifiers insertObject:identifier atIndex];
+  //   	[tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.enabledIdentifiers indexOfObject:identifier] inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+        
+  //   	[self.disabledIdentifiers removeObject:identifier];
+	 //    //NSInteger rowToRemove = indexPath.row;
+	 //    [tableView deleteRowsAtIndexPaths:[NSMutableArray arrayWithObjects:[NSIndexPath indexPathForRow:indexPath.row inSection:1], nil] withRowAnimation:YES];
+       	
+	 //    [self _flushSettings];
+  //      	[tableView endUpdates];
+        //handle delete...
+    }
 }
 
  - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
  	return NO;
  }
 
- - (BOOL) tableView: (UITableView *) tableView canMoveRowAtIndexPath: (NSIndexPath *) indexPath {
+ - (BOOL)tableView:(UITableView *) tableView canMoveRowAtIndexPath: (NSIndexPath *) indexPath {
  	return YES;
  }
 
- - (void)tableView: (UITableView *) tableView moveRowAtIndexPath: (NSIndexPath *) fromIndexPath toIndexPath: (NSIndexPath *) toIndexPath {
+ - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
 	
 	//[(UIPanGestureRecognizer *)[[[NSClassFromString(@"SBControlCenterController") sharedInstance] _controlCenterViewController] valueForKey:@"_panGesture"] setEnabled:NO];
-	
 	NSMutableArray *fromArray = fromIndexPath.section ? self.disabledIdentifiers : self.enabledIdentifiers;
 	NSMutableArray *toArray = toIndexPath.section ? self.disabledIdentifiers : self.enabledIdentifiers;
 	NSString *identifier = [fromArray objectAtIndex:fromIndexPath.row];
 	[fromArray removeObjectAtIndex:fromIndexPath.row];
 	[toArray insertObject:identifier atIndex:toIndexPath.row];
+
+	NSMutableArray *nameArray = [NSMutableArray new];
+
+	for (NSString *identifier1 in self.disabledIdentifiers) {
+		MZEModuleMetadata *data = [_moduleRepository metadataForIdentifier:identifier1];
+		//identifiersByName[identifier] = [NSString stringWithFormat:@"%@|%@", data.displayName, identifier1];
+		[nameArray addObject:[NSString stringWithFormat:@"%@|%@", data.displayName, identifier1]];
+	}
+
+	NSArray *sortedNameArray = [nameArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+	NSMutableArray *sortedDisabledIdentifiers = [NSMutableArray new];
+	for (NSString *item in sortedNameArray) {
+		NSArray *splitItem = [item componentsSeparatedByString:@"|"];
+		[sortedDisabledIdentifiers addObject:splitItem[1]];
+	}
+
+	self.disabledIdentifiers = sortedDisabledIdentifiers;
+	[tableView reloadData];
+
 	[self _flushSettings];
 	//[(UIPanGestureRecognizer *)[[[NSClassFromString(@"SBControlCenterController") sharedInstance] _controlCenterViewController] valueForKey:@"_panGesture"] setEnabled:YES];
 	//[(UIPanGestureRecognizer *)[[[[NSClassFromString(@"SBControlCenterController") sharedInstance] _controlCenterViewController] valueForKey:@"_panGesture"] setEnabled:YES];
@@ -364,11 +477,11 @@
 }
 
 
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        //add code here for when you hit delete
-    }    
-}
+//  - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+//     if (editingStyle == UITableViewCellEditingStyleDelete) {
+//         //add code here for when you hit delete
+//     }    
+// }
 
 - (NSArray *)arrayForSection:(NSInteger)section {
 	return section ? self.disabledIdentifiers : self.enabledIdentifiers;

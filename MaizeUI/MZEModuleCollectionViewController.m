@@ -465,15 +465,35 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 			containerViewController.psuedoView.hidden = NO;
 		}
 	}];
+
+	//[self contentModuleContainerViewController:containerViewController closeExpandedModule:expandedModule withCompletion:nil];
 }
 
 - (BOOL)handleMenuButtonTap {
 	if ([_currentModules count] > 0) {
-		[[_currentModules objectAtIndex:0] closeModule];
-		return YES;
+		return [[_currentModules objectAtIndex:0] closeModule];
+		//return YES;
 	}
-	return NO;
+	return YES;
 }
+
+// - (BOOL)handlDoubleMenuButtonTao {
+// 	if ([_currentModules count] > 0) {
+// 		[[_currentModules objectAtIndex:0] closeModuleWithCompletion:^{
+// 			if ([_currentModules count] > 0) {
+// 				[[_currentModules objectAtIndex:0] closeModuleWithCompletion:^{
+// 					completionBlock();
+// 				}];
+// 			} else {
+// 				if (completionBlock) {
+// 					completionBlock();
+// 				}
+// 			}
+// 		}];
+// 		return YES;
+// 	}
+// 	return NO;
+// }
 
 
 - (CGRect)compactModeFrameForContentModuleContainerViewController:(MZEContentModuleContainerViewController *)viewController {
@@ -509,5 +529,14 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 
 	[self _populateModuleViewControllers];
+}
+
+- (void)expandModuleWithIdentifier:(NSString *)identifier {
+	if (_moduleViewControllerByIdentifier) {
+		MZEContentModuleContainerViewController *controller = [_moduleViewControllerByIdentifier objectForKey:identifier];
+		if (controller) {
+			[controller expandModule];
+		}
+	}
 }
 @end
