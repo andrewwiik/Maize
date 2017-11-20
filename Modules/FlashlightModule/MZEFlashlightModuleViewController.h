@@ -26,4 +26,5 @@ extern NSString *const FlashlightLevelKey;
 - (void)newFlashlightMade:(NSNotification *)notification;
 - (BOOL)shouldBeginTransitionToExpandedContentModule;
 - (BOOL)shouldMaskToBounds;
+//- (void)fakeHideSlider:(BOOL)should;
 @end

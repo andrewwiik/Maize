@@ -2,6 +2,7 @@
 #import "MZEMenuModuleItemView.h"
 #import "MZEMaterialView.h"
 #import "_MZEBackdropView.h"
+#import "MZEMenuModuleView.h"
 
 @interface MZEMenuModuleViewController : MZEButtonModuleViewController {
 	NSMutableArray<MZEMenuModuleItemView *> *_menuItemsViews;
@@ -12,6 +13,8 @@
     UIStackView *_containerView;
     NSString *_title;
     BOOL _shouldProvideOwnPlatter;
+    // MZEMenuItemView *_viewToIgnore;
+    UILongPressGestureRecognizer *_pressRecognizer;
 }
 
 @property (nonatomic, retain, readwrite) NSMutableArray<MZEMenuModuleItemView *> *menuItemsViews;
@@ -24,8 +27,10 @@
 @property (nonatomic, retain, readwrite) UIStackView *containerView;
 @property (nonatomic, retain, readwrite) MZEMaterialView *headerSeparatorView;
 @property (nonatomic, assign, readwrite) BOOL shouldProvideOwnPlatter;
+@property (nonatomic, retain, readwrite) MZEMenuModuleView *view;
 //@property(readonly, nonatomic) _Bool shouldHidePlatterWhenExpanded;
 
+- (void)loadView;
 - (void)viewDidLoad;
 - (void)viewWillLayoutSubviews;
 
@@ -48,4 +53,11 @@
 - (void)_handleActionTapped:(MZEMenuModuleItemView *)menuItemView;
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator;
+
+// - (void)touchesBegan:(id)touches withEvent:(id)event;
+// - (void)touchesMoved:(id)touches withEvent:(id)event;
+// - (void)touchesEnded:(id)touches withEvent:(id)event;
+// - (void)touchesCancelled:(id)touches withEvent:(id)event;
+
+- (void)_handlePressGesture:(UILongPressGestureRecognizer *)recognizer;
 @end

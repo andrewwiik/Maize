@@ -17,6 +17,8 @@ static CGFloat separatorHeight = 0;
     @synthesize throttleUpdates=_throttleUpdates;
     @synthesize glyphVisible=_glyphVisible;
     @synthesize separatorsHidden = _separatorsHidden;
+    @synthesize onlyRespondInsideSlider = _onlyRespondInsideSlider;
+    @synthesize respondToSliderChanges = _respondToSliderChanges;
 
 
 
@@ -31,11 +33,28 @@ static CGFloat separatorHeight = 0;
 // }
 
 - (id)initWithFrame:(CGRect)frame {
-	self = [super initWithFrame:frame];
-	if (self) {
+	return [self initWithFrame:frame useContainerView:NO];
+}
+
+- (id)initWithFrame:(CGRect)frame useContainerView:(BOOL)useContainerView {
+    self = [super initWithFrame:frame];
+    if (self) {
+            _respondToSliderChanges = YES;
+            _useContainerView = useContainerView;
             if (separatorHeight == 0) {
                 separatorHeight = 1.0f/[UIScreen mainScreen].scale;
              //self.layer.delegate = self;
+            }
+
+            _onlyRespondInsideSlider = NO;
+            if (_useContainerView) {
+                _containerView = [[UIView alloc] initWithFrame:CGRectZero];
+                [self addSubview:_containerView];
+                _containerView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+                _containerView.backgroundColor = [UIColor clearColor];
+                _containerView.userInteractionEnabled = NO;
+            } else {
+                _containerView = self;
             }
             _glyphVisible = YES;
             _throttleUpdates = NO;
@@ -56,13 +75,17 @@ static CGFloat separatorHeight = 0;
             _punchThroughContainer.maskView = _glyphMaskView;
             _punchThroughContainer.clipsToBounds = YES;
             _punchThroughContainer.userInteractionEnabled = NO;
-            [self addSubview:_punchThroughContainer];
+            [_containerView addSubview:_punchThroughContainer];
             _punchThroughContainer.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
             [self _createStepViewsForNumberOfSteps:_numberOfSteps];
             [self setExclusiveTouch:YES];
     }
     return self;
 }
+
+// - (void)setAlpha:(CGFloat)alpha {
+
+// }
 
 
 - (void)setValue:(float)value {
@@ -122,7 +145,7 @@ static CGFloat separatorHeight = 0;
             [_glyphImageView setUserInteractionEnabled:NO];
             [_glyphMaskView addSubview:_glyphImageView];
             _glyphImageView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
-            //[self addSubview:_glyphImageView];
+            //[_containerView addSubview:_glyphImageView];
         }
 
         [_glyphImageView setImage:_glyphImage];
@@ -179,7 +202,7 @@ static CGFloat separatorHeight = 0;
             // cutoutView.backgroundColor = [UIColor blackColor];
             // [_glyphMaskView addSubview:cutoutView];
             // [cutoutView.layer addSublayer:_glyphPackageView.layer];
-            //[self addSubview:_glyphPackageView];
+            //[_containerView addSubview:_glyphPackageView];
         }
 
         [_glyphPackageView setPackage:_glyphPackage];
@@ -198,7 +221,12 @@ static CGFloat separatorHeight = 0;
 }
 
 - (void)setAlpha:(CGFloat)alpha {
-    [super setAlpha:alpha];
+    //[super setAlpha:alpha];
+    if (_useContainerView) {
+        _containerView.alpha = alpha;
+    } else {
+        [super setAlpha:alpha];
+    }
     // if (_glyphMaskView) {
     //     _glyphMaskView.alpha = alpha;
     // }
@@ -275,7 +303,18 @@ static CGFloat separatorHeight = 0;
     }
 }
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    CGPoint touchPoint = [touch locationInView:self];
+
+    if (!_respondToSliderChanges) {
+        return YES;
+    }
+
+    CGPoint touchPoint = [touch locationInView:_containerView];
+    // if (_onlyRespondInsideSlider) {
+    //     if (!CGRectContainsPoint(_containerView.frame, touchPoint)) {
+    //         return YES;
+    //     }
+    // }
+
     _startingLocation = touchPoint;
     _startingHeight = CGRectGetHeight([self bounds]);
     _startingValue = _value;
@@ -295,8 +334,25 @@ static CGFloat separatorHeight = 0;
 }
 
 - (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    if (!_respondToSliderChanges) {
+        return YES;
+    }
+
     BOOL absoluteReference = [self isStepped];
-    CGPoint touchPoint = [touch locationInView:self];
+    CGPoint touchPoint = [touch locationInView:_containerView];
+
+    if (_onlyRespondInsideSlider) {
+        if (!CGRectContainsPoint(_containerView.frame, touchPoint)) {
+            return YES;
+        } else {
+            if (_throttleUpdates && !_updatesCommitTimer) {
+                _previousValue = _value;
+                _updatesCommitTimer = [NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(throttleTimerFired:) userInfo:nil repeats:YES];
+            }
+
+            [MZECurrentActions setIsSliding:YES];
+        }
+    }
     if (CGRectGetHeight([self bounds]) != _startingHeight) {
         _startingLocation = touchPoint;
         _startingHeight = CGRectGetHeight([self bounds]);
@@ -313,10 +369,26 @@ static CGFloat separatorHeight = 0;
 }
 
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    [_updatesCommitTimer invalidate];
-    _updatesCommitTimer = nil;
-    [self sendActionsForControlEvents:UIControlEventValueChanged];
+    if (_updatesCommitTimer) {
+        [_updatesCommitTimer invalidate];
+        _updatesCommitTimer = nil;
+    }
+
     [MZECurrentActions setIsSliding:NO];
+
+    if (!_respondToSliderChanges) {
+        return;
+    }
+
+    if (_onlyRespondInsideSlider) {
+        CGPoint touchPoint = [touch locationInView:_containerView];
+        if (!CGRectContainsPoint(_containerView.frame, touchPoint)) {
+
+            return;
+        }
+    }
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
+    //[MZECurrentActions setIsSliding:NO];
 }
 
 - (BOOL)isContentClippingRequired {
@@ -387,7 +459,7 @@ static CGFloat separatorHeight = 0;
         for (NSUInteger x = 0; x < numberOfSteps; x++) {
             UIView *stepView = [self _createBackgroundViewForStep:x+1];
             if (stepView) {
-                 [self addSubview:stepView];
+                 [_containerView addSubview:stepView];
                 [stepsArray addObject:stepView];
             } else {
                 HBLogError(@"COULDN'T CREATE STEP");
@@ -414,7 +486,7 @@ static CGFloat separatorHeight = 0;
             for (NSUInteger x = 0; x < numberOfSteps - 1; x++) {
                 MZEMaterialView *separatorView = [self _createSeparatorView];
                 if (separatorView) {
-                    [self addSubview:separatorView];
+                    [_containerView addSubview:separatorView];
                     [separatorsArray addObject:separatorView];
                 } else {
                     HBLogError(@"COULDN'T CREATE SEPARATOR VIEW");

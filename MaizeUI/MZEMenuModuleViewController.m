@@ -3,11 +3,13 @@
 #import <UIKit/UIFont+Private.h>
 #import <UIKit/UIFontDescriptor+Private.h>
 #import <QuartzCore/CALayer+Private.h>
+// #import "MZEMenuModuleItemView.h"
 
 static CGFloat separatorHeight = 0;
 
 @implementation MZEMenuModuleViewController
 	@dynamic title;
+	@dynamic view;
 
 
 - (id)init {
@@ -27,6 +29,14 @@ static CGFloat separatorHeight = 0;
 
 - (BOOL)providesOwnPlatter {
 	return _shouldProvideOwnPlatter;
+}
+
+- (void)loadView {
+	MZEMenuModuleView *view =  [MZEMenuModuleView new];
+	view.delegateController = self;
+    //newView.backgroundColor = [UIColor redColor];
+
+    self.view = view;
 }
 
 - (void)viewDidLoad {
@@ -73,12 +83,28 @@ static CGFloat separatorHeight = 0;
 	_containerView.distribution = UIStackViewDistributionFillEqually;
 	[self.view addSubview:_containerView];
 
-	for (UIView *menuItemView in _menuItemsViews) {
+	MZEMenuModuleItemView *lastItemView;
+	for (MZEMenuModuleItemView *menuItemView in _menuItemsViews) {
 		[_containerView addArrangedSubview:menuItemView];
+		//menuItemView.separatorVisible = YES;
+		lastItemView = menuItemView;
+	}
+
+	if (lastItemView) {
+		lastItemView.separatorVisible = NO;
 	}
 
 	[self _fadeViewsForExpandedState:NO];
 	[self.view sendSubviewToBack:_platterBackground];
+
+	_pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_handlePressGesture:)];
+	_pressRecognizer.minimumPressDuration = 0.0;
+	_pressRecognizer.numberOfTouchesRequired = 1;
+	[_pressRecognizer setCancelsTouchesInView:NO];
+	_pressRecognizer.delaysTouchesEnded = NO;
+	//_pressRecognizer.allowableMovement = 10.0;
+	//_pressRecognizer.delegate = self;
+	[self.view addGestureRecognizer:_pressRecognizer];
 }
 
 - (void)setTitle:(NSString *)title {
@@ -137,7 +163,7 @@ static CGFloat separatorHeight = 0;
 
 - (void)addActionWithTitle:(NSString *)title glyph:(UIImage *)glyph handler:(MZEMenuItemBlock)handler {
 	MZEMenuModuleItemView *itemView = [[MZEMenuModuleItemView alloc] initWithTitle:title glyphImage:glyph handler:handler];
-	[itemView addTarget:self action:@selector(_handleActionTapped:) forControlEvents:UIControlEventTouchUpInside];
+	//[itemView addTarget:self action:@selector(_handleActionTapped:) forControlEvents:UIControlEventTouchUpInside];
 	[_menuItemsViews addObject:itemView];
 	//[_containerView addArrangedSubview:itemView];
 }
@@ -206,14 +232,86 @@ static CGFloat separatorHeight = 0;
 }
 
 - (void)_handleActionTapped:(MZEMenuModuleItemView *)menuItemView {
-	if (menuItemView.handler()) {
-		[self dismissViewControllerAnimated:YES completion:nil];
-	}
+	[self dismissViewControllerAnimated:YES completion:^{
+		menuItemView.handler();
+	}];
+
+	// if (menuItemView.handler()) {
+	// 	[self dismissViewControllerAnimated:YES completion:nil];
+	// }
 }
 
 - (BOOL)shouldBeginTransitionToExpandedContentModule {
 	if ([self _menuItemsHeight] > 0) {
 		return YES;
 	} else return NO;
+}
+
+// - (void)touchesBegan:(id)touches withEvent:(id)event {
+// 	for (UIView *menuItemView in _menuItemsViews) {
+// 		[menuItemView touchesBegan:touches withEvent:event];
+// 	}
+// 	self.view.backgroundColor = [UIColor redColor];
+// }
+
+// - (void)touchesMoved:(id)touches withEvent:(id)event {
+// 	for (UIView *menuItemView in _menuItemsViews) {
+// 		[menuItemView touchesMoved:touches withEvent:event];
+// 	}
+// }
+
+// - (void)touchesEnded:(id)touches withEvent:(id)event {
+// 	for (UIView *menuItemView in _menuItemsViews) {
+// 		[menuItemView touchesEnded:touches withEvent:event];
+// 	}
+
+// 	self.view.backgroundColor = [UIColor blueColor];
+// }
+
+// - (void)touchesCancelled:(id)touches withEvent:(id)event {
+// 	for (UIView *menuItemView in _menuItemsViews) {
+// 		[menuItemView touchesCancelled:touches withEvent:event];
+// 	}
+// }
+
+- (void)_handlePressGesture:(UILongPressGestureRecognizer *)gestureRecognizer {
+	if ([self isExpanded]) {
+
+		CGPoint location = [gestureRecognizer locationInView:gestureRecognizer.view];
+		// location = [self.view convertPoint:location toView:_containerView];
+		if (CGRectContainsPoint(_containerView.frame, location)) {
+			location = [self.view convertPoint:location toView:_containerView];
+			MZEMenuModuleItemView *touchedItem; 
+			for (MZEMenuModuleItemView *menuItemView in _menuItemsViews) {
+				if (CGRectContainsPoint(menuItemView.frame, location) && !touchedItem) {
+					touchedItem = menuItemView;
+				} else {
+					if ([menuItemView isHighlighted]) {
+						[menuItemView setHighlighted:NO];
+					}
+				}
+			}
+
+			if (touchedItem) {
+				if (gestureRecognizer.state == UIGestureRecognizerStateBegan || 
+					gestureRecognizer.state == UIGestureRecognizerStateChanged) {
+
+					if (![touchedItem isHighlighted]) {
+						[touchedItem setHighlighted:YES];
+					}
+
+				} else {
+					[touchedItem setHighlighted:NO];
+					[self _handleActionTapped:touchedItem];
+				}
+			}
+		} else {
+			for (MZEMenuModuleItemView *menuItemView in _menuItemsViews) {
+				if ([menuItemView isHighlighted]) {
+					[menuItemView setHighlighted:NO];
+				}
+			}
+		}
+	}
 }
 @end

@@ -74,7 +74,15 @@ static AVFlashlight *flashlight;
 	[super viewDidLoad];
 
 	if (!_sliderView) {
-		_sliderView = [[MZEModuleSliderView alloc] initWithFrame:self.view.bounds];
+		_sliderView = [[MZEModuleSliderView alloc] initWithFrame:self.view.bounds useContainerView:YES];
+		_sliderView.onlyRespondInsideSlider = YES;
+
+		[_sliderView addTarget:self action:@selector(_touchDown:) forControlEvents:UIControlEventTouchDown];
+		[_sliderView addTarget:self action:@selector(_touchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+		[_sliderView addTarget:self action:@selector(_touchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
+		[_sliderView addTarget:self action:@selector(_dragEnter:) forControlEvents:UIControlEventTouchDragEnter];
+		[_sliderView addTarget:self action:@selector(_dragExit:) forControlEvents:UIControlEventTouchDragExit];
+		[_sliderView addTarget:self action:@selector(buttonTapped:forEvent:) forControlEvents:UIControlEventTouchUpInside];
            // _sliderView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
        // _sliderView.clipsToBounds = YES;
 		_sliderView.numberOfSteps = 5;
@@ -83,36 +91,40 @@ static AVFlashlight *flashlight;
         [_sliderView setThrottleUpdates:NO];
         [_sliderView addTarget:self action:@selector(_sliderValueDidChange:) forControlEvents:UIControlEventValueChanged];
         _sliderView.alpha = 0;
+        _sliderView.respondToSliderChanges = NO;
+        _sliderView.backgroundColor = [UIColor clearColor];
         [self.view addSubview:_sliderView];
         [_sliderView  setAutoresizingMask:18];
 	}
 }
 
 - (void)_sliderValueDidChange:(MZEModuleSliderView *)sliderView {
-
-	if (!flashlight) {
-		[self newFlashlightMade:nil];
-	}
-
-	float flashLevel = (float)(_sliderView.step - 1)/(float)(_sliderView.numberOfSteps - 1);
-	[_userDefaults setFloat:flashLevel forKey:FlashlightLevelKey];
-	[_userDefaults synchronize];
-
-	if (sliderView.step > 1) {
-		[flashlight setFlashlightLevel:flashLevel withError:nil];
-		if (_module) {
-			[_module setSelected:YES];
+	if ([self isExpanded]) {
+		if (!flashlight) {
+			[self newFlashlightMade:nil];
 		}
-	} else {
-		[flashlight turnPowerOff];
-		if (_module) {
-			[_module setSelected:NO];
+
+		float flashLevel = (float)(_sliderView.step - 1)/(float)(_sliderView.numberOfSteps - 1);
+		[_userDefaults setFloat:flashLevel forKey:FlashlightLevelKey];
+		[_userDefaults synchronize];
+
+		if (sliderView.step > 1) {
+			[flashlight setFlashlightLevel:flashLevel withError:nil];
+			if (_module) {
+				[_module setSelected:YES];
+			}
+		} else {
+			[flashlight turnPowerOff];
+			if (_module) {
+				[_module setSelected:NO];
+			}
 		}
 	}
 }
 
 - (void)buttonTapped:(UIControl *)button forEvent:(id)event {
-
+	if ([self isExpanded]) return;
+	[super buttonTapped:button forEvent:event];
 	if (!flashlight) {
 		[self newFlashlightMade:nil];
 	}
@@ -195,6 +207,7 @@ static AVFlashlight *flashlight;
 	// 	}];
 	// }
 	[_sliderView setSeparatorsHidden:YES];
+	[self.buttonModuleView setHighlighted:NO];
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
     	if (_expanded) {
 
@@ -219,6 +232,7 @@ static AVFlashlight *flashlight;
     	} else {
     		[UIView performWithoutAnimation:^{
     			self.sliderView.alpha = 0;
+    			//_sliderView.respondToSliderChanges = NO;
     			self.buttonView.alpha = 1;
     		}];
     		//self.buttonView.alpha = 1.0;
@@ -230,12 +244,34 @@ static AVFlashlight *flashlight;
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
     	_sliderView.layer.frozen = NO;
     	[_sliderView setSeparatorsHidden:NO];
+    	_sliderView.respondToSliderChanges = _expanded ? YES : NO;
+    	//[self.buttonModuleView setHighlighted:NO];
     }];
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
 - (BOOL)shouldMaskToBounds {
 	return YES;
+}
+
+- (void)_dragExit:(id)arg1 {
+	if (![self isExpanded]) [self.buttonModuleView _dragExit:arg1];
+}
+
+- (void)_dragEnter:(id)arg1 {
+	if (![self isExpanded]) [self.buttonModuleView _dragEnter:arg1];
+}
+
+- (void)_touchUpOutside:(id)arg1 {
+	if (![self isExpanded]) [self.buttonModuleView _touchUpOutside:arg1];
+}
+
+- (void)_touchUpInside:(id)arg1 {
+	if (![self isExpanded]) [self.buttonModuleView _touchUpInside:arg1];
+}
+
+- (void)_touchDown:(id)arg1 {
+	if (![self isExpanded]) [self.buttonModuleView _touchDown:arg1];
 }
 
 - (void)dealloc {

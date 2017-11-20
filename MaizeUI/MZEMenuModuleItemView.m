@@ -79,11 +79,11 @@ static CGFloat separatorHeight = 0;
 										   UIViewAutoresizingFlexibleLeftMargin);
 		}
 
-		[self addTarget:self action:@selector(_touchDown:) forControlEvents:UIControlEventTouchDown];
-		[self addTarget:self action:@selector(_touchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-		[self addTarget:self action:@selector(_touchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
-		[self addTarget:self action:@selector(_dragEnter:) forControlEvents:UIControlEventTouchDragEnter];
-		[self addTarget:self action:@selector(_dragExit:) forControlEvents:UIControlEventTouchDragExit];
+		// [self addTarget:self action:@selector(_touchDown:) forControlEvents:UIControlEventTouchDown];
+		// [self addTarget:self action:@selector(_touchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+		// [self addTarget:self action:@selector(_touchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
+		// [self addTarget:self action:@selector(_dragEnter:) forControlEvents:UIControlEventTouchDragEnter];
+		// [self addTarget:self action:@selector(_dragExit:) forControlEvents:UIControlEventTouchDragExit];
 
 		_handler = handler;
 	}
@@ -190,4 +190,12 @@ static CGFloat separatorHeight = 0;
 - (CGSize)intrinsicContentSize {
 	return [self sizeThatFits:CGSizeZero];
 }
+
+- (BOOL)isUserInteractionEnabled {
+	return NO;
+}
+
+// - (BOOL)isTracking {
+// 	return YES;
+// }
 @end

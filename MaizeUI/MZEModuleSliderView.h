@@ -39,6 +39,10 @@
     BOOL _changingValue;
     BOOL _separatorsHidden;
     _MZEBackdropView *_punchThroughContainer;
+    UIView *_containerView;
+    BOOL _onlyRespondInsideSlider;
+    BOOL _useContainerView;
+    BOOL _respondToSliderChanges;
 }
 
 @property (nonatomic, assign) CFAbsoluteTime startTime;
@@ -61,8 +65,12 @@
 @property(nonatomic, readonly) CALayer *punchOutRootLayer;
 @property (nonatomic, assign) CGFloat layerCornerRadius;
 @property (nonatomic, retain, readwrite) CADisplayLink *displayLink;
+@property (nonatomic) BOOL onlyRespondInsideSlider;
+@property (nonatomic) BOOL respondToSliderChanges;
  
 // + (Class)layerClass;
+
+- (id)initWithFrame:(CGRect)frame useContainerView:(BOOL)useContainerView;
 
 - (void)_updateStepFromValue:(float)arg1;
 - (void)_updateValueForTouchLocation:(CGPoint)arg1 withAbsoluteReference:(BOOL)arg2;

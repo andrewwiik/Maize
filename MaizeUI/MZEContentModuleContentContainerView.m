@@ -241,12 +241,32 @@ static BOOL isIOS11Mode = YES;
 				self.layer.cornerRadius = cornerRadius;
 				self.layer.cornerContentsCenter = cornerCenter;
 			} else {
-				if (self.moduleMaterialView._continuousCornerRadius < 1.0f) {
-					self.moduleMaterialView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+				if (!expanded) {
+					self.layer.cornerRadius = 0;
+					self.layer.cornerContentsCenter = CGRectZero;
+					self.clipsToBounds = NO;
+
+					if (self.moduleMaterialView._continuousCornerRadius < 1.0f) {
+						self.moduleMaterialView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+						//self.moduleMaterialView.clipsToBounds = YES;
+					}
 					self.moduleMaterialView.clipsToBounds = YES;
+					self.moduleMaterialView.layer.cornerRadius = cornerRadius;
+					self.moduleMaterialView.layer.cornerContentsCenter = cornerCenter;
+				} else {
+					self.moduleMaterialView.layer.cornerRadius = 0;
+					self.moduleMaterialView.layer.cornerContentsCenter = CGRectZero;
+					self.moduleMaterialView.clipsToBounds = NO;
+
+					//self.clipsToBounds = YES;
+					if (self._continuousCornerRadius < 1.0f) {
+						self._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+						// self.clipsToBounds = YES;
+					}
+					self.clipsToBounds = YES;
+					self.layer.cornerRadius = cornerRadius;
+					self.layer.cornerContentsCenter = cornerCenter;
 				}
-				self.moduleMaterialView.layer.cornerRadius = cornerRadius;
-				self.moduleMaterialView.layer.cornerContentsCenter = cornerCenter;
 			}
 			// self.moduleMaterialView.clipsToBounds = YES;
 			// self.moduleMaterialView.layer.cornerRadius = cornerRadius;
