@@ -16,6 +16,13 @@
 		//[_routingViewController setAllowMirroring:YES];
 		_routingViewController.mirroringStyle = 2;
 		_routingViewController.mze_customDisplay = YES;
+		//_airStuffController = [NSClassFromString(@"CCUIAirStuffSectionController") new]
+		//[_airStuffController ]
+
+		// 0.2188 - margin to Airplay button start
+		// + 12 for glyph center
+
+
 
 		// if ([self _previewInteractionShouldFinishTransitionToPreview:nil]) {
 		// 	[self previewInteraction:nil didUpdatePreviewTransition:1.0f ended:YES];

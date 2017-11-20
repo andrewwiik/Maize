@@ -474,7 +474,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 		return [[_currentModules objectAtIndex:0] closeModule];
 		//return YES;
 	}
-	return YES;
+	return NO;
 }
 
 // - (BOOL)handlDoubleMenuButtonTao {

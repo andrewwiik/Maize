@@ -75,7 +75,7 @@ static BOOL isIOS11Mode = YES;
 			}
 			//_contentContainerView.moduleMaterialView.hidden = YES;
 			//_psuedoView.hidden = NO;
-			return NO;
+			return YES;
 		}
 	} else {
 		if ([self isExpanded]) {

@@ -303,8 +303,8 @@ MZEHybridPageViewController *hybridPageController;
 -(BOOL)handleMenuButtonTap {
   MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
   if (collectionViewController) {
-    [collectionViewController handleMenuButtonTap];
-    return YES;
+    if ([collectionViewController handleMenuButtonTap]) return NO;
+    //return YES;
   }
 
   return %orig;
