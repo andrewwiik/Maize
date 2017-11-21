@@ -30,6 +30,14 @@
 			}
 		}
 
+		if ([self valueForKey:@"_hotspotNetworkTypeLabel"]) {
+			((UILabel *)[self valueForKey:@"_hotspotNetworkTypeLabel"]).textColor = [UIColor whiteColor];
+		}
+
+		if (self.textLabel) {
+			self.textLabel.textColor = [UIColor whiteColor];
+		}
+
 		MSHookIvar<UIColor *>(self, "_selectionTintColor") = [UIColor colorWithWhite:1 alpha:0.4];
 	}
 	// if (self.mze_isMZECell) {
@@ -117,6 +125,31 @@
 				lockView.layer.compositingFilter = @"plusL";
 			}
 		}
+
+		if ([self valueForKey:@"_hotspotSignalView"]) {
+			UIImageView *hotspotSignalView = (UIImageView *)[self valueForKey:@"_hotspotSignalView"];
+			if (hotspotSignalView.image) {
+				hotspotSignalView.image = [hotspotSignalView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+			}
+			hotspotSignalView.tintColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+			if (!hotspotSignalView.layer.compositingFilter) {
+				hotspotSignalView.layer.compositingFilter = @"plusL";
+			}
+		}
+
+		if ([self valueForKey:@"_hotspotBatteryView"]) {
+			id hotspotBatteryView = [self valueForKey:@"_hotspotBatteryView"];
+			if ([hotspotBatteryView valueForKey:@"_shellImageView"]) {
+				UIImageView *batteryShellView = (UIImageView *)[hotspotBatteryView valueForKey:@"_shellImageView"];
+				if (batteryShellView.image) {
+					batteryShellView.image = [batteryShellView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+				}
+				batteryShellView.tintColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+				if (!batteryShellView.layer.compositingFilter) {
+					batteryShellView.layer.compositingFilter = @"plusL";
+				}
+			}
+		}
 	}
 	// if (self.textLabel) {
 	// 	if (!self.textLabel.layer.compositingFilter) {
@@ -180,6 +213,31 @@
 				lockView.layer.compositingFilter = @"plusL";
 			}
 		}
+
+		if ([self valueForKey:@"_hotspotSignalView"]) {
+			UIImageView *hotspotSignalView = (UIImageView *)[self valueForKey:@"_hotspotSignalView"];
+			if (hotspotSignalView.image) {
+				hotspotSignalView.image = [hotspotSignalView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+			}
+			hotspotSignalView.tintColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+			if (!hotspotSignalView.layer.compositingFilter) {
+				hotspotSignalView.layer.compositingFilter = @"plusL";
+			}
+		}
+
+		if ([self valueForKey:@"_hotspotBatteryView"]) {
+			id hotspotBatteryView = [self valueForKey:@"_hotspotBatteryView"];
+			if ([hotspotBatteryView valueForKey:@"_shellImageView"]) {
+				UIImageView *batteryShellView = (UIImageView *)[hotspotBatteryView valueForKey:@"_shellImageView"];
+				if (batteryShellView.image) {
+					batteryShellView.image = [batteryShellView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+				}
+				batteryShellView.tintColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+				if (!batteryShellView.layer.compositingFilter) {
+					batteryShellView.layer.compositingFilter = @"plusL";
+				}
+			}
+		}
 	}
 }
 
@@ -220,6 +278,40 @@
 		%orig([UIColor colorWithWhite:1 alpha:0.4]);
 	} else {
 		%orig;
+	}
+}
+
+- (void)__layoutRemoteHotspotDevice {
+	%orig;
+	if (self.mze_isMZECell) {
+		if ([self valueForKey:@"_hotspotSignalView"]) {
+			UIImageView *hotspotSignalView = (UIImageView *)[self valueForKey:@"_hotspotSignalView"];
+			if (hotspotSignalView.image) {
+				hotspotSignalView.image = [hotspotSignalView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+			}
+			hotspotSignalView.tintColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+			if (!hotspotSignalView.layer.compositingFilter) {
+				hotspotSignalView.layer.compositingFilter = @"plusL";
+			}
+		}
+
+		if ([self valueForKey:@"_hotspotBatteryView"]) {
+			id hotspotBatteryView = [self valueForKey:@"_hotspotBatteryView"];
+			if ([hotspotBatteryView valueForKey:@"_shellImageView"]) {
+				UIImageView *batteryShellView = (UIImageView *)[hotspotBatteryView valueForKey:@"_shellImageView"];
+				if (batteryShellView.image) {
+					batteryShellView.image = [batteryShellView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+				}
+				batteryShellView.tintColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+				if (!batteryShellView.layer.compositingFilter) {
+					batteryShellView.layer.compositingFilter = @"plusL";
+				}
+			}
+		}
+
+		if ([self valueForKey:@"_hotspotNetworkTypeLabel"]) {
+			((UILabel *)[self valueForKey:@"_hotspotNetworkTypeLabel"]).textColor = [UIColor whiteColor];
+		}
 	}
 }
 %end
