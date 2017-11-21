@@ -11,4 +11,5 @@
 @property (assign,nonatomic) BOOL usesColorOffset;
 + (instancetype)settingsForStyle:(NSInteger)arg1 ;
 @property (assign,nonatomic) CGFloat scale;
+@property (nonatomic,copy) NSString * blurQuality;
 @end

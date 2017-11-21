@@ -3,10 +3,32 @@
 #import <FlipSwitch/FSSwitchPanel+Private.h>
 
 
+
+NSArray *idsToIgnore = nil;
 @implementation MZEFlipSwitchProvider
 
 + (NSArray<NSString *> *)possibleIdentifiers {
-	return [[NSClassFromString(@"FSSwitchPanel") sharedPanel] sortedSwitchIdentifiers];
+
+	if (!idsToIgnore) {
+		idsToIgnore = @[@"com.a3tweaks.switch.record-screen", 
+								 @"com.a3tweaks.switch.do-not-disturb", 
+								 @"com.a3tweaks.switch.flashlight",
+								 @"com.a3tweaks.switch.low-power",
+								 @"com.a3tweaks.switch.ringer",
+								 @"com.a3tweaks.switch.rotation",
+								 @"com.a3tweaks.switch.rotation-lock",
+								 @"com.CC.ScreenRecordSwitch"];
+	}
+	
+	NSMutableArray *allIdentifiers = [[[NSClassFromString(@"FSSwitchPanel") sharedPanel] sortedSwitchIdentifiers] mutableCopy];
+
+	for (NSString *identifier in idsToIgnore) {
+		[allIdentifiers removeObject:identifier];
+	}
+
+	return [allIdentifiers copy];
+
+	//return [[NSClassFromString(@"FSSwitchPanel") sharedPanel] sortedSwitchIdentifiers];
 }
 
 + (id<MZEContentModule>)moduleForIdentifier:(NSString *)identifier {

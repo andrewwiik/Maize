@@ -47,12 +47,18 @@ static inline NSString*nameForActionButton(NSString *rawID, BOOL held)
 //self.enabledIdentifiers = [(PLAppsController *)self.prefsController visibleAppsForViewMode:self.viewMode];
 
 static BOOL hasAttemptedToLoadPolus = NO;
-
+NSArray *idsToIgnore = nil;
 @implementation MZEPolusProvider
 
 // PLAppsController *prefsController;
 
 + (NSArray<NSString *> *)possibleIdentifiers {
+
+	if (!idsToIgnore) {
+		idsToIgnore = @[@"com.apple.camera", 
+								 @"com.apple.calculator", 
+								 @"com.apple.mobiletimer"];
+	}
 
 	if (!hasAttemptedToLoadPolus) {
 		dlopen("/usr/lib/libpolus.dylib", RTLD_NOW);
@@ -74,7 +80,15 @@ static BOOL hasAttemptedToLoadPolus = NO;
 				[filtered addObject:identifier];
 			}
 		}
-		return [[[NSSet setWithArray:[filtered copy]] allObjects] copy];
+
+		NSMutableArray *allIdentifiers = [[[NSSet setWithArray:[filtered copy]] allObjects] mutableCopy];
+
+		for (NSString *identifier in idsToIgnore) {
+			[allIdentifiers removeObject:identifier];
+		}
+
+		return [allIdentifiers copy];
+		//return [[[NSSet setWithArray:[filtered copy]] allObjects] copy];
 		//return [visibleApps arrayByAddingObjectsFromArray:hiddenApps];
 	}
 	//return [(PLAppsController *)[NSClassFromString(@"PLAppsController") sharedInstance] visibleAppsForViewMode:PLViewModeTopShelf];

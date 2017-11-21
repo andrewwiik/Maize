@@ -40,6 +40,7 @@
 
 - (instancetype)initWithModuleInstanceManager:(MZEModuleInstanceManager *)moduleInstanceManager;
 - (BOOL)isLandscape;
+- (BOOL)isLandscapeWithoutIPad;
 - (CGSize)layoutSize;
 - (CGSize)preferredContentSize;
 

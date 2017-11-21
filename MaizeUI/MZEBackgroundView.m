@@ -19,6 +19,7 @@
 		_blurView = [[MZEAnimatedBlurView alloc] initWithFrame:[self bounds]];
 	  	_blurView.backdropSettings = [NSClassFromString(@"_UIBackdropViewSettings") settingsForStyle:-2];
 	  	_blurView.backdropSettings.blurRadius = 30.0f;
+	  	_blurView.backdropSettings.blurQuality = @"low";
 	  	_blurView.backdropSettings.saturationDeltaFactor = 1.9f;
 	    _blurView.backdropSettings.grayscaleTintAlpha = 0;
 	    _blurView.backdropSettings.colorTintAlpha = 0;
@@ -26,6 +27,7 @@
 	    _blurView.backdropSettings.usesGrayscaleTintView = NO;
 	    _blurView.backdropSettings.usesColorTintView = NO;
 	    _blurView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+	    _blurView.backdropSettings.scale = 0.25;
 
 	    [self addSubview:_blurView];
 	}

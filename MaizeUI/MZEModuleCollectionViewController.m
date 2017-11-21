@@ -43,8 +43,8 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 		_portraitPositionProvider = [[MZEControlCenterPositionProvider alloc] initWithLayoutStyle:_portraitLayoutStyle orderedIdentifiers:[orderedIdentifiers copy] orderedSizes:[orderedSizes copy]];
 		_landscapePositionProvider = [[MZEControlCenterPositionProvider alloc] initWithLayoutStyle:_landscapeLayoutStyle orderedIdentifiers:[orderedIdentifiers copy] orderedSizes:[orderedSizes copy]];
 	
-		_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
-		_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+		_currentPositionProvider = [self isLandscapeWithoutIPad] ? _landscapePositionProvider : _portraitPositionProvider;
+		_currentLayoutStyle = [self isLandscapeWithoutIPad] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 
 		CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(),
                                     NULL,
@@ -76,9 +76,21 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	return NO;
 }
 
+- (BOOL)isLandscapeWithoutIPad {
+	if (_delegate) {
+		return UIInterfaceOrientationIsLandscape((UIInterfaceOrientation)[_delegate interfaceOrientationForModuleCollectionViewController:self]);
+	} else {
+		SBControlCenterController *mainController = [NSClassFromString(@"SBControlCenterController") _sharedInstanceCreatingIfNeeded:YES];
+		if (mainController && mainController.view) {
+			return UIInterfaceOrientationIsLandscape([[mainController.view window] interfaceOrientation]);
+		}
+	}
+	return NO;
+}
+
 - (void)willBecomeActive {
-	_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
-	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+	_currentPositionProvider = [self isLandscapeWithoutIPad] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentLayoutStyle = [self isLandscapeWithoutIPad] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 
 	// self.scrollView.contentInset = UIEdgeInsetsMake(layoutStyle.inset,0,0,0);
 	// self.scrollView.contentSize = CGSizeMake([positionProvider sizeOfLayoutView].width,[positionProvider sizeOfLayoutView].height - self.scrollView.contentInset.top);
@@ -115,8 +127,8 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 }
 
 - (void)loadView {
-	_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
-	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+	_currentPositionProvider = [self isLandscapeWithoutIPad] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentLayoutStyle = [self isLandscapeWithoutIPad] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 
 	CGSize preferredContentSize = [self preferredContentSize];
 	self.containerView = [[MZEModuleCollectionView alloc] initWithLayoutSource:self frame:CGRectMake(0,0,preferredContentSize.width,preferredContentSize.height)];
@@ -151,8 +163,8 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 
 - (void)viewWillLayoutSubviews {
 
-	_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
-	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+	_currentPositionProvider = [self isLandscapeWithoutIPad] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentLayoutStyle = [self isLandscapeWithoutIPad] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 
 	if ([self isLandscape]) {
 		self.containerView.edgeInsets = UIEdgeInsetsMake(0,_currentLayoutStyle.inset,0,_currentLayoutStyle.inset);
@@ -216,8 +228,8 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 
 }
 - (void)_populateModuleViewControllers {
-	_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
-	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+	_currentPositionProvider = [self isLandscapeWithoutIPad] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentLayoutStyle = [self isLandscapeWithoutIPad] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 
 	NSArray<MZEModuleInstance *> *moduleInstances = [self _moduleInstances];
 	if (!_moduleViewControllerByIdentifier) {
@@ -531,8 +543,8 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	_portraitPositionProvider = [[MZEControlCenterPositionProvider alloc] initWithLayoutStyle:_portraitLayoutStyle orderedIdentifiers:[orderedIdentifiers copy] orderedSizes:[orderedSizes copy]];
 	_landscapePositionProvider = [[MZEControlCenterPositionProvider alloc] initWithLayoutStyle:_landscapeLayoutStyle orderedIdentifiers:[orderedIdentifiers copy] orderedSizes:[orderedSizes copy]];
 
-	_currentPositionProvider = [self isLandscape] ? _landscapePositionProvider : _portraitPositionProvider;
-	_currentLayoutStyle = [self isLandscape] ? _landscapeLayoutStyle : _portraitLayoutStyle;
+	_currentPositionProvider = [self isLandscapeWithoutIPad] ? _landscapePositionProvider : _portraitPositionProvider;
+	_currentLayoutStyle = [self isLandscapeWithoutIPad] ? _landscapeLayoutStyle : _portraitLayoutStyle;
 
 	[self _populateModuleViewControllers];
 }
