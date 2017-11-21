@@ -1,5 +1,8 @@
 #import "MZEMediaModuleViewController.h"
 #import <UIKit/UIImage+Private.h>
+#import <UIKit/UIScreen+Private.h>
+#import <SpringBoard/SBControlCenterController+Private.h>
+#import <MaizeUI/MZELayoutOptions.h>
 
 @implementation MZEMediaModuleViewController
 
@@ -71,8 +74,8 @@
 
 - (void)viewWillLayoutSubviews {
 	if(_isExpanded){
-		self.controlsView.view.frame = CGRectMake(0,self.view.frame.size.height/3.5 + 4, self.view.frame.size.width, self.view.frame.size.height - (self.view.frame.size.height/3.5 + 4));
-		self.metadataView.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height/3.5 + 4);
+		self.controlsView.view.frame = CGRectMake(0,108, self.view.frame.size.width, self.view.frame.size.height - 108);
+		self.metadataView.frame = CGRectMake(0,0,self.view.frame.size.width, 108);
 
 		self.controlsView.expanded = TRUE;
 	} else {
@@ -85,20 +88,24 @@
 }
 
 - (CGFloat)preferredExpandedContentWidth {
-	CGSize containerSize = [[UIScreen mainScreen] _mainSceneBoundsForInterfaceOrientation:[UIDevice currentDevice].orientation].size;
-	return [MZEMediaLayoutHelper widthForExpandedContainerWithContainerSize:containerSize defaultButtonSize:CGSizeMake(90,90)];
+	return [MZELayoutOptions defaultExpandedModuleWidth];
 }
 
 - (CGFloat)preferredExpandedContentHeight {
 	if (!_prefferedContentExpandedHeight) {
-		MPULayoutInterpolator *interpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
-		[interpolator addValue:403.5 forReferenceMetric:320];
-		[interpolator addValue:417.5 forReferenceMetric:375];
-		[interpolator addValue:455.5 forReferenceMetric:414];
-		_prefferedContentExpandedHeight = [interpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
+		_interpolator = [NSClassFromString(@"MPULayoutInterpolator") new];
+		[_interpolator addValue:403.5 forReferenceMetric:320];
+		[_interpolator addValue:417.5 forReferenceMetric:375];
+		[_interpolator addValue:455.5 forReferenceMetric:414];
+		[_interpolator addValue:417.5 forReferenceMetric:1024];
+		[_interpolator addValue:389.5 forReferenceMetric:736];
+		[_interpolator addValue:361.5 forReferenceMetric:667];
+		[_interpolator addValue:417.5 forReferenceMetric:768];
+		[_interpolator addValue:455.5 forReferenceMetric:414];
+		_prefferedContentExpandedHeight = [_interpolator valueForReferenceMetric:[UIScreen mainScreen].bounds.size.width];
 	}
 
-	return _prefferedContentExpandedHeight - _prefferedContentExpandedHeight/8;
+	return [_interpolator valueForReferenceMetric:[self rootViewFrame].size.width] - [_interpolator valueForReferenceMetric:[self rootViewFrame].size.width]/8;
 }
 
 - (void)willTransitionToExpandedContentMode:(BOOL)expanded {
@@ -141,5 +148,13 @@
 			self.controlsView.controlsView.rewindButton.alpha = 0.8;
 			self.controlsView.hasTitles = TRUE;
 	}
+}
+
+- (CGRect)rootViewFrame {
+	SBControlCenterController *mainController = [NSClassFromString(@"SBControlCenterController") _sharedInstanceCreatingIfNeeded:YES];
+	if (mainController && mainController.view) {
+		return [mainController.view window].bounds;
+	}
+	return CGRectZero;
 }
 @end

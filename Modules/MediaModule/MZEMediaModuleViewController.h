@@ -14,6 +14,7 @@
 @interface MZEMediaModuleViewController : UIViewController <MZEContentModuleContentViewController> {
 	CGFloat _prefferedContentExpandedHeight;
 	BOOL _isExpanded;
+	MPULayoutInterpolator *_interpolator;
 
 }
 @property (nonatomic, retain, readwrite) MZEMediaMetaDataView *metadataView;
@@ -26,4 +27,5 @@
 - (BOOL)shouldAutomaticallyForwardAppearanceMethods;
 - (void)willBecomeActive;
 - (void)willResignActive;
+- (CGRect)rootViewFrame;
 @end
