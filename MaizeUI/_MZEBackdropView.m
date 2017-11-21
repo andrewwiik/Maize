@@ -34,6 +34,7 @@ static BOOL isIOS9 = YES;
 		}
 		_saturation = 1.0f;
 		_brightness = 0.0f;
+		//self.layer.scale = 0.25;
 		// if (self.layer) {
 		// 	//CAFilter *brightnessFilter = [NSClassFromString(@"CAFilter") alloc]
 		// 	CAFilter *blurFilter = [NSClassFromString(@"CAFilter") filterWithType:@"luminanceToAlpha"];

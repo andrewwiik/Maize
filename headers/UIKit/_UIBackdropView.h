@@ -10,4 +10,5 @@
 - (void)transitionToSettings:(id)arg1;
 - (void)computeAndApplySettings:(id)settings;
 @property (nonatomic,copy) NSString * groupName;
+@property (nonatomic, retain) UIView *backdropEffectView;
 @end

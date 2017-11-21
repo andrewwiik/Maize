@@ -1,6 +1,7 @@
 #import "MZEBackgroundView.h"
 #import <UIKit/_UIBackdropViewSettings+Private.h>
 #import <QuartzCore/CALayer+Private.h>
+#import <QuartzCore/CABackdropLayer.h>
 
 @implementation MZEBackgroundView
 - (id)initWithFrame:(CGRect)frame {
@@ -43,7 +44,18 @@
 - (void)setEffectProgress:(CGFloat)progress {
 	if (progress != _effectProgress) {
 		_effectProgress = progress;
-		[UIView animateWithDuration:0.05 animations:^{
+		if (progress < 0.25) {
+			if (((CABackdropLayer *)_blurView.backdropView.effectView.layer).scale == 0.25) {
+				((CABackdropLayer *)_blurView.backdropView.effectView.layer).scale = 1;
+				((CABackdropLayer *)_luminanceView.backdropView.layer).scale = 1.0;
+			}
+		} else {
+			if (((CABackdropLayer *)_blurView.backdropView.effectView.layer).scale == 1.0) {
+				((CABackdropLayer *)_blurView.backdropView.effectView.layer).scale = 0.25;
+				((CABackdropLayer *)_luminanceView.backdropView.layer).scale = 0.25;
+			}
+		}
+		[UIView animateWithDuration:0.00 animations:^{
 			_luminanceView.alpha = progress*0.45;
 			_blurView.progress = progress;
 		//_animator.fractionComplete = progress;

@@ -6,8 +6,9 @@
 #import <UIKit/UIView+Private.h>
 #import "macros.h"
 #import <UIKit/UIScreen+Private.h>
+#import "MZEOptionsManager.h"
 
-static BOOL isIOS11Mode = YES;
+// static BOOL isIOS11Mode = YES;
 
 static void settingsChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	[[NSNotificationCenter defaultCenter] postNotificationName:[MZEModuleRepository settingsChangedNotificationName]
@@ -124,10 +125,15 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	self.psuedoCollectionView = [[MZEModuleCollectionView alloc] initWithLayoutSource:self frame:CGRectMake(0,0,preferredContentSize.width,preferredContentSize.height)];
 	self.psuedoCollectionView.delegate = self;
 
+
 	self.effectView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];
 	self.highlightEffectView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];
 	self.effectView.backdropView.layer.groupName = @"ModuleDarkBackground";
 	self.view = self.containerView;
+
+	if ([MZEOptionsManager isHybridMode]) {
+		[self.effectView.backdropView.layer setFilters:nil];
+	}
 }
 
 - (void)viewDidLoad {
@@ -241,11 +247,11 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 }
 
 - (void)hideSnapshottedModules:(BOOL)shouldHide {
-	// for (UIViewController *viewController in [self childViewControllers]) {
-	// 	if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
-	// 		viewController.view.hidden = shouldHide;
-	// 	}
-	// }
+	for (UIViewController *viewController in [self childViewControllers]) {
+		if ([viewController isKindOfClass:[MZEContentModuleContainerViewController class]]) {
+			viewController.view.hidden = shouldHide;
+		}
+	}
 }
 
 - (NSArray<MZEModuleInstance *> *)_moduleInstances {
@@ -421,7 +427,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 			if (![_snapshotView superview] && [self.view superview]) {
 				CGRect frame = _snapshotView.frame;
 
-				if (!isIOS11Mode) {
+				if ([MZEOptionsManager isHybridMode]) {
 					CGRect frameInWindow = [self.view convertRect:self.view.bounds toView:nil];
 					frame.origin.x -= frameInWindow.origin.x;
 					frame.origin.y -= frameInWindow.origin.y;
@@ -460,10 +466,10 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController closeExpandedModule:(id <MZEContentModule>)expandedModule {
 	[self dismissViewControllerAnimated:YES completion:^ {
-		if (isIOS11Mode) {
+		//if (isIOS11Mode) {
 			containerViewController.contentContainerView.moduleMaterialView.hidden = YES;
 			containerViewController.psuedoView.hidden = NO;
-		}
+		//}
 	}];
 
 	//[self contentModuleContainerViewController:containerViewController closeExpandedModule:expandedModule withCompletion:nil];

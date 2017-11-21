@@ -7,15 +7,15 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 
-	// if (!_whiteLayerView) {
-	// 	_whiteLayerView = [[_MZEBackdropView alloc] init];
-	// 	_whiteLayerView.colorAddColor = [UIColor colorWithWhite:1.0 alpha:0.5];
-	// 	_whiteLayerView.layer.groupName = @"ModuleDarkBackground";
-	// 	//_whiteLayerView.
-	// 	[self.view addSubview:_whiteLayerView];
-	// 	_whiteLayerView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-	// 	[_whiteLayerView _setContinuousCornerRadius:13];
-	// }
+	if (!_whiteLayerView) {
+		_whiteLayerView = [[_MZEBackdropView alloc] init];
+		_whiteLayerView.colorAddColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+		_whiteLayerView.layer.groupName = @"ModuleDarkBackground";
+		//_whiteLayerView.
+		[self.view addSubview:_whiteLayerView];
+		_whiteLayerView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+		[_whiteLayerView _setContinuousCornerRadius:13];
+	}
 
 	// if (!_alternateWhiteLayerView) {
 	// 	_alternateWhiteLayerView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -39,7 +39,7 @@
 	}
 
 	if (self.view) {
-		self.view.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+		//self.view.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
 		[self.view _setContinuousCornerRadius:13];
 	}
 
@@ -80,19 +80,46 @@
 	return UIEdgeInsetsMake(0,0,0,0);
 }
 
+
+
 - (void)controlCenterWillPresent {
+	if (!_snapshotView) {
+		_snapshotView = [self.collectionViewController.view snapshotView];
+		[self.collectionViewController.view addSubview:_snapshotView];
+		[self.collectionViewController hideSnapshottedModules:YES];
+	} else {
+		[self.collectionViewController.view bringSubviewToFront:_snapshotView];
+	}
 	return;
 }
 
 - (void)controlCenterDidDismiss {
+	if (_snapshotView) {
+		[_snapshotView removeFromSuperview];
+		_snapshotView = nil;
+	}
+	[self.collectionViewController hideSnapshottedModules:NO];
 	return;
 }
 
 - (void)controlCenterWillBeginTransition {
-	return;
+
+	if (!_snapshotView) {
+		_snapshotView = [self.collectionViewController.view snapshotView];
+		[self.collectionViewController.view addSubview:_snapshotView];
+		[self.collectionViewController hideSnapshottedModules:YES];
+	} else {
+		[self.collectionViewController.view bringSubviewToFront:_snapshotView];
+	}
+
 }
 
 - (void)controlCenterDidFinishTransition {
-	return;
+
+	if (_snapshotView) {
+		[_snapshotView removeFromSuperview];
+		_snapshotView = nil;
+	}
+	[self.collectionViewController hideSnapshottedModules:NO];
 }
 @end

@@ -8,6 +8,7 @@
 #import <UIKit/_UIBackdropViewSettings+Private.h>
 #import <QuartzCore/CABackdropLayer.h>
 #import "MZEContentModuleContainerViewController.h"
+#import "MZEOptionsManager.h"
 
 
 MPULayoutInterpolator *interpolator;
@@ -146,7 +147,7 @@ static BOOL isIOS11Mode = YES;
 		//_fakeVibrantView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 		[self setNeedsLayout];
 	}
-	if (!_moduleMaterialView && !_moduleProvidesOwnPlatter && isIOS11Mode) {
+	if (!_moduleMaterialView && !_moduleProvidesOwnPlatter && ![MZEOptionsManager isHybridMode]) {
 		_moduleMaterialView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleDark];
 		[_moduleMaterialView setFrame:[self bounds]];
 		[self addSubview:_moduleMaterialView];
@@ -157,6 +158,51 @@ static BOOL isIOS11Mode = YES;
 		_moduleMaterialView.hidden = YES;
 		//self.moduleMaterialView.clipsToBounds = YES;
 		//self.moduleMaterialView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+	} 
+
+	if (!_moduleMaterialView && !_moduleProvidesOwnPlatter && [MZEOptionsManager isHybridMode]) {
+		_UIBackdropViewSettings *backdropSettings = [NSClassFromString(@"_UIBackdropViewSettings") settingsForStyle:-2];
+	  	backdropSettings.blurRadius = 30.0f;
+	  	//backdropSettings.darkeningTintSaturation = 0.2;
+	  	backdropSettings.saturationDeltaFactor = 2.04;
+	    backdropSettings.grayscaleTintAlpha = 0;
+	    backdropSettings.colorTint = [UIColor colorWithWhite:0.7 alpha:1.0];
+	    backdropSettings.colorTintAlpha = 0.56;
+	    backdropSettings.grayscaleTintLevel = 0;
+	 //   backdropSettings.usesGrayscaleTintView = NO;
+	    backdropSettings.scale = 0.25;
+
+		_fakeVibrantView = [[NSClassFromString(@"_UIBackdropView") alloc] initWithFrame:self.bounds autosizesToFitSuperview:YES settings:backdropSettings];
+		_fakeVibrantView.groupName = @"CCUIControlCenterBaseMaterialBlur";
+	
+		//_fakeVibrantView.hidden = YES;
+		//_fakeVibrantView.alpha = 1.0;
+		//_moduleVibrantBackground.hidden = NO;
+		((CABackdropLayer *)_fakeVibrantView.effectView.layer).scale = 0.25;
+		// [self addSubview:_fakeVibrantView];
+		// [_fakeVibrantView removeFromSuperview];
+		// _fakeVibrantView.hidden = NO;
+		// [self sendSubviewToBack:_fakeVibrantView];
+
+		//UIView *otherView = [[UIView alloc] initWithFrame:self.bounds];
+		//[self addSubview:otherView];
+		//otherView.backgroundColor = [UIColor colorWithWhite:0.61 alpha:0.15];
+		[_fakeVibrantView transitionIncrementallyToSettings:backdropSettings weighting:1.0];
+		((CABackdropLayer *)_fakeVibrantView.effectView.layer).scale = 0.25;
+
+		_moduleMaterialView = (MZEMaterialView *)[UIView new];
+		// _moduleMaterialView.hidden = YES;
+		[self addSubview:_moduleMaterialView];
+		[_moduleMaterialView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+		[self sendSubviewToBack:_moduleMaterialView];
+		//_moduleMaterialView.backdropView.layer.groupName = @"ModuleDarkBackground";
+		[self setNeedsLayout];
+		[_moduleMaterialView addSubview:_fakeVibrantView];
+		_moduleMaterialView.hidden = YES;
+
+
+
+	
 	}
 }
 
@@ -232,6 +278,45 @@ static BOOL isIOS11Mode = YES;
 			if (_delegateController && _delegateController.shouldMaskToBounds) {
 				shouldClipRoot = YES;
 			}
+
+			// if ([MZEOptionsManager isHybridMode]) {
+
+			// 	if (shouldClipRoot) {
+			// 		if (self._continuousCornerRadius < 1.0f) {
+			// 			self._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+			// 			self.clipsToBounds = YES;
+			// 		}
+			// 		self.layer.cornerRadius = cornerRadius;
+			// 		self.layer.cornerContentsCenter = cornerCenter;
+			// 	} else {
+			// 		if (!expanded) {
+			// 			self.layer.cornerRadius = 0;
+			// 			self.layer.cornerContentsCenter = CGRectZero;
+			// 			self.clipsToBounds = NO;
+
+			// 			if (self.moduleMaterialView._continuousCornerRadius < 1.0f) {
+			// 				self.moduleMaterialView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+			// 				//self.moduleMaterialView.clipsToBounds = YES;
+			// 			}
+			// 			self.moduleMaterialView.clipsToBounds = YES;
+			// 			self.moduleMaterialView.layer.cornerRadius = cornerRadius;
+			// 			self.moduleMaterialView.layer.cornerContentsCenter = cornerCenter;
+			// 		} else {
+			// 			self.moduleMaterialView.layer.cornerRadius = 0;
+			// 			self.moduleMaterialView.layer.cornerContentsCenter = CGRectZero;
+			// 			self.moduleMaterialView.clipsToBounds = NO;
+
+			// 			//self.clipsToBounds = YES;
+			// 			if (self._continuousCornerRadius < 1.0f) {
+			// 				self._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+			// 				// self.clipsToBounds = YES;
+			// 			}
+			// 			self.clipsToBounds = YES;
+			// 			self.layer.cornerRadius = cornerRadius;
+			// 			self.layer.cornerContentsCenter = cornerCenter;
+			// 		}
+			// 	}
+			// } else {
 
 			if (shouldClipRoot) {
 				if (self._continuousCornerRadius < 1.0f) {

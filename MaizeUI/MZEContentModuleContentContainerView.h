@@ -16,6 +16,7 @@
     CAFilter *_compactBackgroundFilter;
     _UIBackdropView *_fakeVibrantView;
     MZEContentModuleContainerViewController *_delegateController;
+    UIView *_moduleHoldingView;
     // UIView *_psuedoCompactView;
     // UIView *_psuedoExpandedView;
     // CGRect _compactFrame;

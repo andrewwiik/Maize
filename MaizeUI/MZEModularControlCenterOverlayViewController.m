@@ -554,7 +554,13 @@ static CGFloat cachedBoundsWidth = 0;
 
 	CGFloat blurPercentage = (yOrigin - sourceMinY)/((sourceMinY - _moduleWidth) - sourceMinY);
 	blurPercentage = fmaxf(fminf(blurPercentage, 1.0), 0.0);
+
 	if (_backgroundView.effectProgress != blurPercentage) {
+		// if (blurPercentage < 0.25) {
+		// 	if (_backgroundView.)
+		// } else {
+
+		// }
 		_backgroundView.effectProgress = fmaxf(fminf(blurPercentage, 1.0), 0.0);
 	}
 	//_backgroundView.effectProgress = fmaxf(fminf(blurPercentage, 1.0), 0.0);
@@ -571,21 +577,21 @@ static CGFloat cachedBoundsWidth = 0;
 		//_moduleSpacing = [MZELayoutOptions itemSpacingSize];
 	}
 
-	if (percentage < 1 || percentage > 1) {
-		if (!_snapshotView) {
-			//_snapshotView = [self.moduleCollectionViewController.view snapshotView];
-			//[self.moduleCollectionViewController.view addSubview:_snapshotView];
-			[self.moduleCollectionViewController hideSnapshottedModules:YES];
-		} else {
-			//[self.moduleCollectionViewController.view bringSubviewToFront:_snapshotView];
-		}
-	} else {
-		if (_snapshotView) {
-			//[_snapshotView removeFromSuperview];
-			//_snapshotView = nil;
-		}
-		[self.moduleCollectionViewController hideSnapshottedModules:NO];
-	}
+	// if (percentage < 1 || percentage > 1) {
+	// 	if (!_snapshotView) {
+	// 		//_snapshotView = [self.moduleCollectionViewController.view snapshotView];
+	// 		//[self.moduleCollectionViewController.view addSubview:_snapshotView];
+	// 		[self.moduleCollectionViewController hideSnapshottedModules:YES];
+	// 	} else {
+	// 		//[self.moduleCollectionViewController.view bringSubviewToFront:_snapshotView];
+	// 	}
+	// } else {
+	// 	if (_snapshotView) {
+	// 		//[_snapshotView removeFromSuperview];
+	// 		//_snapshotView = nil;
+	// 	}
+	// 	[self.moduleCollectionViewController hideSnapshottedModules:NO];
+	// }
 
 	// CGFloat percentageBlur = (targetFrame)
 	// _backgroundView.effectProgress = fmaxf(fminf(percentage, 1.0), 0.0);
@@ -612,7 +618,7 @@ static CGFloat cachedBoundsWidth = 0;
 		collectionViewBounds = self.moduleCollectionViewController.view.bounds;
 
 	collectionViewBounds.origin = origin;
-
+	//collectionViewBounds.origin.x = (CGRectGetWidth(self.view.bounds)-CGRectGetWidth(self.view.bounds))/2;
 	self.moduleCollectionViewController.view.frame = collectionViewBounds;
 }
 
@@ -645,10 +651,11 @@ static CGFloat cachedBoundsWidth = 0;
 			CGFloat pocketViewHeight = [_headerPocketView intrinsicContentSize].height;
 			CGFloat maxHeight = boundsHeight - pocketViewHeight;
 			CGFloat yOrigin = boundsHeight - collectionViewHeight;
+			CGFloat xOrigin = (CGRectGetWidth(self.view.bounds)-collectionViewSize.width)/2;
 			if (collectionViewHeight > maxHeight) {
 				yOrigin = pocketViewHeight;
 			}
-			cachedFrame = CGRectMake(0,yOrigin, collectionViewHeight, CGRectGetWidth(bounds));
+			cachedFrame = CGRectMake(xOrigin,yOrigin, collectionViewHeight, CGRectGetWidth(bounds));
 		} else {
 			CGFloat yOrigin = CGRectGetMidY(bounds) - (collectionViewHeight*0.5);
 			cachedFrame = CGRectMake(0,yOrigin, collectionViewHeight, CGRectGetWidth(bounds));

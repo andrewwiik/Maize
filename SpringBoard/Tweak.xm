@@ -5,6 +5,7 @@
 #import <MaizeUI/MZEModularControlCenterOverlayViewController.h>
 #import <MaizeUI/MZEHybridPageViewController.h>
 #import <MaizeUI/MZECurrentActions.h>
+#import <MaizeUI/MZEOptionsManager.h>
 #import <QuartzCore/CAFilter+Private.h>
 #import <ControlCenterUI/CCUIControlCenterViewController.h>
 #import <UIKit/_UIBackdropViewSettings+Private.h>
@@ -45,7 +46,6 @@ static BOOL isIOS9 = NO;
 
 static CGPoint initialTransitionPoint;
 
-static BOOL isIOS11Mode = YES;
 
 static MZEModularControlCenterOverlayViewController *sharedController;
 
@@ -103,7 +103,7 @@ MZEHybridPageViewController *hybridPageController;
   }
   // 54
   // 16.5
-  if (!isIOS11Mode && hybridPageController) {
+  if ([MZEOptionsManager isHybridMode] && hybridPageController) {
     return [hybridPageController.collectionViewController preferredContentSize].height + 19;
   }
   return %orig;
@@ -137,7 +137,7 @@ MZEHybridPageViewController *hybridPageController;
 // }
 
 - (void)_loadPages {
-  if (isIOS11Mode) {
+  if (![MZEOptionsManager isHybridMode]) {
     if (!sharedController) {
      // [self setRevealPercentage:0.0];
       return;
@@ -150,7 +150,7 @@ MZEHybridPageViewController *hybridPageController;
 
 -(void)setRevealPercentage:(CGFloat)revealPercentage {
 
-  if (!((CCUIControlCenterViewController *)self).mze_viewController && isIOS11Mode) {
+  if (!((CCUIControlCenterViewController *)self).mze_viewController && ![MZEOptionsManager isHybridMode]) {
     ((CCUIControlCenterViewController *)self).mze_viewController = [[MZEModularControlCenterOverlayViewController alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];
     sharedController = ((CCUIControlCenterViewController *)self).mze_viewController;
     [((CCUIControlCenterViewController *)self).view addSubview:((CCUIControlCenterViewController *)self).mze_viewController.view];
@@ -159,14 +159,14 @@ MZEHybridPageViewController *hybridPageController;
 
   }
 
-  if (!isIOS11Mode && !hybridPageController) {
+  if ([MZEOptionsManager isHybridMode] && !hybridPageController) {
     hybridPageController = [[MZEHybridPageViewController alloc] initWithFrame:CGRectZero];
     [self _addContentViewController:hybridPageController];
   }
 
   %orig(revealPercentage);
 
-  if (isIOS11Mode)  {
+  if (![MZEOptionsManager isHybridMode])  {
 
     if (!((CCUIControlCenterViewController *)self).presented && !hasCalled) {
       [((CCUIControlCenterViewController *)self).mze_viewController willBecomeActive];

@@ -11,6 +11,7 @@
 	CCUIControlCenterPageContainerViewController *_delegate;
 	_MZEBackdropView *_whiteLayerView;
 	UIView *_alternateWhiteLayerView;
+	UIView *_snapshotView;
 }
 @property (nonatomic, retain) CCUIControlCenterPageContainerViewController *delegate;
 @property (nonatomic, retain) CCUIControlCenterPagePlatterView *platterView;
