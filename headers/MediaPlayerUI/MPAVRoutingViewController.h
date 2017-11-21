@@ -1,3 +1,5 @@
+#import "MPAVRoutingController.h"
+
 @interface MPAVRoutingViewController : UIViewController
 @property (assign,nonatomic) NSUInteger iconStyle;
 @property (assign,nonatomic) NSUInteger mirroringStyle;
@@ -12,4 +14,5 @@
 -(void)setDiscoveryModeOverride:(NSNumber *)modeOverride;
 -(void)setAllowMirroring:(BOOL)allowMirroring;
 -(UITableViewCell *)tableView:(UITableViewCell *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
+-(MPAVRoutingController *)_routingController;
 @end

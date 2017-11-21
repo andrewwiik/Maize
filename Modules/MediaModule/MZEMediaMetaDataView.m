@@ -1,6 +1,9 @@
 #import "MZEMediaMetaDataView.h"
 #import <QuartzCore/CALayer+Private.h>
 #import <QuartzCore/CAFilter+Private.h>
+#import <UIKit/UIImage+Private.h>
+
+extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *identifier);
 
 @implementation MZEMediaMetaDataView
 -(id)initWithFrame:(CGRect)arg1 {
@@ -47,6 +50,26 @@
 	self.artworkView = [[MZEMediaArtworkView alloc] init];
 	self.artworkView.alpha = 0;
 	[self addSubview:self.artworkView];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+		selector:@selector(updatePickedRoute)
+		name:(__bridge NSString *)kMRMediaRemoteRouteStatusDidChangeNotification
+		object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+		selector:@selector(updatePickedRoute)
+		name:@"_AVSystemController_ActiveAudioRouteDidChangeNotification"
+		object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+		selector:@selector(nowPlayingAppDidChange)
+		name:(__bridge NSString *)kMRMediaRemoteNowPlayingApplicationDidChangeNotification
+		object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+		selector:@selector(nowPlayingAppDidChange)
+		name:(__bridge NSString *)kMRMediaRemoteNowPlayingApplicationDisplayNameDidChangeNotification
+		object:nil];
 
 	[self updateMediaForChangeOfMediaControlsStatus];
 
@@ -338,13 +361,14 @@
 	MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef information) {
 			NSDictionary *dict=(__bridge NSDictionary *)(information);
 
-			if(dict != NULL && [dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoTitle] != NULL ){
-					//if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoTitle] != nil) {
-					NSString *titleText = [[NSString alloc] initWithString:[dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoTitle]];
-					_primaryString = titleText;
-					//} else {
-						//self.primaryString = nil;
-					//}
+			if(dict != NULL){
+					if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoTitle] != nil) {
+						NSString *titleText = [[NSString alloc] initWithString:[dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoTitle]];
+						_primaryString = titleText;
+					} else {
+						_primaryString = _nowPlayingApplicationDisplayName;
+					}
+
 					if (_expanded) {
 						if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtist] != nil && [dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoAlbum] != nil) {
 							NSString *artistText = [[NSString alloc] initWithString:[dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtist]];
@@ -370,8 +394,30 @@
 
 					if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtworkData]!= NULL) {
 						UIImage *image = [UIImage imageWithData:[dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtworkData]];
+						self.artworkView.imageView.contentMode = UIViewContentModeScaleToFill;
 						[self.artworkView setImage:image];
+
+					} else {
+						if (_nowPlayingIconImage) {
+							[self.artworkView setImage:_nowPlayingIconImage];
+							self.artworkView.imageView.contentMode = UIViewContentModeCenter;
+						}
+						// if (_nowPlayingApplicationID) {
+						// 	[self.artworkView]
+						// }
+						// [self.artworkView setImage:[UIImage _applicationIconImageForBundleIdentifier:]];
 					}
+
+					// if (!_primaryString && !_secondaryString) {
+					// 	MRMediaRemoteGetNowPlayingApplicationDisplayID(dispatch_get_main_queue(), ^(CFStringRef applicationDisplayID) {
+					// 		NSString *nowPlayingApplicationID = (__bridge NSString*)applicationDisplayID;
+					// 		if (_nowPlayingApplicationID != nowPlayingApplicationID) {
+					// 			_nowPlayingApplicationID = nowPlayingApplicationID;
+					// 			_nowPlayingApplicationDisplayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(_nowPlayingApplicationID);
+					// 			self.primaryString = _nowPlayingApplicationDisplayName;
+					// 		}
+					// 	});
+					// }
 
 					//self.titleString = @"MASTER'S AIRPODS";
 
@@ -380,13 +426,116 @@
 					// 	[self.subtitleLabel.label setEffects:2];
 					// }
 			} else {
-				_primaryString = nil;
+				// MRMediaRemoteGetNowPlayingApplicationDisplayID(dispatch_get_main_queue(), ^(CFStringRef applicationDisplayID) {
+				// 	NSString *nowPlayingApplicationID = (__bridge NSString*)applicationDisplayID;
+				// 	if (_nowPlayingApplicationID != nowPlayingApplicationID) {
+				// 		_nowPlayingApplicationID = nowPlayingApplicationID;
+				// 		_nowPlayingApplicationDisplayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(_nowPlayingApplicationID);
+				// 		self.primaryString = _nowPlayingApplicationDisplayName;
+				// 	}
+				// });
+				// if ()
+				_primaryString = _nowPlayingApplicationDisplayName;
 				_secondaryString = nil;
 			}
 
-			_titleString = @"MASTER'S AIRPODS";
+			// if ((!_primaryString && !_secondaryString) || _nowPlayingApplicationID == nil) {
+			// 	MRMediaRemoteGetNowPlayingApplicationDisplayID(dispatch_get_main_queue(), ^(CFStringRef applicationDisplayID) {
+			// 		NSString *nowPlayingApplicationID = (__bridge NSString*)applicationDisplayID;
+			// 		if (nowPlayingApplicationID == nil) {
+			// 			nowPlayingApplicationID = @"com.apple.Music";
+			// 		}
+
+			// 		if (_nowPlayingApplicationID != nowPlayingApplicationID) {
+			// 			_nowPlayingApplicationID = nowPlayingApplicationID;
+			// 			_nowPlayingApplicationDisplayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(_nowPlayingApplicationID);
+			// 			if (!_primaryString && !_secondaryString) {
+			// 				self.primaryString = _nowPlayingApplicationDisplayName;
+			// 			}
+			// 		}
+			// 	});
+			// }
+
+			if (self.routingController) {
+				if ([self.routingController pickedRoute]) {
+					MPAVRoute *pickedRoute = [self.routingController pickedRoute];
+					NSString *titleString = pickedRoute.routeName;
+					if (!pickedRoute.isDeviceRoute) {
+						titleString = [titleString uppercaseString];
+					}
+
+					_titleString = titleString;
+				}
+			}
+
+			//_titleString = @"MASTER'S AIRPODS";
 
 			[self updateFrame];
+	});
+
+	if ((!_primaryString && !_secondaryString) || _nowPlayingApplicationID == nil) {
+		MRMediaRemoteGetNowPlayingApplicationDisplayID(dispatch_get_main_queue(), ^(CFStringRef applicationDisplayID) {
+			NSString *nowPlayingApplicationID = (__bridge NSString*)applicationDisplayID;
+			if (nowPlayingApplicationID == nil) {
+				nowPlayingApplicationID = @"com.apple.Music";
+			}
+
+			if (_nowPlayingApplicationID != nowPlayingApplicationID) {
+				_nowPlayingApplicationID = nowPlayingApplicationID;
+				_nowPlayingApplicationDisplayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(_nowPlayingApplicationID);
+				if (!_nowPlayingApplicationDisplayName || [_nowPlayingApplicationDisplayName length] == 0) {
+					_nowPlayingApplicationID = @"com.apple.Music";
+					_nowPlayingApplicationDisplayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(_nowPlayingApplicationID);
+				}
+				_nowPlayingIconImage = [UIImage _applicationIconImageForBundleIdentifier:_nowPlayingApplicationID format:0 scale:[UIScreen mainScreen].scale];
+				if (!_primaryString && !_secondaryString) {
+					self.primaryString = _nowPlayingApplicationDisplayName;
+					self.artworkView.imageView.contentMode = UIViewContentModeCenter;
+					[self.artworkView setImage:_nowPlayingIconImage];
+				}
+			}
+		});
+	}
+
+
+	// if (!_primaryString)
+}
+
+- (void)updatePickedRoute {
+	if (self.routingController) {
+		if ([self.routingController pickedRoute]) {
+			MPAVRoute *pickedRoute = [self.routingController pickedRoute];
+			NSString *titleString = pickedRoute.routeName;
+			if (!pickedRoute.isDeviceRoute) {
+				titleString = [titleString uppercaseString];
+			}
+
+			self.titleString = titleString;
+		}
+	}
+}
+
+- (void)nowPlayingAppDidChange {
+	MRMediaRemoteGetNowPlayingApplicationDisplayID(dispatch_get_main_queue(), ^(CFStringRef applicationDisplayID) {
+		NSString *nowPlayingApplicationID = (__bridge NSString*)applicationDisplayID;
+		if (nowPlayingApplicationID == nil || [nowPlayingApplicationID length] == 0) {
+			nowPlayingApplicationID = @"com.apple.Music";
+		}
+
+		if (_nowPlayingApplicationID != nowPlayingApplicationID) {
+			_nowPlayingApplicationID = nowPlayingApplicationID;
+			_nowPlayingApplicationDisplayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(_nowPlayingApplicationID);
+			if (!_nowPlayingApplicationDisplayName || [_nowPlayingApplicationDisplayName length] == 0) {
+				_nowPlayingApplicationID = @"com.apple.Music";
+				_nowPlayingApplicationDisplayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(_nowPlayingApplicationID);
+			}
+			_nowPlayingIconImage = [UIImage _applicationIconImageForBundleIdentifier:_nowPlayingApplicationID format:0 scale:[UIScreen mainScreen].scale];
+			if (!_primaryString && !_secondaryString) {
+				self.primaryString = _nowPlayingApplicationDisplayName;
+				self.artworkView.imageView.contentMode = UIViewContentModeCenter;
+				[self.artworkView setImage:_nowPlayingIconImage];
+			}
+		}
 	});
 }
 

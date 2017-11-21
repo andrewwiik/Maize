@@ -22,6 +22,8 @@ extern "C" {
     extern CFStringRef kMRMediaRemoteNowPlayingApplicationIsPlayingDidChangeNotification;
     extern CFStringRef kMRMediaRemoteRouteStatusDidChangeNotification;
     extern CFStringRef kMRMediaRemoteSupportedCommandsDidChangeNotification;
+    extern CFStringRef kMRDeviceInfoDidChangeNotification;
+    extern CFStringRef kMRMediaRemoteNowPlayingApplicationDisplayNameDidChangeNotification;
 
 #pragma mark - Command information
     extern CFStringRef kMRMediaRemoteCommandInfoCanBeControlledByScrubbingKey;
@@ -109,6 +111,8 @@ extern "C" {
     typedef void (^MRMediaRemoteGetNowPlayingInfoCompletion)(CFDictionaryRef information);
     typedef void (^MRMediaRemoteGetNowPlayingApplicationPIDCompletion)(int PID);
     typedef void (^MRMediaRemoteGetNowPlayingApplicationIsPlayingCompletion)(Boolean isPlaying);
+    typedef void (^MRMediaRemoteGetNowPlayingApplicationDisplayIDCompletion)(CFStringRef information);
+    void MRMediaRemoteGetNowPlayingApplicationDisplayID(dispatch_queue_t queue, MRMediaRemoteGetNowPlayingApplicationDisplayIDCompletion completion);
     void MRMediaRemoteGetNowPlayingApplicationPID(dispatch_queue_t queue, MRMediaRemoteGetNowPlayingApplicationPIDCompletion completion);
     void MRMediaRemoteGetNowPlayingInfo(dispatch_queue_t queue, MRMediaRemoteGetNowPlayingInfoCompletion completion);
     void MRMediaRemoteGetNowPlayingApplicationIsPlaying(dispatch_queue_t queue, MRMediaRemoteGetNowPlayingApplicationIsPlayingCompletion completion);

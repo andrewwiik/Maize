@@ -14,13 +14,18 @@
 	return self;
 }
 
-+ (BOOL)isSupported {
-	if (NSClassFromString(@"CCUIRecordScreenShortcut")) {
-		return [NSClassFromString(@"CCUIRecordScreenShortcut") isSupported:0];
-	} else {
-		return [NSClassFromString(@"SBCCRecordScreenShortcut") isSupported:0];
-	}
-}
+// + (BOOL)isSupported {
+// 	if (NSClassFromString(@"RPScreenRecorder")) {
+// 		if ([NSClassFromString(@"RPScreenRecorder") sharedRecorder]) {
+// 			return [[NSClassFromString(@"RPScreenRecorder") sharedRecorder] isAvailable];
+// 		}
+// 	}
+// 	if (NSClassFromString(@"CCUIRecordScreenShortcut")) {
+// 		return [NSClassFromString(@"CCUIRecordScreenShortcut") isSupported:0];
+// 	} else {
+// 		return [NSClassFromString(@"SBCCRecordScreenShortcut") isSupported:0];
+// 	}
+// }
 
 - (CAPackage *)glyphPackage {
 	NSURL *packageURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"ScreenRecording" withExtension:@"ca"];

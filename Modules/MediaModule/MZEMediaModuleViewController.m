@@ -17,10 +17,12 @@
 		self.controlsView = [[NSClassFromString(@"MZEMediaControlsViewController") alloc] init];
 		[self.view addSubview:self.controlsView.view];
 
-	  [[NSNotificationCenter defaultCenter] addObserver:self
-	    selector:@selector(updateMedia)
-	    name:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDidChangeNotification
-	    object:nil];
+		self.metadataView.routingController = [self.controlsView.routingView.routingViewController _routingController];
+
+		[[NSNotificationCenter defaultCenter] addObserver:self
+		selector:@selector(updateMedia)
+		name:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDidChangeNotification
+		object:nil];
 
 		_isExpanded = NO;
 	}
@@ -37,7 +39,7 @@
 			UIImage *btnImage = [[UIImage imageNamed:@"AirPlay" inBundle:[NSBundle bundleForClass:[self class]]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
   			[outputButton setImage:btnImage forState:UIControlStateNormal];
 		} completion:^(BOOL completed) {
-			[self.controlsView.routingView.routingViewController _endRouteDiscovery];
+			//[self.controlsView.routingView.routingViewController _endRouteDiscovery];
 		}];
 
 		// UIImage *btnImage = [[UIImage imageNamed:@"AirPlay" inBundle:[NSBundle bundleForClass:[self class]]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -45,7 +47,7 @@
 		//[self.controlsView.routingView.routingViewController _endRouteDiscovery];
 	} else {
 		self.controlsView.showRouting = YES;
-		[self.controlsView.routingView.routingViewController _beginRouteDiscovery];
+		//[self.controlsView.routingView.routingViewController _beginRouteDiscovery];
 		[UIView animateWithDuration:0.3 animations:^{
 			[self.view setNeedsLayout];
 			[self.view layoutIfNeeded];
@@ -114,6 +116,12 @@
 	self.controlsView.showRouting = NO;
 	UIImage *btnImage = [[UIImage imageNamed:@"AirPlay" inBundle:[NSBundle bundleForClass:[self class]]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
   	[self.metadataView.outputButton.toggleButton setImage:btnImage forState:UIControlStateNormal];
+
+  	if (expanded) {
+  		[self.controlsView.routingView.routingViewController _beginRouteDiscovery];
+  	} else {
+  		[self.controlsView.routingView.routingViewController _endRouteDiscovery];
+  	}
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
