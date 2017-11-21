@@ -71,13 +71,13 @@
 
 - (void)viewWillLayoutSubviews {
 	if(_isExpanded){
-		self.controlsView.view.frame = CGRectMake(0,self.view.frame.size.height/3.5, self.view.frame.size.width, self.view.frame.size.height - self.view.frame.size.height/3.5);
-		self.metadataView.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height/3.5);
+		self.controlsView.view.frame = CGRectMake(0,self.view.frame.size.height/3.5 + 4, self.view.frame.size.width, self.view.frame.size.height - (self.view.frame.size.height/3.5 + 4));
+		self.metadataView.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height/3.5 + 4);
 
 		self.controlsView.expanded = TRUE;
 	} else {
-		self.metadataView.frame = CGRectMake(0,0,self.view.frame.size.width, self.view.frame.size.height/2);
-		self.controlsView.view.frame = CGRectMake(0,self.view.frame.size.height/2, self.view.frame.size.width, self.view.frame.size.height/2);
+		self.metadataView.frame = CGRectMake(0,self.view.frame.size.height*0.2135,self.view.frame.size.width, self.view.frame.size.height*0.392);
+		self.controlsView.view.frame = CGRectMake(0,self.view.frame.size.height*0.2135 + self.view.frame.size.height*0.392, self.view.frame.size.width, self.view.frame.size.height*0.3268);
 
 		self.controlsView.expanded = FALSE;
 	}

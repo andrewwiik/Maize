@@ -1,4 +1,5 @@
 #import "MZEMediaArtworkView.h"
+#import <UIKit/UIView+Private.h>
 
 @interface SBApplication : NSObject
 -(id)bundleIdentifier;
@@ -19,7 +20,7 @@
 
   if (self) {
 
-    self.layer.cornerRadius = 14.0; // this will need to be changed to continousCornerRadius
+    self._continuousCornerRadius = 14.0; // this will need to be changed to continousCornerRadius
     self.clipsToBounds = YES;
 
     self.artworkBackground = [[UIView alloc] initWithFrame:self.bounds];

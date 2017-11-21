@@ -23,9 +23,13 @@
 @end
 
 @interface MZEMediaMetaDataView : UIView
-@property (nonatomic, retain, readwrite) MZEMediaMarqueeLabel *titleLabel;
-@property (nonatomic, retain, readwrite) MZEMediaMarqueeLabel *subtitleLabel;
-@property (nonatomic, retain, readwrite) MZEMediaEffectLabel *sourceLabel;
+@property (nonatomic, retain, readwrite) MZEMediaMarqueeLabel *titleLabel; // Device Connected
+@property (nonatomic, retain, readwrite) MZEMediaMarqueeLabel *primaryLabel; // Expanded: Song Name, Compact: Song Name | App Name
+@property (nonatomic, retain, readwrite) MZEMediaMarqueeLabel *secondaryLabel; // Expanded: Aritst & Album, Compact: Artist
+@property (nonatomic, retain, readwrite) NSString *titleString;
+@property (nonatomic, retain, readwrite) NSString *primaryString;
+@property (nonatomic, retain, readwrite) NSString *secondaryString;
+
 @property (nonatomic, retain, readwrite) MZEMediaArtworkView *artworkView;
 @property (nonatomic, retain, readwrite) MZEMediaOutputToggleButton *outputButton;
 @property (nonatomic, retain, readwrite) UIView *headerDivider;
