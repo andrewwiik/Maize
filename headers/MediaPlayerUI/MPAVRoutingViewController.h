@@ -11,4 +11,5 @@
 -(void)_setRouteDiscoveryMode:(NSInteger)mode;
 -(void)setDiscoveryModeOverride:(NSNumber *)modeOverride;
 -(void)setAllowMirroring:(BOOL)allowMirroring;
+-(UITableViewCell *)tableView:(UITableViewCell *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 @end

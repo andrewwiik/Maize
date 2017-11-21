@@ -60,14 +60,15 @@
       self.controlsView.frame = CGRectMake(self.view.frame.size.width/16, self.view.frame.size.height/2 - self.view.frame.size.height/12 + (self.view.bounds.size.height*0.79), self.view.frame.size.width - self.view.frame.size.width/8, self.view.frame.size.height/6);
       self.controlsView.alpha = 0;
       self.progressView.alpha = 0;
-     self.routingView.alpha = 1.0;
+     //self.routingView.alpha = 1.0;
     } else {
+      //self.routingView.hidden = YES;
       self.routingView.frame = CGRectMake(0,0-self.view.bounds.size.height*0.79,self.view.bounds.size.width,self.view.bounds.size.height*0.79);
       self.controlsView.alpha  = 1;
       self.progressView.alpha = 1;
       self.volumeView.hidden = FALSE;
       self.progressView.hidden = FALSE;
-      self.routingView.alpha = 0;
+      //self.routingView.alpha = 0;
     }
   }
 }
