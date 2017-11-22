@@ -71,6 +71,26 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 		name:(__bridge NSString *)kMRMediaRemoteNowPlayingApplicationDisplayNameDidChangeNotification
 		object:nil];
 
+	[[NSNotificationCenter defaultCenter] addObserver:self
+		selector:@selector(nowPlayingAppDidChange)
+		name:(__bridge NSString *)kMRMediaRemoteAnyApplicationIsPlayingDidChangeNotification
+		object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+		selector:@selector(nowPlayingAppDidChange)
+		name:@"MPAVControllerPlaybackStateChangedNotification"
+		object:nil];
+
+	
+	// [[NSNotificationCenter defaultCenter] addObserver:self
+	// 	selector:@selector(nowPlayingAppDidChange)
+	// 	name:(__bridge NSString *)kMRMediaRemoteNowPlayingApplicationIsPlayingDidChangeNotification
+	// 	object:nil];
+
+	// kMRMediaRemoteAnyApplicationIsPlayingDidChangeNotification
+
+	// kMRMediaRemoteNowPlayingApplicationIsPlayingDidChangeNotification
+
 	[self updateMediaForChangeOfMediaControlsStatus];
 
 	return self;
@@ -392,7 +412,7 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 						}
 					}
 
-					if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtworkData]!= NULL) {
+					if ([dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtworkData] != NULL && _primaryString != _nowPlayingApplicationDisplayName) {
 						UIImage *image = [UIImage imageWithData:[dict objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoArtworkData]];
 						self.artworkView.imageView.contentMode = UIViewContentModeScaleToFill;
 						[self.artworkView setImage:image];
@@ -406,6 +426,15 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 						// 	[self.artworkView]
 						// }
 						// [self.artworkView setImage:[UIImage _applicationIconImageForBundleIdentifier:]];
+					}
+
+					if (_primaryString == _nowPlayingApplicationDisplayName) {
+						if (_nowPlayingIconImage) {
+							[self.artworkView setImage:_nowPlayingIconImage];
+							self.artworkView.imageView.contentMode = UIViewContentModeCenter;
+						} else {
+							[self nowPlayingAppDidChange];
+						}
 					}
 
 					// if (!_primaryString && !_secondaryString) {
@@ -436,6 +465,13 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 				// });
 				// if ()
 				_primaryString = _nowPlayingApplicationDisplayName;
+
+				if (_nowPlayingIconImage) {
+					[self.artworkView setImage:_nowPlayingIconImage];
+					self.artworkView.imageView.contentMode = UIViewContentModeCenter;
+				} else {
+					[self nowPlayingAppDidChange];
+				}
 				_secondaryString = nil;
 			}
 
@@ -488,17 +524,22 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 					_nowPlayingApplicationDisplayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(_nowPlayingApplicationID);
 				}
 				_nowPlayingIconImage = [UIImage _applicationIconImageForBundleIdentifier:_nowPlayingApplicationID format:0 scale:[UIScreen mainScreen].scale];
-				if (!_primaryString && !_secondaryString) {
+			}
+
+			if ((!_primaryString && !_secondaryString) || _primaryString == _nowPlayingApplicationDisplayName) {
+				if (_primaryString != _nowPlayingApplicationDisplayName) {
 					self.primaryString = _nowPlayingApplicationDisplayName;
-					self.artworkView.imageView.contentMode = UIViewContentModeCenter;
-					[self.artworkView setImage:_nowPlayingIconImage];
 				}
+				self.artworkView.imageView.contentMode = UIViewContentModeCenter;
+				[self.artworkView setImage:_nowPlayingIconImage];
 			}
 		});
 	}
 
 
 	// if (!_primaryString)
+
+	[self nowPlayingAppDidChange];
 }
 
 - (void)updatePickedRoute {
@@ -530,12 +571,16 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 				_nowPlayingApplicationDisplayName = SBSCopyLocalizedApplicationNameForDisplayIdentifier(_nowPlayingApplicationID);
 			}
 			_nowPlayingIconImage = [UIImage _applicationIconImageForBundleIdentifier:_nowPlayingApplicationID format:0 scale:[UIScreen mainScreen].scale];
-			if (!_primaryString && !_secondaryString) {
-				self.primaryString = _nowPlayingApplicationDisplayName;
-				self.artworkView.imageView.contentMode = UIViewContentModeCenter;
-				[self.artworkView setImage:_nowPlayingIconImage];
-			}
 		}
+
+		if ((!_primaryString && !_secondaryString) || _primaryString == _nowPlayingApplicationDisplayName) {
+			if (_primaryString != _nowPlayingApplicationDisplayName) {
+				self.primaryString = _nowPlayingApplicationDisplayName;
+			}
+			self.artworkView.imageView.contentMode = UIViewContentModeCenter;
+			[self.artworkView setImage:_nowPlayingIconImage];
+		}
+		
 	});
 }
 

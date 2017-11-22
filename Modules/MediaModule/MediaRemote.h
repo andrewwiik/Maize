@@ -24,6 +24,7 @@ extern "C" {
     extern CFStringRef kMRMediaRemoteSupportedCommandsDidChangeNotification;
     extern CFStringRef kMRDeviceInfoDidChangeNotification;
     extern CFStringRef kMRMediaRemoteNowPlayingApplicationDisplayNameDidChangeNotification;
+    extern CFStringRef kMRMediaRemoteAnyApplicationIsPlayingDidChangeNotification;
 
 #pragma mark - Command information
     extern CFStringRef kMRMediaRemoteCommandInfoCanBeControlledByScrubbingKey;
