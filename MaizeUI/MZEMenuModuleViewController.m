@@ -102,9 +102,14 @@ static CGFloat separatorHeight = 0;
 	_pressRecognizer.numberOfTouchesRequired = 1;
 	[_pressRecognizer setCancelsTouchesInView:NO];
 	_pressRecognizer.delaysTouchesEnded = NO;
+	_pressRecognizer.delegate = self;
 	//_pressRecognizer.allowableMovement = 10.0;
 	//_pressRecognizer.delegate = self;
 	[self.view addGestureRecognizer:_pressRecognizer];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    return YES;
 }
 
 - (void)setTitle:(NSString *)title {

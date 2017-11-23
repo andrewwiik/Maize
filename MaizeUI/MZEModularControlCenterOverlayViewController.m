@@ -197,21 +197,25 @@ static CGFloat cachedBoundsWidth = 0;
 	if (gestureRecognizer != _collectionViewScrollPanGesture) {
 		return YES;
 	} else {
-		return YES;
+		//return YES;
 		return [self _allowScrollWithPanGesture:(UIPanGestureRecognizer *)gestureRecognizer];
 	}
 }
 
 - (BOOL)_allowScrollWithPanGesture:(UIPanGestureRecognizer *)gestureRecognizer {
-	if ([self presentationState] != MZEPresentationStateUnknown && [self presentationState] != MZEPresentationStateTransitioning) {
-		if ([self _interfaceOrientation] <= 2) {
-			CGPoint point = [gestureRecognizer locationInView:_scrollView];
-			UIView *hitView = [_scrollView hitTest:point withEvent:nil];
-            return [hitView isExclusiveTouch] == NO;
-		}
-		return YES;
-	}
-	return NO;
+	CGPoint point = [gestureRecognizer locationInView:_scrollView];
+	UIView *hitView = [_scrollView hitTest:point withEvent:nil];
+    return [hitView isExclusiveTouch] == NO;
+	// return YES;
+	// if ([self presentationState] != MZEPresentationStateUnknown && [self presentationState] != MZEPresentationStateTransitioning) {
+	// 	if ([self _interfaceOrientation] <= 2) {
+	// 		CGPoint point = [gestureRecognizer locationInView:_scrollView];
+	// 		UIView *hitView = [_scrollView hitTest:point withEvent:nil];
+ //            return [hitView isExclusiveTouch] == NO;
+	// 	}
+	// 	return YES;
+	// }
+	// return NO;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
@@ -248,17 +252,10 @@ static CGFloat cachedBoundsWidth = 0;
 
 - (BOOL)_allowDismissalWithCollectionPanGesture:(UIPanGestureRecognizer *)gesture {
 	if ([self _allowDismissalWithPanGesture:gesture] && _scrollView.contentOffset.y <= 0) {
-		CGPoint point = [gesture locationInView:self.moduleCollectionViewController.view];
-		UIView *hitView = [self.moduleCollectionViewController.view hitTest:point withEvent:nil];
+		CGPoint point = [gesture locationInView:_scrollView];
+		UIView *hitView = [_scrollView hitTest:point withEvent:nil];
 		HBLogInfo(@"HIT VIEW: %@", hitView);
-		if ([hitView isExclusiveTouch]) {
-			// CGPoint velocity = [gesture velocityInView:self.view];
-			// velocity.x = velocity.x*0.15;
-			// velocity.y = velocity.y*0.15;
-			return NO;
-		} else {
-			return YES;
-		}
+		return [hitView isExclusiveTouch] == NO;
 	}
 	return NO;
 }
@@ -668,6 +665,12 @@ static CGFloat cachedBoundsWidth = 0;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	//_snapshotView = touch.view;
+
+	return [touch.view isExclusiveTouch] == NO;
+	// CGPoint point = CGPointMake(touch.x,touch.y);
+	// UIView *hitView = [_scrollView hitTest:point withEvent:nil];
+ //    return [hitView isExclusiveTouch] == NO;
 	return YES;
 	if (gestureRecognizer) {
 		if (_isInteractingWithModule && [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
@@ -678,7 +681,10 @@ static CGFloat cachedBoundsWidth = 0;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press {
-	return YES;
+	// CGPoint point = [gestureRecognizer locationInView:_scrollView];
+	// UIView *hitView = [_scrollView hitTest:point withEvent:nil];
+ //    return [hitView isExclusiveTouch] == NO;
+	//return [touch.view isExclusiveTouch];
 	if (gestureRecognizer) {
 		if (_isInteractingWithModule && [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
 			return NO;

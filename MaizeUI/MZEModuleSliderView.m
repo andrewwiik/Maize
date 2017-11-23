@@ -627,7 +627,9 @@ static CGFloat separatorHeight = 0;
 }
 
 - (BOOL)isExclusiveTouch {
-    return YES;
+    return _respondToSliderChanges;
+    // if (respondToSliderChanges)
+    // return YES;
 }
 
 - (void)setGlyphVisible:(BOOL)visible {

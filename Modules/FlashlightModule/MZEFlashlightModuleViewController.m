@@ -261,11 +261,11 @@ NSString *const FlashlightLevelKey = @"mze_flashlightlevel";
 }
 
 - (void)_dragExit:(id)arg1 {
-	if (![self isExpanded]) [self.buttonModuleView _dragExit:arg1];
+	[self.buttonModuleView _dragExit:arg1];
 }
 
 - (void)_dragEnter:(id)arg1 {
-	if (![self isExpanded]) [self.buttonModuleView _dragEnter:arg1];
+	[self.buttonModuleView _dragEnter:arg1];
 }
 
 - (void)_touchUpOutside:(id)arg1 {

@@ -4,7 +4,7 @@
 #import "_MZEBackdropView.h"
 #import "MZEMenuModuleView.h"
 
-@interface MZEMenuModuleViewController : MZEButtonModuleViewController {
+@interface MZEMenuModuleViewController : MZEButtonModuleViewController <UIGestureRecognizerDelegate> {
 	NSMutableArray<MZEMenuModuleItemView *> *_menuItemsViews;
 	UILabel *_titleLabel;
     MZEMaterialView *_headerSeparatorView;

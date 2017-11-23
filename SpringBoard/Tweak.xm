@@ -299,15 +299,15 @@ MZEHybridPageViewController *hybridPageController;
 }
 %end
 
-%hook CCUIControlCenterSettings
-- (void)setUseNewBounce:(BOOL)useNewBounce {
-  %orig(NO);
-}
+// %hook CCUIControlCenterSettings
+// - (void)setUseNewBounce:(BOOL)useNewBounce {
+//   %orig(NO);
+// }
 
-- (BOOL)useNewBounce {
-  return NO;
-}
-%end
+// - (BOOL)useNewBounce {
+//   return NO;
+// }
+// %end
 
 %hook SBControlCenterController
 -(BOOL)handleMenuButtonTap {

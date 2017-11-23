@@ -37,16 +37,16 @@ static BOOL isIOS11Mode = YES;
 }
 
 - (void)setBounds:(CGRect)bounds {
-	if ([self isTracking]) {
-		[self cancelTrackingWithEvent:nil];
-	}
+	// if ([self isTracking]) {
+	// 	[self cancelTrackingWithEvent:nil];
+	// }
 	[super setBounds:bounds];
 }
 
 - (void)setFrame:(CGRect)frame {
-	if ([self isTracking]) {
-		[self cancelTrackingWithEvent:nil];
-	}
+	// if ([self isTracking]) {
+	// 	[self cancelTrackingWithEvent:nil];
+	// }
 	[super setFrame:frame];
 }
 
