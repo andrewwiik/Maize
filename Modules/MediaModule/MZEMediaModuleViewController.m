@@ -24,6 +24,8 @@
 		name:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDidChangeNotification
 		object:nil];
 
+		_volumeHUDController = [[NSClassFromString(@"MPUVolumeHUDController") alloc] init];
+
 		_isExpanded = NO;
 	}
 	return self;
@@ -111,6 +113,7 @@
 }
 
 - (void)willTransitionToExpandedContentMode:(BOOL)expanded {
+	[_volumeHUDController setVolumeHUDEnabled:expanded == NO forCategory:@"Audio/Video"];
 	_isExpanded = expanded;
 	self.metadataView.expanded = expanded;
 	self.controlsView.showRouting = NO;

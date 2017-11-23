@@ -7,6 +7,7 @@
 #import "MZEMediaMetaDataView.h"
 #import "MZEMediaMetaDataView.h"
 #import "MZEMediaControlsViewController.h"
+#import <MediaPlayerUI/MPUVolumeHUDController.h>
 
 @interface MPUControlCenterMediaControlsViewController : UIViewController
 @end
@@ -15,10 +16,12 @@
 	CGFloat _prefferedContentExpandedHeight;
 	BOOL _isExpanded;
 	MPULayoutInterpolator *_interpolator;
+	MPUVolumeHUDController *_volumeHUDController;
 
 }
 @property (nonatomic, retain, readwrite) MZEMediaMetaDataView *metadataView;
 @property (nonatomic, retain, readwrite) MZEMediaControlsViewController *controlsView;
+@property (nonatomic, retain, readwrite) MPUVolumeHUDController *volumeHUDController;
 @property (nonatomic, readwrite) BOOL isExpanded;
 - (id)initWithNibName:(id)arg1 bundle:(id)arg2;
 - (CGFloat)preferredExpandedContentWidth;
