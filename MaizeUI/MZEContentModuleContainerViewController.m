@@ -272,8 +272,9 @@ static BOOL isIOS11Mode = YES;
 		[_backgroundView addSubview:_backgroundViewController.view];
 	}
 
+	_isForceTouch = NO;
 	if (NSClassFromString(@"UIPreviewInteraction")) {
-
+		_isForceTouch = YES;
 		self.previewInteraction = [[NSClassFromString(@"UIPreviewInteraction") alloc] initWithView:self.view];
 		self.previewInteraction.delegate = self;
 	}
@@ -284,7 +285,7 @@ static BOOL isIOS11Mode = YES;
 
 	_breatheRecognizer = [[MZEBreatheGestureRecognizer alloc] initWithTarget:self action:@selector(handleBubbleGestureRecognizer:)];
 	if ([self.view.gestureRecognizers count] == 0) {
-
+		_isForceTouch = NO;
 		_longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
 		_longPressRecognizer.minimumPressDuration = 0.5;
 		_longPressRecognizer.numberOfTouchesRequired = 1;
@@ -298,6 +299,7 @@ static BOOL isIOS11Mode = YES;
 	if (self.traitCollection && [self.traitCollection respondsToSelector:@selector(forceTouchCapability)]) {
 		if (self.view.gestureRecognizers.count > 0 && !_longPressRecognizer) {
 			if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityUnavailable) {
+				_isForceTouch = NO;
 				_longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
 				_longPressRecognizer.minimumPressDuration = 0.5;
 				_longPressRecognizer.numberOfTouchesRequired = 1;
@@ -522,7 +524,7 @@ static BOOL isIOS11Mode = YES;
 			self.view.transform = CGAffineTransformIdentity;
 		} completion:^(BOOL completed) {
 			[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
-			if (![self isExpanded]) {
+			if (![self isExpanded] && !_isExpanding) {
 				_contentContainerView.moduleMaterialView.hidden = YES;
 				_psuedoView.hidden = NO;
 			}
@@ -604,6 +606,15 @@ static BOOL isIOS11Mode = YES;
 	if (![self isExpanded]) {
 		switch (recognizer.state) {
 	        case UIGestureRecognizerStateBegan: {
+
+	   //      	recognizer.allowableMovement = 15.0;
+	        	
+	   //      	CGPoint touchedPoint = [recognizer locationInView:self.view];
+				// UIView *touchedView = [self.view hitTest:touchedPoint withEvent:nil];
+	   //      	if ([touchedView isExclusiveTouch]) {
+	   //      		recognizer.allowableMovement = 2000;
+	   //      	}
+
 	        	_bubbled = YES;
 	        	if (!isIOS11Mode) {
 	        		[_contentContainerView useFakeVibrantView:YES];
@@ -650,7 +661,7 @@ static BOOL isIOS11Mode = YES;
 						self.view.transform = CGAffineTransformIdentity;
 					} completion:^(BOOL completed){
 						[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
-						if (![self isExpanded]) {
+						if (![self isExpanded] && !_isExpanding) {
 							_contentContainerView.moduleMaterialView.hidden = YES;
 							_psuedoView.hidden = NO;
 						}

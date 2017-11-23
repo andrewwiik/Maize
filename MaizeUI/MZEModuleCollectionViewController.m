@@ -255,6 +255,10 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 		}
 	}
 
+	if (self.psuedoCollectionView) {
+		[self.psuedoCollectionView layoutSubviews];
+	}
+
 	//_moduleViewControllerByIdentifier = moduleViewControllerByIdentifier;
 }
 
@@ -418,44 +422,52 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 }
 
 - (void)contentModuleContainerViewController:(MZEContentModuleContainerViewController *)containerViewController openExpandedModule:(id <MZEContentModule>)expandedModule {
-	
-	[UIView setAnimationsEnabled:NO];
-	// [containerViewController.view removeFromSuperview];
-	[containerViewController willMoveToParentViewController:nil];
-	[containerViewController removeFromParentViewController];
+	if (containerViewController) {
+		containerViewController.isExpanding = YES;
+		containerViewController.contentContainerView.moduleMaterialView.hidden = NO;
+		containerViewController.psuedoView.hidden = YES;
+		[UIView setAnimationsEnabled:NO];
+		// containerViewController.contentContainerView.moduleMaterialView.hidden = NO;
+		// containerViewController.psuedoView.hidden = YES;
+		// [containerViewController.view removeFromSuperview];
+		[containerViewController willMoveToParentViewController:nil];
+		[containerViewController removeFromParentViewController];
 
 
 
-	[UIView animateWithDuration:0.0f animations:^{
-		containerViewController.view.alpha = 0.0;
-		_snapshotView.hidden = YES;
-		if (_snapshotView) {
-			[_snapshotView removeFromSuperview];
-		}
-	} completion:^(BOOL completed) {
-		if ([self.view superview]) {
-			_snapshotView = [[NSClassFromString(@"UIScreen") mainScreen] snapshotView];
-			containerViewController.view.alpha = 1.0;
-			if (![_snapshotView superview] && [self.view superview]) {
-				CGRect frame = _snapshotView.frame;
-
-				if ([MZEOptionsManager isHybridMode]) {
-					CGRect frameInWindow = [self.view convertRect:self.view.bounds toView:nil];
-					frame.origin.x -= frameInWindow.origin.x;
-					frame.origin.y -= frameInWindow.origin.y;
-				}
-				if ([[self.view superview] isKindOfClass:NSClassFromString(@"UIScrollView")]) {
-					frame.origin.x += ((UIScrollView *)[self.view superview]).contentOffset.x; 
-					frame.origin.y += ((UIScrollView *)[self.view superview]).contentOffset.y;
-				}
-				_snapshotView.frame = frame;
-				[[self.view superview] addSubview:_snapshotView];
-				self.view.hidden = YES;
+		[UIView animateWithDuration:0.0f animations:^{
+			containerViewController.view.alpha = 0.0;
+			_snapshotView.hidden = YES;
+			if (_snapshotView) {
+				[_snapshotView removeFromSuperview];
 			}
-		}
+		} completion:^(BOOL completed) {
+			if ([self.view superview]) {
+				_snapshotView = [[NSClassFromString(@"UIScreen") mainScreen] snapshotView];
+				containerViewController.view.alpha = 1.0;
+				if (![_snapshotView superview] && [self.view superview]) {
+					CGRect frame = _snapshotView.frame;
 
-		[self presentViewController:containerViewController animated:true completion:nil];
-	}];
+					if ([MZEOptionsManager isHybridMode]) {
+						CGRect frameInWindow = [self.view convertRect:self.view.bounds toView:nil];
+						frame.origin.x -= frameInWindow.origin.x;
+						frame.origin.y -= frameInWindow.origin.y;
+					}
+					if ([[self.view superview] isKindOfClass:NSClassFromString(@"UIScrollView")]) {
+						frame.origin.x += ((UIScrollView *)[self.view superview]).contentOffset.x; 
+						frame.origin.y += ((UIScrollView *)[self.view superview]).contentOffset.y;
+					}
+					_snapshotView.frame = frame;
+					[[self.view superview] addSubview:_snapshotView];
+					self.view.hidden = YES;
+				}
+			}
+
+			[self presentViewController:containerViewController animated:true completion:^{
+				containerViewController.isExpanding = NO;
+			}];
+		}];
+	}
 	// if (_snapshotView) {
 	// 	[_snapshotView removeFromSuperview];
 	// }

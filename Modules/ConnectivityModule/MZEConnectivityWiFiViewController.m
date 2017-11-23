@@ -37,10 +37,10 @@
 static MZEConnectivityWiFiViewController *sharedWifiController;
 static void *_wifiManager;
 static void *_wifiClient;
-static void *_registeredWifiClient;
+//static void *_registeredWifiClient;
 
-static void wifiEventCallback(void);
-static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
+// static void wifiEventCallback(void);
+//static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 
 @implementation MZEConnectivityWiFiViewController
 
@@ -66,26 +66,26 @@ static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 			}
 		}
 
-		if (!_wifiManager) {
-			 HBLogInfo(@"CRASH POINT #6");
-			_wifiManager = WiFiManagerClientCreate(kCFAllocatorDefault, 0);
-			HBLogInfo(@"CRASH POINT #7");
-			if (!_wifiManager) {
-				return nil;
-			}
-		}
+		// if (!_wifiManager) {
+		// 	 HBLogInfo(@"CRASH POINT #6");
+		// 	_wifiManager = WiFiManagerClientCreate(kCFAllocatorDefault, 0);
+		// 	HBLogInfo(@"CRASH POINT #7");
+		// 	if (!_wifiManager) {
+		// 		return nil;
+		// 	}
+		// }
 
-		if (_wifiManager && !_wifiClient) {
-			HBLogInfo(@"CRASH POINT #0");
-			_wifiClient = WiFiManagerClientGetDevice(_wifiManager);
-			HBLogInfo(@"CRASH POINT #1");
-			WiFiManagerClientScheduleWithRunLoop(_wifiManager, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
-		}
+		// if (_wifiManager && !_wifiClient) {
+		// 	HBLogInfo(@"CRASH POINT #0");
+		// 	_wifiClient = WiFiManagerClientGetDevice(_wifiManager);
+		// 	HBLogInfo(@"CRASH POINT #1");
+		// 	WiFiManagerClientScheduleWithRunLoop(_wifiManager, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+		// }
 
-		if (_wifiClient) {
-			HBLogInfo(@"CRASH POINT #2");
-			WiFiManagerClientRegisterDeviceAttachmentCallback(_wifiManager,(WiFiManagerClientDeviceAttachmentCallback)wifiDeviceAttachedCallback, NULL);
-		}
+		// if (_wifiClient) {
+		// 	HBLogInfo(@"CRASH POINT #2");
+		// 	WiFiManagerClientRegisterDeviceAttachmentCallback(_wifiManager,(WiFiManagerClientDeviceAttachmentCallback)wifiDeviceAttachedCallback, NULL);
+		// }
 
 
 		HBLogInfo(@"CRASH POINT #3");
@@ -150,6 +150,7 @@ static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 }
 
 - (void)_updateState {
+	[self getWiFiManager];
 	int state = [self _currentState];
 	[self setEnabled:[self _enabledForState:state]];
 	[self setInoperative:[self _inoperativeForState:state]];
@@ -158,14 +159,22 @@ static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 }
 
 - (BOOL)_toggleState {
-	if ((BOOL)WiFiManagerClientGetPower(_wifiManager)) {
-		WiFiManagerClientSetPower(_wifiManager, 0);
-		[self setEnabled:NO];
-	} else {
-		WiFiManagerClientSetPower(_wifiManager, 1);
-		[self setEnabled:NO];
-	}
+	[self getWiFiManager];
+
+	//if ([[NSClassFromString(@"SBWiFiManager") sharedInstance] wiFiEnabled]) {
+	[[NSClassFromString(@"SBWiFiManager") sharedInstance] setPowered:[[NSClassFromString(@"SBWiFiManager") sharedInstance] isPowered] == NO];
+	[self setEnabled:[[NSClassFromString(@"SBWiFiManager") sharedInstance] isPowered] == NO];
+	//}
 	return YES;
+
+	// if ((BOOL)WiFiManagerClientGetPower(_wifiManager)) {
+	// 	WiFiManagerClientSetPower(_wifiManager, 0);
+	// 	[self setEnabled:NO];
+	// } else {
+	// 	WiFiManagerClientSetPower(_wifiManager, 1);
+	// 	[self setEnabled:NO];
+	// }
+	// return YES;
 }
 
 - (NSString *)_glyphStateForState:(int)state {
@@ -192,6 +201,7 @@ static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 }
 
 - (NSString *)currentSSID {
+	[self getWiFiManager];
 	if (_wifiClient) {
 		return (__bridge NSString *)WiFiNetworkGetSSID(WiFiDeviceClientCopyCurrentNetwork(_wifiClient));
 	}
@@ -215,14 +225,37 @@ static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 }
 
 - (void)_beginObservingStateChanges {
+	[self getWiFiManager];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+			selector:@selector(_updateState)
+			name:@"SBWifiManagerPowerStateDidChangeNotification"
+			object:nil];
 
-	if (_wifiManager && _wifiClient && _wifiClient != _registeredWifiClient) {
-			WiFiDeviceClientRegisterPowerCallback(_wifiClient, (CFNotificationCallback)wifiEventCallback, NULL);
-			WiFiDeviceClientRegisterLinkCallback(_wifiClient, (CFNotificationCallback)wifiEventCallback, NULL);
-			WiFiDeviceClientRegisterBssidChangeCallback(_wifiClient, (CFNotificationCallback)wifiEventCallback, NULL);
-			WiFiDeviceClientRegisterBgScanSuspendResumeCallback(_wifiClient, (CFNotificationCallback)wifiEventCallback, NULL);
-			_registeredWifiClient = _wifiClient;
-	}
+	[[NSNotificationCenter defaultCenter] addObserver:self
+			selector:@selector(_updateState)
+			name:@"SBWifiManagerLinkDidChangeNotification"
+			object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+			selector:@selector(_updateState)
+			name:@"SBWifiManagerDevicePresenceDidChangeNotification"
+			object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+			selector:@selector(_updateState)
+			name:@"SBWifiManagerPrimaryInterfaceMayHaveChangedNotification"
+			object:nil];
+
+	//SBWifiManagerDevicePresenceDidChangeNotification
+	//SBWifiManagerLinkDidChangeNotification
+	//SBWifiManagerPowerStateDidChangeNotification
+	// if (_wifiManager && _wifiClient && _wifiClient != _registeredWifiClient) {
+	// 		WiFiDeviceClientRegisterPowerCallback(_wifiClient, (CFNotificationCallback)wifiEventCallback, NULL);
+	// 		WiFiDeviceClientRegisterLinkCallback(_wifiClient, (CFNotificationCallback)wifiEventCallback, NULL);
+	// 		WiFiDeviceClientRegisterBssidChangeCallback(_wifiClient, (CFNotificationCallback)wifiEventCallback, NULL);
+	// 		WiFiDeviceClientRegisterBgScanSuspendResumeCallback(_wifiClient, (CFNotificationCallback)wifiEventCallback, NULL);
+	// 		_registeredWifiClient = _wifiClient;
+	// }
 }
 
 - (void)_stopObservingStateChanges {
@@ -240,21 +273,42 @@ static void wifiDeviceAttachedCallback(void *, void *, __unused void *object);
 		}
 	}
 }
+
+- (void)getWiFiManager {
+	if (!_wifiManager || !_wifiClient) {
+		if (NSClassFromString(@"SBWiFiManager")) {
+			SBWiFiManager *manager = [NSClassFromString(@"SBWiFiManager") sharedInstance];
+			if (manager) {
+				_wifiManager = [manager _manager];
+				_wifiClient = [manager _device];
+			}
+		}
+	}
+}
+
+- (void)moduleDidExpand:(BOOL)didExpand {
+	[super moduleDidExpand:didExpand];
+	if (didExpand) {
+		self.longPressRecognizer.enabled = YES;
+	} else {
+		self.longPressRecognizer.enabled = NO;
+	}
+}
 @end
 
 
-static void wifiEventCallback(void) {
-	if (sharedWifiController) {
-		[sharedWifiController _updateState];
-	}
+// static void wifiEventCallback(void) {
+// 	if (sharedWifiController) {
+// 		[sharedWifiController _updateState];
+// 	}
 
-}
+// }
 
 
-static void wifiDeviceAttachedCallback(void *manager, void *device, __unused void *object) {
-	_wifiClient = device;
-	if (sharedWifiController) {
-		[sharedWifiController _beginObservingStateChanges];
-		[sharedWifiController _updateState];
-	}
-}
+// static void wifiDeviceAttachedCallback(void *manager, void *device, __unused void *object) {
+// 	_wifiClient = device;
+// 	if (sharedWifiController) {
+// 		[sharedWifiController _beginObservingStateChanges];
+// 		[sharedWifiController _updateState];
+// 	}
+// }

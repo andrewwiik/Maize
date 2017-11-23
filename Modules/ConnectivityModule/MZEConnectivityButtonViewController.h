@@ -18,4 +18,5 @@
 - (void)willResignActive;
 - (void)willBecomeActive;
 - (void)didDismissSecondaryViewController:(UIViewController *)viewController;
+- (void)moduleDidExpand:(BOOL)didExpand;
 @end

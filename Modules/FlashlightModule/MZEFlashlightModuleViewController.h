@@ -3,14 +3,17 @@
 #import <MaizeUI/MZEContentModuleContentViewController-Protocol.h>
 #import <AVFoundation/AVFlashlight.h>
 #import <MaizeUI/MZEToggleModule.h>
+#import "CCUIFlashlightSetting+MZE.h"
 
 extern NSString *const FlashlightLevelKey;
 
 @interface MZEFlashlightModuleViewController : MZEToggleViewController <MZEContentModuleContentViewController> {
 	MZEModuleSliderView *_sliderView;
 	NSUserDefaults *_userDefaults;
+	CCUIFlashlightSetting *_flashlightSetting;
 }
 @property (nonatomic, retain, readwrite) MZEModuleSliderView *sliderView;
+@property (nonatomic, retain, readwrite) CCUIFlashlightSetting *flashlightSetting;
 + (instancetype)sharedFlashlightModule;
 + (AVFlashlight *)currentFlashlight;
 - (id)init;
@@ -27,4 +30,11 @@ extern NSString *const FlashlightLevelKey;
 - (BOOL)shouldBeginTransitionToExpandedContentModule;
 - (BOOL)shouldMaskToBounds;
 //- (void)fakeHideSlider:(BOOL)should;
+
+#pragma mark passing touches to the toggle
+- (void)_dragExit:(id)arg1;
+- (void)_dragEnter:(id)arg1;
+- (void)_touchUpOutside:(id)arg1;
+- (void)_touchUpInside:(id)arg1;
+- (void)_touchDown:(id)arg1;
 @end

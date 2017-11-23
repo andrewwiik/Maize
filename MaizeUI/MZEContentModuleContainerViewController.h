@@ -35,8 +35,10 @@
     UILongPressGestureRecognizer *_longPressRecognizer;
     CALayer *_maskLayer;
     MZEPsuedoModuleView *_psuedoView;
+    BOOL _isExpanding;
+    BOOL _isForceTouch;
 }
-
+@property (nonatomic, assign, readwrite) BOOL isExpanding;
 @property(retain, nonatomic, readwrite) UIViewController *originalParentViewController;
 @property(nonatomic, readwrite) BOOL didSendContentDisappearanceCalls; 
 @property(nonatomic, readwrite) BOOL didSendContentAppearanceCalls; 

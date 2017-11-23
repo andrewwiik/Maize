@@ -4,6 +4,8 @@
 #import <UIKit/UIImage+Private.h>
 #import <AVFoundation/AVFlashlight.h>
 
+#define flashlight ((AVFlashlight *)[NSClassFromString(@"AVFlashlight") mze_sharedFlashlight])
+
 @implementation MZEFlashlightModule
 
 - (UIViewController *)backgroundViewController {
@@ -46,11 +48,11 @@
 }
 
 - (BOOL)isSelected {
-	return [[NSClassFromString(@"AVFlashlight") sharedFlashlight] flashlightLevel] > 0 ? YES : NO;
+	return [flashlight flashlightLevel] > 0 ? YES : NO;
 }
 
 - (BOOL)isEnabled {
-	return [[NSClassFromString(@"AVFlashlight") sharedFlashlight] isAvailable];
+	return [flashlight isAvailable];
 }
 
 - (void)setSelected:(BOOL)isSelected {
@@ -59,9 +61,10 @@
 }
 
 - (void)switchStateDidChange:(NSNotification *)notification {
-	if (_viewController) {
-		[(MZEFlashlightModuleViewController *)_viewController updateToggleState];
-	}
+	return;
+	// if (_viewController) {
+	// 	[(MZEFlashlightModuleViewController *)_viewController updateToggleState];
+	// }
 }
 
 - (UIViewController<MZEContentModuleContentViewController> *)contentViewController {

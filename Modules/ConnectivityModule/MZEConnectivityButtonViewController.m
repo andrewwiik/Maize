@@ -57,4 +57,8 @@
 	[self.buttonDelegate buttonViewController:self didDismissSecondaryViewController:viewController];
 }
 
+- (void)moduleDidExpand:(BOOL)didExpand {
+
+}
+
 @end

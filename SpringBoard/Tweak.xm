@@ -299,6 +299,16 @@ MZEHybridPageViewController *hybridPageController;
 }
 %end
 
+%hook CCUIControlCenterSettings
+- (void)setUseNewBounce:(BOOL)useNewBounce {
+  %orig(NO);
+}
+
+- (BOOL)useNewBounce {
+  return NO;
+}
+%end
+
 %hook SBControlCenterController
 -(BOOL)handleMenuButtonTap {
   MZEModuleCollectionViewController *collectionViewController = [MZEModularControlCenterOverlayViewController sharedCollectionViewController];
@@ -417,9 +427,23 @@ MZEHybridPageViewController *hybridPageController;
 }
 %end
 
-%hook SBDashBoardViewController
-- (void)viewDidLoad {
+@interface SBLockScreenDateViewController : UIViewController
+- (void)loadMaize;
+@end
+
+static BOOL loadedTimer = NO;
+
+%hook SBLockScreenDateViewController
+- (void)_startUpdateTimer {
   %orig;
+  if (!loadedTimer) {
+    loadedTimer = YES;
+    [self performSelector:@selector(loadMaize) withObject:nil afterDelay:5.0];
+  }
+}
+
+%new
+- (void)loadMaize {
   if (!sharedController) {
     SBControlCenterController *controller = [NSClassFromString(@"SBControlCenterController") _sharedInstanceCreatingIfNeeded:YES];
     if (controller && [controller valueForKey:@"_viewController"]) {
@@ -429,6 +453,7 @@ MZEHybridPageViewController *hybridPageController;
       //isLoading = NO;
     }
   }
+  //[self performSelector:@selector(myMethod) withObject:nil afterDelay:3.0];
 }
 %end
 

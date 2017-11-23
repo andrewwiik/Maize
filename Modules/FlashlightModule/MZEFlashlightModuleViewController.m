@@ -4,7 +4,8 @@
 
 NSString *const FlashlightLevelKey = @"mze_flashlightlevel";
 
-static AVFlashlight *flashlight;
+#define flashlight ((AVFlashlight *)[NSClassFromString(@"AVFlashlight") mze_sharedFlashlight])
+
 
 @implementation MZEFlashlightModuleViewController
 
@@ -23,24 +24,25 @@ static AVFlashlight *flashlight;
 }
 
 
-
 - (id)init {
 	self = [super init];
 	if (self) {
 		_expanded = NO;
 		_userDefaults = [NSUserDefaults standardUserDefaults];
-		flashlight = [NSClassFromString(@"AVFlashlight") sharedFlashlight];
-		[flashlight addObserver:self forKeyPath:@"available" options:0 context:NULL];
-		[flashlight addObserver:self forKeyPath:@"flashlightLevel" options:0 context:NULL];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFlashlightMade:) name:@"MZENewFlashlightMade" object:nil];
+		self.flashlightSetting = [NSClassFromString(@"CCUIFlashlightSetting") mze_sharedFlashlight];
+		self.flashlightSetting.proxyKeyValueObject = self;
+		//flashlight = [NSClassFromString(@"AVFlashlight") sharedFlashlight];
+		//[flashlight addObserver:self forKeyPath:@"available" options:0 context:NULL];
+		//[flashlight addObserver:self forKeyPath:@"flashlightLevel" options:0 context:NULL];
+		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFlashlightMade:) name:@"MZENewFlashlightMade" object:nil];
 	}
 	return self;
 }
 
 - (void)updateToggleState {
-	if (!flashlight) {
-		[self newFlashlightMade:nil];
-	}
+	// if (!flashlight) {
+	// 	[self newFlashlightMade:nil];
+	// }
 
 	[self setEnabled:[flashlight isAvailable]];
 	BOOL isSelected = [flashlight flashlightLevel] > 0 ? YES : NO;
@@ -56,18 +58,18 @@ static AVFlashlight *flashlight;
 }
 
 - (void)newFlashlightMade:(NSNotification *)notification {
-	if (flashlight) {
-		@try{
-			[flashlight removeObserver:self forKeyPath:@"available" context:NULL];
-			[flashlight removeObserver:self forKeyPath:@"flashlightLevel" context:NULL];
-		}@catch(id anException){
-		   //do nothing, obviously it wasn't attached because an exception was thrown
-		}
-	}
+	// if (flashlight) {
+	// 	@try{
+	// 		//[flashlight removeObserver:self forKeyPath:@"available" context:NULL];
+	// 		//[flashlight removeObserver:self forKeyPath:@"flashlightLevel" context:NULL];
+	// 	}@catch(id anException){
+	// 	   //do nothing, obviously it wasn't attached because an exception was thrown
+	// 	}
+	// }
 
-	flashlight = [NSClassFromString(@"AVFlashlight") sharedFlashlight];
-	[flashlight addObserver:self forKeyPath:@"available" options:0 context:NULL];
-	[flashlight addObserver:self forKeyPath:@"flashlightLevel" options:0 context:NULL];
+	//flashlight = [NSClassFromString(@"AVFlashlight") sharedFlashlight];
+	//[flashlight addObserver:self forKeyPath:@"available" options:0 context:NULL];
+	//[flashlight addObserver:self forKeyPath:@"flashlightLevel" options:0 context:NULL];
 }
 
 - (void)viewDidLoad {
@@ -100,21 +102,25 @@ static AVFlashlight *flashlight;
 
 - (void)_sliderValueDidChange:(MZEModuleSliderView *)sliderView {
 	if ([self isExpanded]) {
-		if (!flashlight) {
-			[self newFlashlightMade:nil];
-		}
+		// if (!flashlight) {
+		// 	[self newFlashlightMade:nil];
+		// }
 
 		float flashLevel = (float)(_sliderView.step - 1)/(float)(_sliderView.numberOfSteps - 1);
 		[_userDefaults setFloat:flashLevel forKey:FlashlightLevelKey];
 		[_userDefaults synchronize];
 
 		if (sliderView.step > 1) {
-			[flashlight setFlashlightLevel:flashLevel withError:nil];
+			//if ([self])
+			[self.flashlightSetting _setTorchLevel:flashLevel];
+
+			//[flashlight setFlashlightLevel:flashLevel withError:nil];
 			if (_module) {
 				[_module setSelected:YES];
 			}
 		} else {
-			[flashlight turnPowerOff];
+			[self.flashlightSetting _enableTorch:NO];
+			//[flashlight turnPowerOff];
 			if (_module) {
 				[_module setSelected:NO];
 			}
@@ -130,16 +136,16 @@ static AVFlashlight *flashlight;
 	}
 
 	if ([flashlight flashlightLevel] > 0) {
-		[flashlight turnPowerOff];
-		if (_module) {
-			[_module setSelected:NO];
-		}
+		[self.flashlightSetting _enableTorch:NO];
 	} else {
+		//[self.flashlightSetting _enableTorch:NO];
 		float flashLevel = (float)[_userDefaults floatForKey:FlashlightLevelKey];
 		if (flashLevel > 0) {
-			[flashlight setFlashlightLevel:flashLevel withError:nil];
+			[self.flashlightSetting _setTorchLevel:flashLevel];
+			//[flashlight setFlashlightLevel:flashLevel withError:nil];
 		} else {
-			[flashlight setFlashlightLevel:(float)1.0f withError:nil];
+			[self.flashlightSetting _enableTorch:YES];
+			//[flashlight setFlashlightLevel:(float)1.0f withError:nil];
 			[_userDefaults setFloat:1.0f forKey:FlashlightLevelKey];
 			[_userDefaults synchronize];
 		}
@@ -151,7 +157,7 @@ static AVFlashlight *flashlight;
 }
 
 - (BOOL)shouldBeginTransitionToExpandedContentModule {
-	return [[NSClassFromString(@"AVFlashlight") sharedFlashlight] isAvailable];
+	return [flashlight isAvailable];
 }
 
 - (CGFloat)preferredExpandedContentHeight {
@@ -277,13 +283,14 @@ static AVFlashlight *flashlight;
 - (void)dealloc {
 	_sliderView = nil;
 	_userDefaults = nil;
-	if (flashlight) {
-		@try{
-			[flashlight removeObserver:self forKeyPath:@"available" context:NULL];
-			[flashlight removeObserver:self forKeyPath:@"flashlightLevel" context:NULL];
-		}@catch(id anException){
-		   //do nothing, obviously it wasn't attached because an exception was thrown
-		}
-	}
+	//[super dealloc];
+	// if (flashlight) {
+	// 	@try{
+	// 		//[flashlight removeObserver:self forKeyPath:@"available" context:NULL];
+	// 		//[flashlight removeObserver:self forKeyPath:@"flashlightLevel" context:NULL];
+	// 	}@catch(id anException){
+	// 	   //do nothing, obviously it wasn't attached because an exception was thrown
+	// 	}
+	// }
 }
 @end

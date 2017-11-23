@@ -153,6 +153,7 @@
 	for (MZEConnectivityButtonViewController *buttonController in _buttonViewControllers) {
 		[buttonController setLabelsVisible:expanded];
 		[buttonController.view setAlpha:1.0];
+		[buttonController moduleDidExpand:expanded];
 	}
 
 	for (NSUInteger x = ([self visibleRows] * [self visibleColumns]); x < [_buttonViewControllers count]; x++) {

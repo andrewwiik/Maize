@@ -28,4 +28,5 @@
 - (void)willResignActive;
 + (BOOL)isSupported;
 - (void)_pressed:(UILongPressGestureRecognizer *)sender;
+- (void)getWiFiManager;
 @end
