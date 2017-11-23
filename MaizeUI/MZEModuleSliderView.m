@@ -306,6 +306,7 @@ static CGFloat separatorHeight = 0;
 
     if (!_respondToSliderChanges) {
         return YES;
+        return [super beginTrackingWithTouch:touch withEvent:event];
     }
 
     CGPoint touchPoint = [touch locationInView:_containerView];
@@ -336,6 +337,7 @@ static CGFloat separatorHeight = 0;
 - (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     if (!_respondToSliderChanges) {
         return YES;
+        return [super continueTrackingWithTouch:touch withEvent:event];
     }
 
     BOOL absoluteReference = [self isStepped];
@@ -369,6 +371,7 @@ static CGFloat separatorHeight = 0;
 }
 
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    // [super endTrackingWithTouch:touch withEvent:event];
     if (_updatesCommitTimer) {
         [_updatesCommitTimer invalidate];
         _updatesCommitTimer = nil;
@@ -388,6 +391,7 @@ static CGFloat separatorHeight = 0;
         }
     }
     [self sendActionsForControlEvents:UIControlEventValueChanged];
+   // [super endTrackingWithTouch:touch withEvent:event];
     //[MZECurrentActions setIsSliding:NO];
 }
 

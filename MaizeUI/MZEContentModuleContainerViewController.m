@@ -291,7 +291,7 @@ static BOOL isIOS11Mode = YES;
 		_longPressRecognizer.numberOfTouchesRequired = 1;
 		[_longPressRecognizer setCancelsTouchesInView:NO];
 		_longPressRecognizer.delaysTouchesEnded = NO;
-		_longPressRecognizer.allowableMovement = 10.0;
+		_longPressRecognizer.allowableMovement = 15.0;
 		_longPressRecognizer.delegate = self;
 		[self.view addGestureRecognizer:_longPressRecognizer];
 	}
@@ -305,7 +305,7 @@ static BOOL isIOS11Mode = YES;
 				_longPressRecognizer.numberOfTouchesRequired = 1;
 				[_longPressRecognizer setCancelsTouchesInView:NO];
 				_longPressRecognizer.delaysTouchesEnded = NO;
-				_longPressRecognizer.allowableMovement = 10.0;
+				_longPressRecognizer.allowableMovement = 15.0;
 				_longPressRecognizer.delegate = self;
 				[self.view addGestureRecognizer:_longPressRecognizer];
 			}
@@ -322,6 +322,34 @@ static BOOL isIOS11Mode = YES;
 	_breatheRecognizer.delaysTouchesEnded = NO;
 	[self.view addGestureRecognizer:_breatheRecognizer];
 
+	_speedRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleSpeedRecognizer:)];
+	//_speedRecognizer.numberOfTouchesRequired = 1;
+	_speedRecognizer.delaysTouchesEnded = YES;
+	[_speedRecognizer setCancelsTouchesInView:NO];
+	[self.view addGestureRecognizer:_speedRecognizer];
+}
+
+- (void)_handleSpeedRecognizer:(UIPanGestureRecognizer *)recognizer {
+	// if (recognizer.state == UIGestureRecognizerStateBegan) {
+	// 	CGPoint touchedPoint = [recognizer locationInView:self.view];
+	// 	UIView *touchedView = [self.view hitTest:touchedPoint withEvent:nil];
+ //    	if ([touchedView isExclusiveTouch] == NO) {
+ //    		if (fabs([recognizer translationInView:self.view].y) > 15) {
+ //    			recognizer.enabled = NO;
+ //    			recognizer.enabled = YES;
+ //    			_breatheRecognizer.enabled = NO;
+ //    			_breatheRecognizer.enabled = YES;
+ //    			if (self.previewInteraction) {
+ //    				[self.previewInteraction cancelInteraction];
+ //    			}
+
+ //    			if (_longPressRecognizer) {
+ //    				_longPressRecognizer.enabled = NO;
+ //    				_longPressRecognizer.enabled = YES;
+ //    			}
+ //    		}
+ //    	}
+	// }
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -520,10 +548,11 @@ static BOOL isIOS11Mode = YES;
 
 - (void)previewInteractionDidCancel:(UIPreviewInteraction *)previewInteraction {
 	if (_canBubble) {
-		[UIView animateWithDuration:0.1 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+		[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+		[UIView animateWithDuration:0.235 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 			self.view.transform = CGAffineTransformIdentity;
 		} completion:^(BOOL completed) {
-			[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+			//[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
 			if (![self isExpanded] && !_isExpanding) {
 				_contentContainerView.moduleMaterialView.hidden = YES;
 				_psuedoView.hidden = NO;
@@ -534,7 +563,7 @@ static BOOL isIOS11Mode = YES;
 
 		}];
 	}
-	//[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+	[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
 }
 
 
@@ -608,12 +637,25 @@ static BOOL isIOS11Mode = YES;
 	        case UIGestureRecognizerStateBegan: {
 
 	   //      	recognizer.allowableMovement = 15.0;
-	        	
+
 	   //      	CGPoint touchedPoint = [recognizer locationInView:self.view];
 				// UIView *touchedView = [self.view hitTest:touchedPoint withEvent:nil];
-	   //      	if ([touchedView isExclusiveTouch]) {
-	   //      		recognizer.allowableMovement = 2000;
+	   //      	if ([touchedView isExclusiveTouch] == NO) {
+	   //      		if (fabs([recognizer translationinView:self.view].y) > 15) {
+	   //      			recognizer.enabled = NO;
+	   //      			recognizer.enabled = YES;
+	   //      			if (self.previewInteraction) {
+	   //      				[self.previewInteraction cancel];
+	   //      			}
+
+	   //      			if (_longPressRecognizer) {
+	   //      				_longPressRecognizer.enabled = NO;
+	   //      				_longPressRecognizer.enabled = YES;
+	   //      			}
+	   //      		}
 	   //      	}
+
+	        	//if ([recognizer > ])
 
 	        	_bubbled = YES;
 	        	if (!isIOS11Mode) {
@@ -653,19 +695,27 @@ static BOOL isIOS11Mode = YES;
 	        		if (self.bubblingAnimator) {
 	        			[self.bubblingAnimator stopAnimation:YES];
 	        		}
+
+	        		BOOL needsToScaleDown = YES;
 	        		if (self.previewInteraction) {
 	        			[self.previewInteraction cancelInteraction];
+	        			//needsToScaleDown = NO;
 	        		}
+	        		[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+		
 		        	_canBubble = YES;
-		        	[UIView animateWithDuration:0.275 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
-						self.view.transform = CGAffineTransformIdentity;
-					} completion:^(BOOL completed){
-						[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
-						if (![self isExpanded] && !_isExpanding) {
-							_contentContainerView.moduleMaterialView.hidden = YES;
-							_psuedoView.hidden = NO;
-						}
-					}];
+		        	if (needsToScaleDown) {
+		        		[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+			        	[UIView animateWithDuration:0.235 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
+							self.view.transform = CGAffineTransformIdentity;
+						} completion:^(BOOL completed){
+							//[_delegate contentModuleContainerViewController:self didFinishInteractionWithModule:_contentModule];
+							if (![self isExpanded] && !_isExpanding) {
+								_contentContainerView.moduleMaterialView.hidden = YES;
+								_psuedoView.hidden = NO;
+							}
+						}];
+			        }
 				}
 	            // do something
 	            break;
@@ -810,7 +860,7 @@ static BOOL isIOS11Mode = YES;
 				_longPressRecognizer.numberOfTouchesRequired = 1;
 				[_longPressRecognizer setCancelsTouchesInView:NO];
 				_longPressRecognizer.delaysTouchesEnded = NO;
-				_longPressRecognizer.allowableMovement = 10.0;
+				_longPressRecognizer.allowableMovement = 15.0;
 				_longPressRecognizer.delegate = self;
 				[self.view addGestureRecognizer:_longPressRecognizer];
 			}

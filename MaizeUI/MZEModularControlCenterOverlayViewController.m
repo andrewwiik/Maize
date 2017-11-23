@@ -203,9 +203,32 @@ static CGFloat cachedBoundsWidth = 0;
 }
 
 - (BOOL)_allowScrollWithPanGesture:(UIPanGestureRecognizer *)gestureRecognizer {
+
+	// if (!isPad && [self isLandscape] == NO) {
+	// 	if (_scrollView.contentOffset.y <= 0)
+	// }
 	CGPoint point = [gestureRecognizer locationInView:_scrollView];
 	UIView *hitView = [_scrollView hitTest:point withEvent:nil];
-    return [hitView isExclusiveTouch] == NO;
+
+	if ([hitView isExclusiveTouch] == NO) {
+		if (!isPad && [self isLandscape]) {
+			CGPoint translation = [gestureRecognizer translationInView:_scrollView];
+			if (fabs(translation.x) > fabs(translation.y)) {
+				return YES;
+			} else {
+				return NO;
+			}
+
+		} else {
+			CGPoint translation = [gestureRecognizer translationInView:_scrollView];
+			if (translation.y > 0) {
+				return NO;
+			} else {
+				return YES;
+			}
+		}
+	} else return NO;
+    //return [hitView isExclusiveTouch] == NO;
 	// return YES;
 	// if ([self presentationState] != MZEPresentationStateUnknown && [self presentationState] != MZEPresentationStateTransitioning) {
 	// 	if ([self _interfaceOrientation] <= 2) {
@@ -241,21 +264,38 @@ static CGFloat cachedBoundsWidth = 0;
 	return YES;
 }
 
-- (BOOL)_allowDismissalWithTapGesture:(UITapGestureRecognizer *)gesture {
+- (BOOL)_allowDismissalWithTapGesture:(UITapGestureRecognizer *)gestureRecognizer {
 	if ([self presentationState] != MZEPresentationStateTransitioning && [self presentationState] != MZEPresentationStateDismissed && !_isInteractingWithModule) {
 		//CGRect targetFrame = [self _targetPresentationFrame];
-		CGPoint touchPoint = [gesture locationInView:_scrollView];
+		CGPoint touchPoint = [gestureRecognizer locationInView:_scrollView];
 		return !CGRectContainsPoint(self.moduleCollectionViewController.view.frame, touchPoint);
 	}
 	return NO;
 }
 
-- (BOOL)_allowDismissalWithCollectionPanGesture:(UIPanGestureRecognizer *)gesture {
-	if ([self _allowDismissalWithPanGesture:gesture] && _scrollView.contentOffset.y <= 0) {
-		CGPoint point = [gesture locationInView:_scrollView];
+- (BOOL)_allowDismissalWithCollectionPanGesture:(UIPanGestureRecognizer *)gestureRecognizer {
+	if ([self _allowDismissalWithPanGesture:gestureRecognizer] && _scrollView.contentOffset.y <= 0) {
+		CGPoint point = [gestureRecognizer locationInView:_scrollView];
 		UIView *hitView = [_scrollView hitTest:point withEvent:nil];
-		HBLogInfo(@"HIT VIEW: %@", hitView);
-		return [hitView isExclusiveTouch] == NO;
+
+		if ([hitView isExclusiveTouch] == NO) {
+			if (!isPad && [self isLandscape]) {
+				CGPoint translation = [gestureRecognizer translationInView:_scrollView];
+				if (fabs(translation.x) > fabs(translation.y)) {
+					return NO;
+				} else {
+					return YES;
+				}
+
+			} else {
+				CGPoint translation = [gestureRecognizer translationInView:_scrollView];
+				if (translation.y > 0) {
+					return YES;
+				} else {
+					return NO;
+				}
+			}
+		} else return NO;
 	}
 	return NO;
 }
@@ -398,7 +438,7 @@ static CGFloat cachedBoundsWidth = 0;
 	if ([NSClassFromString(@"SBControlCenterController") sharedInstance]) {
 		SBControlCenterController *controller = [NSClassFromString(@"SBControlCenterController") sharedInstance];
 		if ([controller valueForKey:@"_viewController"]) {
-			if ([recognizer translationInView:self.view].y > 15 || [recognizer translationInView:self.view].y < 15) {
+			if ([recognizer translationInView:self.view].y > 5 || [recognizer translationInView:self.view].y < 5) {
 				_collectionViewScrollPanGesture.enabled = NO;
 				_collectionViewScrollPanGesture.enabled = YES;
 			}

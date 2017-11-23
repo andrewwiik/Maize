@@ -85,6 +85,7 @@ NSString *const FlashlightLevelKey = @"mze_flashlightlevel";
 		[_sliderView addTarget:self action:@selector(_dragEnter:) forControlEvents:UIControlEventTouchDragEnter];
 		[_sliderView addTarget:self action:@selector(_dragExit:) forControlEvents:UIControlEventTouchDragExit];
 		[_sliderView addTarget:self action:@selector(buttonTapped:forEvent:) forControlEvents:UIControlEventTouchUpInside];
+		[_sliderView addTarget:self action:@selector(_dragExit:) forControlEvents:UIControlEventTouchCancel];
            // _sliderView._continuousCornerRadius = [MZELayoutOptions regularCornerRadius];
        // _sliderView.clipsToBounds = YES;
 		_sliderView.numberOfSteps = 5;
@@ -102,15 +103,18 @@ NSString *const FlashlightLevelKey = @"mze_flashlightlevel";
 
 - (void)_sliderValueDidChange:(MZEModuleSliderView *)sliderView {
 	if ([self isExpanded]) {
+		//[flash]
 		// if (!flashlight) {
 		// 	[self newFlashlightMade:nil];
 		// }
 
 		float flashLevel = (float)(_sliderView.step - 1)/(float)(_sliderView.numberOfSteps - 1);
+		//[flashlight setFlashlightLevel:flashLevel withError:nil];
+		//[flashlight with]
 		[_userDefaults setFloat:flashLevel forKey:FlashlightLevelKey];
 		[_userDefaults synchronize];
 
-		if (sliderView.step > 1) {
+		if (_sliderView.step > 1) {
 			//if ([self])
 			[self.flashlightSetting _setTorchLevel:flashLevel];
 
@@ -261,11 +265,11 @@ NSString *const FlashlightLevelKey = @"mze_flashlightlevel";
 }
 
 - (void)_dragExit:(id)arg1 {
-	[self.buttonModuleView _dragExit:arg1];
+	if (![self isExpanded]) [self.buttonModuleView _dragExit:arg1];
 }
 
 - (void)_dragEnter:(id)arg1 {
-	[self.buttonModuleView _dragEnter:arg1];
+	if (![self isExpanded]) [self.buttonModuleView _dragEnter:arg1];
 }
 
 - (void)_touchUpOutside:(id)arg1 {

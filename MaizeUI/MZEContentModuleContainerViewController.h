@@ -37,6 +37,7 @@
     MZEPsuedoModuleView *_psuedoView;
     BOOL _isExpanding;
     BOOL _isForceTouch;
+    UIPanGestureRecognizer *_speedRecognizer;
 }
 @property (nonatomic, assign, readwrite) BOOL isExpanding;
 @property(retain, nonatomic, readwrite) UIViewController *originalParentViewController;
@@ -64,6 +65,7 @@
 @property (nonatomic, retain, readwrite) CALayer *maskLayer;
 @property (nonatomic, retain, readwrite) MZEPsuedoModuleView *psuedoView;
 @property (nonatomic, readonly) BOOL shouldMaskToBounds;
+@property (nonatomic, retain, readwrite) UIPanGestureRecognizer *speedRecognizer;
 - (id)initWithModuleIdentifier:(NSString *)identifier contentModule:(id<MZEContentModule>)contentModule;
 - (id)init;
 - (id)initWithCoder:(id)arg1;
@@ -84,6 +86,7 @@
 - (void)_handleTapGestureRecognizer:(UITapGestureRecognizer *)recognizer;
 - (void)handleLongPressGesture:(UILongPressGestureRecognizer *)recognizer;
 - (void)handleBubbleGestureRecognizer:(MZEBreatheGestureRecognizer *)recognizer;
+- (void)_handleSpeedRecognizer:(UIPanGestureRecognizer *)recognizer;
 - (CGRect)_contentFrameForRestState;
 - (CGRect)_contentFrameForExpandedState;
 - (CGRect)_backgroundFrameForRestState;
