@@ -11,6 +11,7 @@
 @property(readonly, nonatomic, getter=isExpanded) BOOL expanded; // @synthesize expanded=_expanded;
 @property(nonatomic,retain, readwrite) MZEButtonModuleView *buttonModuleView;
 - (void)willTransitionToExpandedContentMode:(BOOL)arg1;
+- (void)didTransitionToExpandedContentMode:(BOOL)expanded;
 @property(readonly, nonatomic) CGFloat preferredExpandedContentHeight;
 - (void)viewDidLoad;
 - (void)buttonTapped:(UIControl *)button forEvent:(id)event;

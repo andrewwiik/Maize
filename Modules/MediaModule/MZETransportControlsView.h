@@ -8,4 +8,5 @@
 @property (nonatomic, retain, readwrite) UIButton *pauseButton;
 @property (nonatomic, retain, readwrite) UIButton *rewindButton;
 -(void)updateMediaForChangeOfMediaControlsStatus;
+- (void)setIsPlaying:(BOOL)isPlaying;
 @end

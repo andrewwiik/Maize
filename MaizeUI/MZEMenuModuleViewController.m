@@ -150,6 +150,7 @@ static CGFloat separatorHeight = 0;
 	_headerSeparatorView.hidden = !expanded;
 	_containerView.hidden = !expanded;
 	_darkBackground.hidden = !expanded;
+	_isExpanding = expanded;
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -193,7 +194,7 @@ static CGFloat separatorHeight = 0;
 }
 
 - (void)_layoutMenuItemsForSize:(CGSize)size {
-	if ([self isExpanded]) {
+	if (_isExpanding) {
 		_containerView.frame = CGRectMake(0, [self headerHeight], CGRectGetWidth(self.view.bounds), [self _menuItemsHeight]);
 		_darkBackground.frame = _containerView.frame;
 	}
@@ -212,7 +213,7 @@ static CGFloat separatorHeight = 0;
 }
 
 - (void)_layoutGlyphViewForSize:(CGSize)size {
-	if ([self isExpanded]) {
+	if (_isExpanding) {
 		CGRect buttonFrame = CGRectZero;
 		buttonFrame.origin.y = 10.0;
 		//buttonFrame.x = UIRoundToViewScale((CGRectGetWidth(self.bounds) - [self glyphImage].size.width) * 0.5, self.view);

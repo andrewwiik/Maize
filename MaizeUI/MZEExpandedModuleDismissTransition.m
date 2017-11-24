@@ -56,6 +56,10 @@
 		} completion:^(BOOL finished) {
 			[transitionContext completeTransition:![transitionContext transitionWasCancelled]];
 			[toViewController.contentContainerView didTransitionToExpandedMode:NO];
+
+			if ([toViewController.contentViewController respondsToSelector:@selector(didTransitionToExpandedContentMode:)]) {
+				[toViewController.contentViewController didTransitionToExpandedContentMode:NO];
+			}
 		}];
 	} else {
 		UIViewController<MZEExpandedModuleTransition> *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];

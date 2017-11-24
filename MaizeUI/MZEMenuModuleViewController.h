@@ -15,6 +15,7 @@
     BOOL _shouldProvideOwnPlatter;
     // MZEMenuItemView *_viewToIgnore;
     UILongPressGestureRecognizer *_pressRecognizer;
+    BOOL _isExpanding;
 }
 
 @property (nonatomic, retain, readwrite) NSMutableArray<MZEMenuModuleItemView *> *menuItemsViews;

@@ -35,6 +35,10 @@
 }
 
 - (void)willTransitionToExpandedContentMode:(BOOL)expanded {
+	//_expanded = expanded;
+}
+
+- (void)didTransitionToExpandedContentMode:(BOOL)expanded {
 	_expanded = expanded;
 }
 

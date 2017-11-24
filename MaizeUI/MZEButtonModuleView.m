@@ -32,6 +32,7 @@ static BOOL isIOS11Mode = YES;
 		[self addTarget:self action:@selector(_touchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
 		[self addTarget:self action:@selector(_dragEnter:) forControlEvents:UIControlEventTouchDragEnter];
 		[self addTarget:self action:@selector(_dragExit:) forControlEvents:UIControlEventTouchDragExit];
+		[self addTarget:self action:@selector(_dragExit:) forControlEvents:UIControlEventTouchCancel];
 	}
 	return self;
 }

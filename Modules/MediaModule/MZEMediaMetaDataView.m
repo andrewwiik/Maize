@@ -3,6 +3,8 @@
 #import <QuartzCore/CAFilter+Private.h>
 #import <UIKit/UIImage+Private.h>
 
+#import "macros.h"
+
 extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *identifier);
 
 @implementation MZEMediaMetaDataView
@@ -122,12 +124,34 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 	if (self.expanded) {
 
 		CGFloat containerHeight = CGRectGetHeight(self.bounds);
-
+		BOOL isRTL = IS_RTL;
+		isRTL = YES;
 		CGFloat titleY = 0;
 		CGFloat primaryY = 0;
 		CGFloat secondaryY = 0;
 		CGFloat allX = containerHeight*0.222 + artwork + 12.0;
+
+		if (isRTL) {
+			self.outputButton.frame = CGRectMake(self.frame.size.height*0.222, self.frame.size.height*0.324, self.frame.size.height*0.352, self.frame.size.height*0.352);
+			self.artworkView.frame = CGRectMake(self.frame.size.width - self.frame.size.height*0.222 - artwork, self.frame.size.height*0.222, artwork, artwork);
+			self.headerDivider.frame = CGRectMake(0,self.frame.size.height - 0.5, self.frame.size.width, 0.5);
+		} else {
+			self.outputButton.frame = CGRectMake(self.frame.size.width - self.frame.size.height*0.222 - self.frame.size.height*0.352, self.frame.size.height*0.324, self.frame.size.height*0.352, self.frame.size.height*0.352);
+			self.artworkView.frame = CGRectMake(self.frame.size.height*0.222, self.frame.size.height*0.222, artwork, artwork);
+			self.headerDivider.frame = CGRectMake(0,self.frame.size.height - 0.5, self.frame.size.width, 0.5);
+		}
+
+		// self.outputButton.frame = CGRectMake(self.frame.size.width - self.frame.size.height*0.222 - self.frame.size.height*0.352, self.frame.size.height*0.324, self.frame.size.height*0.352, self.frame.size.height*0.352);
+		// self.artworkView.frame = CGRectMake(self.frame.size.height*0.222, self.frame.size.height*0.222, artwork, artwork);
+		// self.headerDivider.frame = CGRectMake(0,self.frame.size.height - 0.5, self.frame.size.width, 0.5);
+		// if (isRTL) {
+		// 	allX = 
+		// }
 		CGFloat maxLabelWidth = (self.frame.size.width - self.frame.size.height*0.222 - self.frame.size.height*0.352 - 6.0) - allX;
+
+		if (isRTL) {
+			allX = self.frame.size.width - self.frame.size.height*0.222 - artwork - 12.0;
+		}
 
 		if (self.titleString && self.primaryString && self.secondaryString) {
 			
@@ -159,7 +183,9 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 		}
 
 		CGRect titleFrame = self.titleLabel.label.bounds;
-		titleFrame.origin.x = allX;
+		//if (isRTL) {
+		titleFrame.origin.x = allX - (isRTL ? CGRectGetWidth(titleFrame) : 0);
+		//}
 		titleFrame.origin.y = titleY;
 		self.titleLabel.frame = titleFrame;
 		self.titleLabel.alpha = 1.0;
@@ -181,12 +207,17 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 
 		if (primaryUsesMarquee) {
 			primaryFrame.size.width = maxLabelWidth;
-			primaryFrame.origin.x -= 6;
+			if (isRTL) primaryFrame.origin.x += 6;
+			else primaryFrame.origin.x -= 6;
 		}
+
+		if (isRTL) primaryFrame.origin.x -= CGRectGetWidth(primaryFrame);
+
+
 		self.primaryLabel.fadeEdgeInsets = UIEdgeInsetsMake(0, primaryUsesMarquee ? 6 : 0, 0, primaryUsesMarquee ? 6 : 0);
 		[self.primaryLabel setMarqueeEnabled:primaryUsesMarquee];
 
-		self.primaryLabel.label.textAlignment = NSTextAlignmentLeft;
+		self.primaryLabel.label.textAlignment = isRTL ? NSTextAlignmentRight : NSTextAlignmentLeft;
 		self.primaryLabel.frame = primaryFrame;
 
 
@@ -207,22 +238,25 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 
 		if (secondaryUsesMarquee) {
 			secondaryFrame.size.width = maxLabelWidth;
-			secondaryFrame.origin.x -= 6;
+			if (isRTL) secondaryFrame.origin.x += 6;
+			else secondaryFrame.origin.x -= 6;
 		}
+
+		if (isRTL) secondaryFrame.origin.x -= CGRectGetWidth(secondaryFrame);
 		// [self.secondaryLabel setMarqueeEnabled:secondaryUsesMarquee];
 		self.secondaryLabel.fadeEdgeInsets = UIEdgeInsetsMake(0, secondaryUsesMarquee ? 6 : 0, 0, secondaryUsesMarquee ? 6 : 0);
 		[self.secondaryLabel setMarqueeEnabled:secondaryUsesMarquee];
 
-		self.secondaryLabel.label.textAlignment = NSTextAlignmentLeft;
+		self.secondaryLabel.label.textAlignment = isRTL ? NSTextAlignmentRight : NSTextAlignmentLeft;
 		self.secondaryLabel.frame = secondaryFrame;
 
 		self.outputButton.alpha = 1;
 		self.artworkView.alpha = 1;
 		self.headerDivider.alpha = 0.16f;
 
-		self.outputButton.frame = CGRectMake(self.frame.size.width - self.frame.size.height*0.222 - self.frame.size.height*0.352, self.frame.size.height*0.324, self.frame.size.height*0.352, self.frame.size.height*0.352);
-		self.artworkView.frame = CGRectMake(self.frame.size.height*0.222, self.frame.size.height*0.222, artwork, artwork);
-		self.headerDivider.frame = CGRectMake(0,self.frame.size.height - 0.5, self.frame.size.width, 0.5);
+		// self.outputButton.frame = CGRectMake(self.frame.size.width - self.frame.size.height*0.222 - self.frame.size.height*0.352, self.frame.size.height*0.324, self.frame.size.height*0.352, self.frame.size.height*0.352);
+		// self.artworkView.frame = CGRectMake(self.frame.size.height*0.222, self.frame.size.height*0.222, artwork, artwork);
+		// self.headerDivider.frame = CGRectMake(0,self.frame.size.height - 0.5, self.frame.size.width, 0.5);
 
 		// self.titleLabel.frame = CGRectMake(artwork + self.frame.size.width/10, self.frame.size.height/4, self.frame.size.width/2, self.frame.size.height/4);
 		// self.subtitleLabel.frame = CGRectMake(artwork + self.frame.size.width/10, self.frame.size.height/2, self.frame.size.width/2, self.frame.size.height/4);

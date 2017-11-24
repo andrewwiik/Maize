@@ -90,31 +90,47 @@
   if(!self.transitioningPlayPause){
     if([[NSClassFromString(@"SBMediaController") sharedInstance] isPlaying]){
       MRMediaRemoteSendCommand(kMRPause,0);
+      self.playButton.hidden = NO;
+      self.pauseButton.hidden = YES;
     } else {
       MRMediaRemoteSendCommand(kMRPlay, 0);
+      self.pauseButton.hidden = NO;
+      self.playButton.hidden = YES;
     }
 
     // Added a delay to prevent all this other rubbish being called a crap ton if someone decides to spam the button.
-    self.transitioningPlayPause = TRUE;
+    // self.transitioningPlayPause = TRUE;
 
-    double delayInSeconds = 0.75;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-      self.transitioningPlayPause = FALSE;
-      [self updateMediaForChangeOfMediaControlsStatus];
-    });
+    // double delayInSeconds = 0.1;
+    // dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    // dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+    //   self.transitioningPlayPause = FALSE;
+    //   [self updateMediaForChangeOfMediaControlsStatus];
+    // });
   }
 }
 -(void)rewind {
   MRMediaRemoteSendCommand(kMRPreviousTrack, 0);
 }
 -(void)updateMediaForChangeOfMediaControlsStatus {
-  if([[NSClassFromString(@"SBMediaController") sharedInstance] isPlaying]){
-    self.playButton.hidden = TRUE;
-    self.pauseButton.hidden = FALSE;
-  } else {
-    self.playButton.hidden = FALSE;
-    self.pauseButton.hidden = TRUE;
-  }
+  // if([[NSClassFromString(@"SBMediaController") sharedInstance] isPlaying]){
+  //   self.playButton.hidden = TRUE;
+  //   self.pauseButton.hidden = FALSE;
+  // } else {
+  //   self.playButton.hidden = FALSE;
+  //   self.pauseButton.hidden = TRUE;
+  // }
+}
+
+- (void)setIsPlaying:(BOOL)isPlaying {
+  if(isPlaying == NO){
+    //  MRMediaRemoteSendCommand(kMRPause,0);
+      self.playButton.hidden = NO;
+      self.pauseButton.hidden = YES;
+    } else {
+     // MRMediaRemoteSendCommand(kMRPlay, 0);
+      self.pauseButton.hidden = NO;
+      self.playButton.hidden = YES;
+    }
 }
 @end

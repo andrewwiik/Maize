@@ -24,7 +24,8 @@
 }
 
 - (CAPackage *)_audioGlyphPackage {
-	NSURL *packageURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"Volume" withExtension:@"ca"];
+	//NSString *resourceName = IS_RTL ? @"VolumeRTL" : @"Volume"
+	NSURL *packageURL = [[NSBundle bundleForClass:[self class]] URLForResource:(IS_RTL ? @"VolumeRTL" : @"Volume") withExtension:@"ca"];
     return [CAPackage packageWithContentsOfURL:packageURL type:kCAPackageTypeCAMLBundle options:nil error:nil];
 }
 

@@ -25,6 +25,9 @@
 		object:nil];
 
 		_volumeHUDController = [[NSClassFromString(@"MPUVolumeHUDController") alloc] init];
+		self.nowPlayingController = [[NSClassFromString(@"MPUNowPlayingController") alloc] init];
+		_nowPlayingController.delegate = self;
+		[_nowPlayingController _registerForNotifications];
 
 		_isExpanded = NO;
 	}
@@ -125,6 +128,16 @@
   	} else {
   		[self.controlsView.routingView.routingViewController _endRouteDiscovery];
   	}
+
+  	if (_controlsView) {
+	  	if (_controlsView.progressView) {
+			if (expanded) {
+				[_controlsView.progressView startTimer];
+			} else {
+				[_controlsView.progressView stopTimer];
+			}
+		}
+	}
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -168,4 +181,59 @@
 	}
 	return CGRectZero;
 }
+
+
+-(void)nowPlayingController:(MPUNowPlayingController *)controller nowPlayingInfoDidChange:(NSDictionary *)nowPlayingInfo {
+
+}
+
+-(void)nowPlayingController:(MPUNowPlayingController *)controller playbackStateDidChange:(BOOL)isPlaying {
+	if (_controlsView) {
+		if (_controlsView.controlsView) {
+			[_controlsView.controlsView setIsPlaying:isPlaying];
+		}
+
+		// if(isPlaying) {
+
+		// }
+
+		if (_controlsView.progressView) {
+			if (isPlaying) {
+				[_controlsView.progressView startTimer];
+			} else {
+				[_controlsView.progressView stopTimer];
+			}
+		}
+	}
+}
+
+-(void)nowPlayingController:(MPUNowPlayingController *)controller nowPlayingApplicationDidChange:(id)nowPlayingApplication {
+	if (_metadataView) {
+		[self.metadataView nowPlayingAppDidChange];
+	}
+
+	if (_controlsView) {
+		if (_controlsView.progressView) {
+			[_controlsView.progressView startTimer];
+		}
+	}
+	//[self.metadataView nowPlayingAppDidChange];
+}
+
+-(void)nowPlayingControllerDidBeginListeningForNotifications:(MPUNowPlayingController *)controller {
+
+}
+
+-(void)nowPlayingControllerDidStopListeningForNotifications:(MPUNowPlayingController *)controller {
+
+}
+
+-(void)nowPlayingController:(MPUNowPlayingController *)controller elapsedTimeDidChange:(CGFloat)elapsedTime {
+	if (_controlsView) {
+		if (_controlsView.progressView) {
+			[_controlsView.progressView startTimer];
+		}
+	}
+}
+
 @end
