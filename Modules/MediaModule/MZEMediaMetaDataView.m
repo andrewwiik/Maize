@@ -125,7 +125,7 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 
 		CGFloat containerHeight = CGRectGetHeight(self.bounds);
 		BOOL isRTL = IS_RTL;
-		isRTL = YES;
+		//isRTL = YES;
 		CGFloat titleY = 0;
 		CGFloat primaryY = 0;
 		CGFloat secondaryY = 0;

@@ -122,6 +122,7 @@
 		}];
 
 		[_contentViewController willTransitionToExpandedContentMode:YES];
+		[_contentViewController didTransitionToExpandedContentMode:YES];
 
 		CGSize size = [self _contentFrame].size;
 		[_contentViewController _layoutSeparatorForSize:size];
