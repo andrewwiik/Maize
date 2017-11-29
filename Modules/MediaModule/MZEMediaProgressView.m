@@ -65,6 +65,16 @@
   UIImageView* _minTrackView = [self.progressView valueForKey:@"_minTrackView"];
   _minTrackView.layer.cornerRadius = 1.5;
   _minTrackView.clipsToBounds = TRUE;
+
+
+  if (self.progressView.userInteractionEnabled != _canScrub) {
+    [self.progressView _setThumbEnabled:_canScrub];
+    [self.progressView setUserInteractionEnabled:_canScrub];
+
+    if (_canScrub) {
+      [self.progressView _rebuildControlThumb:YES track:YES];
+    }
+  }
 }
 
 

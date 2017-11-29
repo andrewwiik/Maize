@@ -83,6 +83,8 @@
 				_supportedDeviceFamilies = [NSArray new];
 			}
 		}
+
+		_hasSettings = [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Settings", _bundlePath.path] isDirectory:&_hasSettings];
 	}
 	return self;
 }
@@ -90,6 +92,7 @@
 - (id)initWithInfoDictionary:(NSDictionary *)info andBundlePath:(NSURL *)bundlePath {
 	self = [super init];
 	if (self) {
+		_hasSettings = NO;
 		_isProvider = YES;
 		_bundlePath = bundlePath;
 		NSDictionary *installedBundleInfo = info;

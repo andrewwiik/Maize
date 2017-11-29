@@ -67,24 +67,27 @@
 }
 
 - (BOOL)isSelected {
-
-	if ([self isReversed]) {
-		switch (_currentState) {
-			case FSSwitchStateOff:
-				return YES;
-			case FSSwitchStateOn:
-				return NO;
-			default:
-				return NO;
-		}
+	if ([[NSClassFromString(@"FSSwitchPanel") sharedPanel] switchWithIdentifierIsSimpleAction:_switchIdentifier]) {
+		return NO;
 	} else {
+		if ([self isReversed]) {
 			switch (_currentState) {
-			case FSSwitchStateOff:
-				return NO;
-			case FSSwitchStateOn:
-				return YES;
-			default:
-				return NO;
+				case FSSwitchStateOff:
+					return YES;
+				case FSSwitchStateOn:
+					return NO;
+				default:
+					return NO;
+			}
+		} else {
+				switch (_currentState) {
+				case FSSwitchStateOff:
+					return NO;
+				case FSSwitchStateOn:
+					return YES;
+				default:
+					return NO;
+			}
 		}
 	}
 	//return [[NSClassFromString(@"FSSwitchPanel") sharedPanel] ;
@@ -93,7 +96,11 @@
 - (void)setSelected:(BOOL)isSelected {
 	BOOL isReversed = [self isReversed];
 	[[NSClassFromString(@"FSSwitchPanel") sharedPanel] setState:isSelected ? (isReversed ? FSSwitchStateOff : FSSwitchStateOn) : (isReversed ? FSSwitchStateOn : FSSwitchStateOff) forSwitchIdentifier:_switchIdentifier];
-	[_viewController setSelected:isSelected];
+	if ([[NSClassFromString(@"FSSwitchPanel") sharedPanel] switchWithIdentifierIsSimpleAction:_switchIdentifier]) {
+		[_viewController setSelected:NO];
+	} else {
+		[_viewController setSelected:isSelected];
+	}
 	[super setSelected:isSelected];
 }
 
@@ -102,7 +109,11 @@
 	NSString *changedIdentifier = [notification.userInfo objectForKey:FSSwitchPanelSwitchIdentifierKey];
 	if ([changedIdentifier isEqual:_switchIdentifier] || !changedIdentifier) {
 		_isEnabled = [[FSSwitchPanel sharedPanel] switchWithIdentifierIsEnabled:_switchIdentifier];
-		_currentState = [[NSClassFromString(@"FSSwitchPanel") sharedPanel] stateForSwitchIdentifier:_switchIdentifier];
+		if ([[NSClassFromString(@"FSSwitchPanel") sharedPanel] switchWithIdentifierIsSimpleAction:_switchIdentifier]) {
+			_currentState = FSSwitchStateOff;
+		} else {
+			_currentState = [[NSClassFromString(@"FSSwitchPanel") sharedPanel] stateForSwitchIdentifier:_switchIdentifier];
+		}
 		//self.enabled = [[FSSwitchPanel sharedPanel] switchWithIdentifierIsEnabled:switchIdentifier];
 		[self refreshState];
 	}

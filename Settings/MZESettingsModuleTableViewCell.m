@@ -10,6 +10,7 @@
     	//28,21
     	//self.backgroundColor = nil;
         // Helpers
+        
 	    self.backgroundGlyphView = [[UIView alloc] initWithFrame:CGRectMake(0,0,29,29)];
 	   // self.backgroundGlyphView.backgroundColor = [panel primaryColorForSectionIdentifier:sectionIdentifier] ? [panel primaryColorForSectionIdentifier:sectionIdentifier] : [UIColor colorWithWhite:0.55 alpha:1];
 	    self.backgroundGlyphView.layer.cornerRadius = 29.0*0.2237;

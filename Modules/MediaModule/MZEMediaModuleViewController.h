@@ -20,6 +20,9 @@
 	MPULayoutInterpolator *_interpolator;
 	MPUVolumeHUDController *_volumeHUDController;
 	MPUNowPlayingController *_nowPlayingController;
+	BOOL _useArtworkAsBackground;
+	UIImageView *_artworkBackgroundView;
+	UIView *_artworkVisibilityView;
 	//BOOL _canPlayer;
 
 }
@@ -27,6 +30,7 @@
 @property (nonatomic, retain, readwrite) MZEMediaControlsViewController *controlsView;
 @property (nonatomic, retain, readwrite) MPUVolumeHUDController *volumeHUDController;
 @property (nonatomic, retain, readwrite) MPUNowPlayingController *nowPlayingController;
+@property (nonatomic, readwrite) BOOL useArtworkAsBackground;
 @property (nonatomic, readwrite) BOOL isExpanded;
 - (id)initWithNibName:(id)arg1 bundle:(id)arg2;
 - (CGFloat)preferredExpandedContentWidth;

@@ -1,5 +1,5 @@
 #import "MZERootListController.h"
-#import "constants.h"
+//#import "constants.h"
 #import <MaizeServices/MZEModuleMetadata.h>
 #import "MZESettingsModuleTableViewCell.h"
 #include <notify.h>
@@ -28,24 +28,33 @@
 	return nil;
 }
 - (id)rootController {
-	return nil;
+	return _rootController;
+	//return nil;
 }
 - (void)setParentController:(id)arg1 {
+	_rootController = (PSRootController *)arg1;
 	return;
 }
 - (void)setPreferenceValue:(id)arg1 specifier:(id)arg2 {
 	return;
 }
 - (void)setRootController:(id)arg1 {
+	_rootController = (PSRootController *)arg1;
 	return;
 }
 - (void)setSpecifier:(id)arg1 {
 	return;
 }
 - (void)showController:(id)arg1 {
+	if (_rootController) {
+		[_rootController showController:arg1];
+	}
 	return;
 }
-- (void)showController:(id)arg1 animate:(bool)arg2 {
+- (void)showController:(id)arg1 animate:(BOOL)arg2 {
+	if (_rootController) {
+		[_rootController showController:arg1 animate:arg2];
+	}
 	return;
 }
 - (id)specifier {
@@ -56,7 +65,7 @@
 	return;
 }
 - (id)parentController {
-	return nil;
+	return _rootController;
 }
 
 - (void)viewDidLoad
@@ -142,7 +151,7 @@
 	// self.tableView.tableHeaderView = dummyView;
 	// self.tableView.contentInset = UIEdgeInsetsMake(-dummyViewHeight, 0, 0, 0);
 	[self.tableView setSeparatorColor:[UIColor colorWithWhite:0 alpha:0.15]];
-	self.tableView.allowsSelectionDuringEditing = NO;
+	self.tableView.allowsSelectionDuringEditing = YES;
 
 	self.identifiersByName = [NSMutableDictionary new];
 	self.nameByIdentifier = [NSMutableDictionary new];
@@ -217,6 +226,13 @@
     cell.textLabel.text = data.displayName;
 	cell.imageView.image = data.settingsIconGlyph;
 	cell.iconColor = data.settingsIconBackgroundColor;
+	cell.metadata = data;
+
+	if (data.hasSettings) {
+		cell.editingAccessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	} else {
+		cell.editingAccessoryType = 0;
+	}
 	// cell.imageView.tintColor = [UIColor whiteColor];
 	// cell.imageView.backgroundColor = data.settingsIconBackgroundColor;
 	// cell.imageView.layer.cornerRadius = 29.0*0.2237;
@@ -351,7 +367,19 @@
 	// 		[[CCXSharedResources sharedInstance].settingsNavigationController pushViewController:[[cell.settingsControllerClass alloc] init] animated:YES];
 	// 	}
 	// } else {
+
+		MZESettingsModuleTableViewCell *cell = (MZESettingsModuleTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+		if (cell.metadata.hasSettings) {
+			MZEModuleSettingsListController *listController = [[MZEModuleSettingsListController alloc] initWithModuleMetadata:cell.metadata];
+			//if (self.parentViewController) {
+			[self showController:listController animate:YES];
+			return;
+				//return;
+			//}
+		}
+
 		[tableView deselectRowAtIndexPath:indexPath animated:YES];
+		// [tableView deselectRowAtIndexPath:indexPath animated:YES];
 	//}
 }
 

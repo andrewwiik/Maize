@@ -423,13 +423,26 @@ static CGFloat separatorHeight = 0;
                     [UIView performWithoutAnimation:^{
                         CGFloat fullStepHeight = [self _fullStepHeight];
                         CGFloat stepOriginY = CGRectGetHeight(bounds) - ((fullStepHeight * (x + 1)) + (fullStepHeight - [self _heightForStep:(x+1)]) + (x * separatorHeight));
-                        CGRect stepFrame = CGRectMake(0,stepOriginY,CGRectGetWidth(bounds),[self _heightForStep:x + 1]);
+                        CGFloat thisStepHeight = [self _heightForStep:x + 1];
+                        if (x + 1 == _numberOfSteps) {
+                            stepOriginY -= separatorHeight;
+                            thisStepHeight += separatorHeight;
+                        }
+        
+                        CGRect stepFrame = CGRectMake(0,stepOriginY,CGRectGetWidth(bounds),thisStepHeight);
+                       // CGRect stepFrame = CGRectMake(0,stepOriginY,CGRectGetWidth(bounds),[self _heightForStep:x + 1]);
                         stepBackgroundView.frame = stepFrame;
                     }];
                 } else {
                     CGFloat fullStepHeight = [self _fullStepHeight];
                     CGFloat stepOriginY = CGRectGetHeight(bounds) - ((fullStepHeight * (x + 1)) + (fullStepHeight - [self _heightForStep:(x+1)]) + (x * separatorHeight));
-                    CGRect stepFrame = CGRectMake(0,stepOriginY,CGRectGetWidth(bounds),[self _heightForStep:x + 1]);
+                    CGFloat thisStepHeight = [self _heightForStep:x + 1];
+                    if (x + 1 == _numberOfSteps) {
+                        stepOriginY -= separatorHeight;
+                        thisStepHeight += separatorHeight;
+                    }
+
+                    CGRect stepFrame = CGRectMake(0,stepOriginY,CGRectGetWidth(bounds),thisStepHeight);
                     stepBackgroundView.frame = stepFrame;
                 }
                 [stepBackgroundView setAlpha:1];

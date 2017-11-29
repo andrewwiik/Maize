@@ -141,6 +141,17 @@ static inline void launchApplication(SBApplication *launchApp)
 		 return;
 	}
 
+	// if (NSClassFromString(@"CCUIShortcutModule")) {
+	// 	SBCCShortcutModule *module = [[NSClassFromString(@"CCUIShortcutModule") alloc] init];
+	// 	if (module != nil) {
+	// 		module.displayID = launchApp.bundleIdentifier;
+	// 		[module activateApp];
+	// 		return;
+	// 	}
+	// 	// module.displayID = launchApp.bundleIdentifier;
+	// 	// if ()
+	// }
+
 	if ([[NSClassFromString(@"SBDeviceLockController") sharedController] isPasscodeLocked]) {
     	SBLockScreenManager *manager = (SBLockScreenManager *)[NSClassFromString(@"SBLockScreenManager") sharedInstance];
      	if ([manager isUILocked])

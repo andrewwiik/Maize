@@ -11,6 +11,7 @@
 	UIColor *_settingsIconBackgroundColor;
 	BOOL _isProvider;
 	NSString *_providerClass;
+	BOOL _hasSettings;
 
 }
 @property (nonatomic, retain, readwrite) NSURL *bundlePath;
@@ -21,6 +22,7 @@
 @property (nonatomic, retain, readwrite) NSString *displayName;
 @property (nonatomic, retain, readwrite) UIImage *settingsIconGlyph;
 @property (nonatomic, retain, readwrite) UIColor *settingsIconBackgroundColor;
+@property (nonatomic, readwrite) BOOL hasSettings;
 @property (nonatomic, readonly, getter=isProvider) BOOL isProvider;
 - (id)initWithBundlePath:(NSURL *)bundlePath;
 - (id)initWithInfoDictionary:(NSDictionary *)info andBundlePath:(NSURL *)bundlePath;

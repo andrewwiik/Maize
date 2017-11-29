@@ -3,12 +3,43 @@
 #import <UIKit/UIScreen+Private.h>
 #import <SpringBoard/SBControlCenterController+Private.h>
 #import <MaizeUI/MZELayoutOptions.h>
+#include <spawn.h>
+#include <dispatch/dispatch.h>
+#import <objc/runtime.h>
+#import <UIKit/UIView+Private.h>
+#import <QuartzCore/CALayer+Private.h>
+
+MZEMediaModuleViewController *sharedController;
+
+#define PREFS_BUNDLE_ID CFSTR("com.ioscreatix.maize.MediaModule")
+
+static void reloadMediaModuleSettings() {
+	Boolean useArtworkExists = NO;
+	Boolean useArtworkRef = CFPreferencesGetAppBooleanValue(CFSTR("useArtworkAsBackground"), PREFS_BUNDLE_ID, &useArtworkExists);
+	if (sharedController) {
+		sharedController.useArtworkAsBackground = (useArtworkExists ? useArtworkRef : NO);
+	}
+}
 
 @implementation MZEMediaModuleViewController
 
 - (id)initWithNibName:(id)arg1 bundle:(id)arg2 {
 	self = [super initWithNibName:arg1 bundle:arg2];
 	if (self) {
+		sharedController = self;
+		Boolean useArtworkExists = NO;
+		Boolean useArtworkRef = CFPreferencesGetAppBooleanValue(CFSTR("useArtworkAsBackground"), PREFS_BUNDLE_ID, &useArtworkExists);
+		_useArtworkAsBackground = (useArtworkExists ? useArtworkRef : NO);
+
+		CFNotificationCenterAddObserver(
+			CFNotificationCenterGetDarwinNotifyCenter(), 
+			NULL,
+			(CFNotificationCallback)reloadMediaModuleSettings,
+			CFSTR("com.ioscreatix.maize.MediaModule/settingsChanged"), 
+			NULL, 
+			CFNotificationSuspensionBehaviorDeliverImmediately);
+
+
 		self.metadataView = [[NSClassFromString(@"MZEMediaMetaDataView") alloc] initWithFrame:self.view.bounds];
 		[self.view addSubview:self.metadataView];
 
@@ -30,6 +61,9 @@
 		[_nowPlayingController _registerForNotifications];
 
 		_isExpanded = NO;
+
+
+		//_useArtworkAsBackground
 	}
 	return self;
 }
@@ -70,6 +104,29 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	self.view.clipsToBounds = YES;
+
+	_artworkBackgroundView = [[UIImageView alloc] init];
+    _artworkBackgroundView.frame = self.view.bounds;
+    _artworkBackgroundView.opaque = TRUE;
+    _artworkBackgroundView.layer.minificationFilter = kCAFilterTrilinear;
+
+    _artworkVisibilityView = [UIView new];
+    _artworkVisibilityView.frame = _artworkBackgroundView.bounds;
+    _artworkVisibilityView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.55];
+   [_artworkBackgroundView addSubview:_artworkVisibilityView];
+   _artworkVisibilityView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+   _artworkVisibilityView.alpha = 0;
+
+   [self.view addSubview:_artworkBackgroundView];
+   [self.view sendSubviewToBack:_artworkBackgroundView];
+
+	if (_useArtworkAsBackground) {
+		_artworkBackgroundView.hidden = NO;
+		//self.view.backgroundColor = [UIColor redColor];
+	} else {
+		_artworkBackgroundView.hidden = YES;
+		//self.view.backgroundColor = [UIColor blueColor];
+	}
 }
 
 - (void)willBecomeActive {
@@ -80,16 +137,44 @@
 }
 
 - (void)viewWillLayoutSubviews {
+
+	if (_artworkBackgroundView._continuousCornerRadius < 1) {
+		_artworkBackgroundView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+		_artworkBackgroundView.clipsToBounds = YES;
+	}
 	if(_isExpanded){
 		self.controlsView.view.frame = CGRectMake(0,108, self.view.frame.size.width, self.view.frame.size.height - 108);
 		self.metadataView.frame = CGRectMake(0,0,self.view.frame.size.width, 108);
 
 		self.controlsView.expanded = TRUE;
+		_artworkBackgroundView.frame = CGRectMake(_metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.555, _metadataView.frame.size.height*0.555);
+		
+		_artworkBackgroundView.layer.cornerRadius = _metadataView.artworkView.layer.cornerRadius; // this will need to be changed to continousCornerRadius
+    	_artworkBackgroundView.layer.cornerContentsCenter = _metadataView.artworkView.layer.cornerContentsCenter;
+    	_artworkVisibilityView.alpha = 0;
 	} else {
 		self.metadataView.frame = CGRectMake(0,self.view.frame.size.height*0.2135,self.view.frame.size.width, self.view.frame.size.height*0.392);
 		self.controlsView.view.frame = CGRectMake(0,self.view.frame.size.height*0.2135 + self.view.frame.size.height*0.392, self.view.frame.size.width, self.view.frame.size.height*0.3268);
 
 		self.controlsView.expanded = FALSE;
+		_artworkBackgroundView.frame = self.view.bounds;
+		//_artworkBackgroundView._continuousCornerRadius = 14.0; // this will need to be changed to continousCornerRadius
+    	//_artworkBackgroundView.clipsToBounds = YES;
+    	// _artworkBackgroundView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+    	_artworkBackgroundView.layer.cornerRadius = [MZELayoutOptions regularContinuousCornerRadius];
+		_artworkBackgroundView.layer.cornerContentsCenter = [MZELayoutOptions regularCornerCenter];
+		if (_artworkBackgroundView.image != nil) {
+			_artworkVisibilityView.alpha = 1;
+		}
+    	
+	}
+
+	_artworkVisibilityView.frame = _artworkBackgroundView.bounds;
+
+	if (_useArtworkAsBackground && _artworkBackgroundView.image != nil) {
+		self.metadataView.artworkView.hidden = YES;
+	} else {
+		self.metadataView.artworkView.hidden = NO;
 	}
 
 }
@@ -116,6 +201,12 @@
 }
 
 - (void)willTransitionToExpandedContentMode:(BOOL)expanded {
+
+	if (_artworkBackgroundView._continuousCornerRadius < 1) {
+		_artworkBackgroundView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+		_artworkBackgroundView.clipsToBounds = YES;
+	}
+
 	[_volumeHUDController setVolumeHUDEnabled:expanded == NO forCategory:@"Audio/Video"];
 	_isExpanded = expanded;
 	self.metadataView.expanded = expanded;
@@ -137,6 +228,33 @@
 				[_nowPlayingController _stopUpdatingTimeInformation];
 			}
 		}
+	}
+
+	if (expanded) {
+		_artworkBackgroundView.frame = CGRectMake(_metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.555, _metadataView.frame.size.height*0.555);
+		_artworkBackgroundView.layer.cornerRadius = _metadataView.artworkView.layer.cornerRadius; // this will need to be changed to continousCornerRadius
+    	_artworkBackgroundView.layer.cornerContentsCenter = _metadataView.artworkView.layer.cornerContentsCenter;
+		_artworkVisibilityView.alpha = 0;
+	} else {
+		_artworkBackgroundView.frame = self.view.bounds;
+		_artworkBackgroundView.layer.cornerRadius = [MZELayoutOptions regularContinuousCornerRadius];
+		_artworkBackgroundView.layer.cornerContentsCenter = [MZELayoutOptions regularCornerCenter];
+		if (_artworkBackgroundView.image != nil) {
+			_artworkVisibilityView.alpha = 1;
+		}
+	}
+
+	_artworkVisibilityView.frame = _artworkBackgroundView.bounds;
+
+	if (_useArtworkAsBackground && _artworkBackgroundView.image != nil) {
+		self.metadataView.artworkView.hidden = YES;
+		if (!expanded) {
+			_artworkVisibilityView.alpha = 1.0;
+		}
+		//_artworkVisibilityView.alpha = 1;
+	} else {
+		self.metadataView.artworkView.hidden = NO;
+		_artworkVisibilityView.alpha = 0;
 	}
 }
 
@@ -201,6 +319,29 @@
 			//[_controlsView.progressView startTimer];
 		}
 	}
+
+	_artworkBackgroundView.image = controller.currentNowPlayingArtwork;
+
+
+
+	
+	if (_useArtworkAsBackground && _artworkBackgroundView.image != nil) {
+		self.metadataView.artworkView.hidden = YES;
+		if (!_isExpanded) {
+			_artworkVisibilityView.alpha = 1.0;
+		}
+		//_artworkVisibilityView.alpha = 1;
+	} else {
+		self.metadataView.artworkView.hidden = NO;
+		_artworkVisibilityView.alpha = 0;
+	}
+
+	// MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef information) {
+	// 	NSDictionary *dict=(__bridge NSDictionary *)(information);
+
+	// 	if(dict != NULL){
+	// 	}
+	// }
 }
 
 -(void)nowPlayingController:(MPUNowPlayingController *)controller playbackStateDidChange:(BOOL)isPlaying {
@@ -281,5 +422,22 @@
 		}
 	}
 }
+
+- (void)setUseArtworkAsBackground:(BOOL)useAsBackground {
+	if (useAsBackground != _useArtworkAsBackground) {
+		_useArtworkAsBackground = useAsBackground;
+		if (_useArtworkAsBackground) {
+			_artworkBackgroundView.hidden = NO;
+			//self.view.backgroundColor = [UIColor redColor];
+		} else {
+			_artworkBackgroundView.hidden = YES;
+			//self.view.backgroundColor = [UIColor blueColor];
+		}
+	}
+}
+
+// - (BOOL)shouldMaskToBounds {
+// 	return YES;
+// }
 
 @end

@@ -8,4 +8,5 @@
 - (NSArray *)sortedSwitchIdentifiers;
 - (UIColor *)primaryColorForSwitchIdentifier:(NSString *)switchIdentifier;
 - (BOOL)switchWithIdentifierIsEnabled:(NSString *)switchIdentifier;
+- (BOOL)switchWithIdentifierIsSimpleAction:(NSString *)switchIdentifier;
 @end

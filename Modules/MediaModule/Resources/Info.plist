@@ -38,6 +38,8 @@
 	</dict>
 	<key>MZEGlyphBackgroundColor</key>
 	<string>#FF2D55</string>
+<!-- 	<key>MZESettingsPlistName<key>
+	<string>SettingsPlist</string> -->
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>iPhoneOS</string>

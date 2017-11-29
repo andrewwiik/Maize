@@ -1,5 +1,5 @@
-#define SETTINGS_PLIST @"/var/mobile/Library/Preferences/com.ioscreatix.maize.plist"
-#define SETTINGS_BUNDLE_ID @"com.ioscreatix.maize"
+#define SETTINGS_PLIST @"/var/mobile/Library/Preferences/com.ioscreatix.Maize19.plist"
+#define SETTINGS_BUNDLE_ID @"com.ioscreatix.Maize19"
 #define SETTINGS_NOTIFICATION_NAME @"com.ioscreatix.maize.settingschanged"
 #define SETTINGS_SECTIONS_ENABLED_KEY @"SectionsEnabledIdentifiers"
 #define SETTINGS_SECTIONS_DISABLED_KEY @"SectionsDisabledIdentifiers"

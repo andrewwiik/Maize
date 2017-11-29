@@ -1,9 +1,12 @@
-#import <Preferences/PSListController.h>
+#import <Preferences/PSListController+Private.h>
 #import <MaizeServices/MZEModuleRepository.h>
+#import <Preferences/PSRootController.h>
+#import "MZEModuleSettingsListController.h"
 
 @interface MZERootListController : UITableViewController {
 	MZEModuleRepository *_moduleRepository;
 	NSBundle *_bundle;
+	PSRootController *_rootController;
 }
 
 @property (nonatomic, retain, readwrite) MZEModuleRepository *moduleRepository;
@@ -20,5 +23,6 @@
 - (NSArray *)arrayForSection:(NSInteger)section;
 - (void)_flushSettings;
 - (void)setRootController:(id)rootController;
+- (void)showController:(id)controller animate:(BOOL)shouldAnimate;
 
 @end

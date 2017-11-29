@@ -34,7 +34,7 @@
   [self.sliderView.volumeSlider setMinimumValueImage:lowvol];
   [self.sliderView.volumeSlider setMaximumValueImage:highvol];
 
-  [self.sliderView.volumeSlider setThumbImage:[UIImage imageNamed:@"thumb" inBundle:[NSBundle bundleForClass:[self class]]] forState:UIControlStateNormal];
+  //[self.sliderView.volumeSlider setThumbImage:[UIImage imageNamed:@"thumb" inBundle:[NSBundle bundleForClass:[self class]]] forState:UIControlStateNormal];
 
  // self.sliderView.volumeSlider.maximumTrackTintColor = [UIC]
   return self;
