@@ -171,7 +171,9 @@
 }
 
 - (void)_noteScreenBrightnessDidChange:(id)changed {
-	[self _updateWithCurrentBrightnessAnimated:YES];
+	if (_sliderView.tracking == NO) {
+		[self _updateWithCurrentBrightnessAnimated:YES];
+	}
 }
 
 

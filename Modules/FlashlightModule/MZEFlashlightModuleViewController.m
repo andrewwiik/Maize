@@ -40,6 +40,7 @@ NSString *const FlashlightLevelKey = @"mze_flashlightlevel";
 }
 
 - (void)updateToggleState {
+	//return;
 	// if (!flashlight) {
 	// 	[self newFlashlightMade:nil];
 	// }
@@ -201,7 +202,21 @@ NSString *const FlashlightLevelKey = @"mze_flashlightlevel";
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	if (object) {
 		if ([object isKindOfClass:NSClassFromString(@"AVFlashlight")]) {
-			[self updateToggleState];
+			AVFlashlight *flashlightObject = (AVFlashlight *)object;
+			[NSClassFromString(@"AVFlashlight") mze_setSharedFlashlight:flashlightObject];
+			[self setEnabled:[flashlightObject isAvailable]];
+			//[self setEnabled:YES];
+			BOOL isSelected = [flashlightObject flashlightLevel] > 0 ? YES : NO;
+			[self setSelected:isSelected];
+			if ([flashlightObject flashlightLevel] > 0) {
+				[_userDefaults setFloat:[flashlightObject flashlightLevel] forKey:FlashlightLevelKey];
+				[_userDefaults synchronize];
+				_sliderView.value = ([flashlightObject flashlightLevel]*(float)((float)_sliderView.numberOfSteps - 1.0f) + 1)/(float)_sliderView.numberOfSteps; 
+			}
+			if (_module) {
+				[_module setSelected:isSelected];
+			}
+			//[self updateToggleState];
 		}
 	}
 }

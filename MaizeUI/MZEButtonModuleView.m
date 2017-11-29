@@ -285,8 +285,12 @@ static BOOL isIOS11Mode = YES;
 - (void)setSelected:(BOOL)selected {
 	BOOL updateState = selected != [self isSelected];
 	[super setSelected:selected];
-	if (updateState)
+	if (updateState) {
+		if (selected) {
+			[self setHighlighted:NO];
+		}
 		[self _updateForStateChange];
+	}
 }
 
 - (void)setHighlighted:(BOOL)highlighted {

@@ -9,7 +9,7 @@ Header Height: 108
 
 X: 96.0
 Y: 44.0
-Font: .SFUIText-Semibold Pt. 17
+Font: .SFUIText-Semibold Pt. 11
 
 
 ## Title and Primary Present
@@ -43,6 +43,9 @@ Font: .SFUIText-Semibold Pt, 17
 X: 96 (-6 for scrolling strings)
 Y: 63.56
 Font: .SFUIText Pt. 17
+
+
+
 
 
 

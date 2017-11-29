@@ -27,4 +27,5 @@
 
 @interface AVFlashlight (MZE)
 + (instancetype)mze_sharedFlashlight;
++ (void)mze_setSharedFlashlight:(AVFlashlight *)flashlight;
 @end

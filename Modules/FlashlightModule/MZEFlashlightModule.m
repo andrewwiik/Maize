@@ -56,7 +56,8 @@
 }
 
 - (void)setSelected:(BOOL)isSelected {
-	[_backgroundViewController setGlyphImage:[self isSelected] ? [self selectedIconGlyph] : [self iconGlyph]];
+	[_backgroundViewController setGlyphImage:isSelected ? [self selectedIconGlyph] : [self iconGlyph]];
+	[_viewController setSelected:isSelected];
 	return;
 }
 

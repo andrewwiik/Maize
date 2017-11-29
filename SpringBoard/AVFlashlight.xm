@@ -3,9 +3,10 @@
 
 @interface CCUIFlashlightSetting (MZE)
 + (instancetype)mze_sharedFlashlight;
+@property (nonatomic, retain) AVFlashlight *flashlight;
 @end
 
-static AVFlashlight *sharedFlashlight;
+AVFlashlight *sharedFlashlight;
 
 
 @interface MZEFlashlightModuleViewController : NSObject
@@ -23,14 +24,54 @@ static AVFlashlight *sharedFlashlight;
 	}
 }
 
+%new
++ (void)mze_setSharedFlashlight:(AVFlashlight *)flashlight {
+	if (flashlight != sharedFlashlight) {
+		CCUIFlashlightSetting *sharedSetting = [NSClassFromString(@"CCUIFlashlightSetting") mze_sharedFlashlight];
+		if (sharedSetting) {
+			if (sharedFlashlight) {
+				@try {
+					[sharedFlashlight removeObserver:sharedSetting forKeyPath:@"available" context:0x0];
+	                [sharedFlashlight removeObserver:sharedSetting forKeyPath:@"overheated" context:0x0];
+	                [sharedFlashlight removeObserver:sharedSetting forKeyPath:@"flashlightLevel" context:0x0];
+				} @catch(id anException) {
+					
+				}
+			}
+
+			[sharedSetting setValue:flashlight forKey:@"_flashlight"];
+			sharedSetting.flashlight = flashlight;
+
+			@try {
+				[flashlight addObserver:sharedSetting forKeyPath:@"available" options:0x0 context:0x0];
+		        [flashlight addObserver:sharedSetting forKeyPath:@"overheated" options:0x0 context:0x0];
+		        [flashlight addObserver:sharedSetting forKeyPath:@"flashlightLevel" options:0x0 context:0x0];
+			} @catch(id anException) {
+
+			}
+		}
+		sharedFlashlight = flashlight;
+	}
+}
+
 - (AVFlashlight *)init {
 	AVFlashlight *orig = %orig;
 	if (orig) {
-
 		CCUIFlashlightSetting *sharedSetting = [NSClassFromString(@"CCUIFlashlightSetting") mze_sharedFlashlight];
 		if (sharedSetting) {
 
+			if (sharedFlashlight && sharedFlashlight != nil) {
+				@try {
+					[sharedFlashlight removeObserver:sharedSetting forKeyPath:@"available" context:0x0];
+	                [sharedFlashlight removeObserver:sharedSetting forKeyPath:@"overheated" context:0x0];
+	                [sharedFlashlight removeObserver:sharedSetting forKeyPath:@"flashlightLevel" context:0x0];
+				} @catch(id anException) {
+					
+				}
+			}
+
 			[sharedSetting setValue:orig forKey:@"_flashlight"];
+			sharedSetting.flashlight = orig;
 
 			@try {
 				[orig addObserver:sharedSetting forKeyPath:@"available" options:0x0 context:0x0];
@@ -57,6 +98,7 @@ static AVFlashlight *sharedFlashlight;
 		// 	sharedFlashlight = nil;
 		// }
 		sharedFlashlight = orig;
+		//[orig performSelector:NSSelectorFromString(@"reatin") withObject:nil];
 		// if (NSClassFromString(@"MZEFlashlightModuleViewController")) {
 		// 	AVFlashlight *otherFlashlight = [NSClassFromString(@"MZEFlashlightModuleViewController") sharedFlashlight];
 		// 	if (otherFlashlight) {

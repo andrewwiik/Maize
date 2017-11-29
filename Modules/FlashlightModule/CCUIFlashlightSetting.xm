@@ -7,11 +7,15 @@
 -(void)observeValueForKeyPath:(id)arg1 ofObject:(id)arg2 change:(id)arg3 context:(void*)arg4;
 @end
 
+@interface AVFlashlight : NSObject
+@end
+
 CCUIFlashlightSetting *sharedFlashlightSetting;
 
 
 %hook CCUIFlashlightSetting 
 %property (nonatomic, retain) NSObject *proxyKeyValueObject;
+%property (nonatomic, retain) AVFlashlight *flashlight;
 
 %new
 + (instancetype)mze_sharedFlashlight {
@@ -46,6 +50,10 @@ CCUIFlashlightSetting *sharedFlashlightSetting;
 		}
 	}
 }
+
+// - (void)setFlashlight:(AVFlashlight *)flashlight {
+
+// }
 %end
 
 %ctor {
