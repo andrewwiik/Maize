@@ -20,6 +20,7 @@
 	MPULayoutInterpolator *_interpolator;
 	MPUVolumeHUDController *_volumeHUDController;
 	MPUNowPlayingController *_nowPlayingController;
+	//BOOL _canPlayer;
 
 }
 @property (nonatomic, retain, readwrite) MZEMediaMetaDataView *metadataView;

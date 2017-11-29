@@ -132,9 +132,9 @@
   	if (_controlsView) {
 	  	if (_controlsView.progressView) {
 			if (expanded) {
-				[_controlsView.progressView startTimer];
+				[_nowPlayingController _startUpdatingTimeInformation];
 			} else {
-				[_controlsView.progressView stopTimer];
+				[_nowPlayingController _stopUpdatingTimeInformation];
 			}
 		}
 	}
@@ -163,7 +163,7 @@
 	[self.controlsView updateMediaForChangeOfMediaControlsStatus];
 	[self.metadataView updateMediaForChangeOfMediaControlsStatus];
 
-	if([self.metadataView.titleLabel.label.text isEqualToString:@"IPHONE"]){
+	if([_controlsView.progressView hasSong] == NO){
 			self.controlsView.controlsView.skipButton.alpha = 0.16;
 			self.controlsView.controlsView.rewindButton.alpha = 0.16;
 			self.controlsView.hasTitles = FALSE;
@@ -184,7 +184,23 @@
 
 
 -(void)nowPlayingController:(MPUNowPlayingController *)controller nowPlayingInfoDidChange:(NSDictionary *)nowPlayingInfo {
+	if (_controlsView) {
+		if (_controlsView.progressView) {
+			_controlsView.progressView.songDuration = [_nowPlayingController currentDuration];
+			[_nowPlayingController _updateTimeInformationAndCallDelegate:YES];
 
+			if([_controlsView.progressView hasSong] == NO){
+				self.controlsView.controlsView.skipButton.alpha = 0.16;
+				self.controlsView.controlsView.rewindButton.alpha = 0.16;
+				self.controlsView.hasTitles = FALSE;
+			} else {
+				self.controlsView.controlsView.skipButton.alpha = 0.8;
+				self.controlsView.controlsView.rewindButton.alpha = 0.8;
+				self.controlsView.hasTitles = TRUE;
+			}
+			//[_controlsView.progressView startTimer];
+		}
+	}
 }
 
 -(void)nowPlayingController:(MPUNowPlayingController *)controller playbackStateDidChange:(BOOL)isPlaying {
@@ -198,11 +214,29 @@
 		// }
 
 		if (_controlsView.progressView) {
+			_controlsView.progressView.songDuration = [_nowPlayingController currentDuration];
+			[_nowPlayingController _updateTimeInformationAndCallDelegate:YES];
+
 			if (isPlaying) {
-				[_controlsView.progressView startTimer];
+				[_nowPlayingController _startUpdatingTimeInformation];
 			} else {
-				[_controlsView.progressView stopTimer];
+				[_nowPlayingController _stopUpdatingTimeInformation];
 			}
+
+			if([_controlsView.progressView hasSong] == NO){
+				self.controlsView.controlsView.skipButton.alpha = 0.16;
+				self.controlsView.controlsView.rewindButton.alpha = 0.16;
+				self.controlsView.hasTitles = FALSE;
+			} else {
+				self.controlsView.controlsView.skipButton.alpha = 0.8;
+				self.controlsView.controlsView.rewindButton.alpha = 0.8;
+				self.controlsView.hasTitles = TRUE;
+			}
+			// if (isPlaying) {
+			// 	[_controlsView.progressView startTimer];
+			// } else {
+			// 	[_controlsView.progressView stopTimer];
+			// }
 		}
 	}
 }
@@ -214,7 +248,19 @@
 
 	if (_controlsView) {
 		if (_controlsView.progressView) {
-			[_controlsView.progressView startTimer];
+			_controlsView.progressView.songDuration = [_nowPlayingController currentDuration];
+			[_nowPlayingController _updateTimeInformationAndCallDelegate:YES];
+
+			if([_controlsView.progressView hasSong] == NO){
+				self.controlsView.controlsView.skipButton.alpha = 0.16;
+				self.controlsView.controlsView.rewindButton.alpha = 0.16;
+				self.controlsView.hasTitles = FALSE;
+			} else {
+				self.controlsView.controlsView.skipButton.alpha = 0.8;
+				self.controlsView.controlsView.rewindButton.alpha = 0.8;
+				self.controlsView.hasTitles = TRUE;
+			}
+			//[_controlsView.progressView startTimer];
 		}
 	}
 	//[self.metadataView nowPlayingAppDidChange];
@@ -231,7 +277,7 @@
 -(void)nowPlayingController:(MPUNowPlayingController *)controller elapsedTimeDidChange:(CGFloat)elapsedTime {
 	if (_controlsView) {
 		if (_controlsView.progressView) {
-			[_controlsView.progressView startTimer];
+			[_controlsView.progressView updateTimeWithElapsedTime:(NSTimeInterval)elapsedTime];
 		}
 	}
 }

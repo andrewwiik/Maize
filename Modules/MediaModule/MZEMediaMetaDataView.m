@@ -192,16 +192,25 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 
 		BOOL primaryUsesMarquee = NO;
 		if (self.primaryLabel.label.text != self.primaryString) {
+			// CGRect frame = self.primaryLabel.frame;
+			// frame.size.width = maxLabelWidth;
+			// self.primaryLabel.frame = frame;
+			//[self.primaryLabel setContentSize:CGSizeMake(maxLabelWidth, self.primaryLabel.frame.size.height)];
 			self.primaryLabel.label.text = self.primaryString;
 			[self.primaryLabel.label sizeToFit];
 			//BOOL useMarquee = NO;
-			if (self.primaryLabel.label.bounds.size.width > maxLabelWidth) {
-				primaryUsesMarquee = YES;
-			}
+			// if (self.primaryLabel.label.bounds.size.width > maxLabelWidth) {
+			// 	primaryUsesMarquee = YES;
+			// }
 			[self.primaryLabel setContentSize:self.primaryLabel.label.bounds.size];
 		}
 
+		if (self.primaryLabel.label.bounds.size.width > maxLabelWidth) {
+			primaryUsesMarquee = YES;
+		}
+
 		CGRect primaryFrame = self.primaryLabel.label.bounds;
+
 		primaryFrame.origin.x = allX;
 		primaryFrame.origin.y = primaryY;
 
@@ -223,13 +232,22 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 
 		BOOL secondaryUsesMarquee = NO;
 		if (self.secondaryLabel.label.text != self.secondaryString) {
+			// CGRect frame = self.secondaryLabel.frame;
+			// frame.size.width = maxLabelWidth;
+			// self.secondaryLabel.frame = frame;
+			//[self.secondaryLabel setContentSize:CGSizeMake(maxLabelWidth, self.secondaryLabel.frame.size.height)];
+			
 			self.secondaryLabel.label.text = self.secondaryString;
 			[self.secondaryLabel.label sizeToFit];
 
-			if (self.secondaryLabel.label.bounds.size.width > maxLabelWidth) {
-				secondaryUsesMarquee = YES;
-			}
+			// if (self.secondaryLabel.label.bounds.size.width > maxLabelWidth) {
+			// 	secondaryUsesMarquee = YES;
+			// }
 			[self.secondaryLabel setContentSize:self.secondaryLabel.label.bounds.size];
+		}
+
+		if (self.secondaryLabel.label.bounds.size.width > maxLabelWidth) {
+			secondaryUsesMarquee = YES;
 		}
 
 		CGRect secondaryFrame = self.secondaryLabel.label.bounds;
@@ -317,13 +335,19 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 
 		BOOL primaryUsesMarquee = NO;
 		if (self.primaryLabel.label.text != self.primaryString) {
+			//[self.primaryLabel setContentSize:CGSizeMake(maxLabelWidth, self.primaryLabel.frame.size.height)];
+		
 			self.primaryLabel.label.text = self.primaryString;
 			[self.primaryLabel.label sizeToFit];
 			//BOOL useMarquee = NO;
-			if (self.primaryLabel.label.bounds.size.width > maxLabelWidth) {
-				primaryUsesMarquee = YES;
-			}
+			// if (self.primaryLabel.label.bounds.size.width > maxLabelWidth) {
+			// 	primaryUsesMarquee = YES;
+			// }
 			[self.primaryLabel setContentSize:self.primaryLabel.label.bounds.size];
+		}
+
+		if (self.primaryLabel.label.bounds.size.width > maxLabelWidth) {
+			primaryUsesMarquee = YES;
 		}
 
 		CGRect primaryFrame = self.primaryLabel.label.bounds;
@@ -346,13 +370,19 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 
 		BOOL secondaryUsesMarquee = NO;
 		if (self.secondaryLabel.label.text != self.secondaryString) {
+			//[self.secondaryLabel setContentSize:CGSizeMake(maxLabelWidth, self.secondaryLabel.frame.size.height)];
+			
 			self.secondaryLabel.label.text = self.secondaryString;
 			[self.secondaryLabel.label sizeToFit];
 
-			if (self.secondaryLabel.label.bounds.size.width > maxLabelWidth) {
-				secondaryUsesMarquee = YES;
-			}
+			// if (self.secondaryLabel.label.bounds.size.width > maxLabelWidth) {
+			// 	secondaryUsesMarquee = YES;
+			// }
 			[self.secondaryLabel setContentSize:self.secondaryLabel.label.bounds.size];
+		}
+
+		if (self.secondaryLabel.label.bounds.size.width > maxLabelWidth) {
+			secondaryUsesMarquee = YES;
 		}
 
 		CGRect secondaryFrame = self.secondaryLabel.label.bounds;
@@ -371,9 +401,6 @@ extern NSString * SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *
 		CGPoint secondaryCenter = self.secondaryLabel.center;
 		secondaryCenter.x = self.frame.size.width/2 - (secondaryUsesMarquee ? 0 : 0);
 		self.secondaryLabel.center = secondaryCenter;
-
-
-
 
 		self.outputButton.alpha = 0;
 		self.artworkView.alpha = 0;

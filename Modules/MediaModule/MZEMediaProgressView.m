@@ -4,6 +4,7 @@
 #import <QuartzCore/CALayer+Private.h>
 #import <QuartzCore/CAFilter+Private.h>
 #import <UIKit/UIImage+Private.h>
+#import <UIKit/UISlider+Private.h>
 
 @interface SBMediaController : NSObject
 +(id)sharedInstance;
@@ -46,8 +47,9 @@
   [self.rightLabel setEffects:3];
   self.rightLabel.textAlignment = NSTextAlignmentRight;
   [self addSubview:self.rightLabel];
+  _shouldUpdateTime = YES;
 
-  [self updateTime];
+ // [self updateTime];
 
   return self;
 }
@@ -64,63 +66,124 @@
   _minTrackView.layer.cornerRadius = 1.5;
   _minTrackView.clipsToBounds = TRUE;
 }
--(void)updateTime{
 
-  if (self.progressView.tracking) {
+
+
+- (void)updateTimeWithElapsedTime:(NSTimeInterval)elapsedTime {
+
+  if (!_shouldUpdateTime || self.progressView.tracking) {
     return;
   }
 
- // SBMediaController *controller = [NSClassFromString(@"SBMediaController") sharedInstance];
+  if (self.hasSong) {
+    NSTimeInterval duration = _songDuration;
+    NSTimeInterval realCurrentPlayback = elapsedTime;
 
- // if([controller isPlaying]){
-    MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef result) {
-      if (result != nil) {
-          CFAbsoluteTime MusicStarted = CFDateGetAbsoluteTime((CFDateRef)[(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoTimestamp]);
-          NSTimeInterval timeIntervalifPause = (NSTimeInterval)[[(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoElapsedTime] doubleValue];
-          NSTimeInterval duration = (NSTimeInterval)[[(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDuration] doubleValue];
-          NSTimeInterval nowSec = (CFAbsoluteTimeGetCurrent() - MusicStarted) + (timeIntervalifPause>1?timeIntervalifPause:0);
+    int seconds = (int)realCurrentPlayback % 60;
+    int minutes = ((int)realCurrentPlayback / 60) % 60;
+    int hours = (int)realCurrentPlayback / 3600;
+    if(hours > 0){
+      self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d",hours, minutes, seconds];
+    } else {
+      if (minutes < 10) {
+        self.leftLabel.text = [NSString stringWithFormat:@"%01d:%02d", minutes, seconds];
+      } else {
+         self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+      }
+     // self.leftLabel.text = [NSString stringWithFormat:@"%01d:%02d", minutes, seconds];
+    }
 
-          NSTimeInterval currentPlayback = duration?(nowSec/duration):0;
-      		NSTimeInterval realCurrentPlayback = currentPlayback*duration;
+    int remainingTime = (duration - realCurrentPlayback);
 
-          int seconds = (int)realCurrentPlayback % 60;
-          int minutes = ((int)realCurrentPlayback / 60) % 60;
-          int hours = (int)realCurrentPlayback / 3600;
-          if(hours > 0){
-            self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d",hours, minutes, seconds];
-          } else {
-            if (minutes < 10) {
-              self.leftLabel.text = [NSString stringWithFormat:@"%01d:%02d", minutes, seconds];
-            } else {
-               self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
-            }
-           // self.leftLabel.text = [NSString stringWithFormat:@"%01d:%02d", minutes, seconds];
-          }
+    int remainingseconds = (int)remainingTime % 60;
+    int remainingminutes = ((int)remainingTime / 60) % 60;
+    int remaininghours = (int)remainingTime / 3600;
 
-          int remainingTime = (duration - realCurrentPlayback);
+    if(remaininghours > 0){
+      self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d:%02d",remaininghours, remainingminutes, remainingseconds];
+    } else {
+      if (remainingminutes < 10) {
+        self.rightLabel.text = [NSString stringWithFormat:@"-%01d:%02d", remainingminutes, remainingseconds];
+      } else {
+        self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
+      }
+     // self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
+    }
+    [self.progressView setValue:realCurrentPlayback/duration];
+    self.canScrub = YES;
+  } else {
+    [self.progressView setValue:0];
+    self.leftLabel.text = @"";
+    self.rightLabel.text = @"";
+    self.canScrub = NO;
+   // [self stopTimer];
+  }
+}
+// -(void)updateTime{
 
-          int remainingseconds = (int)remainingTime % 60;
-          int remainingminutes = ((int)remainingTime / 60) % 60;
-          int remaininghours = (int)remainingTime / 3600;
+//   if (self.progressView.tracking) {
+//     [self stopTimer];
+//     return;
+//   }
 
-          if(remaininghours > 0){
-            self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d:%02d",remaininghours, remainingminutes, remainingseconds];
-          } else {
-            if (remainingminutes < 10) {
-              self.rightLabel.text = [NSString stringWithFormat:@"-%01d:%02d", remainingminutes, remainingseconds];
-            } else {
-              self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
-            }
-           // self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
-          }
-          [self.progressView setValue:realCurrentPlayback/duration];
-        } else {
-          [self.progressView setValue:0];
-          self.leftLabel.text = @"";
-          self.rightLabel.text = @"";
-          [self stopTimer];
-        }
-    });
+//   SBMediaController *controller = [NSClassFromString(@"SBMediaController") sharedInstance];
+
+//  // if([controller isPlaying]){
+//     MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef result) {
+//       if (result != nil) {
+//         //if([controller isPlaying]){
+//           CFAbsoluteTime MusicStarted = CFDateGetAbsoluteTime((CFDateRef)[(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoTimestamp]);
+//           NSTimeInterval timeIntervalifPause = (NSTimeInterval)[[(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoElapsedTime] doubleValue];
+//           NSTimeInterval duration = (NSTimeInterval)[[(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDuration] doubleValue];
+//           NSTimeInterval nowSec = (CFAbsoluteTimeGetCurrent() - MusicStarted) + (timeIntervalifPause>1?timeIntervalifPause:0);
+
+//           NSTimeInterval currentPlayback = duration?(nowSec/duration):0;
+//       		NSTimeInterval realCurrentPlayback = currentPlayback*duration;
+
+//           int seconds = (int)realCurrentPlayback % 60;
+//           int minutes = ((int)realCurrentPlayback / 60) % 60;
+//           int hours = (int)realCurrentPlayback / 3600;
+//           if(hours > 0){
+//             self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d",hours, minutes, seconds];
+//           } else {
+//             if (minutes < 10) {
+//               self.leftLabel.text = [NSString stringWithFormat:@"%01d:%02d", minutes, seconds];
+//             } else {
+//                self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+//             }
+//            // self.leftLabel.text = [NSString stringWithFormat:@"%01d:%02d", minutes, seconds];
+//           }
+
+//           int remainingTime = (duration - realCurrentPlayback);
+
+//           int remainingseconds = (int)remainingTime % 60;
+//           int remainingminutes = ((int)remainingTime / 60) % 60;
+//           int remaininghours = (int)remainingTime / 3600;
+
+//           if(remaininghours > 0){
+//             self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d:%02d",remaininghours, remainingminutes, remainingseconds];
+//           } else {
+//             if (remainingminutes < 10) {
+//               self.rightLabel.text = [NSString stringWithFormat:@"-%01d:%02d", remainingminutes, remainingseconds];
+//             } else {
+//               self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
+//             }
+//            // self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
+//           }
+//           [self.progressView setValue:realCurrentPlayback/duration];
+//           if([controller isPlaying]){
+//            [self performSelector:@selector(updateTime) withObject:nil afterDelay:1];
+//          } else {
+//           [self stopTimer];
+//         }
+//         //}
+//         } else {
+//           [self.progressView setValue:0];
+//           self.leftLabel.text = @"";
+//           self.rightLabel.text = @"";
+//           [self stopTimer];
+//         }
+//     });
 
 
 
@@ -128,12 +191,12 @@
  // }
 
   //[self performSelector:@selector(updateTime) withObject:nil afterDelay:1];
-}
+//}
 
 -(void)progressSliderSlidIntoThoseDMs:(UISlider *)slider {
-    MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef result) {
-        NSTimeInterval duration = (NSTimeInterval)[[(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDuration] doubleValue];
-        
+   // MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef result) {
+        NSTimeInterval duration = _songDuration;
+
         int remainingTime = duration - (duration * slider.value);
         
         int remainingseconds = (int)remainingTime % 60;
@@ -141,9 +204,14 @@
         int remaininghours = (int)remainingTime / 3600;
         
         if(remaininghours > 0){
-            self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d:%02d",remaininghours, remainingminutes, remainingseconds];
+          self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d:%02d",remaininghours, remainingminutes, remainingseconds];
         } else {
+          if (remainingminutes < 10) {
+            self.rightLabel.text = [NSString stringWithFormat:@"-%01d:%02d", remainingminutes, remainingseconds];
+          } else {
             self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
+          }
+         // self.rightLabel.text = [NSString stringWithFormat:@"-%02d:%02d", remainingminutes, remainingseconds];
         }
         
         double newDuration = duration - remainingTime;
@@ -151,41 +219,76 @@
         int minutes = ((int)newDuration / 60) % 60;
         int hours = (int)newDuration / 3600;
         if(hours > 0){
-            self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d",hours, minutes, seconds];
+          self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d",hours, minutes, seconds];
         } else {
-            self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+          if (minutes < 10) {
+            self.leftLabel.text = [NSString stringWithFormat:@"%01d:%02d", minutes, seconds];
+          } else {
+             self.leftLabel.text = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+          }
+         // self.leftLabel.text = [NSString stringWithFormat:@"%01d:%02d", minutes, seconds];
         }
-    });
+   // });
 }
 
 -(void)setNewTimeFromSlider:(UISlider *)slider {
-    MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef result) {
-        NSTimeInterval duration = (NSTimeInterval)[[(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kMRMediaRemoteNowPlayingInfoDuration] doubleValue];
-        
+  _shouldUpdateTime = NO;
+   // MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef result) {
+        NSTimeInterval duration = _songDuration;
         double timeToScrub = duration * (double)slider.value;
         MRMediaRemoteSetElapsedTime(timeToScrub);
         
-        [self performSelector:@selector(startTimer) withObject:nil afterDelay:0.25];
-    });
+        [self performSelector:@selector(allowTimeUpdate) withObject:nil afterDelay:0.25];
+   // });
+}
+
+- (void)allowTimeUpdate {
+  _shouldUpdateTime = YES;
 }
 
 - (void)startTimer {
-  //[self updateTime];
-  if (_updateTimer) {
-    [_updateTimer invalidate];
-    _updateTimer = nil;
+
+  if (_timerStopped) {
+    _timerStopped = NO;
+   // [self updateTime];
   }
+
+
   //[self updateTime];
-  _updateTimer = [NSTimer timerWithTimeInterval:1.0f target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
-  [[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSRunLoopCommonModes];
-  [self updateTime];
+  // if (_updateTimer) {
+  //   [_updateTimer invalidate];
+  //   _updateTimer = nil;
+  // }
+  // //[self updateTime];
+  // _updateTimer = [NSTimer timerWithTimeInterval:1.0f target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+  // [[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSRunLoopCommonModes];
+ //[self updateTime];
 }
 
 - (void)stopTimer {
-  if (_updateTimer) {
-    [_updateTimer invalidate];
-    _updateTimer = nil;
+  _timerStopped = YES;
+  // if (_updateTimer) {
+  //   [_updateTimer invalidate];
+  //   _updateTimer = nil;
+  // }
+  // [self updateTime];
+}
+
+- (BOOL)hasSong {
+  if (_songDuration > 0) {
+    return YES;
+  } else return NO;
+}
+
+- (void)setCanScrub:(BOOL)canScrub {
+  if (canScrub != _canScrub) {
+    _canScrub = canScrub;
+    [self.progressView _setThumbEnabled:_canScrub];
+    [self.progressView setUserInteractionEnabled:_canScrub];
+
+    if (_canScrub) {
+      [self.progressView _rebuildControlThumb:YES track:YES];
+    }
   }
-  [self updateTime];
 }
 @end

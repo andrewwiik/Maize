@@ -41,8 +41,8 @@
 @property (nonatomic,readonly) NSString * nowPlayingAppDisplayID; 
 @property (nonatomic,readonly) BOOL currentNowPlayingAppIsRunning;                             //@synthesize currentNowPlayingAppIsRunning=_currentNowPlayingAppIsRunning - In the implementation block
 @property (nonatomic,readonly) BOOL nowPlayingAppIsSystemMediaApp; 
-@property (nonatomic,readonly) CGFloat currentElapsed;                                          //@synthesize currentElapsed=_currentElapsed - In the implementation block
-@property (nonatomic,readonly) CGFloat currentDuration; 
+@property (nonatomic,readonly) NSTimeInterval currentElapsed;                                          //@synthesize currentElapsed=_currentElapsed - In the implementation block
+@property (nonatomic,readonly) NSTimeInterval currentDuration; 
 @property (assign,nonatomic) CGFloat timeInformationUpdateInterval;                             //@synthesize timeInformationUpdateInterval=_timeInformationUpdateInterval - In the implementation block
 @property (assign,nonatomic) BOOL shouldUpdateNowPlayingArtwork;                               //@synthesize shouldUpdateNowPlayingArtwork=_shouldUpdateNowPlayingArtwork - In the implementation block
 -(void)_unregisterForNotifications;
@@ -59,7 +59,7 @@
 -(NSString *)currentNowPlayingArtworkDigest;
 -(UIImage *)currentNowPlayingArtwork;
 -(BOOL)currentNowPlayingAppIsRunning;
--(CGFloat)currentElapsed;
+-(NSTimeInterval)currentElapsed;
 -(void)_updateCurrentNowPlaying;
 -(NSDictionary *)currentNowPlayingInfo;
 -(void)_updatePlaybackState;
@@ -74,5 +74,5 @@
 -(BOOL)shouldUpdateNowPlayingArtwork;
 -(void)setShouldUpdateNowPlayingArtwork:(BOOL)arg1 ;
 -(void)_registerForNotifications;
--(CGFloat)currentDuration;
+-(NSTimeInterval)currentDuration;
 @end
