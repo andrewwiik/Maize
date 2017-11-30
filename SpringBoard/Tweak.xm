@@ -245,6 +245,10 @@ MZEHybridPageViewController *hybridPageController;
 }
 
 // -(void)_handlePan:(UIPanGestureRecognizer *)recognizer {
+//   // [UIView animateWithDuration:0.05 delay:0.0 options:UIViewAnimationOptionPreferredFramesPerSecond30 | UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction animations:^{
+//   //   %orig;
+//   // } completion:nil];
+// }
 //   if (recognizer.state == UIGestureRecognizerStateBegan) {
 //     if (!((CCUIControlCenterViewController *)self).mze_viewController) {
 //       ((CCUIControlCenterViewController *)self).mze_viewController = [[MZEModularControlCenterViewController alloc] initWithFrame:CGRectMake(0,0,((CCUIControlCenterViewController *)self).view.frame.size.width, ((CCUIControlCenterViewController *)self).view.frame.size.height)];

@@ -8,6 +8,7 @@
 #import <objc/runtime.h>
 #import <UIKit/UIView+Private.h>
 #import <QuartzCore/CALayer+Private.h>
+#import "macros.h"
 
 MZEMediaModuleViewController *sharedController;
 
@@ -147,8 +148,11 @@ static void reloadMediaModuleSettings() {
 		self.metadataView.frame = CGRectMake(0,0,self.view.frame.size.width, 108);
 
 		self.controlsView.expanded = TRUE;
-		_artworkBackgroundView.frame = CGRectMake(_metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.555, _metadataView.frame.size.height*0.555);
-		
+		if (IS_RTL) {
+			_artworkBackgroundView.frame = CGRectMake(_metadataView.frame.size.width - _metadataView.frame.size.height*0.222 - _metadataView.frame.size.height*0.555, _metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.555, _metadataView.frame.size.height*0.555);
+		} else {
+			_artworkBackgroundView.frame = CGRectMake(_metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.555, _metadataView.frame.size.height*0.555);
+		}
 		_artworkBackgroundView.layer.cornerRadius = _metadataView.artworkView.layer.cornerRadius; // this will need to be changed to continousCornerRadius
     	_artworkBackgroundView.layer.cornerContentsCenter = _metadataView.artworkView.layer.cornerContentsCenter;
     	_artworkVisibilityView.alpha = 0;
@@ -231,7 +235,11 @@ static void reloadMediaModuleSettings() {
 	}
 
 	if (expanded) {
-		_artworkBackgroundView.frame = CGRectMake(_metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.555, _metadataView.frame.size.height*0.555);
+		if (IS_RTL) {
+			_artworkBackgroundView.frame = CGRectMake(_metadataView.frame.size.width - _metadataView.frame.size.height*0.222 - _metadataView.frame.size.height*0.555, _metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.555, _metadataView.frame.size.height*0.555);
+		} else {
+			_artworkBackgroundView.frame = CGRectMake(_metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.222, _metadataView.frame.size.height*0.555, _metadataView.frame.size.height*0.555);
+		}
 		_artworkBackgroundView.layer.cornerRadius = _metadataView.artworkView.layer.cornerRadius; // this will need to be changed to continousCornerRadius
     	_artworkBackgroundView.layer.cornerContentsCenter = _metadataView.artworkView.layer.cornerContentsCenter;
 		_artworkVisibilityView.alpha = 0;

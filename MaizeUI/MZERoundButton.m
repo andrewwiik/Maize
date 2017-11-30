@@ -73,7 +73,11 @@
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	[self _setCornerRadius:[self _cornerRadius]];
+	CGFloat cornerRadius = [self _cornerRadius];
+	if (_normalStateBackgroundView.backdropView.layer.cornerRadius != cornerRadius) {
+		[self _setCornerRadius:cornerRadius];
+	}
+	//[self _setCornerRadius:[self _cornerRadius]];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(id)change context:(void *)context {
@@ -141,8 +145,8 @@
 
 - (void)_setCornerRadius:(CGFloat)cornerRadius {
 	_highlightStateBackgroundView._cornerRadius = cornerRadius;
-	_normalStateBackgroundView._cornerRadius = cornerRadius;
-	_normalStateBackgroundView.layer.masksToBounds = YES;
+	_normalStateBackgroundView.backdropView.layer.cornerRadius = cornerRadius;
+	//_normalStateBackgroundView.layer.masksToBounds = YES;
 }
 
 - (CGFloat)_cornerRadius {

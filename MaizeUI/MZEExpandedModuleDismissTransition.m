@@ -44,8 +44,9 @@
 		// //[toViewController.contentViewController viewWillTransitionToSize:[toViewController _contentFrameForExpandedState] withTransitionCoordinator:]
 		
 
-		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:1 initialSpringVelocity:1 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:1 initialSpringVelocity:1.0 options:(UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveLinear) animations:^{
 			toViewController.backgroundView.alpha = 0.0;
+			toViewController.backgroundView.hidden = YES;
 			[toViewController.contentContainerView transitionToExpandedMode:NO];
 			[toViewController.backgroundView transitionToExpandedMode:NO];
 			toViewController.contentContainerView.frame = relativeFrame;
@@ -56,6 +57,7 @@
 		} completion:^(BOOL finished) {
 			[transitionContext completeTransition:![transitionContext transitionWasCancelled]];
 			[toViewController.contentContainerView didTransitionToExpandedMode:NO];
+			toViewController.backgroundView.hidden = NO;
 
 			if ([toViewController.contentViewController respondsToSelector:@selector(didTransitionToExpandedContentMode:)]) {
 				[toViewController.contentViewController didTransitionToExpandedContentMode:NO];
@@ -78,7 +80,7 @@
 
 		//[[transitionContext containerView] addSubview:toViewController.view];
 
-		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction animations:^{
+		[UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction animations:^{
 			toViewController.view.alpha = 1.0;
 			toViewController.view.transform = CGAffineTransformIdentity;
 			fromViewController.view.alpha = 0;

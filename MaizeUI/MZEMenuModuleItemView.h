@@ -9,7 +9,7 @@ typedef BOOL (^MZEMenuItemBlock)(void);
 {
     UILabel *_titleLabel;
     UIImage *_glyphImage;
-    MZEMaterialView *_separatorView;
+    UIView *_separatorView;
     UIImageView *_glyphImageView;
     UIView *_highlightedBackgroundView;
     BOOL _separatorVisible;

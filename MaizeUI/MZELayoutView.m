@@ -64,6 +64,8 @@
 		}
 
 		[self setContentSize:[self intrinsicContentSize]];
+
+		_shouldLayout = NO;
 	}
 }
 

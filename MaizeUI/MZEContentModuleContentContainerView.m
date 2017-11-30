@@ -327,21 +327,22 @@ static BOOL isIOS11Mode = YES;
 				self.layer.cornerContentsCenter = cornerCenter;
 			} else {
 				if (!expanded) {
-					self.layer.cornerRadius = 0;
-					self.layer.cornerContentsCenter = CGRectZero;
+					self.layer.cornerRadius = cornerRadius;
+					self.layer.cornerContentsCenter = cornerCenter;
 					self.clipsToBounds = NO;
 
-					if (self.moduleMaterialView._continuousCornerRadius < 1.0f) {
-						self.moduleMaterialView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+					if (self.moduleMaterialView.backdropView._continuousCornerRadius < 1.0f) {
+						self.moduleMaterialView.backdropView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
 						//self.moduleMaterialView.clipsToBounds = YES;
 					}
-					self.moduleMaterialView.clipsToBounds = YES;
-					self.moduleMaterialView.layer.cornerRadius = cornerRadius;
-					self.moduleMaterialView.layer.cornerContentsCenter = cornerCenter;
+					self.moduleMaterialView.backdropView.clipsToBounds = YES;
+					self.moduleMaterialView.backdropView.layer.cornerRadius = cornerRadius;
+					self.moduleMaterialView.backdropView.layer.cornerContentsCenter = cornerCenter;
 				} else {
-					self.moduleMaterialView.layer.cornerRadius = 0;
-					self.moduleMaterialView.layer.cornerContentsCenter = CGRectZero;
-					self.moduleMaterialView.clipsToBounds = NO;
+
+					self.moduleMaterialView.backdropView.layer.cornerRadius = 0;
+					self.moduleMaterialView.backdropView.layer.cornerContentsCenter = CGRectZero;
+					//self.moduleMaterialView.clipsToBounds = NO;
 
 					//self.clipsToBounds = YES;
 					if (self._continuousCornerRadius < 1.0f) {
@@ -371,6 +372,7 @@ static BOOL isIOS11Mode = YES;
 			//_fakeVibrantView.hidden = YES;
 			[_fakeVibrantView removeFromSuperview];
 			_moduleVibrantBackground.hidden = NO;
+
 			// _moduleVibrantBackground.layer.compositingFilter = nil;
 			// _moduleVibrantBackground.layer.filters = [NSArray arrayWithObjects:_compactBackgroundFilter, nil];
 		}

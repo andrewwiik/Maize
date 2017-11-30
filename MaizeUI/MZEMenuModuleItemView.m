@@ -3,6 +3,7 @@
 #import <QuartzCore/CALayer+Private.h>
 #import <QuartzCore/CAFilter+Private.h>
 #import <UIKit/UIFontDescriptor+Private.h>
+#import <UIKit/UIImage+Private.h>
 #import "macros.h"
 
 static CGFloat separatorHeight = 0;
@@ -37,12 +38,13 @@ static CGFloat separatorHeight = 0;
 		// [stackView setDistribution:2];
 		// [stackView setUserInteractionEnabled:NO];
 		if (_glyphImage) {
-			_glyphImage = [_glyphImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+			_glyphImage = [_glyphImage _flatImageWithColor:[UIColor whiteColor]];
 		}
 		_glyphImageView = [[UIImageView alloc] initWithImage:_glyphImage];
 		_glyphImageView.contentMode = UIViewContentModeCenter;
-		_glyphImageView.tintColor = [UIColor whiteColor];
+		//_glyphImageView.tintColor = [UIColor whiteColor];
 		[_glyphImageView setUserInteractionEnabled:NO];
+		//_glyphImageView.layer.shouldRasterize = YES;
 		[self addSubview:_glyphImageView];
 		_glyphImageView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
 											UIViewAutoresizingFlexibleBottomMargin |
@@ -57,10 +59,12 @@ static CGFloat separatorHeight = 0;
 		_titleLabel.numberOfLines = 0;
 		_titleLabel.text = title;
 		_titleLabel.textColor = [UIColor whiteColor];
+		//_titleLabel.layer.shouldRasterize = YES;
 
 		[self addSubview:_titleLabel];
 
-		_separatorView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
+		_separatorView = [UIView new];
+		_separatorView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.35];
 		_separatorView.frame = CGRectMake(0,CGRectGetHeight(self.bounds) - separatorHeight, CGRectGetWidth(self.bounds) - (glyphImage != nil ? CGRectGetHeight(self.bounds) : 0), separatorHeight);
 		//_separatorView.backgroundColor = [UIColor whiteColor];
 		// NSMutableArray *sepFilters = [NSMutableArray new];

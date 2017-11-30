@@ -256,6 +256,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	}
 
 	if (self.psuedoCollectionView) {
+		[self.psuedoCollectionView setNeedsLayout];
 		[self.psuedoCollectionView layoutSubviews];
 	}
 

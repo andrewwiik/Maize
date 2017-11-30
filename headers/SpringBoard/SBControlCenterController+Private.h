@@ -11,4 +11,5 @@
 - (void)dismissAnimated:(BOOL)animated;
 - (BOOL)isVisible;
 - (void)_updateRevealPercentage:(CGFloat)percentage;
+//- (UIViewController *)_controlCenterViewController;
 @end

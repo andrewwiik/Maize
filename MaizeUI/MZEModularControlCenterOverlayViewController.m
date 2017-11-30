@@ -656,7 +656,10 @@ static CGFloat cachedBoundsWidth = 0;
 
 	collectionViewBounds.origin = origin;
 	//collectionViewBounds.origin.x = (CGRectGetWidth(self.view.bounds)-CGRectGetWidth(self.view.bounds))/2;
-	self.moduleCollectionViewController.view.frame = collectionViewBounds;
+	[UIView animateWithDuration:0.05 delay:0.0 options:(UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowAnimatedContent | UIViewAnimationOptionOverrideInheritedDuration) animations:^{
+    	self.moduleCollectionViewController.view.frame = collectionViewBounds;
+  	} completion:nil];
+	//self.moduleCollectionViewController.view.frame = collectionViewBounds;
 }
 
 - (CGRect)_sourcePresentationFrame {

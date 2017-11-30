@@ -1,5 +1,6 @@
 #import "MZEHybridPageViewController.h"
 #import <UIKit/UIView+Private.h>
+#import <SpringBoard/SBControlCenterController+Private.h>
 
 @implementation MZEHybridPageViewController
 	@synthesize delegate=_delegate;
@@ -122,4 +123,51 @@
 	}
 	[self.collectionViewController hideSnapshottedModules:NO];
 }
+
+- (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController didFinishInteractionWithModule:(id <MZEContentModule>)module {
+	[(UIPanGestureRecognizer *)[[[NSClassFromString(@"SBControlCenterController") sharedInstance] _controlCenterViewController] valueForKey:@"_panGesture"] setEnabled:YES];
+	// _collectionViewScrollPanGesture.enabled = YES;
+	// _collectionViewDismissalTapGesture.enabled = YES;
+	// // _collectionViewDismissalPanGesture.enabled = YES;
+	// _headerPocketViewDismissalTapGesture.enabled = YES;
+	// _headerPocketViewDismissalPanGesture.enabled = YES;
+}
+
+- (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController didBeginInteractionWithModule:(id <MZEContentModule>)module {
+	[(UIPanGestureRecognizer *)[[[NSClassFromString(@"SBControlCenterController") sharedInstance] _controlCenterViewController] valueForKey:@"_panGesture"] setEnabled:NO];
+	// _isInteractingWithModule = YES;
+	// // _collectionViewScrollPanGesture.enabled = NO;
+	// _collectionViewDismissalTapGesture.enabled = NO;
+	// // _collectionViewDismissalPanGesture.enabled = NO;
+	// _headerPocketViewDismissalTapGesture.enabled = NO;
+	// _headerPocketViewDismissalPanGesture.enabled = NO;
+}
+
+
+- (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willOpenExpandedModule:(id <MZEContentModule>)module {
+	// _headerPocketView.alpha = 0;
+	// _collectionViewScrollPanGesture.enabled = NO;
+	// _collectionViewDismissalTapGesture.enabled = NO;
+	// _collectionViewDismissalPanGesture.enabled = NO;
+	// _headerPocketViewDismissalTapGesture.enabled = NO;
+	// _headerPocketViewDismissalPanGesture.enabled = NO;
+	// _isInteractingWithModule = YES;
+	[(UIPanGestureRecognizer *)[[[NSClassFromString(@"SBControlCenterController") sharedInstance] _controlCenterViewController] valueForKey:@"_panGesture"] setEnabled:NO];
+	[super moduleCollectionViewController:collectionViewController willOpenExpandedModule:module];
+}
+
+- (void)moduleCollectionViewController:(MZEModuleCollectionViewController *)collectionViewController willCloseExpandedModule:(id <MZEContentModule>)module {
+	// _headerPocketView.alpha = 1.0;
+	// [self _updateHotPocketAnimated:YES];
+	// _isInteractingWithModule = NO;
+	// _collectionViewScrollPanGesture.enabled = YES;
+	// _collectionViewDismissalTapGesture.enabled = YES;
+	// _collectionViewDismissalPanGesture.enabled = YES;
+	// _headerPocketViewDismissalTapGesture.enabled = YES;
+	// _headerPocketViewDismissalPanGesture.enabled = YES;
+	[(UIPanGestureRecognizer *)[[[NSClassFromString(@"SBControlCenterController") sharedInstance] _controlCenterViewController] valueForKey:@"_panGesture"] setEnabled:YES];
+	[super moduleCollectionViewController:collectionViewController willCloseExpandedModule:module];
+}
+
+//[(UIPanGestureRecognizer *)[[[NSClassFromString(@"SBControlCenterController") sharedInstance] _controlCenterViewController] valueForKey:@"_panGesture"] setEnabled:NO];
 @end

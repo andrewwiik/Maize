@@ -1,0 +1,513 @@
+#import "_MZEBackdropView.h"
+#import <QuartzCore/CAFilter+Private.h>
+#import <UIKit/UIView+Private.h>
+
+struct CAColorMatrix
+{
+    float m11, m12, m13, m14, m15;
+    float m21, m22, m23, m24, m25;
+    float m31, m32, m33, m34, m35;
+    float m41, m42, m43, m44, m45;
+};
+
+typedef struct CAColorMatrix CAColorMatrix;
+
+@interface NSValue (ColorMatrix)
++ (NSValue *)valueWithCAColorMatrix:(CAColorMatrix)t;
+- (CAColorMatrix)CAColorMatrixValue;
+@end
+
+static CAColorMatrix defaultColorMatrix = {
+    1, 0, 0, 0, 0,
+	0, 1, 0, 0, 0,
+	0, 0, 1, 0, 0,
+	0, 0, 0, 1, 0
+};
+
+
+static BOOL isIOS9 = YES;
+@implementation _MZEBackdropView
+	@dynamic layer;
+	
++ (Class)layerClass {
+	return NSClassFromString(@"CABackdropLayer");
+}
+
+- (id)init {
+	self = [super init];
+	if (self) {
+		if (!NSClassFromString(@"CCUIControlCenterViewController")) {
+			isIOS9 = YES;
+		}
+		_saturation = 1.0f;
+		_brightness = 0.0f;
+		//self.layer.scale = 0.25;
+		// if (self.layer) {
+		// 	//CAFilter *brightnessFilter = [NSClassFromString(@"CAFilter") alloc]
+		// 	CAFilter *blurFilter = [NSClassFromString(@"CAFilter") filterWithType:@"luminanceToAlpha"];
+		// 	//[blurFilter setValue:[NSNumber numberWithFloat:-0.5] forKey:@"inputAmount"];
+		// 	[self.layer setFilters:[NSArray arrayWithObjects:blurFilter,nil]];
+		// }
+	}
+	return self;
+}
+
+- (id)initWithStyleDictionary:(NSDictionary *)styleDictionary {
+	self = [super init];
+	if (self) {
+		if (styleDictionary) {
+			if (styleDictionary[@"brightness"]) {
+				_brightness = [(NSNumber *)styleDictionary[@"brightness"] floatValue];
+			}
+
+			if (styleDictionary[@"saturation"]) {
+				_saturation = [(NSNumber *)styleDictionary[@"saturation"] floatValue];
+			}
+
+			if (styleDictionary[@"luminanceAlpha"]) {
+				_luminanceAlpha = [(NSNumber *)styleDictionary[@"luminanceAlpha"] floatValue];
+			}
+
+			if (styleDictionary[@"blurRadius"]) {
+				_blurRadius = [(NSNumber *)styleDictionary[@"blurRadius"] floatValue];
+			}
+
+			if (styleDictionary[@"colorMatrixColor"]) {
+				_colorMatrixColor = (UIColor *)styleDictionary[@"colorMatrixColor"];
+			}
+
+			if (styleDictionary[@"colorAddColor"]) {
+				_colorAddColor = (UIColor *)styleDictionary[@"colorAddColor"];
+			}
+
+			if (styleDictionary[@"forcedColorMatrix"]) {
+				_forcedColorMatrix = (NSValue *)styleDictionary[@"forcedColorMatrix"];
+			}
+
+			[self recomputeFilters];
+		}
+	}
+	return self;
+}
+
+- (void)setStyleDictionary:(NSDictionary *)styleDictionary {
+	if (styleDictionary) {
+			if (styleDictionary[@"brightness"]) {
+				_brightness = [(NSNumber *)styleDictionary[@"brightness"] floatValue];
+			}
+			if (styleDictionary[@"saturation"]) {
+				_saturation = [(NSNumber *)styleDictionary[@"saturation"] floatValue];
+			}
+			if (styleDictionary[@"luminanceAlpha"]) {
+				_luminanceAlpha = [(NSNumber *)styleDictionary[@"luminanceAlpha"] floatValue];
+			}
+
+			if (styleDictionary[@"blurRadius"]) {
+				_blurRadius = [(NSNumber *)styleDictionary[@"blurRadius"] floatValue];
+			}
+
+			if (styleDictionary[@"colorMatrixColor"]) {
+				_colorMatrixColor = (UIColor *)styleDictionary[@"colorMatrixColor"];
+			}
+
+			if (styleDictionary[@"colorAddColor"]) {
+				_colorAddColor = (UIColor *)styleDictionary[@"colorAddColor"];
+			}
+
+			if (styleDictionary[@"forcedColorMatrix"]) {
+				_forcedColorMatrix = (NSValue *)styleDictionary[@"forcedColorMatrix"];
+			}
+
+			[self recomputeFilters];
+		}
+}
+
+- (void)setBrightness:(CGFloat)brightness {
+	if (brightness != _brightness) {
+		_brightness = brightness;
+		if (_brightnessFilter) {
+			[self.layer setValue:[NSNumber numberWithFloat:brightness] forKey:@"filters.brightness.inputAmount"];
+		} else {
+			[self recomputeFilters];
+		} 
+	}
+}
+
+- (CGFloat)brightness {
+	return _brightness;
+}
+
+- (void)setSaturation:(CGFloat)saturation {
+	if (saturation != _saturation) {
+		_saturation = saturation;
+		if (_saturationFilter) {
+			[self.layer setValue:[NSNumber numberWithFloat:_saturation] forKey:@"filters.colorSaturate.inputAmount"];
+		} else {
+			[self recomputeFilters];
+		}
+		//[self recomputeFilters];
+	}
+}
+
+- (CGFloat)saturation {
+	return _saturation;
+}
+
+- (void)setLuminanceAmount:(CGFloat)luminanceAmount {
+	if (luminanceAmount != _luminanceAmount) {
+		_luminanceAmount = luminanceAmount;
+		[self recomputeFilters];
+		// if (_monochromeFilter) {
+		// 	[self.layer setValue:[NSNumber numberWithFloat:_luminanceAmount] forKey:@"filters.monochrome.inputAmount"];
+		// } else {
+		// 	[self recomputeFilters];
+		// }
+	}
+}
+
+- (CGFloat)luminanceAmount {
+	return _luminanceAmount;
+}
+
+- (void)setLuminanceAlpha:(CGFloat)luminanceAlpha {
+	if (luminanceAlpha != _luminanceAlpha) {
+		_luminanceAlpha = luminanceAlpha;
+		if (_luminanceColorMatrix) {
+			//[self.layer setValue:[NSNumber numberWithFloat:_luminanceAlpha] forKey:@"filters.monochrome.inputAmount"];
+			
+			// float diag = 1.0f - (0.2f * (float)luminanceAlpha);
+			// float other = 0 - (0.05f * (float)(luminanceAlpha));
+			// float smaller = 0 + (0.1f * (float)(luminanceAlpha));
+
+			// CAColorMatrix colorMatrix = {
+	  //           diag, 0, 0, other, smaller,
+			// 	0, diag, 0, other, smaller,
+			// 	0, 0, diag, other, smaller,
+			// 	0, 0, 0, 1.0f, 0.1f
+	  //       };
+
+			CAColorMatrix colorMatrix = {
+	            0.8f, 0, 0, -0.05f,0.1f,
+				0, 0.8f, 0, -0.05f, 0.1f,
+				0, 0, 0.8f, -0.05f, 0.1f,
+				0, 0, 0, 1.0f, 0.1f
+	        };
+
+	        [self.layer setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"filters.luminanceColorMatrix.inputColorMatrix"];
+		} else {
+			[self recomputeFilters];
+		}
+		//[self recomputeFilters];
+	}
+}
+
+- (CGFloat)luminanceAlpha {
+	return _luminanceAlpha;
+}
+
+- (void)setBlurRadius:(CGFloat)blurRadius {
+	if (blurRadius != _blurRadius) {
+		_blurRadius = blurRadius;
+		if (_blurFilter) {
+			[self.layer setValue:[NSNumber numberWithFloat:_blurRadius] forKeyPath:@"filters.gaussianBlur.inputRadius"];
+		} else {
+			[self recomputeFilters];
+		}
+	}
+}
+
+
+- (id)valueForUndefinedKey:(NSString *)key {
+	if (key) {
+		if ([key isEqualToString:@"filters.gaussianBlur.inputRadius"]) {
+			return [NSNumber numberWithFloat:0];
+		}
+		if ([key isEqualToString:@"filters.colorSaturate.inputAmount"]) {
+			return [NSNumber numberWithFloat:1.0];
+		}
+		if ([key isEqualToString:@"filters.luminanceColorMatrix.inputColorMatrix"]) {
+
+			return [NSValue valueWithCAColorMatrix:defaultColorMatrix];
+		}
+		if ([key isEqualToString:@"filters.monochrome.inputAmount"]) {
+			return [NSNumber numberWithFloat:0];
+		}
+		if ([key isEqualToString:@"filters.inputColorMatrix.inputColorMatrix"]) {
+			return [NSValue valueWithCAColorMatrix:defaultColorMatrix];
+			//return YES;
+		}
+		if ([key isEqualToString:@"filters.brightness.inputAmount"]) {
+			return [NSNumber numberWithFloat:1.0];
+		}
+	}
+	return [super valueForUndefinedKey:key];
+}
+
+- (CGFloat)blurRadius {
+	return _blurRadius;
+}
+
+- (void)setColorMatrixColor:(UIColor *)colorMatrixColor {
+	if (![_colorMatrixColor isEqual:colorMatrixColor]) {
+		_colorMatrixColor = colorMatrixColor;
+		if (_colorMatrixFilter) {
+			CGFloat red, green, blue, alpha;
+			if ([_colorMatrixColor getRed:&red green:&green blue:&blue alpha:&alpha]) {
+				CAColorMatrix colorMatrix = {
+		            (float)alpha, 0, 0, 0, (float)red,
+		            0, (float)alpha, 0, 0, (float)green,
+		            0, 0, (float)alpha, 0, (float)blue,
+		            0, 0, 0, (float)1.0f, 0
+		        };
+
+		        [self.layer setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"filters.inputColorMatrix.inputColorMatrix"];
+
+
+		       // CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+		        //[_colorMatrixFilter setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"inputColorMatrix"];
+		    }
+		} else {
+			[self recomputeFilters];
+		}
+		// _colorMatrixColor = colorMatrixColor;
+		// [self recomputeFilters];
+	}
+}
+
+- (UIColor *)colorMatrixColor {
+	return _colorMatrixColor;
+}
+
+- (void)setColorAddColor:(UIColor *)colorAddColor {
+	if (![_colorAddColor isEqual:colorAddColor]) {
+		self.backgroundColor = colorAddColor;
+		// _colorAddColor = colorAddColor;
+		// [self recomputeFilters];
+	}
+}
+
+- (UIColor *)colorAddColor {
+	return _colorAddColor;
+}
+
+- (void)setForcedColorMatrix:(NSValue *)forcedColorMatrix {
+	_forcedColorMatrix = forcedColorMatrix;
+
+	if (_colorMatrixFilter) {
+		[self.layer setValue:[NSValue valueWithCAColorMatrix:[_forcedColorMatrix CAColorMatrixValue]] forKey:@"filters.inputColorMatrix.inputColorMatrix"];
+		//[_colorMatrixFilter setValue:[NSValue valueWithCAColorMatrix:[_forcedColorMatrix CAColorMatrixValue]] forKey:@"inputColorMatrix"];
+	} else {
+		[self recomputeFilters];
+	}
+	//[self recomputeFilters];
+}
+
+- (NSValue *)forcedColorMatrix {
+	return _forcedColorMatrix;
+}
+
+- (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key {
+	if (key) {
+		if ([key isEqualToString:@"filters.colorSaturate.inputAmount"]) {
+			return YES;
+		}
+		if ([key isEqualToString:@"filters.luminanceColorMatrix.inputColorMatrix"]) {
+			return YES;
+		}
+		if ([key isEqualToString:@"filters.monochrome.inputAmount"]) {
+			return YES;
+		}
+		if ([key isEqualToString:@"filters.inputColorMatrix.inputColorMatrix"]) {
+			return YES;
+		}
+		if ([key isEqualToString:@"filters.brightness.inputAmount"]) {
+			return YES;
+		}
+		if ([key isEqualToString:@"filters.gaussianBlur.inputRadius"]) {
+			return YES;
+		}
+		//return YES;
+	}
+	return [super _shouldAnimatePropertyWithKey:key];
+}
+
+- (void)recomputeFilters {
+	NSMutableArray *filters = [NSMutableArray new];
+
+
+	// if (!_colorMatrixFilter) {
+	// 	_colorMatrixFilter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+	// 	[_colorMatrixFilter setName:@"inputColorMatrix"];
+	// 	// [filter setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"inputColorMatrix"];
+	// }
+
+	if (!_colorAddColor && _colorMatrixColor && !_forcedColorMatrix) {
+
+		if (!_colorMatrixFilter) {
+			_colorMatrixFilter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+			[_colorMatrixFilter setName:@"inputColorMatrix"];
+			// [filter setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"inputColorMatrix"];
+		}
+		CGFloat red, green, blue, alpha;
+		if ([_colorMatrixColor getRed:&red green:&green blue:&blue alpha:&alpha]) {
+			CAColorMatrix colorMatrix = {
+	            (float)alpha, 0, 0, 0, (float)red,
+	            0, (float)alpha, 0, 0, (float)green,
+	            0, 0, (float)alpha, 0, (float)blue,
+	            0, 0, 0, (float)1.0f, 0
+	        };
+
+	       // CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+	        [_colorMatrixFilter setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"inputColorMatrix"];
+	        //[filters addObject:filter];
+	        [filters addObject:_colorMatrixFilter];
+
+		}
+	}
+
+	if (_colorAddColor && !_forcedColorMatrix) {
+
+		if (!isIOS9) {
+			CGFloat red, green, blue, alpha;
+			if ([_colorAddColor getRed:&red green:&green blue:&blue alpha:&alpha]) {
+				CAColorMatrix colorMatrix = {
+		            1.0f, 0, 0, 0, red*alpha,
+		            0, 1.0f, 0, 0, green*alpha,
+		            0, 0, 1.0f, 0, blue*alpha,
+		            0, 0, 0, 1.0f, 0
+		        };
+
+		        if (!_colorMatrixFilter) {
+					_colorMatrixFilter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+					[_colorMatrixFilter setName:@"inputColorMatrix"];
+					// [filter setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"inputColorMatrix"];
+				}
+
+		      //  CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+		        [_colorMatrixFilter setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"inputColorMatrix"];
+		        //[filters addObject:filter];
+		        [filters addObject:_colorMatrixFilter];
+
+			}
+		} else {
+			self.backgroundColor = _colorAddColor;
+		}
+	}
+
+	if (_forcedColorMatrix) {
+		if (!_colorMatrixFilter) {
+			_colorMatrixFilter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+			[_colorMatrixFilter setName:@"inputColorMatrix"];
+			// [filter setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"inputColorMatrix"];
+		}
+		[_colorMatrixFilter setValue:[NSValue valueWithCAColorMatrix:[_forcedColorMatrix CAColorMatrixValue]] forKey:@"inputColorMatrix"];
+		// CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+	 //    [filter setValue:[NSValue valueWithCAColorMatrix:[_forcedColorMatrix CAColorMatrixValue]] forKey:@"inputColorMatrix"];
+	 //    [filters addObject:filter];
+		[filters addObject:_colorMatrixFilter];
+	}
+
+	if (_blurRadius != 0.0f) {
+		if (!_blurFilter) {
+			_blurFilter = [NSClassFromString(@"CAFilter") filterWithType:@"gaussianBlur"];
+			[_blurFilter setValue:[NSNumber numberWithFloat:_blurRadius] forKey:@"inputRadius"];
+			[_blurFilter setValue:@"low" forKey:@"inputQuality"];
+			//[filters addObject:filter];
+			//filters.gaussianBlur.inputRadius
+		}
+		[filters addObject:_blurFilter];
+		// CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"gaussianBlur"];
+		// [filter setValue:[NSNumber numberWithFloat:_blurRadius] forKey:@"inputRadius"];
+		// [filter setValue:@"low" forKey:@"inputQuality"];
+		// [filters addObject:filter];
+	}
+
+	if (_luminanceAlpha != 0) {
+		if (!_monochromeFilter) {
+			_monochromeFilter = [NSClassFromString(@"CAFilter") filterWithType:@"colorMonochrome"];
+			[_monochromeFilter setName:@"monochrome"];
+			[_monochromeFilter setValue:(id)[[UIColor whiteColor] CGColor] forKey:@"inputColor"];
+			//[_monochromeFilter setValue:[NSNumber numberWithFloat:_luminanceAlpha] forKey:@"inputAmount"];
+		}
+
+		[_monochromeFilter setValue:[NSNumber numberWithFloat:_luminanceAmount] forKey:@"inputAmount"];
+		// CAFilter *monochrome = [NSClassFromString(@"CAFilter") filterWithType:@"colorMonochrome"];
+		// [monochrome setValue:(id)[[UIColor whiteColor] CGColor] forKey:@"inputColor"];
+		// [monochrome setValue:[NSNumber numberWithFloat:_luminanceAlpha] forKey:@"inputAmount"];
+		[filters addObject:_monochromeFilter];
+
+		// CAColorMatrix colorMatrix = {
+  //           0.6f, 0, 0, -0.1f,0.17f,
+		// 	0, 0.6f, 0, -0.1f, 0.17f,
+		// 	0, 0, 0.6f, -0.1f, 0.17f,
+		// 	0, 0, 0, 1.0f, 0.1f
+  //       };
+
+		// CAColorMatrix colorMatrix = {
+  //           0.75f, 0, 0, -0.14f,0.17f,
+		// 	0, 0.75f, 0, -0.14f, 0.17f,
+		// 	0, 0, 0.75f, -0.14f, 0.17f,
+		// 	0, 0, 0, 1.0f, 0.1f
+  //       };
+
+		CAColorMatrix colorMatrix = {
+            0.8f, 0, 0, -0.05f,0.1f,
+			0, 0.8f, 0, -0.05f, 0.1f,
+			0, 0, 0.8f, -0.05f, 0.1f,
+			0, 0, 0, 1.0f, 0.1f
+        };
+
+        if (!_luminanceColorMatrix) {
+        	_luminanceColorMatrix = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+        	[_luminanceColorMatrix setName:@"luminanceColorMatrix"];
+        }
+
+		//CAFilter *luminance = [NSClassFromString(@"CAFilter") filterWithType:@"colorMatrix"];
+		[_luminanceColorMatrix setValue:[NSValue valueWithCAColorMatrix:colorMatrix] forKey:@"inputColorMatrix"];
+	    [filters addObject:_luminanceColorMatrix];
+	}
+
+	if (_saturation != 1.0f) {
+		if (!_saturationFilter) {
+			_saturationFilter = [NSClassFromString(@"CAFilter") filterWithType:@"colorSaturate"];
+			[_saturationFilter setName:@"colorSaturate"];
+		}
+		// }
+		// CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"colorSaturate"];
+		[_saturationFilter setValue:[NSNumber numberWithFloat:_saturation] forKey:@"inputAmount"];
+		[filters addObject:_saturationFilter];
+	}
+
+	if (_brightness != 0.0f) {
+		if (!_brightnessFilter) {
+			_brightnessFilter = [NSClassFromString(@"CAFilter") filterWithType:@"colorBrightness"];
+			[_brightnessFilter setName:@"brightness"];
+		}
+		//CAFilter *filter = [NSClassFromString(@"CAFilter") filterWithType:@"colorBrightness"];
+		[_brightnessFilter setValue:[NSNumber numberWithFloat:_brightness] forKey:@"inputAmount"];
+		[filters addObject:_brightnessFilter];
+	}
+
+
+	[self.layer setFilters:[filters copy]];
+}
+
+
+
+// - (BOOL)shouldForwardSelector:(SEL)aSelector {
+//     //if (aSelector == @selector(setBounds:)) return NO;
+//     if (aSelector == @selector(_setContinuousCornerRadius:)) return YES;
+//     if (aSelector == @selector(_continuousCornerRadius)) return YES;
+//     return [self.layer respondsToSelector:aSelector];
+// }
+
+// - (id)forwardingTargetForSelector:(SEL)aSelector {
+//     if (aSelector == @selector(_setContinuousCornerRadius:)) return self;
+//     if (aSelector == @selector(_continuousCornerRadius)) return self;
+//     return (![self respondsToSelector:aSelector] && [self shouldForwardSelector:aSelector]) ? self.layer : self;
+// }
+
+// - (BOOL)_shouldAnimatePropertyWithKey:(NSString *)key {
+//    return ([self shouldForwardSelector:NSSelectorFromString(key)] || [super _shouldAnimatePropertyWithKey:key]);
+// }
+@end

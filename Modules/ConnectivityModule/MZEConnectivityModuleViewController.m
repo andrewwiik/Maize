@@ -19,6 +19,8 @@
 			}
 		}
 		_isExpanded = NO;
+
+		[self willTransitionToExpandedContentMode:NO];
 	}
 	return self;
 }
@@ -32,7 +34,7 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	self.view.clipsToBounds = YES;
+	//self.view.clipsToBounds = YES;
 	for (MZEConnectivityButtonViewController *buttonController in _buttonViewControllers) {
 		[self.view addSubview:buttonController.view];
 	}
@@ -150,14 +152,21 @@
 
 - (void)willTransitionToExpandedContentMode:(BOOL)expanded {
 	_isExpanded = expanded;
+	if (expanded) self.view.clipsToBounds = YES;
 	for (MZEConnectivityButtonViewController *buttonController in _buttonViewControllers) {
 		[buttonController setLabelsVisible:expanded];
 		[buttonController.view setAlpha:1.0];
 		[buttonController moduleDidExpand:expanded];
 	}
 
-	for (NSUInteger x = ([self visibleRows] * [self visibleColumns]); x < [_buttonViewControllers count]; x++) {
+	for (NSUInteger x = (2*2); x < [_buttonViewControllers count]; x++) {
 		_buttonViewControllers[x].view.alpha = _isExpanded ? 1.0 : 0.0;
+	}
+}
+
+- (void)didTransitionToExpandedContentMode:(BOOL)expanded {
+	if (expanded == NO) {
+		self.view.clipsToBounds = NO;
 	}
 }
 

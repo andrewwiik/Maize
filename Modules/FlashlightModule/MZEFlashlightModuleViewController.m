@@ -276,7 +276,9 @@ NSString *const FlashlightLevelKey = @"mze_flashlightlevel";
 }
 
 - (BOOL)shouldMaskToBounds {
-	return YES;
+	return _expanded;
+	// if (_expanded) return YES else return NO;
+	// return YES;
 }
 
 - (void)_dragExit:(id)arg1 {

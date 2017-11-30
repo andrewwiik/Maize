@@ -92,6 +92,7 @@ static NSMutableDictionary *normalStyleDict;
 	if (self) {
 		self.backdropView = [[_MZEBackdropView alloc] init];
 		[self.backdropView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+		self.backdropView.opaque = NO;
 		//self.backdropView.translatesAutoresizingMaskIntoConstraints = NO;
 
 		[self addSubview:self.backdropView];
@@ -101,6 +102,7 @@ static NSMutableDictionary *normalStyleDict;
   //       [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
   //       [self addConstraint:[NSLayoutConstraint constraintWithItem:self.backdropView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
        self.layer.allowsGroupBlending = NO;
+       self.opaque = NO;
 	}
 	return self;
 }

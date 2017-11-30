@@ -56,12 +56,14 @@ static CGFloat separatorHeight = 0;
 	_titleLabel.textAlignment = NSTextAlignmentCenter;
 	_titleLabel.text = _title;
 	_titleLabel.textColor = [UIColor whiteColor];
+	_titleLabel.layer.shouldRasterize = YES;
 	[_titleLabel sizeToFit];
 	[self.view addSubview:_titleLabel];
 	_titleLabel.autoresizingMask = (UIViewAutoresizingFlexibleRightMargin |
 									UIViewAutoresizingFlexibleLeftMargin);
 
-	_headerSeparatorView = [MZEMaterialView materialViewWithStyle:MZEMaterialStyleNormal];
+	_headerSeparatorView = [UIView new];
+	_headerSeparatorView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.35];
 	_headerSeparatorView.frame = CGRectMake(0,[self headerHeight] - separatorHeight, CGRectGetWidth(self.view.bounds), separatorHeight);
 	_headerSeparatorView.hidden = YES;
 	[self.view addSubview:_headerSeparatorView];
@@ -70,7 +72,7 @@ static CGFloat separatorHeight = 0;
 											 UIViewAutoresizingFlexibleWidth);
 
 
-	_darkBackground = [[_MZEBackdropView alloc] init];
+	_darkBackground = [[UIView alloc] init];
 	_darkBackground.alpha = 0.05;
 	_darkBackground.backgroundColor = [UIColor blackColor];
 	//_darkBackground.layer.compositingFilter = @"plusD";
@@ -153,6 +155,8 @@ static CGFloat separatorHeight = 0;
 	_isExpanding = expanded;
 }
 
+
+
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
 	[coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         [self _layoutSeparatorForSize:size];
@@ -227,13 +231,22 @@ static CGFloat separatorHeight = 0;
 
 - (void)_fadeViewsForExpandedState:(BOOL)expandedState {
 	if (expandedState) {
+		_titleLabel.hidden = NO;
+		_containerView.hidden = NO;
+		_darkBackground.hidden = NO;
 		_containerView.alpha = 1.0;
 		_titleLabel.alpha = 1.0;
 		_darkBackground.alpha = 0.05;
 	} else {
+		_titleLabel.hidden = YES;
+		_containerView.hidden = YES;
+		_darkBackground.hidden = YES;
 		_containerView.alpha = 0.0;
 		_titleLabel.alpha = 0.0;
 		_darkBackground.alpha = 0.0;
+		// _titleLabel.hidden = YES;
+		// _containerView.hidden = YES;
+		// _darkBackground.hidden = YES;
 	}
 }
 

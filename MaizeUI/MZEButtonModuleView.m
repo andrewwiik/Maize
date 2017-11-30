@@ -22,10 +22,10 @@ static BOOL isIOS11Mode = YES;
 		[_highlightedBackgroundView setAlpha:0];
 		[self addSubview:_highlightedBackgroundView];
 		[_highlightedBackgroundView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
-		_highlightedBackgroundView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
-		_highlightedBackgroundView.layer.cornerRadius = [MZELayoutOptions regularContinuousCornerRadius];
-		_highlightedBackgroundView.layer.cornerContentsCenter = [MZELayoutOptions regularCornerCenter];
-		_highlightedBackgroundView.layer.masksToBounds = YES;
+		((MZEMaterialView *)_highlightedBackgroundView).backdropView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
+		((MZEMaterialView *)_highlightedBackgroundView).backdropView.layer.cornerRadius = [MZELayoutOptions regularContinuousCornerRadius];
+		((MZEMaterialView *)_highlightedBackgroundView).backdropView.layer.cornerContentsCenter = [MZELayoutOptions regularCornerCenter];
+		//_highlightedBackgroundView.backdropView.layer.masksToBounds = YES;
 		// _highlightedBackgroundView._continuousCornerRadius = [MZELayoutOptions expandedModuleCornerRadius];
 		[self addTarget:self action:@selector(_touchDown:) forControlEvents:UIControlEventTouchDown];
 		[self addTarget:self action:@selector(_touchUpInside:) forControlEvents:UIControlEventTouchUpInside];
@@ -100,11 +100,11 @@ static BOOL isIOS11Mode = YES;
 		[_glyphImageView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 		[_glyphImageView setFrame:self.bounds];
 		[self addSubview:_glyphImageView];
-		_glyphImageView.layer.shouldRasterize = YES;
+		//_glyphImageView.layer.shouldRasterize = YES;
 	}
-	_glyphImageView.layer.shouldRasterize = NO;
+	//_glyphImageView.layer.shouldRasterize = NO;
 	_glyphImageView.image = [glyphImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-	_glyphImageView.layer.shouldRasterize = YES;
+	//_glyphImageView.layer.shouldRasterize = YES;
 }
 
 - (void)_updateForStateChange {

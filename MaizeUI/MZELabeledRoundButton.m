@@ -193,9 +193,13 @@
 - (void)layoutSubviews {
 	[super layoutSubviews];
 	if (_labelsVisible) {
+		_titleLabel.hidden = NO;
+		_subtitleLabel.hidden = NO;
 		_titleLabel.alpha = 1.0;
 		_subtitleLabel.alpha = 1.0;
 	} else {
+		_titleLabel.hidden = YES;
+		_subtitleLabel.hidden = YES;
 		_titleLabel.alpha = 0.0;
 		_subtitleLabel.alpha = 0.0;
 	}

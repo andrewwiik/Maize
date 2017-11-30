@@ -7,8 +7,8 @@
 @interface MZEMenuModuleViewController : MZEButtonModuleViewController <UIGestureRecognizerDelegate> {
 	NSMutableArray<MZEMenuModuleItemView *> *_menuItemsViews;
 	UILabel *_titleLabel;
-    MZEMaterialView *_headerSeparatorView;
-    _MZEBackdropView *_darkBackground;
+    UIView *_headerSeparatorView;
+    UIView *_darkBackground;
     MZEMaterialView *_platterBackground;
     UIStackView *_containerView;
     NSString *_title;
@@ -24,9 +24,9 @@
 @property(readonly, nonatomic) CGFloat preferredExpandedContentWidth;
 @property(readonly, nonatomic) CGFloat preferredExpandedContentHeight;
 @property(readonly, nonatomic) BOOL providesOwnPlatter;
-@property (nonatomic, retain, readwrite) _MZEBackdropView *darkBackground;
+@property (nonatomic, retain, readwrite) UIView *darkBackground;
 @property (nonatomic, retain, readwrite) UIStackView *containerView;
-@property (nonatomic, retain, readwrite) MZEMaterialView *headerSeparatorView;
+@property (nonatomic, retain, readwrite) UIView *headerSeparatorView;
 @property (nonatomic, assign, readwrite) BOOL shouldProvideOwnPlatter;
 @property (nonatomic, retain, readwrite) MZEMenuModuleView *view;
 //@property(readonly, nonatomic) _Bool shouldHidePlatterWhenExpanded;
